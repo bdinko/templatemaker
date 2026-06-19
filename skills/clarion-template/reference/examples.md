@@ -7,7 +7,7 @@ approximate (the corpus drifts between releases) — open the file to confirm.
 
 ## Example A — A complete `#EXTENSION` (procedure scope)
 
-Source: `C:\clarion12\template\win\CONTROL.TPW`, the `ViewFormActions` extension. This is the model to
+Source: `<CLARION_ROOT>\template\win\CONTROL.TPW`, the `ViewFormActions` extension. This is the model to
 copy for "prompt for options, then inject code at procedure embed points." Annotated:
 
 ```

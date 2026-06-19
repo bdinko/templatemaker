@@ -1,7 +1,8 @@
 # Clarion Template Language — Directive Reference
 
-Every example below is drawn from real shipped templates in `C:\clarion12\template\win\` and
-`C:\clarion12\accessory\template\win\`. Directives start with `#`; everything else is emitted as
+Every example below is drawn from real shipped templates in `<CLARION_ROOT>\template\win\` and
+`<CLARION_ROOT>\accessory\template\win\` (where `<CLARION_ROOT>` is the active Clarion install — see
+SKILL.md; default `Clarion11.1-13810`). Directives start with `#`; everything else is emitted as
 literal Clarion source. `#!` is a template comment (discarded); `!` inside output is a Clarion comment.
 
 ---

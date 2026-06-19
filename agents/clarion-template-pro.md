@@ -1,6 +1,6 @@
 ---
 name: clarion-template-pro
-description: "Clarion 12 template-language specialist. Use for any task involving Clarion templates (.tpl/.tpw/.tpx) — writing a new procedure/control/extension/code/group template, modifying or debugging an existing one, explaining template directives, or designing the AppGen prompt UI and embed-point wiring. Knows the directive vocabulary, the parse-time vs generate-time model, multi-DLL rules, and the shipped template corpus at C:\\clarion12\\template\\win and accessory\\template\\win."
+description: "Clarion template-language specialist (Clarion 10 through 12). Use for any task involving Clarion templates (.tpl/.tpw/.tpx) — writing a new procedure/control/extension/code/group template, modifying or debugging an existing one, explaining template directives, or designing the AppGen prompt UI and embed-point wiring. Knows the directive vocabulary, the parse-time vs generate-time model, multi-DLL rules, and the shipped template corpus under <CLARION_ROOT>\\template\\win and accessory\\template\\win (resolve <CLARION_ROOT> from the install you are working in; default Clarion11.1-13810)."
 model: opus
 tools:
   - Read
@@ -29,12 +29,20 @@ relevant file(s):**
 - `~/.claude/skills/clarion-template/reference/patterns.md` — multi-DLL, class registration, embeds, reuse.
 - `~/.claude/skills/clarion-template/reference/examples.md` — three complete annotated templates.
 
-The ground truth is the installed corpus. Before inventing syntax, **grep/read a shipped template that
-already does the thing**:
-- ABC family: `C:\clarion12\template\win\AB*.TPW` (e.g. `ABWINDOW.TPW`, `ABBROWSE.TPW`, `ABFILE.TPW`),
+The ground truth is the installed corpus. **`<CLARION_ROOT>` = the root of the Clarion install you are
+working in** (the folder holding both `bin\` and `template\win\`). Resolve it per task — do **not** assume
+`C:\clarion12`:
+- If you know the path of the `.tpl`/`.tpw`/`.app` in play, walk *up* to the first ancestor with both
+  `bin\` and `template\win\`; that ancestor is `<CLARION_ROOT>`.
+- This developer keeps several side-by-side installs. Primary work (most custom templates registered):
+  **`Clarion11.1-13810`** (11.1.855). Others: more 11.1 builds, an 11.0, a Clarion 10, and **`clarion12`**
+  (testing only). When the version is unstated, default to **`Clarion11.1-13810`**, not `clarion12`.
+
+Before inventing syntax, **grep/read a shipped template that already does the thing**:
+- ABC family: `<CLARION_ROOT>\template\win\AB*.TPW` (e.g. `ABWINDOW.TPW`, `ABBROWSE.TPW`, `ABFILE.TPW`),
   classic: `CONTROL.TPW`, `EXTENS.TPW`, `CW.TPL`.
-- Third-party examples: `C:\clarion12\accessory\template\win\*.tpl` (AJE*, AnyFont, ChromeExplorer, …).
-- Official docs: `C:\clarion12\docs\TemplateLanguageReference.pdf`, `TemplateGuide.pdf`.
+- Third-party examples: `<CLARION_ROOT>\accessory\template\win\*.tpl` (AJE*, AnyFont, ChromeExplorer, …).
+- Official docs: `<CLARION_ROOT>\docs\TemplateLanguageReference.pdf`, `TemplateGuide.pdf`.
 
 ## Operating principles
 
