@@ -1,0 +1,148 @@
+[APPLICATION]
+VERSION 34
+TODO ABC ToDo
+[COMMON]
+FROM ABC
+[PROGRAM]
+[COMMON]
+FROM ABC ABC
+[ADDITION]
+NAME allImageRead allImageReadGlobal
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%airGDisable LONG  (0)
+%airGUrlSecs LONG  (20)
+%airGGpu LONG  (1)
+[MODULE]
+NAME 'AIRWIN001.CLW'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME Main
+[COMMON]
+DESCRIPTION 'Window'
+FROM ABC Window
+CATEGORY 'Window'
+[ADDITION]
+NAME allImageRead allImageRead
+[INSTANCE]
+INSTANCE 2
+[PROMPTS]
+%airWDisable LONG  (0)
+%airWObject DEFAULT  ('PicA')
+%airWEngine DEFAULT  ('AUTO')
+%airWImage DEFAULT  ('?Pic1')
+%airWKind DEFAULT  ('B64')
+%airWVar DEFAULT  ('Loc:B64')
+%airWFrame LONG  (1)
+%airWFit DEFAULT  ('Img:Cover')
+%airWBack LONG  (16777215)
+%airWAuto LONG  (1)
+%airWZoom LONG  (1)
+%airWZoomStep LONG  (25)
+%airWPan LONG  (1)
+%airWMenu LONG  (1)
+%airWOpen LONG  (1)
+%airWDrop LONG  (1)
+%airWSave LONG  (1)
+%airWRotate LONG  (1)
+%airWFrames LONG  (1)
+%airWStatus LONG  (1)
+%airWStatusZone LONG  (1)
+%airWTip LONG  (1)
+%airWRot DEFAULT  ('0')
+%airWMirror LONG  (0)
+%airWFlip LONG  (0)
+%airWGrey LONG  (0)
+%airWMax LONG  (0)
+[ADDITION]
+NAME myQR myQR
+[INSTANCE]
+INSTANCE 3
+[PROMPTS]
+%myQRDisable LONG  (0)
+%myQRImage DEFAULT  ('?Pic1')
+%myQRValue DEFAULT  ('https://example.com')
+%myQRValueIsVar LONG  (0)
+%myQRSize LONG  (200)
+%myQREcc DEFAULT  ('Medium (M)')
+%myQRMargin LONG  (1)
+%myQRAuto LONG  (0)
+%myQRTimer LONG  (50)
+[ADDITION]
+NAME allImageRead allImageReadCanvas
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%airCDisable LONG  (0)
+%airCObject DEFAULT  ('PicB')
+%airCEngine DEFAULT  ('AUTO')
+%airCKind DEFAULT  ('URL')
+%airCVar DEFAULT  ('Loc:Url')
+%airCSecs LONG  (0)
+%airCFrame LONG  (2)
+%airCFit DEFAULT  ('Img:Proportional')
+%airCBack LONG  (16777215)
+%airCAuto LONG  (1)
+%airCZoom LONG  (1)
+%airCZoomStep LONG  (25)
+%airCPan LONG  (1)
+%airCMenu LONG  (1)
+%airCOpen LONG  (1)
+%airCDrop LONG  (1)
+%airCSave LONG  (1)
+%airCRotate LONG  (1)
+%airCFrames LONG  (1)
+%airCStatus LONG  (1)
+%airCStatusZone LONG  (2)
+%airCTip LONG  (1)
+%airCRptEach LONG  (1)
+%airCRptW LONG  (600)
+%airCRptH LONG  (450)
+%airCRptFit DEFAULT  ('Img:Proportional')
+%airCRptBack LONG  (16777215)
+%airCRptPool LONG  (8)
+%airCRot DEFAULT  ('90')
+%airCMirror LONG  (0)
+%airCFlip LONG  (0)
+%airCGrey LONG  (0)
+%airCMax LONG  (2000)
+[ADDITION]
+NAME allImageRead allImageReadFrames
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%airFDisable LONG  (0)
+%airFCanvas DEFAULT  ('PicB')
+%airFWrap LONG  (1)
+%airFHide LONG  (1)
+%airFText DEFAULT  ('FRAME')
+%airFPlay LONG  (1)
+%airFSpeed LONG  (10)
+%airFAuto LONG  (0)
+[EMBED]
+EMBED %DataSection
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+Loc:Url              CSTRING(256)
+Loc:B64              STRING(4096)
+Loc:File             CSTRING(261)
+[END]
+[END]
+[WINDOW]
+QuickWindow WINDOW('allImageRead test'),AT(,,340,300),GRAY,SYSTEM,MAX,RESIZE,STATUS(-1)
+          IMAGE,AT(8,8,320,130),USE(?Pic1),#ORDINAL(1)
+          IMAGE,AT(8,150,320,130),USE(?AirCanvas),#ORIG(?AirCanvas),#SEQ(1),#ORDINAL(2)
+          BUTTON('|<'),AT(8,284,14,12),USE(?AirFrmFirst),#ORIG(?AirFrmFirst),#SEQ(4),#ORDINAL(3)
+          BUTTON('<'),AT(24,284,14,12),USE(?AirFrmPrev),#ORIG(?AirFrmPrev),#SEQ(4),#ORDINAL(4)
+          STRING('- / -'),AT(40,285,46,10),USE(?AirFrmText),#ORIG(?AirFrmText),#SEQ(4),CENTER,#ORDINAL(5)
+          BUTTON('>'),AT(88,284,14,12),USE(?AirFrmNext),#ORIG(?AirFrmNext),#SEQ(4),#ORDINAL(6)
+          BUTTON('>|'),AT(104,284,14,12),USE(?AirFrmLast),#ORIG(?AirFrmLast),#SEQ(4),#ORDINAL(7)
+          BUTTON('Play'),AT(120,284,26,12),USE(?AirFrmPlay),#ORIG(?AirFrmPlay),#SEQ(4),#ORDINAL(8)
+        END
+
+[END]

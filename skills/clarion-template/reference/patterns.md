@@ -538,6 +538,116 @@ actually compiles (corpus: CapeSoft `StringTheory`/`Reflection`, ABC `ABFILE`):
       (CLASS *methods* are the exception — their impl mirrors the CLASS prototype and keeps the default.)
       Getting this wrong yields "No matching prototype available", "Unknown identifier: <param>", and
       "Cannot RETURN value from procedure" all at once.
+- [ ] Property writes aimed at another window are wrapped in `SETTARGET()` or deferred until that window
+      is current again — a field equate resolves against the CURRENT window and writes to the wrong one
+      silently (P15).
+- [ ] No ROUTINE does `DO` on itself (P15) — it has one return address and the program dies.
+- [ ] `PROP:LineHeight` divided by the lines per record, in EVERY copy of the calculation (P15).
+- [ ] Queue fields that a `FROM(queue)` LIST displays are declared FIRST, in display order (P15).
+- [ ] `POPUP()` item numbers account for separators (P15).
+- [ ] Verified by a GENERATE with every optional prompt switched on, and by RUNNING the result — not by
+      registering, and not by compiling (P15).
+
+
+## P15 — Code that compiles cleanly and does the wrong thing
+
+Every fault below produced Clarion that **registered, generated and built without a single error**, and
+then misbehaved at run time or could not be used at all. A clean compile proves nothing about any of
+them, which is the point of collecting them: these are the ones a build will never catch.
+
+### Run time
+
+**A field equate belongs to whichever window is CURRENT.** `?Ctl{PROP:Whatever} = x` is applied to the
+window that is current *at that moment*, not to the window `?Ctl` was declared on. Open a second window
+(a dialog, a lookup) and every property write aimed at the first one silently lands on the second. It is
+a legal write; nothing complains and nothing changes.
+*Symptom:* a dialog's OK button appears to do nothing at all.
+*Fix:* decide inside the dialog, apply after `CLOSE(dialog)` — or wrap the writes in
+`SETTARGET(theOtherWindow)` … `SETTARGET()`.
+
+**A ROUTINE cannot `DO` itself.** A Clarion ROUTINE holds a single return address, so calling it from
+inside itself loses the way back and takes the process down.
+*Symptom:* the application opens and closes again immediately.
+*Fix:* a `LOOP pass = 1 TO 2` with `CYCLE`, not recursion.
+
+**`PROP:LineHeight` is the height of one LINE, not one record.** On a multi-line list format the runtime
+multiplies it by the lines in a record. Hand it a whole record height and the list concludes each record
+is *lines²* tall.
+*Symptom:* a browse loads one record, or a handful, and the rest "disappear".
+*Fix:* divide by the lines per record — **everywhere**, including any second copy of the calculation.
+(This one shipped twice: `BG:Rows` was corrected and the font-resize path had its own copy that was not.)
+
+**A `FROM(queue)` LIST maps format columns to queue fields in DECLARATION order.** There is no naming of
+one to the other. Declare a queue as `Mark, On, Name` and the second display column shows `On`.
+*Symptom:* a column shows `1` (or a stray number) where a name was expected.
+*Fix:* declare the displayed fields first, in display order.
+
+**A LIST raises `ACCEPTED` only on a double click or Enter.** A single click raises
+`EVENT:NewSelection`, which is not the same thing.
+*Symptom:* a tick-list dialog looks completely inert.
+*Fix:* `ALRT(SpaceKey)` on the list plus an `EVENT:AlertKey` handler, and buttons for the same actions.
+
+**`POPUP()` counts its separators as items.** A `'-'` occupies an ordinal.
+*Symptom:* every choice after the first separator runs the wrong branch — and the branches that fall off
+the end do nothing, so half the menu is silently dead.
+*Fix:* no separators, or count them.
+
+**Reading a field you only know by name.** `WHO(queue, n)` returns an ABC browse queue's field *label*,
+which is the file field it came from (`STU:LastName`) — enough to build a filter expression from outside
+the browse template. `EVALUATE('STU:LastName')` then reads its current value, because ABC binds the whole
+record buffer (`FileManager.BindFields`). Between them you can filter and collect distinct values without
+the developer mapping anything by hand.
+
+### Generate time and AppGen
+
+**`#PREPARE` runs when the prompts are LOADED, not when code is generated.** A `#SET` there never reaches
+the emitted source.
+*Symptom:* an emitted line comes out with a blank where a derived symbol should be —
+`Grid1:Lst = .ILC.GetControl()`.
+*Fix:* substitute the expression directly into the emitted line, or `#SET` inside the `#AT`.
+
+**A `#CONTROL` with no `CONTROLS` block registers perfectly and can never be added.** Control templates
+are added by *placing* something from the window designer; with nothing to place there is nothing to
+pick up.
+*Corollary:* if a template must not put a control on the window, it has to be an `#EXTENSION`. An
+extension cannot nest under a control template in the Extensions tree, so "add it on top of the browse"
+and "place nothing" are mutually exclusive. Pick which one matters.
+
+**A blank line inside a prompt sheet is a syntax error.** `#SHEET`/`#TAB`/`#BOXED` accept directives
+only; an empty line is an output line.
+*Symptom:* `Expected ENDSHEET` pointing at a line that looks fine.
+
+**Unregistering a template makes Clarion drop EVERY addition belonging to it** from any app that is
+opened afterwards. That is the way out of an orphaned instance the IDE will not delete — but it takes the
+global extension with it, so re-add that first.
+```
+ClarionCL -tl                       # list registered chains
+ClarionCL -tu <ChainName>           # unregister BY CHAIN NAME, not by path
+ClarionCL -tr <full path to .tpl>   # register
+```
+Deleting a registered `.tpl` without unregistering it breaks **all** registration afterwards with
+`Could not open include file <name>.tpl`.
+
+### Verifying, so these get caught
+
+Registering only parses. **A generate is what proves the emitted Clarion is Clarion — and a generate only
+covers the paths whose prompts are switched ON.** A template with six optional features verified at their
+defaults has five paths nobody has ever generated. Switch them all on with a TXA round trip:
+
+```
+ClarionCL -win -au -ax app.app out.txa      # export
+   ...edit the %prompt values in out.txa...
+ClarionCL -win -au -ai app.app out.txa      # import
+ClarionCL -win -au -ag app.app              # generate
+```
+
+And **run the executable**. Building is not running: a ROUTINE that calls itself, a write to the wrong
+window and a list that ignores clicks all compile perfectly. Starting the program takes four seconds.
+
+For anything with no visible output, make the program report into its own **window title** and read it
+back from PowerShell — the pattern used throughout `examples/BrowseGrid`. A one-line title
+(`q=4 cols=0 draw=4 items=4`) distinguishes "the queue was empty" from "the columns were never read"
+from "the rows were too tall", which look identical on screen and want completely different fixes.
 
 ## Adding a global, callable utility function via template
 

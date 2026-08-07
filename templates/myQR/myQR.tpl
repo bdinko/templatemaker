@@ -146,10 +146,10 @@
 #!-----------------------------------------------------------------------------------
 #AT(%GlobalMap),WHERE(%myQRDisable=0 AND %myQRImage),DESCRIPTION('myQR - helper prototypes')
 myQRUrlEncode(STRING pText),STRING
-myQRLoad(SIGNED pImageFeq, STRING pData, SIGNED pSize, STRING pEccLetter, SIGNED pMargin),BYTE
+myQRLoad(SIGNED pImageFeq, STRING pData, SIGNED pSize, STRING pEccLetter, SIGNED pMargin),BYTE,PROC
   MODULE('kernel32')
 myQR_CreateProcess(LONG,LONG,LONG,LONG,LONG,ULONG,LONG,LONG,LONG,LONG),LONG,PASCAL,PROC,NAME('CreateProcessA')
-myQR_WaitObject(LONG,ULONG),LONG,PASCAL,NAME('WaitForSingleObject')
+myQR_WaitObject(LONG,ULONG),LONG,PASCAL,PROC,NAME('WaitForSingleObject')
 myQR_CloseHandle(LONG),LONG,PASCAL,PROC,NAME('CloseHandle')
   END
 #ENDAT
@@ -211,8 +211,8 @@ dwYSize          ULONG
 dwXCountChars    ULONG
 dwYCountChars    ULONG
 dwFillAttribute  ULONG
-dwFlags          ULONG                                    ! STARTF_USESHOWWINDOW bit goes here
-wShowWindow      SHORT(0)                                 ! SW_HIDE = 0
+dwFlags          ULONG                                    ! myQR:UseShowWindow bit goes here
+wShowWindow      SHORT(0)                                 ! myQR:SwHide = 0
 cbReserved2      SHORT(0)
 lpReserved2      LONG(0)
 hStdInput        LONG
@@ -225,10 +225,12 @@ hThread          LONG
 dwProcessId      ULONG
 dwThreadId       ULONG
                END
-STARTF_USESHOWWINDOW EQUATE(00000001h)                   ! OddJobEq.inc:349
-SW_HIDE              EQUATE(0)                             ! OddJobEq.inc:35
-CREATE_NO_WINDOW    EQUATE(08000000h)                     ! OddJobEq.inc:390 - no console window for a console app
-INFINITE            EQUATE(0FFFFFFFFh)                     ! WaitForSingleObject: wait with no timeout
+!  Prefixed, because a bare SW_HIDE or INFINITE here collides with every other
+!  template that declares the same word in the same module.
+myQR:UseShowWindow  EQUATE(00000001h)                     ! OddJobEq.inc:349
+myQR:SwHide         EQUATE(0)                             ! OddJobEq.inc:35
+myQR:NoWindow       EQUATE(08000000h)                     ! OddJobEq.inc:390 - no console window for a console app
+myQR:Forever        EQUATE(0FFFFFFFFh)                    ! WaitForSingleObject: wait with no timeout
   CODE
   !Per-image temp file in the current directory, keyed by the control FEQ so two QR
   !images on one window never clash. PNG, because the service returns PNG.
@@ -252,15 +254,15 @@ INFINITE            EQUATE(0FFFFFFFFh)                     ! WaitForSingleObject
   !Launch curl HIDDEN: SW_HIDE in wShowWindow + STARTF_USESHOWWINDOW so it is honoured,
   !and CREATE_NO_WINDOW so a console app gets no console at all. cb = sizeof(STARTUPINFO).
   si.cb         = SIZE(si)
-  si.dwFlags    = STARTF_USESHOWWINDOW
-  si.wShowWindow = SW_HIDE
+  si.dwFlags    = myQR:UseShowWindow
+  si.wShowWindow = myQR:SwHide
   !appName=0 (parse from command line), inherit=0, env/dir=0. All params are LONG; the
   !command string and the two GROUPs are passed by ADDRESS(). loc:Ok=0 means curl could
   !not be launched (curl.exe missing).
-  loc:Ok = myQR_CreateProcess(0, ADDRESS(loc:Cmd), 0, 0, 0, CREATE_NO_WINDOW, 0, 0, ADDRESS(si), ADDRESS(pi))
+  loc:Ok = myQR_CreateProcess(0, ADDRESS(loc:Cmd), 0, 0, 0, myQR:NoWindow, 0, 0, ADDRESS(si), ADDRESS(pi))
   IF loc:Ok
     !Synchronous: block until curl exits, then release the handles it handed back.
-    myQR_WaitObject(pi.hProcess, INFINITE)
+    myQR_WaitObject(pi.hProcess, myQR:Forever)
     myQR_CloseHandle(pi.hThread)
     myQR_CloseHandle(pi.hProcess)
   END

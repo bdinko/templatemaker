@@ -107,10 +107,85 @@ examples/xreportpreview5/
 docs/xReportPreview5*
 docs/xreportpreview5*
 
+# xsearch4 (the xSearch search-and-tag template) - local-only, never push the
+# template, its class, its demo or its docs
+templates/xsearch4/
+templates/xSearch4/
+templates/xsearch5/
+templates/xSearch5/
+templates/xsearch/
+examples/xsearch4/
+examples/xSearch4/
+examples/xsearch5/
+examples/xSearch5/
+examples/xsearch/
+examples/xSearch/
+docs/xsearch*
+docs/xSearch*
+**/xsearch.tpl
+**/xsearch.clw
+**/xsearch.inc
+**/xsearch.trn*
+
+# AJEStimulsoftNew - the COM-free rework of the client's third-party AJE
+# Stimulsoft template. CLIENT WORK plus a third party's source: never push any
+# of it, including the untouched originals kept for diffing.
+templates/AJEStimulsoftNew/
+templates/ajestimulsoftnew/
+examples/AJEStimulsoftNew/
+docs/AJEStimulsoft*
+docs/ajestimulsoft*
+**/AJEStimulSoft*
+**/AJEUtilityClass*
+**/StimulSoftWrapper*
+
+# stimReport (Stimulsoft bridge) - CLIENT WORK, local-only, never push the
+# template, its bridge sources, its binaries, its demo or its docs
+templates/stimReport/
+templates/stimreport/
+examples/stimReport/
+examples/stimreport/
+docs/stimReport*
+docs/stimreport*
+**/stimReport.*
+**/stimreport.*
+**/StimBridge*
+**/stimbridge*
+
+# clarionwpf (WPF hosted on a Clarion window via HwndSource) - PRIVATE work in
+# progress, local-only for now: never push the template, its classes, its bridge
+# sources, its binaries, its XAML, its demo or its docs
+templates/clarionwpf/
+templates/clarionWPF/
+examples/clarionwpf/
+examples/clarionWPF/
+docs/clarionwpf*
+docs/clarionWPF*
+**/clarionwpf.*
+**/clarionWPF.*
+**/WpfBridge*
+**/wpfbridge*
+**/WpfViewClass.*
+**/wpflink.c
+
 # graficaBarra ReportClear demo output (regenerate by running the exe)
 examples/graficaBarra/*.wmf
 examples/graficaBarra/rpt*.png
 examples/graficaBarra/ReportClear.log
+
+# comlessCalendar (native Windows month calendar with no COM/OCX) - PRIVATE
+# work in progress, local-only for now: never push the template, its class, its
+# C shim, its demo or its docs
+templates/comlessCalendar/
+templates/comlesscalendar/
+examples/comlessCalendar/
+examples/comlesscalendar/
+docs/comlessCalendar*
+docs/comlesscalendar*
+**/comlessCalendar.*
+**/comlesscalendar.*
+**/ComlessCalendarClass.*
+**/cmcal.c
 
 # demo runtime leftovers (saved views, modes, build logs - regenerated on every run)
 examples/**/*Demo.INI

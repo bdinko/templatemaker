@@ -75,6 +75,7 @@
     <a href="#modes" class="h2"><span class="en">Window vs. report</span><span class="es">Ventana vs. informe</span></a>
     <a href="#text" class="h2"><span class="en">Text metrics</span><span class="es">Métricas de texto</span></a>
     <div class="grp"><span class="en">Reference</span><span class="es">Referencia</span></div>
+    <a href="graficaBarra-classes.html" class="h2"><span class="en">Class guide (full API)</span><span class="es">Guía de la clase (API completa)</span></a>
     <a href="#api" class="h2"><span class="en">Class API</span><span class="es">API de la clase</span></a>
     <a href="#palette" class="h2"><span class="en">Color palette</span><span class="es">Paleta de colores</span></a>
     <div class="grp"><span class="en">Examples</span><span class="es">Ejemplos</span></div>
@@ -319,8 +320,8 @@ RptGraph.TextH = <span class="t">185</span></pre>
         <td><span class="en"><b>Window path.</b> Targets the IMAGE, clears it, paints. Call from any embed after data changes.</span>
             <span class="es"><b>Ruta de ventana.</b> Selecciona el IMAGE, lo borra, dibuja. Llame desde cualquier embed tras cambiar los datos.</span></td></tr>
     <tr><td><code>Paint(pFeq [,pWindowMode])</code></td>
-        <td><span class="en"><b>Report path.</b> Paints at <code>pFeq</code>'s rectangle into the <em>current</em> target. Default mode 0 = no clear, keep the band offset. Aim the target at the band first &mdash; <code>SETTARGET(Report, ?TheBand)</code> &mdash; or every chart on the report lands in whichever band happens to be printing.</span>
-            <span class="es"><b>Ruta de informe.</b> Dibuja en el rectángulo de <code>pFeq</code> en el destino <em>actual</em>. Modo 0 por defecto = sin borrado, mantiene el desplazamiento de banda. Apunte primero a la banda &mdash; <code>SETTARGET(Report, ?LaBanda)</code> &mdash; o todos los gráficos del informe caerán en la banda que esté imprimiéndose.</span></td></tr>
+        <td><span class="en"><b>Report path.</b> Paints at <code>pFeq</code>'s rectangle into the <em>current</em> target. Default mode 0 = keep the band offset; the rectangle is still cleared first unless you set <code>EraseFirst = 0</code>. Aim the target at the band first &mdash;<code>SETTARGET(Report, ?TheBand)</code> &mdash; or every chart on the report lands in whichever band happens to be printing.</span>
+            <span class="es"><b>Ruta de informe.</b> Dibuja en el rectángulo de <code>pFeq</code> en el destino <em>actual</em>. Modo 0 por defecto = mantiene el desplazamiento de banda; el rect&aacute;ngulo se limpia igualmente antes, salvo que ponga <code>EraseFirst = 0</code>. Apunte primero a la banda &mdash; <code>SETTARGET(Report, ?LaBanda)</code> &mdash; o todos los gráficos del informe caerán en la banda que esté imprimiéndose.</span></td></tr>
   </table>
   <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
   <table>

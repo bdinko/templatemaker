@@ -54,6 +54,9 @@ templates/                      # ready-to-register Clarion templates
   myQR/                         #   QR code into an image control, auto-refresh (see below)
     myQR.tpl
   myImage/                     #   12 image formats in, 9 out, every colour format (see below)
+  allImageRead/                 #   any picture, from anywhere, on a window or a report (see below)
+    allImageRead.tpl            #     global + drag-on canvas + window/report extensions + code template
+    d2dcanvas.c                 #     the GPU canvas: Direct2D, bound at run time, no import library
   myGauge/                      #   analog gauge/dial on windows and reports (see below)
     GaugeClass.inc              #     the gauge class (config + method prototypes)
     GaugeClass.clw              #     the implementation (geometry + native drawing)
@@ -107,6 +110,9 @@ templates/                      # ready-to-register Clarion templates
     MsgHookClass.clw            #     the implementation (hook thunks + append-only logger)
     myHook.tpl                  #     global extension + per-procedure pause + code template
     myHook.zip                  #     the three files above, zipped for easy distribution
+  BrowseGrid/                   #   take over any ABC browse and draw it with Direct2D (see below)
+    BrowseGrid.tpl              #     the extension: one prompt sheet, no class to ship
+    d2grid.c                    #     the grid: Direct2D + DirectWrite, bound at run time
   weatherWidget/                #   a weather card when your program starts (see below)
     MyWeatherClass.inc          #     the widget (settings, the reading, EN/ES strings)
     MyWeatherClass.clw          #     the implementation (curl + JSON + the drawn card)
@@ -384,6 +390,121 @@ together, and troubleshooting — is in
 palette update, save it back out) and **ImgTest**, a headless harness that round-trips all nine writable
 formats and all eleven colour formats and writes the results to an INI.
 
+### `templates/allImageRead/` — **any picture, from anywhere**, on a window or a report
+myImage is the engine; **allImageRead is the piece that puts a picture in front of the user**. One `.tpl`,
+no new class — it sits on top of `ImageClass` and answers the two questions a template cannot: *where does
+the picture come from*, and *what does it get painted on*. **Six sources**: a fixed file, a variable holding
+a path, a **BLOB field**, a **STRING in memory**, a **base64 string** (`data:` URIs and the URL-safe
+alphabet included), or an **http/https URL**. Anything that is not already a file is written to a working
+file in `%TEMP%` — with the Windows file API, so the application is not obliged to carry the DOS driver
+just to show a photograph — and read back from there; the names are fixed per canvas, so they are reused
+rather than piled up. A URL is fetched with **curl.exe**, which ships with Windows 10 and 11 in System32,
+run hidden and synchronously. The base64 decoder is pure Clarion, table-driven, and skips whitespace.
+**The canvas.** On a window the `IMAGE` control is only the paint surface: the object owns the pixels and a
+**REGION created over the image at run time** takes the mouse — the way Clarion's own `ActiveImage` class
+does it (`libsrc\win\ActiveImage.clw:303`). So zooming does not stretch a control, it **re-renders** the
+picture through the engine; panning moves the **viewport**, not the frame. The user gets **Ctrl + wheel
+zoom** (about the centre of the view, and zooming all the way out lands back on "fit"; Ctrl is a prompt, so
+the wheel can zoom on its own where nothing else wants it), **drag to pan**, a
+**right-click menu** built at generate time out of the boxes you ticked (so its item numbers can never drift),
+**double-click to open another picture**, **drag a file onto it from Explorer** (`DROPID('~FILE')`), and
+**Save a copy** in any of the nine formats the engine writes. **Panning** is a left-button drag, or
+**Ctrl+arrows** (with **Ctrl+Home** to refit) for anyone who would rather not hold the mouse down — both
+are quiet while the picture is fitted, because there is nowhere to pan to. Optional status-bar line and tooltip.
+**Easiest path: one control template that goes in both places.** Drag **allImageRead - Image canvas** onto a
+**window** *or* into a **report band** — `#ATSTART` works out where it landed (`%ReportControl` first, then
+`%Control`) and emits the right half: the live viewer on a window, or, in a band, a picture per record
+fitted to a PNG and pointed at with `PROP:Text` under `SETTARGET(Report)`. Report working names **rotate**
+(8 by default) so a page still being spooled cannot have its picture overwritten underneath it. Five
+registrations: **allImageReadCanvas** (the drag-on canvas, window *or* report band), **allImageReadGlobal**
+(the shared readers — add it once per application, and to **every** app of a multi-DLL set that carries a
+canvas), **allImageRead** and **allImageReadRpt** for an `IMAGE` control you already have on a window or in
+a band, and the **allImageReadLoad** code template for one statement at any embed. Per-picture touch-up
+(rotate/mirror/flip/greyscale/cap the longest side) is a prompt, not an embed. **Pictures that hold more
+than one frame** — a multi-page TIFF, an animated GIF — get the **allImageReadFrames** control template:
+drag the bar onto the window, tell it which canvas object it drives, and it gives First / Prev / Next /
+Last, a *Page 3 of 12* counter, and a **Play** button that animates on the window timer and puts the
+timer back when it stops. It hides itself when the picture has only one frame. Requires the myImage files on the redirection path
+(`ImageClass.inc`, `ImageClass.clw`, `imgcore.c`, ANSI) — myImage itself need not be registered.
+**The wheel is not a Clarion event.** `EVENT:ScrollUp`/`ScrollDown` are LIST events ("the user pressed the
+up arrow", `IMM` only) and never reach a window or an `IMAGE`, so the canvas takes the wheel off the
+**window procedure** (`PROP:WndProc`) and turns `WM_MOUSEWHEEL` into an event the `ACCEPT` loop understands
+— reading the distance and the Ctrl flag straight out of the message, the way Clarion's own
+`smartzoom.clw` does. The window's original procedure is parked **on the window** with `SetProp`, so one
+callback serves every window in the program with no bookkeeping; the first canvas on a window hooks it, the
+last one puts it back, and each canvas zooms only when the pointer is over *it*.
+**Zooming runs on the graphics card.** Resampling a whole picture for every wheel notch is what makes a
+CPU viewer crawl — at 400% on a 12-megapixel photo that is 768 MB of work to fill a 600x400 frame, plus a
+PNG round trip through disk. `d2dcanvas.c` hands the picture to **Direct2D** once; every zoom and pan after
+that is a 3x2 matrix. Measured on a 2400x1800 photograph: **8.4 ms a frame against 675 ms a step, about
+80x** — and the GPU figure does not move when the picture gets bigger. It works because a REGION created at
+run time owns a **real HWND**, so Direct2D renders into the canvas control itself and never fights Clarion
+for the window's `WM_PAINT`. `d2d1.dll` is bound with `LoadLibrary`, so there is no import library to link
+and nothing to redistribute; a canvas that cannot get Direct2D falls back to the processor on its own, and
+each canvas can be pinned to either engine on its Canvas tab. Report bands always use the processor — a
+printer is not a window. **The processor path is no longer a cliff to fall off**: it crops the
+source rectangle out before scaling, so its work depends on the size of the frame rather than the size
+of the picture - measured at 8.9 seconds a zoom step before, 53 milliseconds after, showing pixel-for-
+pixel the same view. Requires `d2dcanvas.c` on the redirection path beside the myImage files.
+Verified end to end: registers, generates for all four placements, the generated source **compiles and
+links** (a window app and a report, 32-bit MSBuild), and three things are **proved at run time** rather
+than argued — the wheel (a harness sends real `WM_MOUSEWHEEL` messages and reads the counters back out of
+the window title), the GPU canvas (it draws the test card into a run-time REGION, screenshot in
+[`docs/allImageRead-d2dcanvas.png`](docs/allImageRead-d2dcanvas.png)), and the 80x figure above. See
+[`examples/allImageRead/`](examples/allImageRead/).
+
+### `templates/BrowseGrid/` — **take over any ABC browse** and draw it with Direct2D
+A browse that does not look like 1995, **without touching the browse**. Drop the extension on a procedure,
+point it at the `LIST`, and the grid draws the rows instead: antialiased text through DirectWrite, banded
+rows, frozen columns, a header that sorts, and column widths you can drag. The `BrowseBox` keeps doing all
+the work it always did — the VIEW, the queue, the locator, range limits, the popup, Insert/Change/Delete —
+so **nothing about the browse's behaviour changes**, only what you look at. One `.tpl` plus `d2grid.c`,
+which Clarion's own C compiler builds; no DLL, no OCX, nothing to redistribute. A procedure that cannot get
+Direct2D leaves the `LIST` alone and carries on.
+**How it takes over.** A `REGION` is created over the `LIST` at run time and the grid is attached to it. The
+`LIST` is then made invisible **to Windows** — `WS_VISIBLE` stripped off the HWND — and *not* to Clarion:
+`HIDE()` makes ABC decide it has no rows to load, but `PROP:Hide`, the queue and the visible-row count are
+all untouched by clearing the style bit, so the browse goes on filling itself while Windows simply never
+paints it. It also keeps the focus, which is what makes every key an ABC browse has always answered go on
+working unwritten — arrows, PageUp/PageDown, Ctrl-PageUp/PageDown, the incremental locator, Insert, Delete,
+Enter. The region only ever needed the mouse, and a `REGION` with `PROP:IMM` gets that with or without focus.
+**Grouped and multi-line formats.** A browse whose format puts several fields on each record over more than
+one line, under headings that span them, is read back out of the `LIST` — `PROPLIST:GroupNo`,
+`PROPLIST:LastOnLine`, and `PROPLIST:Group` added to any other property for the group's own heading and
+width — and drawn either way: **flattened** to one column per field on a single line, or **faithfully**, with
+the spanning headings, the record as many lines tall as the format makes it, and the banding and selection
+covering the whole record. Freezing then counts groups, and dragging a group edge scales the fields inside
+it while every group to its right shifts along.
+**Excel's drop-down on every heading.** A boxed glyph at the right of each heading — `˅` for a menu, `▲`/`▼`
+for the sort direction, a **funnel** on a filled button when the column is filtered (U+E71C out of Windows'
+own icon font; if it does not resolve, the fill still says it). The menu sorts either way, filters on the
+value under the selection, and offers **Excel's checklist of every value in the column** — read with
+`EVALUATE()`, since the field is known only by the name `WHO()` gives back. Filters are **per column and
+added together**: filter three columns and all three are in force, all three say so, and each clears on
+its own. **Columns…** shows and hides columns (a zero-width LIST column, so the grid needed no new
+idea), and **column widths are remembered between runs** through the application's own `INIMgr`
+(widths only — a stored filter is an expression, and one that will not parse is a run-time error at
+window open, which is not a thing to keep in a settings file). Sorting goes through the browse exactly as a heading click does, and filtering
+calls the browse object's own `SetFilter`, so range limits and locators keep working. The field name for the
+filter is read at run time with **`WHO()`** — an ABC browse queue labels its fields with the file fields they
+came from, so `WHO(Queue:Browse:1,n)` answers `STU:LastName` and nothing has to be mapped by hand.
+**The rest of it.** Scrollbars come in three styles — **Windows**, **Slim** (both drawn, thin and flat)
+and **Overlay** (drawn over the rows, only while the pointer is on the grid, so the data keeps the whole
+width). Sideways is Windows' own in the first of those and **tracks live**, because scrolling sideways
+needs nothing from the browse and can be done inside Windows' modal drag loop; downwards is **drawn by the
+grid**, because moving the browse needs records, records need ABC, and ABC needs `ACCEPT`, which that loop is
+holding up. Mouse wheel scrolls, **Ctrl+wheel resizes the type** (6 to 32 point, with the rows and the LIST's
+line height following it), long text **wraps** onto up to four lines, and a diagnostics prompt puts what the
+grid is working from into the window title, because a browse that draws nothing looks identical whether the
+queue was empty, the rows were too tall, or the columns were never read.
+Requires `d2grid.c` on the redirection path. Verified: registers, generates **with every optional path
+switched on** — a generate only covers the prompts that are ticked, which is how a `CODE` without a `DATA`
+once shipped — and the generated source compiles and links against a copy of `School`. Behaviour is proved
+at run time by harnesses rather than argued: column-edge hit testing (`edgetest`, 15 assertions),
+concealment (`novis` — `winvis 1>0 | PROP:Hide 0>0 | recs 20`), group resizing being reversible
+(`proptest` — `PROP-PASS was 200,300,160,140 now 200,300,160,140`), and the row-height clamp
+(`GridTest grew=33 shrank=19`). See [`examples/BrowseGrid/`](examples/BrowseGrid/).
+
 ### `templates/myGauge/` — analog gauges/dials on windows and reports
 A configurable **analog gauge** drawn entirely with native Clarion graphics (`ARC`, `ELLIPSE`, `LINE`,
 `POLYGON`, `SHOW`) into an `IMAGE` control — the same offline, no-dependency approach as myPie and myQRDraw.
@@ -457,7 +578,12 @@ its pages out as metafiles: `ReportClear` paints, clears and repaints into one p
 and logs a control census (the count never moves — a chart is ink, not controls). Full docs — prompts, class API, run-time
 control — in [`docs/graficaBarra-template.html`](docs/graficaBarra-template.html); a bilingual (English +
 Spanish) developer's reference with worked example code is in
-[`docs/graficaBarra-reference.html`](docs/graficaBarra-reference.html).
+[`docs/graficaBarra-reference.html`](docs/graficaBarra-reference.html). For driving the class from your own
+code there is a full **class guide** in [`docs/graficaBarra-classes.html`](docs/graficaBarra-classes.html) —
+bilingual, written from the source: every property and every method (including the internal painters and
+primitives) with signatures and line references, the 48 × 8 data grid field by field, the ordering rules that
+fail silently, `Paint` traced step by step, the scale/pie/legend algorithms, the colour rules, hand-coded
+examples for windows, reports, multi-chart bands and dashboards, and a table of known quirks with workarounds.
 
 *Upgrading from v1?* Nothing to redo: `Chart:Column` is the default and the v1 API (`AddBar`, `ClearBars`,
 `SetRange`, `Draw`, `Paint`) and prompts are unchanged, so existing charts generate and draw as before —
@@ -661,6 +787,12 @@ by the class itself:
 ![myYuru presets](docs/myYuru-presets.png)
 
 ### `templates/myCalc/` — a pop-up calculator beside any numeric field
+> **Renamed in this version:** the class's string equates are now `CalcTxt:Cancel`, `CalcTxt:Accept` …
+> rather than `Txt:Cancel`, `Txt:Accept` …. `Txt:Cancel` was declared by **both** CalcClass (12) and
+> ExportClass (26), so an application carrying myCalc *and* myExport compiled with `Label duplicated,
+> second used: TXT:CANCEL` — and one of the two classes then indexed its string table with the other's
+> number, showing the wrong caption. The prefix follows the one xsExport already uses (`xsTxt:`). If you
+> have embed code calling `Calc1.Txt(Txt:Something)`, add the `Calc` prefix.
 Drag **myCalc - Calculator button** next to a numeric entry and point it at that entry. A small calculator
 icon appears; pressing it opens a modal calculator already holding whatever the field contains, and **Accept
 puts the answer back into the field**.

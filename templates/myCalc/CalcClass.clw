@@ -191,60 +191,60 @@ CalcClass.Txt PROCEDURE(LONG pId)
   CODE
   IF SELF.Language = Calc:Spanish
     CASE pId
-    OF Txt:Calculator ; RETURN 'Calculadora'
-    OF Txt:Standard   ; RETURN 'Estándar'
-    OF Txt:Scientific ; RETURN 'Científica'
-    OF Txt:Programmer ; RETURN 'Programador'
-    OF Txt:Accountant ; RETURN 'Contable (cinta)'
-    OF Txt:Mode       ; RETURN '&Modo:'
-    OF Txt:PaperRoll  ; RETURN 'Cinta de &papel'
-    OF Txt:Roll       ; RETURN 'Cinta'
-    OF Txt:Copy       ; RETURN 'Copiar'
-    OF Txt:Clear      ; RETURN 'Limpiar'
-    OF Txt:Accept     ; RETURN '&Aceptar'
-    OF Txt:Cancel     ; RETURN 'Cancelar'
-    OF Txt:Hint       ; RETURN 'Entrar = igual   Esc = cerrar'
-    OF Txt:DivZero    ; RETURN 'No se puede dividir entre cero'
-    OF Txt:BadInput   ; RETURN 'Entrada no válida'
-    OF Txt:NotNumber  ; RETURN 'No es un número'
-    OF Txt:FixError   ; RETURN 'La calculadora muestra un error: bórralo primero.'
-    OF Txt:Bksp       ; RETURN 'Borr'
-    OF Txt:Subtotal   ; RETURN 'SUBT'
-    OF Txt:Total      ; RETURN 'TOTAL'
-    OF Txt:GrandTot   ; RETURN 'TG'
-    OF Txt:TaxPlus    ; RETURN 'IVA+'
-    OF Txt:TaxMinus   ; RETURN 'IVA-'
-    OF Txt:WordSize   ; RETURN 'BITS'
-    OF Txt:CopyTip    ; RETURN 'Copiar toda la cinta al portapapeles'
+    OF CalcTxt:Calculator ; RETURN 'Calculadora'
+    OF CalcTxt:Standard   ; RETURN 'Estándar'
+    OF CalcTxt:Scientific ; RETURN 'Científica'
+    OF CalcTxt:Programmer ; RETURN 'Programador'
+    OF CalcTxt:Accountant ; RETURN 'Contable (cinta)'
+    OF CalcTxt:Mode       ; RETURN '&Modo:'
+    OF CalcTxt:PaperRoll  ; RETURN 'Cinta de &papel'
+    OF CalcTxt:Roll       ; RETURN 'Cinta'
+    OF CalcTxt:Copy       ; RETURN 'Copiar'
+    OF CalcTxt:Clear      ; RETURN 'Limpiar'
+    OF CalcTxt:Accept     ; RETURN '&Aceptar'
+    OF CalcTxt:Cancel     ; RETURN 'Cancelar'
+    OF CalcTxt:Hint       ; RETURN 'Entrar = igual   Esc = cerrar'
+    OF CalcTxt:DivZero    ; RETURN 'No se puede dividir entre cero'
+    OF CalcTxt:BadInput   ; RETURN 'Entrada no válida'
+    OF CalcTxt:NotNumber  ; RETURN 'No es un número'
+    OF CalcTxt:FixError   ; RETURN 'La calculadora muestra un error: bórralo primero.'
+    OF CalcTxt:Bksp       ; RETURN 'Borr'
+    OF CalcTxt:Subtotal   ; RETURN 'SUBT'
+    OF CalcTxt:Total      ; RETURN 'TOTAL'
+    OF CalcTxt:GrandTot   ; RETURN 'TG'
+    OF CalcTxt:TaxPlus    ; RETURN 'IVA+'
+    OF CalcTxt:TaxMinus   ; RETURN 'IVA-'
+    OF CalcTxt:WordSize   ; RETURN 'BITS'
+    OF CalcTxt:CopyTip    ; RETURN 'Copiar toda la cinta al portapapeles'
     END
     RETURN ''
   END
   CASE pId
-  OF Txt:Calculator ; RETURN 'Calculator'
-  OF Txt:Standard   ; RETURN 'Standard'
-  OF Txt:Scientific ; RETURN 'Scientific'
-  OF Txt:Programmer ; RETURN 'Programmer'
-  OF Txt:Accountant ; RETURN 'Accountant (tape)'
-  OF Txt:Mode       ; RETURN '&Mode:'
-  OF Txt:PaperRoll  ; RETURN 'Paper &roll'
-  OF Txt:Roll       ; RETURN 'Roll'
-  OF Txt:Copy       ; RETURN 'Copy'
-  OF Txt:Clear      ; RETURN 'Clear'
-  OF Txt:Accept     ; RETURN '&Accept'
-  OF Txt:Cancel     ; RETURN 'Cancel'
-  OF Txt:Hint       ; RETURN 'Enter = equals   Esc = close'
-  OF Txt:DivZero    ; RETURN 'Cannot divide by zero'
-  OF Txt:BadInput   ; RETURN 'Invalid input'
-  OF Txt:NotNumber  ; RETURN 'Not a number'
-  OF Txt:FixError   ; RETURN 'The calculator is showing an error - clear it first.'
-  OF Txt:Bksp       ; RETURN 'Bksp'
-  OF Txt:Subtotal   ; RETURN 'SUB'
-  OF Txt:Total      ; RETURN 'TOTAL'
-  OF Txt:GrandTot   ; RETURN 'GT'
-  OF Txt:TaxPlus    ; RETURN 'TAX+'
-  OF Txt:TaxMinus   ; RETURN 'TAX-'
-  OF Txt:WordSize   ; RETURN 'WORD'
-  OF Txt:CopyTip    ; RETURN 'Copy the whole roll to the clipboard'
+  OF CalcTxt:Calculator ; RETURN 'Calculator'
+  OF CalcTxt:Standard   ; RETURN 'Standard'
+  OF CalcTxt:Scientific ; RETURN 'Scientific'
+  OF CalcTxt:Programmer ; RETURN 'Programmer'
+  OF CalcTxt:Accountant ; RETURN 'Accountant (tape)'
+  OF CalcTxt:Mode       ; RETURN '&Mode:'
+  OF CalcTxt:PaperRoll  ; RETURN 'Paper &roll'
+  OF CalcTxt:Roll       ; RETURN 'Roll'
+  OF CalcTxt:Copy       ; RETURN 'Copy'
+  OF CalcTxt:Clear      ; RETURN 'Clear'
+  OF CalcTxt:Accept     ; RETURN '&Accept'
+  OF CalcTxt:Cancel     ; RETURN 'Cancel'
+  OF CalcTxt:Hint       ; RETURN 'Enter = equals   Esc = close'
+  OF CalcTxt:DivZero    ; RETURN 'Cannot divide by zero'
+  OF CalcTxt:BadInput   ; RETURN 'Invalid input'
+  OF CalcTxt:NotNumber  ; RETURN 'Not a number'
+  OF CalcTxt:FixError   ; RETURN 'The calculator is showing an error - clear it first.'
+  OF CalcTxt:Bksp       ; RETURN 'Bksp'
+  OF CalcTxt:Subtotal   ; RETURN 'SUB'
+  OF CalcTxt:Total      ; RETURN 'TOTAL'
+  OF CalcTxt:GrandTot   ; RETURN 'GT'
+  OF CalcTxt:TaxPlus    ; RETURN 'TAX+'
+  OF CalcTxt:TaxMinus   ; RETURN 'TAX-'
+  OF CalcTxt:WordSize   ; RETURN 'WORD'
+  OF CalcTxt:CopyTip    ; RETURN 'Copy the whole roll to the clipboard'
   END
   RETURN ''
 
@@ -252,10 +252,10 @@ CalcClass.Txt PROCEDURE(LONG pId)
 CalcClass.ModeName PROCEDURE(BYTE pMode)
   CODE
   CASE pMode
-  OF Calc:Standard   ; RETURN SELF.Txt(Txt:Standard)
-  OF Calc:Scientific ; RETURN SELF.Txt(Txt:Scientific)
-  OF Calc:Programmer ; RETURN SELF.Txt(Txt:Programmer)
-  OF Calc:Accountant ; RETURN SELF.Txt(Txt:Accountant)
+  OF Calc:Standard   ; RETURN SELF.Txt(CalcTxt:Standard)
+  OF Calc:Scientific ; RETURN SELF.Txt(CalcTxt:Scientific)
+  OF Calc:Programmer ; RETURN SELF.Txt(CalcTxt:Programmer)
+  OF Calc:Accountant ; RETURN SELF.Txt(CalcTxt:Accountant)
   END
   RETURN ''
 
@@ -301,23 +301,23 @@ r  REAL,AUTO
   OF Act:Mul  ; RETURN l * r
   OF Act:Div
     IF r = 0
-      SELF.Fail(SELF.Txt(Txt:DivZero))
+      SELF.Fail(SELF.Txt(CalcTxt:DivZero))
       RETURN 0
     END
     RETURN l / r
   OF Act:Pow
     IF l = 0 AND r < 0
-      SELF.Fail(SELF.Txt(Txt:DivZero))
+      SELF.Fail(SELF.Txt(CalcTxt:DivZero))
       RETURN 0
     END
     IF l < 0 AND r <> INT(r)
-      SELF.Fail(SELF.Txt(Txt:NotNumber))
+      SELF.Fail(SELF.Txt(CalcTxt:NotNumber))
       RETURN 0
     END
     RETURN l ^ r
   OF Act:Mod
     IF INT(r) = 0
-      SELF.Fail(SELF.Txt(Txt:DivZero))
+      SELF.Fail(SELF.Txt(CalcTxt:DivZero))
       RETURN 0
     END
     RETURN INT(l) - INT(INT(l) / INT(r)) * INT(r)
@@ -338,7 +338,7 @@ f  REAL,AUTO
   v = pV
   CASE pAct
   OF Act:Sqrt
-    IF v < 0 THEN SELF.Fail(SELF.Txt(Txt:BadInput)) ; RETURN 0 .
+    IF v < 0 THEN SELF.Fail(SELF.Txt(CalcTxt:BadInput)) ; RETURN 0 .
     RETURN SQRT(v)
   OF Act:Sqr      ; RETURN v * v
   OF Act:Cube     ; RETURN v * v * v
@@ -346,12 +346,12 @@ f  REAL,AUTO
     IF v < 0 THEN RETURN -((-v) ^ (1/3)) .
     RETURN v ^ (1/3)
   OF Act:Inv
-    IF v = 0 THEN SELF.Fail(SELF.Txt(Txt:DivZero)) ; RETURN 0 .
+    IF v = 0 THEN SELF.Fail(SELF.Txt(CalcTxt:DivZero)) ; RETURN 0 .
     RETURN 1 / v
   OF Act:Abs      ; RETURN ABS(v)
   OF Act:Fact
     IF v < 0 OR v <> INT(v) OR v > 170
-      SELF.Fail(SELF.Txt(Txt:BadInput))
+      SELF.Fail(SELF.Txt(CalcTxt:BadInput))
       RETURN 0
     END
     f = 1
@@ -360,10 +360,10 @@ f  REAL,AUTO
     END
     RETURN f
   OF Act:Ln
-    IF v <= 0 THEN SELF.Fail(SELF.Txt(Txt:BadInput)) ; RETURN 0 .
+    IF v <= 0 THEN SELF.Fail(SELF.Txt(CalcTxt:BadInput)) ; RETURN 0 .
     RETURN LOGE(v)
   OF Act:Log
-    IF v <= 0 THEN SELF.Fail(SELF.Txt(Txt:BadInput)) ; RETURN 0 .
+    IF v <= 0 THEN SELF.Fail(SELF.Txt(CalcTxt:BadInput)) ; RETURN 0 .
     RETURN LOG10(v)
   OF Act:ExpE     ; RETURN Calc:E ^ v
   OF Act:Exp10    ; RETURN 10 ^ v
@@ -371,10 +371,10 @@ f  REAL,AUTO
   OF Act:Cos      ; RETURN COS(CHOOSE(SELF.Angle=0,v * Calc:Pi / 180,v))
   OF Act:Tan      ; RETURN TAN(CHOOSE(SELF.Angle=0,v * Calc:Pi / 180,v))
   OF Act:ASin
-    IF v < -1 OR v > 1 THEN SELF.Fail(SELF.Txt(Txt:BadInput)) ; RETURN 0 .
+    IF v < -1 OR v > 1 THEN SELF.Fail(SELF.Txt(CalcTxt:BadInput)) ; RETURN 0 .
     RETURN CHOOSE(SELF.Angle=0,ASIN(v) * 180 / Calc:Pi,ASIN(v))
   OF Act:ACos
-    IF v < -1 OR v > 1 THEN SELF.Fail(SELF.Txt(Txt:BadInput)) ; RETURN 0 .
+    IF v < -1 OR v > 1 THEN SELF.Fail(SELF.Txt(CalcTxt:BadInput)) ; RETURN 0 .
     RETURN CHOOSE(SELF.Angle=0,ACOS(v) * 180 / Calc:Pi,ACOS(v))
   OF Act:ATan     ; RETURN CHOOSE(SELF.Angle=0,ATAN(v) * 180 / Calc:Pi,ATAN(v))
   OF Act:Not      ; RETURN SELF.MaskWord(BXOR(SELF.MaskWord(v),SELF.MaskWord(-1)))
@@ -544,7 +544,7 @@ t    CSTRING(16)
   OF Act:TaxLess
     v = SELF.Current()
     IF 1 + SELF.TaxRate / 100 = 0
-      SELF.Fail(SELF.Txt(Txt:DivZero))
+      SELF.Fail(SELF.Txt(CalcTxt:DivZero))
     ELSE
       r = v / (1 + SELF.TaxRate / 100)
       SELF.AddTape('tax -' & CLIP(LEFT(FORMAT(SELF.TaxRate,@n-8.2))) & '%  ' & SELF.Fmt(r),r,2)
@@ -701,7 +701,7 @@ i  LONG,AUTO
     SELF.SetKey(19,'CE',Act:ClearEntry)
     SELF.SetKey(22,'4',Act:Digit)      ; SELF.SetKey(23,'5',Act:Digit)
     SELF.SetKey(24,'6',Act:Digit)      ; SELF.SetKey(25,'*',Act:Mul)
-    SELF.SetKey(26,SELF.Txt(Txt:Bksp),Act:Back)
+    SELF.SetKey(26,SELF.Txt(CalcTxt:Bksp),Act:Back)
     SELF.SetKey(29,'1',Act:Digit)      ; SELF.SetKey(30,'2',Act:Digit)
     SELF.SetKey(31,'3',Act:Digit)      ; SELF.SetKey(32,'-',Act:Sub)
     SELF.SetKey(33,'+/-',Act:Sign)
@@ -729,7 +729,7 @@ i  LONG,AUTO
     SELF.SetKey(29,'7',Act:Digit)      ; SELF.SetKey(30,'8',Act:Digit)
     SELF.SetKey(31,'9',Act:Digit)      ; SELF.SetKey(32,'/',Act:Div)
     SELF.SetKey(33,'pi',Act:Pi)        ; SELF.SetKey(34,'e',Act:EulerE)
-    SELF.SetKey(35,SELF.Txt(Txt:Bksp),Act:Back)
+    SELF.SetKey(35,SELF.Txt(CalcTxt:Bksp),Act:Back)
     SELF.SetKey(36,'4',Act:Digit)      ; SELF.SetKey(37,'5',Act:Digit)
     SELF.SetKey(38,'6',Act:Digit)      ; SELF.SetKey(39,'*',Act:Mul)
     SELF.SetKey(40,'+/-',Act:Sign)     ; SELF.SetKey(41,'abs',Act:Abs)
@@ -743,12 +743,12 @@ i  LONG,AUTO
   OF Calc:Programmer
     SELF.SetKey( 1,'HEX',Act:BaseHex)  ; SELF.SetKey( 2,'DEC',Act:BaseDec)
     SELF.SetKey( 3,'OCT',Act:BaseOct)  ; SELF.SetKey( 4,'BIN',Act:BaseBin)
-    SELF.SetKey( 5,SELF.Txt(Txt:WordSize),Act:WordSize); SELF.SetKey( 6,'C',Act:ClearAll)
+    SELF.SetKey( 5,SELF.Txt(CalcTxt:WordSize),Act:WordSize); SELF.SetKey( 6,'C',Act:ClearAll)
     SELF.SetKey( 7,'CE',Act:ClearEntry)
     SELF.SetKey( 8,'A',Act:Digit)      ; SELF.SetKey( 9,'B',Act:Digit)
     SELF.SetKey(10,'C',Act:Digit)      ; SELF.SetKey(11,'D',Act:Digit)
     SELF.SetKey(12,'E',Act:Digit)      ; SELF.SetKey(13,'F',Act:Digit)
-    SELF.SetKey(14,SELF.Txt(Txt:Bksp),Act:Back)
+    SELF.SetKey(14,SELF.Txt(CalcTxt:Bksp),Act:Back)
     SELF.SetKey(15,'AND',Act:And)      ; SELF.SetKey(16,'OR',Act:Or)
     SELF.SetKey(17,'XOR',Act:Xor)      ; SELF.SetKey(18,'NOT',Act:Not)
     SELF.SetKey(19,'Lsh',Act:Shl)       ; SELF.SetKey(20,'Rsh',Act:Shr)
@@ -770,20 +770,20 @@ i  LONG,AUTO
 ! -------------------------------------------------------------- accountant --
   OF Calc:Accountant
     SELF.SetKey( 1,'C',Act:ClearAll)   ; SELF.SetKey( 2,'CE',Act:ClearEntry)
-    SELF.SetKey( 3,SELF.Txt(Txt:Bksp),Act:Back)     ; SELF.SetKey( 4,'%',Act:Percent)
-    SELF.SetKey( 5,SELF.Txt(Txt:TaxPlus),Act:TaxPct)  ; SELF.SetKey( 6,SELF.Txt(Txt:TaxMinus),Act:TaxLess)
+    SELF.SetKey( 3,SELF.Txt(CalcTxt:Bksp),Act:Back)     ; SELF.SetKey( 4,'%',Act:Percent)
+    SELF.SetKey( 5,SELF.Txt(CalcTxt:TaxPlus),Act:TaxPct)  ; SELF.SetKey( 6,SELF.Txt(CalcTxt:TaxMinus),Act:TaxLess)
     SELF.SetKey( 7,'MC',Act:MemClear)
     SELF.SetKey( 8,'7',Act:Digit)      ; SELF.SetKey( 9,'8',Act:Digit)
     SELF.SetKey(10,'9',Act:Digit)      ; SELF.SetKey(11,'/',Act:Div)
-    SELF.SetKey(12,SELF.Txt(Txt:Subtotal),Act:Subtotal) ; SELF.SetKey(13,'MR',Act:MemRecall)
+    SELF.SetKey(12,SELF.Txt(CalcTxt:Subtotal),Act:Subtotal) ; SELF.SetKey(13,'MR',Act:MemRecall)
     SELF.SetKey(14,'M+',Act:MemAdd)
     SELF.SetKey(15,'4',Act:Digit)      ; SELF.SetKey(16,'5',Act:Digit)
     SELF.SetKey(17,'6',Act:Digit)      ; SELF.SetKey(18,'*',Act:Mul)
-    SELF.SetKey(19,SELF.Txt(Txt:Total),Act:Total)  ; SELF.SetKey(20,'M-',Act:MemSub)
+    SELF.SetKey(19,SELF.Txt(CalcTxt:Total),Act:Total)  ; SELF.SetKey(20,'M-',Act:MemSub)
     SELF.SetKey(21,'MS',Act:MemStore)
     SELF.SetKey(22,'1',Act:Digit)      ; SELF.SetKey(23,'2',Act:Digit)
     SELF.SetKey(24,'3',Act:Digit)      ; SELF.SetKey(25,'-',Act:Sub)
-    SELF.SetKey(26,SELF.Txt(Txt:GrandTot),Act:GrandTotal)
+    SELF.SetKey(26,SELF.Txt(CalcTxt:GrandTot),Act:GrandTotal)
     SELF.SetKey(29,'0',Act:Digit)      ; SELF.SetKey(30,'00',Act:Digit)
     SELF.SetKey(31,'.',Act:Dot)        ; SELF.SetKey(32,'+',Act:Add)
     SELF.SetKey(33,'=',Act:Equals)
@@ -1032,17 +1032,17 @@ CalcWnd WINDOW('Calculator'),AT(,,352,302),FONT('Segoe UI',9,,FONT:regular,CHARS
   SELF.NewEnt   = 1
   CShowTape     = SELF.ShowTape
   OPEN(CalcWnd)
-  ?CTitle{PROP:Text} = CHOOSE(CLIP(SELF.Title) <> '',CLIP(SELF.Title),SELF.Txt(Txt:Calculator))
+  ?CTitle{PROP:Text} = CHOOSE(CLIP(SELF.Title) <> '',CLIP(SELF.Title),SELF.Txt(CalcTxt:Calculator))
   0{PROP:Text}       = ?CTitle{PROP:Text}                 ! the caption follows too
-  ?CModeP{PROP:Text}    = SELF.Txt(Txt:Mode)             ! the whole window speaks Language
-  ?CShowTape{PROP:Text} = SELF.Txt(Txt:PaperRoll)
-  ?CRollP{PROP:Text}    = SELF.Txt(Txt:Roll)
-  ?CCopy{PROP:Text}     = SELF.Txt(Txt:Copy)
-  ?CCopy{PROP:Tip}      = SELF.Txt(Txt:CopyTip)
-  ?CClear{PROP:Text}    = SELF.Txt(Txt:Clear)
-  ?COk{PROP:Text}       = SELF.Txt(Txt:Accept)
-  ?CCancel{PROP:Text}   = SELF.Txt(Txt:Cancel)
-  ?CHint{PROP:Text}     = SELF.Txt(Txt:Hint)
+  ?CModeP{PROP:Text}    = SELF.Txt(CalcTxt:Mode)             ! the whole window speaks Language
+  ?CShowTape{PROP:Text} = SELF.Txt(CalcTxt:PaperRoll)
+  ?CRollP{PROP:Text}    = SELF.Txt(CalcTxt:Roll)
+  ?CCopy{PROP:Text}     = SELF.Txt(CalcTxt:Copy)
+  ?CCopy{PROP:Tip}      = SELF.Txt(CalcTxt:CopyTip)
+  ?CClear{PROP:Text}    = SELF.Txt(CalcTxt:Clear)
+  ?COk{PROP:Text}       = SELF.Txt(CalcTxt:Accept)
+  ?CCancel{PROP:Text}   = SELF.Txt(CalcTxt:Cancel)
+  ?CHint{PROP:Text}     = SELF.Txt(CalcTxt:Hint)
   ?CMode{PROP:Selected} = sel
   ?CTape{PROP:From} = SELF.Tape
   DO ApplyKeys
@@ -1122,7 +1122,7 @@ CalcWnd WINDOW('Calculator'),AT(,,352,302),FONT('Segoe UI',9,,FONT:regular,CHARS
     OF ?COk
       IF EVENT() = EVENT:Accepted
         IF SELF.ErrState
-          Message(SELF.Txt(Txt:FixError),SELF.Txt(Txt:Calculator), |
+          Message(SELF.Txt(CalcTxt:FixError),SELF.Txt(CalcTxt:Calculator), |
                   ICON:Exclamation,BUTTON:OK,BUTTON:OK,0)
           CYCLE
         END

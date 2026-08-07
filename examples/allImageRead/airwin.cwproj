@@ -1,0 +1,24 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{A1B2C3D4-5E6F-4A7B-8C9D-0E1F2A3B4C5D}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>airwin</RootNamespace>
+    <AssemblyName>airwin</AssemblyName>
+    <OutputName>airwin</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <vid>full</vid>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="airwin.clw" />
+    <Compile Include="AIRWIN001.CLW" />
+    <Compile Include="AIRWIN_BC.CLW" />
+    <Compile Include="airwin_BC0.CLW" />
+    <Compile Include="ImageClass.clw" />
+  </ItemGroup>
+  <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
+</Project>
