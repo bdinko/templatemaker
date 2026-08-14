@@ -532,6 +532,10 @@ actually compiles (corpus: CapeSoft `StringTheory`/`Reflection`, ABC `ABFILE`):
       reports have no window event loop. See "Drawing on a REPORT".
 - [ ] Block terminators balanced (`#ENDAT`, `#ENDIF`/`#END`, `#ENDFOR`, `#ENDTAB`, `#ENDSHEET`, …).
 - [ ] `.tpl` `#INCLUDE`s all its `.tpw` parts; `#TEMPLATE` header present and at column 1.
+- [ ] Legacy-chain targets declare `FAMILY('CW20')` — never `FAMILY('Clarion')`, which attaches to
+      nothing (`Clarion` is the chain's NAME; `CW.TPL` declares no family). See `legacy-cw20.md`.
+- [ ] Generated code referencing a `CONTROLS`-block control is `#IF(%symbol)`-guarded — the block is a
+      placement-time stamp, and instances placed before the block changed keep their old controls (P15).
 - [ ] Default parameter values (`=0`, `=1`) appear ONLY in the **prototype** (the MAP / `.inc`),
       never in a free-standing procedure's **implementation** header. Write the body as
       `weekNumber PROCEDURE(LONG pDate)` even though the prototype is `weekNumber PROCEDURE(LONG pDate=0),LONG`.
@@ -541,7 +545,9 @@ actually compiles (corpus: CapeSoft `StringTheory`/`Reflection`, ABC `ABFILE`):
 - [ ] Property writes aimed at another window are wrapped in `SETTARGET()` or deferred until that window
       is current again — a field equate resolves against the CURRENT window and writes to the wrong one
       silently (P15).
-- [ ] No ROUTINE does `DO` on itself (P15) — it has one return address and the program dies.
+- [ ] ROUTINE recursion is BOUNDED by a strict pass marker AND the inner `DO` is the routine's last
+      statement (P15) — unbounded recursion is a stack-overflow death; bounded mutual recursion is
+      shipped and fine (BGL:Fill ⇄ BGL:Bottom).
 - [ ] `PROP:LineHeight` divided by the lines per record, in EVERY copy of the calculation (P15).
 - [ ] Queue fields that a `FROM(queue)` LIST displays are declared FIRST, in display order (P15).
 - [ ] `POPUP()` item numbers account for separators (P15).
@@ -565,10 +571,19 @@ a legal write; nothing complains and nothing changes.
 *Fix:* decide inside the dialog, apply after `CLOSE(dialog)` — or wrap the writes in
 `SETTARGET(theOtherWindow)` … `SETTARGET()`.
 
-**A ROUTINE cannot `DO` itself.** A Clarion ROUTINE holds a single return address, so calling it from
-inside itself loses the way back and takes the process down.
-*Symptom:* the application opens and closes again immediately.
-*Fix:* a `LOOP pass = 1 TO 2` with `CYCLE`, not recursion.
+**UNBOUNDED ROUTINE recursion kills the process — but BOUNDED mutual recursion works.** The old rule
+here ("a ROUTINE holds a single return address, so a `DO` of itself dies") is disproven by shipped
+code: `BrowseGridLeg` (the Legacy BrowseGrid port in the ClarionLive fork) has `BGL:Fill` ending with
+`DO BGL:Bottom`, which may `DO BGL:Fill` again — mutual
+ROUTINE recursion, depth 3 — and it runs correctly (Clarion 6 Legacy chain, user-tested repeatedly,
+plus an adversarial review pass specifically on the recursion). Return addresses evidently stack.
+What actually dies is recursion with **no terminating guard** — a stack overflow, and the app
+"opens and closes again immediately".
+*The two safety rules that make bounded recursion sound:* (1) a **strict pass marker** that can only
+step forward (BGL uses `BtmFix` stepping 0→1→2→0, so no measurement outcome can loop it); (2) the
+inner `DO` is the routine's **last statement**, so it does not matter whether routine-local DATA is
+per-entry or static — the locals the inner call may clobber are already dead.
+*Simpler alternative when it fits:* a `LOOP pass = 1 TO 2` with `CYCLE` avoids the question entirely.
 
 **`PROP:LineHeight` is the height of one LINE, not one record.** On a multi-line list format the runtime
 multiplies it by the lines in a record. Hand it a whole record height and the list concludes each record
@@ -598,6 +613,41 @@ the browse template. `EVALUATE('STU:LastName')` then reads its current value, be
 record buffer (`FileManager.BindFields`). Between them you can filter and collect distinct values without
 the developer mapping anything by hand.
 
+**A ROUTINE's `CODE` needs a `DATA` section before it.** A bare `CODE` with no `DATA` inside a ROUTINE
+is a compile error — either declare locals under `DATA` or omit both keywords entirely.
+*Symptom:* an error on the `CODE` line of a routine that looks structurally fine.
+
+**An ALERTED key carries no character — `KEYCHAR()` returns 0 for it.** On an `IMM` LIST, printable
+keystrokes already arrive as `EVENT:AlertKey` natively, no `PROP:Alrt` needed; alerting more keys gets
+you events without characters. That is why ABC's IncrementalLocator alerts only `BSKey` and `SpaceKey`
+(the two the LIST would otherwise consume) and special-cases space with
+`CHOOSE(KEYCODE()=SpaceKey,' ',CHR(KEYCHAR()))`. Copy that recipe for type-to-search.
+*Symptom:* typed letters reach the handler but every one reads back as nothing.
+
+**A REGION cannot take the focus.** `SELECT()` on it is a no-op and `PROP:Alrt` on it never fires,
+because alerts need the focus. Keep the focus on a real control (the LIST) and intercept *its* events;
+the region still gets mouse events through `PROP:IMM`.
+*Symptom:* a region-based control with no keyboard at all.
+
+**Runtime `{PROP:Use} = var` rebinding is unreliable.** It can fix focus-time redisplay while
+`DISPLAY(control)` through it does nothing. Write `{PROP:ScreenText}` directly for anything that must
+actually appear on screen now.
+
+**Queue `SORT` — the help is wrong two ways** (verified by test program). The string form
+`SORT(q,'+Field1,-Field2')` accepts queue field **labels** and matches them **case-blind**, contrary to
+the documentation; and the comparison-function form `SORT(q, MyCompareFunc)` is a **silent no-op** — it
+returns without sorting and without error. For a case-insensitive sort, decorate–sort–undecorate: copy
+an UPPER'd key into a spare field, string-SORT on it, restore.
+*Symptom:* a "custom" sort that leaves the queue untouched, or mixed-case rows ordered ASCII-ly.
+
+**Overlapping sibling controls fight.** A button placed "inside" an ENTRY loses clicks to it and is
+repainted over on every keystroke. Fix: `WS_CLIPSIBLINGS` on the entry plus
+`SetWindowPos(button, HWND_TOP, ...)` — the standard pair for any control drawn over another.
+
+**Clarion COLOR longs are `00BBGGRR`.** Anything expecting RGB (Direct2D, HTML, most APIs) needs the
+ends swapped — and negative values are system-colour *indices* (`COLOR:BTNFACE`), which cannot be
+byte-swapped; resolve them first.
+
 ### Generate time and AppGen
 
 **`#PREPARE` runs when the prompts are LOADED, not when code is generated.** A `#SET` there never reaches
@@ -614,8 +664,30 @@ extension cannot nest under a control template in the Extensions tree, so "add i
 and "place nothing" are mutually exclusive. Pick which one matters.
 
 **A blank line inside a prompt sheet is a syntax error.** `#SHEET`/`#TAB`/`#BOXED` accept directives
-only; an empty line is an output line.
+only; an empty line is an output line. The same goes for a bare `!` comment — `!` is only legal inside
+`#AT` generated-code blocks; everywhere else in a template use `#!`. One stray `!` in a prompt sheet
+cascades into a screenful of "Expected ENDSHEET/ENDTAB/ENDBOXED" errors pointing at the wrong lines.
 *Symptom:* `Expected ENDSHEET` pointing at a line that looks fine.
+
+**A `CONTROLS` block is a STAMP applied at placement time.** Re-registering the template updates the
+stamp, not the instances already sitting on windows — they keep the controls they were born with. So
+any generated code that references a control added to the block later must be wrapped in
+`#IF(%symbol)`, or a stale placement generates `IF FIELD() =  AND ...` (the symbol substitutes empty).
+*Symptom:* apps that placed the template before the change won't generate; fresh placements are fine.
+
+**Prompt `AT(x,y)` is absolute within the enclosing TAB** (not the BOXED/OPTION it sits in), and
+positioning is all-or-nothing — one positioned prompt means everything after it needs positioning too.
+Omit `y` to keep the flow; `AT(,,,h)` sets height only; `AT(10)` (x-indent only) is always safe —
+which is why the corpus sprinkles exactly that form on CHECK prompts.
+
+**Control-template embeds are not `#AT`-able from other templates.** An embed declared inside a
+`#CONTROL` is reachable only by that template; another template's `#AT(%ThatEmbed)` gets
+"Unknown Variable" at generation. Only the procedure/program-level embeds (Window.TPW / STANDARD.TPW /
+Program.TPW, or their ABC equivalents) are public targets.
+
+**A control template finds its own placed controls with
+`#FOR(%Control),WHERE(%ControlInstance = %ActiveTemplateInstance)`** — and distinguishes several of its
+own by `%ControlType`. Without the WHERE it iterates every control on the window.
 
 **Unregistering a template makes Clarion drop EVERY addition belonging to it** from any app that is
 opened afterwards. That is the way out of an orphaned instance the IDE will not delete — but it takes the

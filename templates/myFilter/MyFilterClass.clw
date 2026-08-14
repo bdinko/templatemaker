@@ -21,6 +21,7 @@
                            UNSIGNED,PASCAL,RAW,NAME('GetModuleFileNameA')
     END
     FltAskName(STRING pPrompt,STRING pTitle,*CSTRING pName),BYTE
+    FltIniKey(STRING pName),STRING
   END
 
 MaxCond   EQUATE(24)                                        ! more than anyone builds by hand
@@ -591,6 +592,28 @@ MyFilterClass.IniSection PROCEDURE()
   RETURN 'myFilter_' & CHOOSE(CLIP(SELF.Profile) <> '',CLIP(SELF.Profile),'Default')
 
 
+!  A filter's name in an INI KEY, made safe. The profile API splits every line
+!  at its FIRST '=', so a name like "Shipper code = 10" makes a key that can be
+!  written but never read back - Load answers empty, and the blanking writes in
+!  Save and Delete APPEND fresh junk lines instead of replacing, because the
+!  API cannot find those keys either. '[' ']' and ';' are section and comment
+!  characters with quieter versions of the same disease. All become '~' - in
+!  the KEY only. The Filters= list, the menu and Loaded keep the real name:
+!  '=' on the VALUE side of a profile line is legal.
+FltIniKey PROCEDURE(STRING pName)
+k CSTRING(65)
+i LONG,AUTO
+  CODE
+  k = CLIP(LEFT(pName))
+  LOOP i = 1 TO LEN(k)
+    CASE k[i]
+    OF '=' OROF '[' OROF ']' OROF ';'
+      k[i] = '~'
+    END
+  END
+  RETURN k
+
+
 MyFilterClass.SavedNames PROCEDURE(*FilterNameQueue pQ)
 list  CSTRING(1025)
 one   CSTRING(65)
@@ -654,9 +677,9 @@ i     LONG,AUTO
     list = CHOOSE(list = '',CLIP(q.FNName),CLIP(list) & '|' & CLIP(q.FNName))
   END
   PUTINI(SELF.IniSection(),'Filters',list,SELF.IniPath())
-  PUTINI(SELF.IniSection(),CLIP(LEFT(pName)) & '.n','',SELF.IniPath())
+  PUTINI(SELF.IniSection(),FltIniKey(pName) & '.n','',SELF.IniPath())
   LOOP i = 1 TO MaxCond
-    PUTINI(SELF.IniSection(),CLIP(LEFT(pName)) & '.' & i,'',SELF.IniPath())
+    PUTINI(SELF.IniSection(),FltIniKey(pName) & '.' & i,'',SELF.IniPath())
   END
   IF UPPER(CLIP(SELF.Loaded)) = UPPER(CLIP(pName)) THEN SELF.Loaded = '' .
   FREE(q)
@@ -667,11 +690,13 @@ i     LONG,AUTO
 MyFilterClass.SaveIni PROCEDURE(STRING pName)
 q     FilterNameQueue
 nm    CSTRING(65)
+ky    CSTRING(65)
 list  CSTRING(1025)
 i     LONG,AUTO
 found BYTE(0)
   CODE
   nm = CLIP(LEFT(pName))
+  ky = FltIniKey(nm)
   SELF.SavedNames(q)
   LOOP i = 1 TO RECORDS(q)
     GET(q,i)
@@ -690,17 +715,17 @@ found BYTE(0)
     list = CHOOSE(list = '',CLIP(q.FNName),CLIP(list) & '|' & CLIP(q.FNName))
   END
   PUTINI(SELF.IniSection(),'Filters',list,SELF.IniPath())
-  PUTINI(SELF.IniSection(),nm & '.n',RECORDS(SELF.Conds),SELF.IniPath())
+  PUTINI(SELF.IniSection(),ky & '.n',RECORDS(SELF.Conds),SELF.IniPath())
   LOOP i = 1 TO RECORDS(SELF.Conds)
     GET(SELF.Conds,i)
     GET(SELF.Fields,SELF.Conds.FCField)
-    PUTINI(SELF.IniSection(),nm & '.' & i, |
+    PUTINI(SELF.IniSection(),ky & '.' & i, |
            CLIP(SELF.Fields.FFName) & '|' & SELF.Conds.FCOp & '|' & |
            CLIP(SELF.Conds.FCVal1)  & '|' & CLIP(SELF.Conds.FCVal2) & '|' & |
            SELF.Conds.FCJoin, SELF.IniPath())
   END
   LOOP i = RECORDS(SELF.Conds) + 1 TO MaxCond                ! clear anything longer
-    PUTINI(SELF.IniSection(),nm & '.' & i,'',SELF.IniPath())
+    PUTINI(SELF.IniSection(),ky & '.' & i,'',SELF.IniPath())
   END
   SELF.Loaded = nm
   FREE(q)
@@ -712,6 +737,7 @@ found BYTE(0)
 !  would silently filter on the wrong field.
 MyFilterClass.LoadIni PROCEDURE(STRING pName)
 nm    CSTRING(65)
+ky    CSTRING(65)
 line  CSTRING(301)
 part  CSTRING(81)
 fname CSTRING(65)
@@ -727,11 +753,12 @@ fi    LONG,AUTO
 got   LONG(0)
   CODE
   nm = CLIP(LEFT(pName))
-  n  = DEFORMAT(GETINI(SELF.IniSection(),nm & '.n','0',SELF.IniPath()))
+  ky = FltIniKey(nm)
+  n  = DEFORMAT(GETINI(SELF.IniSection(),ky & '.n','0',SELF.IniPath()))
   IF n < 1 THEN RETURN 0 .
   FREE(SELF.Conds)
   LOOP i = 1 TO n
-    line = GETINI(SELF.IniSection(),nm & '.' & i,'',SELF.IniPath())
+    line = GETINI(SELF.IniSection(),ky & '.' & i,'',SELF.IniPath())
     IF ~line THEN CYCLE .
     fname = '' ; op = 0 ; v1 = '' ; v2 = '' ; jn = 0
     part  = ''

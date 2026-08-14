@@ -163,13 +163,21 @@ Used in a declaration line and a file split, respectively:
 
 ## How to verify a template you wrote
 
-You cannot run AppGen. Hand the developer these steps:
+**You CAN run AppGen yourself, headlessly** — `ClarionCL` registers, imports, and generates from the
+command line; see SKILL.md's workflow step 7 for the exact commands (`-tr` to register/parse-check,
+`-ai` to import a TXA, `-ag` to generate, `-ax` to export and inspect). Do that first: a generate is
+what catches `#CALL` typos, bad group args and wrong embed names. Only registering proves nothing but
+syntax.
+
+When handing off to the developer for the interactive half (placing prompts, compiling, running):
 
 1. Copy the `.tpl` (+ any `.tpw`, `.inc`, `.clw`) into the app's template/source path.
-2. In the IDE: **Setup ▸ Template Registry ▸ Register**, pick the `.tpl`, confirm the family appears.
+2. In the IDE: **Setup ▸ Template Registry ▸ Register**, pick the `.tpl`, confirm the family appears
+   (and remind them: an already-open IDE never reloads the registry — restart it).
 3. Add the extension/control to a test procedure (or app, for `APPLICATION` scope).
 4. Fill the prompts, **Generate** the app, and open the produced `.clw`.
 5. Confirm: includes present once, the instance declared (and `EXTERNAL,DLL` in non-root DLLs),
-   `Init`/`Kill` in place, and the project **compiles**. Diff against the expected output you predicted.
+   `Init`/`Kill` in place, and the project **compiles and RUNS**. Diff against the expected output
+   you predicted.
 
 Predict the generated source in your answer so the developer knows exactly what to look for.

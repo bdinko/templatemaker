@@ -1,6 +1,6 @@
 ---
 name: clarion-template
-description: Author and modify Clarion 12 templates (.TPL/.TPW) — the code-generation language behind Clarion's AppGen. Covers template kinds (#TEMPLATE/#PROCEDURE/#CONTROL/#EXTENSION/#CODE/#GROUP), the prompt UI (#PROMPT/#BOXED/#SHEET/#TAB), symbols (%Symbol/#DECLARE/#SET/#FOR), embed points (#AT/#EMBED), and code generation (#GENERATE/#CREATE/#INSERT). Use when creating, editing, or debugging any Clarion .tpl/.tpw file.
+description: Author and modify Clarion 12 templates (.TPL/.TPW) — the code-generation language behind Clarion's AppGen. Covers template kinds (#TEMPLATE/#PROCEDURE/#CONTROL/#EXTENSION/#CODE/#GROUP), the prompt UI (#PROMPT/#BOXED/#SHEET/#TAB), symbols (%Symbol/#DECLARE/#SET/#FOR), embed points (#AT/#EMBED), code generation (#GENERATE/#CREATE/#INSERT), and the Legacy/CW20 chain (embed mapping from ABC, porting gaps). Use when creating, editing, or debugging any Clarion .tpl/.tpw file.
 ---
 
 # Clarion Template Authoring
@@ -17,6 +17,9 @@ task touches their area — don't load all of them up front):
 - `reference/directives.md` — the full directive vocabulary with real signatures and examples.
 - `reference/patterns.md` — battle-tested authoring patterns (multi-DLL, class registration, embeds, reuse).
 - `reference/examples.md` — three complete, annotated templates dissected line-by-line.
+- `reference/legacy-cw20.md` — the Legacy (CW20) chain: how it differs from ABC, the verified
+  embed-point mapping, and the porting gaps. Read it whenever the target family is `CW20` or the
+  words "Legacy browse/chain" appear in the task.
 
 ### Where the corpus lives — `<CLARION_ROOT>`
 
@@ -44,10 +47,16 @@ shipped template that already does the thing you need** — the corpus is the gr
 | `.TPX` | Encrypted/compiled template (third-party shipping format). Not hand-edited. |
 
 A template set is a **family** (`FAMILY('ABC')`). Procedures from one family can declare
-`PARENT(Window(ABC))` to inherit another template's behavior. The two shipped families are `Clarion`
-(classic, `CW.TPL`) and `ABC` (`ABCHAIN.TPL`).
+`PARENT(Window(ABC))` to inherit another template's behavior. The ABC chain (`ABCHAIN.TPL`) declares
+`FAMILY('ABC')`. **The classic/Legacy chain (`CW.TPL`) declares NO family of its own** — its
+`#TEMPLATE(Clarion,...)` header is the chain's *name*, not a family string — and the string that
+attaches an add-on template to Legacy apps is **`FAMILY('CW20')`** (verified: `CW.TPL` contains zero
+`FAMILY` attributes; `BrowseGridLeg.tpl` attaches with `FAMILY('CW20')`; shipped `rtarpdf.tpl`
+declares `FAMILY('ABC','CW20')` for dual-chain). Writing `FAMILY('Clarion')` produces a template that
+never attaches to a Legacy app. For the Legacy chain's embed points and porting gaps, see
+`reference/legacy-cw20.md`.
 
-## The five things a template can register
+## The six registration blocks
 
 Every block below starts at **column 1** and is the unit the developer picks in the IDE:
 
@@ -160,6 +169,12 @@ per-procedure, project files, export lists, custom embeds).
    `patterns.md` P2b for the full recipe. Only report a template as working if a generate actually ran.
    Caveat: **an already-open IDE never reloads the registry**, so tell the developer to restart it after you
    re-register, or they will keep seeing the old prompts.
+   Caveat 2: **ClarionCL runs windowless, so a modal dialog it raises is invisible** (solution-association
+   mismatch, TXA format rejection, upgrade prompts beyond what `-au` suppresses). Symptom: the command
+   "times out" **fast and repeatably** — that is a hidden dialog, not a slow run. The converse also holds: a
+   fast FAILURE with an exit code is usually NOT a dialog; its explanation is in the stdout lines adjacent
+   to the one matching 'error' (e.g. "Cannot create an application because no templates have been
+   registered.") — read the neighbours, not just the match.
 
 ## Hard-won correctness rules
 
