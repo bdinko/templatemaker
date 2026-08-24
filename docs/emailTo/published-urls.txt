@@ -1,0 +1,12 @@
+# The eight volumes, as published.  Each is its own page at its own address,
+# so a relative filename never reaches the next one - the generator writes
+# these absolute URLs into every cross-volume link and into the one link that
+# crosses languages.
+getting-started.html      = https://claude.ai/code/artifact/9a35a14f-4479-46c6-b03d-66da4186438c
+programmers-guide.html    = https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0
+template-guide.html       = https://claude.ai/code/artifact/d8272efa-aa88-4ab6-a61d-79d147907f01
+reference.html            = https://claude.ai/code/artifact/c98d7cfa-04e7-45ab-9054-9186cc2fbba5
+getting-started-es.html   = https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c
+programmers-guide-es.html = https://claude.ai/code/artifact/f3e1c134-eca6-4292-9831-bf57d763f05f
+template-guide-es.html    = https://claude.ai/code/artifact/07f9ecdf-232b-4cbd-8d20-f423561f3ba0
+reference-es.html         = https://claude.ai/code/artifact/108af66d-ecbe-4a5b-bada-cb3500c741b6

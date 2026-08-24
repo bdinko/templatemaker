@@ -1,0 +1,439 @@
+<meta charset="utf-8"><title>emailTo Guía de plantillas</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#f1f5f9; --sunken:#e9eff5; --rule:#d6e0ea;
+  --ink:#0f1720; --soft:#4e5f70; --faint:#7d8ea0;
+  --accent:#2f6a9a; --accent-bg:#e4eef6; --accent-rule:#b9d3e6;
+  --clarion:#166f69; --clarion-bg:#e2f1ef;
+  --warn:#8a5a12; --warn-bg:#f7eeda;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+    --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+    --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+    --clarion:#4fb5ab; --clarion-bg:#102a29;
+    --warn:#d8a545; --warn-bg:#2b2413;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+  --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+  --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+  --clarion:#4fb5ab; --clarion-bg:#102a29;
+  --warn:#d8a545; --warn-bg:#2b2413;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Serif",Georgia,serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.ui{font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif}
+code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+a{color:var(--accent)}
+.wrap{display:grid; grid-template-columns:270px minmax(0,1fr); align-items:start}
+.side{position:sticky; top:0; height:100vh; overflow-y:auto; padding:24px 20px 60px;
+  border-right:1px solid var(--rule); background:var(--surface)}
+.brand{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:15px; margin:0 0 14px}
+.brand b{color:var(--accent)}
+/* ---- the four volumes ---- */
+.vols{list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:3px;
+  border-bottom:1px solid var(--rule); padding-bottom:16px}
+.vols a{display:block; padding:7px 10px; border-radius:6px; text-decoration:none;
+  font:500 13px/1.35 "IBM Plex Sans",sans-serif; color:var(--soft); border:1px solid transparent}
+.vols a:hover{background:var(--sunken); color:var(--ink)}
+.vols a.here{background:var(--accent-bg); border-color:var(--accent-rule); color:var(--accent)}
+.vols small{display:block; font:400 11px/1.35 "IBM Plex Sans",sans-serif; color:var(--faint);
+  margin-top:2px}
+.vols a.here small{color:var(--accent)}
+.filter{width:100%; margin:0 0 16px; padding:7px 10px; font:13px/1.4 "IBM Plex Sans",sans-serif;
+  color:var(--ink); background:var(--paper); border:1px solid var(--rule); border-radius:6px}
+.filter:focus{outline:2px solid var(--accent); outline-offset:1px}
+.nav__g{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--faint); margin:18px 0 8px}
+.nav__l{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+.nav__l a{display:block; padding:4px 8px; border-radius:5px; text-decoration:none; color:var(--soft);
+  font:400 13.5px/1.45 "IBM Plex Sans",sans-serif}
+.nav__l a:hover{background:var(--sunken); color:var(--ink)}
+.nav__l a.on{background:var(--accent-bg); color:var(--accent); font-weight:500}
+.main{padding:0 0 120px; min-width:0}
+.inner{max-width:980px; padding:0 40px}
+.hero{padding:52px 40px 30px; border-bottom:1px solid var(--rule);
+  background:linear-gradient(180deg,var(--accent-bg),transparent)}
+.hero .inner{padding:0}
+.eyebrow{font:600 11px/1 "IBM Plex Sans",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 12px}
+h1{font-size:37px; line-height:1.1; margin:0 0 10px; letter-spacing:-.015em; text-wrap:balance}
+.sub{font-size:17px; color:var(--soft); margin:0 0 18px; max-width:62ch}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font:500 11.5px/1 "IBM Plex Sans",sans-serif; padding:6px 10px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft)}
+.chip b{color:var(--ink); font-weight:600}
+h2{font-size:26px; margin:60px 0 6px; letter-spacing:-.01em; scroll-margin-top:18px; text-wrap:balance}
+h2 .k{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:9px}
+h3{font-size:17.5px; margin:36px 0 10px; scroll-margin-top:18px}
+h4{font-size:14.5px; margin:24px 0 6px; color:var(--soft); font-weight:600}
+p{margin:0 0 14px; max-width:70ch}
+.lead{color:var(--soft); max-width:70ch}
+ul.b,ol.b{max-width:70ch; padding-left:20px; margin:0 0 16px}
+ul.b li,ol.b li{margin:0 0 7px}
+.code{background:var(--sunken); border:1px solid var(--rule); border-left:3px solid var(--accent-rule);
+  border-radius:0 7px 7px 0; padding:14px 16px; overflow-x:auto; margin:0 0 18px;
+  font-size:12.9px; line-height:1.62; position:relative}
+.code code{white-space:pre; color:var(--ink)}
+.code::after{content:attr(data-lang); position:absolute; top:0; right:0; padding:3px 9px;
+  font:500 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--faint); background:var(--surface); border-left:1px solid var(--rule);
+  border-bottom:1px solid var(--rule); border-radius:0 0 0 6px}
+.code--use{margin:7px 0 2px; border-left-color:var(--clarion); background:var(--paper);
+  font-size:12.4px; padding:9px 12px}
+.code--use::after{content:'Clarion'; color:var(--clarion)}
+p code,li code,td code{background:var(--sunken); border:1px solid var(--rule); border-radius:4px;
+  padding:.06em .34em; font-size:.86em}
+.tw{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:8px;
+  background:var(--paper)}
+table{border-collapse:collapse; width:100%; font-size:13.5px;
+  font-family:"IBM Plex Sans",sans-serif}
+th{text-align:left; font-weight:600; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--faint); padding:9px 14px; border-bottom:1px solid var(--rule); background:var(--surface)}
+td{padding:10px 14px; border-bottom:1px solid var(--rule); vertical-align:top}
+tr:last-child td{border-bottom:0}
+.fns .fn__n{width:210px; white-space:nowrap}
+.fns .fn__n code{font-size:12.6px; color:var(--accent); font-weight:500; background:none;
+  border:0; padding:0}
+.fns .fn__s code{font-size:12.4px; color:var(--soft); background:none; border:0; padding:0;
+  white-space:pre-wrap}
+.fn__d{margin:5px 0 0; font-family:"IBM Plex Serif",serif; font-size:13.5px; color:var(--ink);
+  max-width:74ch}
+.ord{margin-left:7px; font:500 10px/1 "IBM Plex Mono",monospace; color:var(--faint);
+  border:1px solid var(--rule); border-radius:4px; padding:2px 4px; vertical-align:1px}
+.eq td:first-child code{color:var(--accent); background:none; border:0; padding:0}
+.eq .v{font-variant-numeric:tabular-nums; color:var(--soft)}
+.note{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface);
+  border-radius:0 7px 7px 0; padding:13px 16px; margin:0 0 18px; max-width:74ch}
+.note--warn{border-left-color:var(--warn); background:var(--warn-bg)}
+.note--cla{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note__t{font:600 12px/1.3 "IBM Plex Sans",sans-serif; letter-spacing:.03em; margin:0 0 5px;
+  text-transform:uppercase; color:var(--soft)}
+.note--warn .note__t{color:var(--warn)} .note--cla .note__t{color:var(--clarion)}
+.note__b p{margin:0 0 8px; font-size:14.5px} .note__b p:last-child{margin:0}
+.stack{display:flex; flex-direction:column; gap:9px; margin:0 0 22px; max-width:640px}
+.layer{border:1px solid var(--rule); border-radius:8px; padding:12px 15px; background:var(--surface);
+  display:grid; grid-template-columns:118px 1fr; gap:14px; align-items:baseline}
+.layer b{font:600 11px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--accent)}
+.layer.cla b{color:var(--clarion)}
+.layer p{margin:0; font-size:14px; color:var(--soft); max-width:none}
+.arrow{text-align:center; color:var(--faint); font-size:12px; margin:-4px 0}
+/* ---- where to next ---- */
+.next{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;
+  margin:26px 0 0}
+.next a{display:block; padding:14px 16px; border:1px solid var(--rule); border-radius:9px;
+  background:var(--surface); text-decoration:none}
+.next a:hover{border-color:var(--accent-rule); background:var(--accent-bg)}
+.next b{display:block; font:600 14px/1.3 "IBM Plex Sans",sans-serif; color:var(--accent);
+  margin-bottom:3px}
+.next span{font:400 13px/1.45 "IBM Plex Serif",serif; color:var(--soft)}
+.hide{display:none !important}
+footer{margin-top:70px; padding:22px 40px 0; border-top:1px solid var(--rule); color:var(--faint);
+  font:400 13px/1.6 "IBM Plex Sans",sans-serif}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static; height:auto; border-right:0; border-bottom:1px solid var(--rule)}
+  .inner,.hero{padding-left:22px; padding-right:22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+
+/* ------------------------------------------------------------------ *
+ *  emailTo additions.  Every colour below is a token defined at bare
+ *  :root and redefined in BOTH dark paths, so nothing is left with its
+ *  only definition inside a media query - which would render one
+ *  theme's text on the other theme's ground.
+ * ------------------------------------------------------------------ */
+:root{ --danger:#8f3520; --danger-bg:#f8e9e4; --danger-rule:#e3bcaf; }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+  }
+}
+:root[data-theme="dark"]{
+  --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+}
+
+.note--tip{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note--tip .note__t{color:var(--clarion)}
+.note--danger{border-left-color:var(--danger); background:var(--danger-bg)}
+.note--danger .note__t{color:var(--danger)}
+
+/* ---- the generated reference: one member per row ---- */
+table.api td{padding:14px 16px}
+tr.fn + tr.fn td{border-top:1px solid var(--rule)}
+code.mem{font:500 13.5px/1 "IBM Plex Mono",monospace; color:var(--accent);
+  background:none; border:0; padding:0}
+.sig{font:400 12.4px/1.5 "IBM Plex Mono",monospace; color:var(--soft);
+  margin:5px 0 0; white-space:pre-wrap; word-break:break-word}
+.mdoc{margin:7px 0 0; font-family:"IBM Plex Serif",Georgia,serif; font-size:13.8px;
+  color:var(--ink); max-width:74ch}
+.tag{display:inline-block; margin-left:7px; vertical-align:2px;
+  font:600 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--clarion); background:var(--clarion-bg);
+  border:1px solid var(--rule); border-radius:4px; padding:3px 5px}
+
+/*  The one link that crosses languages.  It sits above the volume list
+ *  because a reader who wants it is looking for it before anything else. */
+.langsw{display:inline-block; margin:0 0 14px; padding:5px 11px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft);
+  font:500 11.5px/1 "IBM Plex Sans",sans-serif; text-decoration:none;
+  letter-spacing:.02em}
+.langsw:hover{border-color:var(--accent-rule); background:var(--accent-bg); color:var(--accent)}
+.langsw:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.langsw::before{content:"\00A0"; margin-right:0}
+</style>
+<div class="wrap">
+<nav class="side">
+  <p class="brand"><b>emailTo</b></p>
+<a class="langsw" href="https://claude.ai/code/artifact/d8272efa-aa88-4ab6-a61d-79d147907f01" hreflang="en">English</a><ul class="vols"><li><a href="https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c">1. Primeros pasos<small>Instalarlo y enviar el primer mensaje</small></a></li><li><a href="https://claude.ai/code/artifact/f3e1c134-eca6-4292-9831-bf57d763f05f">2. Guía del programador<small>Cómo funciona, y cómo hacer que haga cosas</small></a></li><li><a href="#">3. Guía de plantillas<small>Cada plantilla, pestaña, campo y embed</small></a></li><li><a href="https://claude.ai/code/artifact/108af66d-ecbe-4a5b-bada-cb3500c741b6">4. Referencia<small>Cada clase, método, propiedad y equate</small></a></li></ul><p class="nav__g">Panorama</p><ul class="nav__l"><li><a href="#five">Las diez plantillas</a></li></ul><p class="nav__g">La extensión global</p><ul class="nav__l"><li><a href="#global">emailTo - Global</a></li><li><a href="#global-general">General</a></li><li><a href="#global-account">Cuenta</a></li><li><a href="#global-signin">Acceso</a></li><li><a href="#global-api">emailTo - Provider API</a></li><li><a href="#global-sync">emailTo - Sync</a></li><li><a href="#global-table">Tabla, y Columnas de la tabla</a></li><li><a href="#global-multidll">Multi-DLL</a></li><li><a href="#global-writes">Qué escribe la extensión global</a></li></ul><p class="nav__g">Lo demás</p><ul class="nav__l"><li><a href="#apibutton">El botón de cuenta de correo</a></li><li><a href="#syncbutton">El botón de sincronizar</a></li><li><a href="#apicode">Preguntar desde un embed</a></li><li><a href="#button">emailTo - Botón de correo</a></li><li><a href="#button-general">General</a></li><li><a href="#button-account">Cuenta</a></li><li><a href="#button-message">Mensaje</a></li><li><a href="#codetemplates">Las tres plantillas de código</a></li><li><a href="#embeds">Dónde cae el código generado</a></li></ul>
+</nav>
+<main class="main">
+  <header class="hero"><div class="inner">
+    <p class="eyebrow">Volumen 3</p>
+    <h1>Guía de plantillas</h1>
+    <p class="sub">Cada plantilla, cada pestaña, cada campo &mdash; y el código que el generador realmente escribe en su aplicación.</p>
+    <div class="chips"><span class="chip">5 plantillas</span><span class="chip">Cada campo</span><span class="chip">Código generado</span><span class="chip">Multi-DLL</span></div>
+  </div></header>
+  <div class="inner"><h2 id="five">Las diez plantillas</h2>
+<div class="tw"><table class=""><thead><tr><th>Plantilla</th><th>Tipo</th><th>Para qué es</th></tr></thead><tbody><tr><td><b>emailTo - Global</b></td><td>Extensión de aplicación</td><td>Obligatoria, una vez por aplicación. Declara el objeto, fija los valores por omisión y genera el enlace con la tabla de configuración.</td></tr><tr><td><b>emailTo - Botón de correo</b></td><td>Plantilla de control, MULTI</td><td>Se arrastra a una ventana. Redactar, enviar de una vez, o abrir la ventana de la cuenta.</td></tr><tr><td><b>emailTo - Enviar un correo aquí</b></td><td>Plantilla de código</td><td>Cualquier embed: después de un reporte, en una opción de menú, dentro de un proceso por lotes.</td></tr><tr><td><b>emailTo - Abrir la ventana de redacción aquí</b></td><td>Plantilla de código</td><td>La ventana de escribir y enviar, opcionalmente prellenada.</td></tr><tr><td><b>emailTo - Abrir la ventana de configuración aquí</b></td><td>Plantilla de código</td><td>La ventana de la cuenta, para un menú de configuración.</td></tr><tr><td><b>emailTo - Provider API</b></td><td>Extensión de aplicación</td><td>Se agrega una vez. Declara el objeto que lee la lista de bloqueados, las estadísticas, los contactos y las campañas.</td></tr><tr><td><b>emailTo - Sync provider data into your tables</b></td><td>Extensión de aplicación</td><td>Se agrega una vez. Escribe todo eso en tablas suyas.</td></tr><tr><td><b>emailTo - Mail account button</b></td><td>Plantilla de control, MULTI</td><td>Se arrastra a una ventana. Abre la ventana de gestión: direcciones bloqueadas y por qué, estadísticas, actividad, contactos, campañas.</td></tr><tr><td><b>emailTo - Ask the provider</b></td><td>Plantilla de código</td><td>Cualquier embed: cargar la lista de bloqueados, desbloquear una o todas, consultar una dirección, leer las estadísticas, enviar una campaña, sincronizar las tablas.</td></tr><tr><td><b>emailTo - Sync mail data into your tables</b></td><td>Plantilla de control, MULTI</td><td>Se arrastra a una ventana. Baja la lista de bloqueados, las estadísticas, la actividad, los contactos, las listas y las campañas a sus tablas.</td></tr></tbody></table></div>
+<aside class="note note--tip"><p class="note__t">Sólo la primera es obligatoria</p><div class="note__b"><p>Agregue <b>emailTo - Global</b> y los dos objetos existen en todas partes. Las otras siete son comodidades que los llaman: cualquier cosa que hagan, usted la puede hacer desde un embed escrito a mano con las mismas llamadas de una línea.</p></div></aside>
+<h2 id="global">emailTo - Global</h2>
+<p>Propiedades globales &rarr; Extensiones &rarr; Insertar. Seis pestañas.</p>
+<h3 id="global-general">General</h3>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Por omisión</th><th>Qué hace</th></tr></thead><tbody><tr><td>Deshabilitar esta plantilla</td><td>apagado</td><td>No genera absolutamente nada. Sirve para acotar un problema de compilación.</td></tr><tr><td>Nombre del objeto</td><td><code>Mailer</code></td><td>La etiqueta a la que se refieren todas las demás plantillas.</td></tr><tr><td>Idioma</td><td>Inglés</td><td>Fija <code>emailToLanguage</code>, que el objeto lee al arrancar.</td></tr><tr><td>Guardar registro de la conversación</td><td>encendido</td><td>Fija <code>Trace</code>. Las contraseñas se ocultan antes de llegar ahí.</td></tr></tbody></table></div>
+<h3 id="global-account">Cuenta</h3>
+<p>Los valores con los que arranca el objeto. Si señala una tabla de configuración, lo que ella tenga los reemplaza al arrancar y la ventana de configuración escribe los cambios de vuelta; sin tabla, éstos <em>son</em> la configuración y la ventana guarda en un INI.</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Notas</th></tr></thead><tbody><tr><td>Proveedor</td><td>Catorce preajustes. Elegir uno llena servidor, puerto, seguridad y autenticación.</td></tr><tr><td>Enviar usando</td><td>SMTP, API de Gmail, Microsoft Graph, o clave API del proveedor.</td></tr><tr><td>Dirección / nombre del remitente / Responder a</td><td>Se usan cuando el mensaje no trae los suyos.</td></tr><tr><td>Servidor / Puerto / Seguridad</td><td>Sólo para el transporte SMTP.</td></tr><tr><td>Autenticarse con</td><td>Nada, AUTH LOGIN, AUTH PLAIN, u OAuth2 XOAUTH2.</td></tr><tr><td>Usuario / Contraseña</td><td>Una contraseña escrita aquí queda compilada dentro del <code>.EXE</code>.</td></tr></tbody></table></div>
+<aside class="note note--warn"><p class="note__t">Una contraseña en esta pestaña está en su ejecutable</p><div class="note__b"><p>Cualquiera que tenga el <code>.EXE</code> la tiene. Para algo que no publicaría, déjela vacía y deje que la guarde la ventana de configuración: por ese camino pasa por DPAPI para el usuario de Windows.</p></div></aside>
+<h3 id="global-signin">Acceso</h3>
+<p>La aplicación OAuth2 y las claves API. El <b>ID de cliente</b> es el cliente de escritorio que registró con Google o Microsoft; no es un secreto. El <b>secreto de cliente</b> se queda vacío para clientes públicos de Microsoft. El <b>inquilino</b> es sólo de Microsoft: <code>common</code> acepta tanto una cuenta personal como una del trabajo, que es lo que necesita una aplicación que se le entrega a clientes desconocidos. El <b>dominio API</b> es sólo de Mailgun; para Mailjet la clave pública va en Usuario y la privada en Clave API.</p>
+<h2 id="global-sync">emailTo - Sync</h2>
+<p>Una extensión de aplicación APARTE &mdash; <b>emailTo - Sync provider data into your tables</b>, que se agrega una vez junto a la global. La ventana de gestión pregunta al proveedor en vivo y no guarda nada; ésta es la otra opción: nombre unas tablas y las mismas respuestas se escriben además en sus propios datos &mdash; así puede poner un browse ABC sobre la lista de bloqueados, unirla con su tabla de clientes, o hacer un informe de las aperturas del mes pasado sin acercarse a la red.</p>
+<aside class="note note--tip"><p class="note__t">Hay un diccionario ya hecho &amp;mdash; importe el .dctx</p><div class="note__b"><p><code>emailToTables.dctx</code> viene junto a la plantilla y contiene las seis tablas más la tabla de la cuenta. En el editor de diccionario: <b>File &rarr; Import</b>, y elija la entrada <b>DCTX / XML</b>.</p><p><b>No</b> <code>emailToTables.txd</code>. Un <code>.txd</code> es el formato de Report Writer y el editor de diccionario lo rechaza sin más &mdash; <i>"This TXD file is a Report Writer only format"</i>. Se entrega sólo para <code>ClarionCL /di</code>, que construye un diccionario entero a partir de texto en vez de importar dentro de uno que ya existe.</p></div></aside>
+<div class="tw"><table class=""><thead><tr><th>Tabla</th><th>Una fila es</th><th>Se llena desde</th></tr></thead><tbody><tr><td><code>MailBlocked</code></td><td>Una dirección que el proveedor rechaza, con el motivo, el código SMTP y cuándo</td><td><code>GetSuppressions()</code></td></tr><tr><td><code>MailStat</code></td><td>Un día</td><td><code>GetStats()</code></td></tr><tr><td><code>MailEvent</code></td><td>Algo que le pasó a un mensaje</td><td><code>GetEvents()</code></td></tr><tr><td><code>MailContact</code></td><td>Un contacto</td><td><code>GetContacts()</code></td></tr><tr><td><code>MailList</code></td><td>Una lista de contactos y su tamaño</td><td><code>GetLists()</code></td></tr><tr><td><code>MailCampaign</code></td><td>Una campaña y su estado</td><td><code>GetCampaigns()</code></td></tr></tbody></table></div>
+<p>Todas las tablas menos la de la cuenta llevan <code>Provider</code> y <code>SyncedOn</code>, de modo que un diccionario sirve para una aplicación que cambia de proveedor o que lleva dos cuentas.</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>Keep the providers data in tables</td><td>Enciende todo esto. Apagado, aquí no se genera nada.</td></tr><tr><td>Stamp each row with the provider and the date</td><td>Llena <code>Provider</code> y <code>SyncedOn</code> si la tabla los tiene. Déjelo encendido salvo que una tabla sirva exactamente a una cuenta.</td></tr><tr><td>Table / Key (seis veces)</td><td>La tabla, y la clave que identifica una fila &mdash; esa clave es lo que hace que la sincronización actualice en vez de duplicar.</td></tr><tr><td>How many days back</td><td>Para las estadísticas y la actividad, que se piden por un rango de fechas y no enteras.</td></tr></tbody></table></div>
+<aside class="note note--info"><p class="note__t">Las columnas se emparejan por NOMBRE, no una por una</p><div class="note__b"><p>Una tabla importada del diccionario que se entrega no necesita ningún mapeo: la plantilla recorre las columnas de la tabla que usted nombre y llena aquellas cuyo nombre reconoce. Una columna que se llame de otra manera se deja en paz &mdash; así una bandera suya, una nota, o un enlace a su fila de cliente sobreviven a cada sincronización.</p><p>Eso también significa que puede apuntarla a una tabla que ya tiene: nombre las columnas como lo hace el diccionario y las llena.</p></div></aside>
+<p>Lo que genera es un objeto pequeño propio, con un solo método, <code>Run</code>.</p>
+<aside class="note note--warn"><p class="note__t">Por qué es una extensión aparte y no otra pestaña</p><div class="note__b"><p>Una aplicación guarda el conjunto de campos con el que fue construida. Un campo agregado a una extensión que la aplicación <em>ya lleva</em> simplemente no está, y la generación se detiene con <code>Unknown Variable</code> sobre un símbolo que el programador nunca escribió &mdash; AppGen no rellena el DEFAULT desde la línea de comandos.</p><p>Una aplicación que no agregue ESTA extensión nunca nombra esos símbolos, así que todas las aplicaciones existentes siguen generando igual que antes. Eso vale un Insert de más.</p><p>La pestaña <b>API del proveedor</b>, agregada a la extensión global en la v1.03, no tiene esa protección: actualizar una aplicación anterior a la v1.03 exige abrir una vez la hoja de propiedades de esa extensión, para que el IDE vuelva a escribir los campos nuevos. Desde un script que nunca abre el IDE, borre la extensión y vuelva a insertarla.</p></div></aside>
+<pre class="code" data-lang="clarion"><code>MailApi          CLASS(EmailApiClass)              ! the object, writing into your tables
+SyncTables         PROCEDURE(BYTE pSilent=0),LONG,PROC,DERIVED
+                 END
+
+!  ... and, generated beside it:
+
+MailApi.SyncTables PROCEDURE(BYTE pSilent)
+  CODE
+  DO ETySyncBlocked                               ! one routine per table you nominated
+  DO ETySyncStats
+  ...
+
+ETySyncBlocked ROUTINE
+  ETyN = SELF.GetSuppressions(ETSup:All)
+  IF ETyN &lt; 0 THEN ETyBad = 1; EXIT.
+  Access:MailBlocked.Open()
+  Access:MailBlocked.UseFile()
+  LOOP ETyi = 1 TO RECORDS(SELF.SuppQ)
+    GET(SELF.SuppQ, ETyi)
+    CLEAR(MailBlocked:Record)
+    DO ETyMapBlocked
+    GET(MailBlocked, MBL:ByAddress)               ! already there?
+    IF ERRORCODE()
+      CLEAR(MailBlocked:Record); DO ETyMapBlocked
+      ADD(MailBlocked)
+    ELSE
+      DO ETyMapBlocked
+      PUT(MailBlocked)                            ! update, never duplicate
+    END
+  END
+  Access:MailBlocked.Close()
+
+ETyMapBlocked ROUTINE
+  MBL:Address   = SELF.SuppQ.Address
+  MBL:Kind      = SELF.SuppQ.Kind
+  MBL:Reason    = SELF.SuppQ.Reason
+  MBL:BlockedOn = SELF.SuppQ.WhenDate
+  MBL:Provider  = SELF.Mailer.Acc.Provider
+  MBL:SyncedOn  = TODAY()</code></pre>
+<p>Cada fila se busca por su clave antes de escribirla, así que correr la sincronización dos veces no cambia nada: una fila que ya está se actualiza, una nueva se agrega, y la cuenta vuelve igual. Eso es lo que la hace segura en un botón que cualquiera puede pulsar dos veces, o en un temporizador.</p>
+<h2 id="syncbutton">El botón de sincronizar</h2>
+<p><b>emailTo - Sync mail data into your tables</b> es una plantilla de control: arrástrela a una ventana y coloca un botón ya cableado que llama al método generado.</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>API object name</td><td>El objeto que declaró la extensión global.</td></tr><tr><td>Quietly - no message when it finishes</td><td>Apagado, informa cuántas filas bajaron y cuántas eran nuevas. Enciéndalo para un botón que corre sin nadie delante.</td></tr><tr><td>Put the row count in</td><td>Una variable suya, para una línea de estado.</td></tr><tr><td>Reset the browse afterwards</td><td>Llama a <code>ResetFromFile()</code> sobre el browse que usted nombre, para que un browse de la tabla sincronizada muestre las filas nuevas sin que el usuario cierre la ventana.</td></tr></tbody></table></div>
+<p>Para una opción de menú o un proceso por lotes, la plantilla de código <b>emailTo - Ask the provider</b> tiene <i>Sync it all into my tables</i> entre sus operaciones.</p>
+<h3 id="global-table">Tabla, y Columnas de la tabla</h3>
+<p>Señale una tabla y la plantilla genera <code>LoadAccount</code> y <code>SaveAccount</code> contra ella. Elija la clave con la que encuentra una cuenta, indique cuál cargar al arrancar, y luego asigne una columna a cada campo.</p>
+<p>Cada campo de columna es un selector: el botón <code>&hellip;</code> de al lado lista las columnas de la tabla que señaló, así que el mapeo se elige en vez de escribirse.</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Notas</th></tr></thead><tbody><tr><td>Tabla de configuración</td><td>Vacío significa usar un INI junto al <code>.EXE</code>.</td></tr><tr><td>Clave para encontrar la cuenta</td><td>Se usa para el <code>GET</code> en los dos sentidos.</td></tr><tr><td>Cuenta a cargar al arrancar</td><td>Vacío carga en su lugar el primer registro.</td></tr><tr><td>Crear la fila si no existe</td><td>Encendido, la ventana de configuración puede hacer <code>ADD</code> de la cuenta.</td></tr><tr><td>Nombre de la cuenta</td><td>La única columna obligatoria.</td></tr><tr><td>Todas las demás columnas</td><td>Opcionales. Sin asignar, se conserva lo que puso la pestaña Cuenta.</td></tr></tbody></table></div>
+<aside class="note"><p class="note__t">Cuatro columnas tienen que ser anchas</p><div class="note__b"><p>Contraseña, secreto de cliente, token de refresco y clave API se guardan sellados, así que son tres o cuatro veces más largos que lo que se escribió. Póngalos de al menos 400 caracteres, y el token de refresco de 2000. <code>EmailTables.txt</code> trae una estructura lista para pegar en un diccionario.</p></div></aside>
+<h3 id="global-multidll">Multi-DLL</h3>
+<p>Agregue la extensión a todas las aplicaciones de la suite y no toque la casilla. La aplicación dueña de los datos compila las clases y las exporta; las demás las importan. Las clases llevan la etiqueta <code>!ABCIncludeFile(EMAILTO)</code>, y registrar esa categoría le entrega todo el trabajo a la maquinaria de ABC: ella escribe las definiciones del proyecto y recorre el registro para armar el <code>.EXP</code>.</p>
+<pre class="code" data-lang="dos"><code>#pragma define(_emailToDllMode_=&gt;0)
+#pragma define(_emailToLinkMode_=&gt;1)</code></pre>
+<p>Por eso en la plantilla no hay ningún símbolo con nombre decorado: agregue un método a una clase y la lista de exportación lo sigue en la siguiente generación. <code>emailc.c</code> se compila sólo dentro de la aplicación dueña de las clases, porque el <code>PRAGMA</code> vive en <code>EmailNetClass.clw</code>.</p>
+<h2 id="global-writes">Qué escribe la extensión global</h2>
+<p>Sin tabla de configuración, dentro del módulo <code>PROGRAM</code>:</p>
+<pre class="code" data-lang="clarion"><code>!  %AfterGlobalIncludes
+INCLUDE(&#x27;EmailToClass.INC&#x27;),ONCE
+
+!  %GlobalData
+Mailer             EmailToClass                            ! the mail object
+emailToLanguage        BYTE(1)                             ! 1 = English, 2 = Espanol
+
+!  %ProgramSetup, PRIORITY(8000)
+    Mailer.Init()
+    Mailer.Language = emailToLanguage
+    Mailer.Trace = 1
+    Mailer.SetProvider(1)                     ! host, port, security and auth
+    Mailer.Acc.Transport = 1
+    Mailer.Acc.Host      = &#x27;smtp.gmail.com&#x27;
+    Mailer.Acc.Port      = 587
+    Mailer.Acc.Security  = 1
+    Mailer.Acc.AuthMode  = 1
+    Mailer.Acc.UserName  = &#x27;sales@acme.com&#x27;
+    Mailer.Acc.FromAddr  = &#x27;sales@acme.com&#x27;
+    Mailer.LoadAccount()</code></pre>
+<p>Con una, el objeto se declara <em>derivado</em>, y el enlace se escribe completo en <code>%ProgramProcedures</code>:</p>
+<pre class="code" data-lang="clarion"><code>!  %GlobalData, when a settings table is nominated
+Mailer             CLASS(EmailToClass)
+LoadAccount              PROCEDURE(&lt;STRING pName&gt;),BYTE,PROC,DERIVED
+SaveAccount              PROCEDURE(),BYTE,PROC,DERIVED
+                       END
+
+!  %ProgramProcedures - the whole binding, written from your column mapping
+Mailer.LoadAccount PROCEDURE(&lt;STRING pName&gt;)
+  CODE
+  ...</code></pre>
+<aside class="note"><p class="note__t">Por qué derivar sigue funcionando en una suite</p><div class="note__b"><p>La instancia derivada se declara sólo en la aplicación que la posee. Las demás la importan como el tipo base y de todos modos alcanzan los métodos derivados, porque los dos son <code>VIRTUAL</code> y se despachan por la VMT del propio objeto.</p></div></aside>
+<h2 id="global-api">emailTo - Provider API</h2>
+<aside class="note note--warn"><p class="note__t">En la v1.03 era una pestaña de la extensión global</p><div class="note__b"><p>Fue un error, y rompía toda aplicación construida antes de la v1.03: una aplicación guarda el conjunto de campos con el que fue construida, y AppGen no rellena uno agregado después &mdash; la generación se detenía con <code>Unknown Variable %ETgApi</code>, sobre un símbolo que nadie escribió.</p><p>Como extensión propia no puede hacer eso: una aplicación que no la agrega nunca nombra sus símbolos. Si tenía la pestaña encendida en la v1.03, inserte esta extensión y vuelva a poner el nombre del objeto &mdash; lo que guardaba la pestaña vieja simplemente se ignora.</p></div></aside>
+<p>La pestaña que declara el segundo objeto. La misma clave que envía el correo puede además contestar por la cuenta, así que aquí no hace falta más que un nombre.</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>Add the management object</td><td>Declara <code>EmailApiClass</code> de forma global y le llama a <code>Init</code> al arrancar, justo después de que el objeto de correo haya cargado su cuenta. Activado por omisión.</td></tr><tr><td>Object name</td><td>Cómo se llama. <code>MailApi</code>, salvo que tenga un motivo: las plantillas de control y de código también usan ese nombre por omisión.</td></tr><tr><td>Rows per request</td><td>El tamaño de página. La clase sigue pidiendo hasta que el proveedor se queda sin filas, así que esto no es un límite, sólo cuánto llega de una vez.</td></tr><tr><td>Stop after this many rows</td><td>La guarda: 5000 por omisión, 0 sin límite.</td></tr><tr><td>Second key</td><td>Sólo Postmark necesita dos tokens: el de SERVIDOR envía y lee rebotes, y el de CUENTA abre remitentes y dominios. En blanco para todos los demás.</td></tr><tr><td>Region</td><td><code>eu</code> para una cuenta de Mailgun o SparkPost creada en Europa. Son servicios separados, con sus propios nombres de host y sus propios datos &mdash; preguntada en el endpoint por omisión, una cuenta europea se ve vacía en vez de equivocada.</td></tr><tr><td>Base address</td><td>Reemplaza el host del proveedor, y el esquema si usted lo escribe. Para un relay propio, o para apuntar una compilación de prueba a un sustituto. En blanco en producción.</td></tr></tbody></table></div>
+<p>Si nombra una tabla de configuración en la pestaña Tabla, aparecen tres columnas más para éstos en la segunda pestaña de columnas: segunda clave (sellada), región y dirección base.</p>
+<h2 id="apibutton">El botón de cuenta de correo</h2>
+<p><b>emailTo - Mail account button</b> es una plantilla de control: arrástrela a cualquier ventana y coloca un botón ya cableado que abre la ventana de gestión.</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>API object name</td><td>El objeto que declaró la extensión global.</td></tr><tr><td>Open on</td><td>Por qué pestaña: Cuenta, Bloqueados, Estadísticas, Actividad, Contactos, Listas, Campañas, Plantillas, Remitentes y dominios, o Webhooks. Si este proveedor no puede contestar ésa, la ventana abre por la primera que SÍ puede, en vez de enseñar una lista vacía.</td></tr><tr><td>Hide the button if the provider has no API</td><td>Una cuenta que envía por SMTP a secas &mdash; un Exchange de la empresa, Gmail con una contraseña de aplicación &mdash; no tiene API de gestión ninguna. Marcado, el botón desaparece para esas cuentas en lugar de abrir una ventana con todas las pestañas deshabilitadas. Es una comprobación en tiempo de ejecución, así que una sola compilación sirve para las dos.</td></tr></tbody></table></div>
+<p>Colóquela más de una vez y cada instancia se queda con su propia pestaña: un botón para la lista de bloqueados y otro para las campañas. La plantilla escribe el manejador contra el equate de campo que AppGen le haya dado a esa instancia.</p>
+<h2 id="apicode">Preguntar desde un embed</h2>
+<p><b>emailTo - Ask the provider</b> es la plantilla de código. Póngala en cualquier embed &mdash; un botón, una opción de menú, el final de un proceso &mdash; y elija la operación:</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>Do this</td><td>Cargar las direcciones bloqueadas, desbloquear una, desbloquearlas todas, bloquear una dirección, saber si una dirección está bloqueada, cargar las estadísticas, la actividad, los contactos, las listas o las campañas, enviar una campaña, exportar la lista de bloqueados a CSV, o abrir la ventana de gestión.</td></tr><tr><td>Which list</td><td>Todo, rebotes, bloqueados, quejas de spam, bajas o no válidas. Un proveedor que guarda una sola lista para todas devuelve las mismas filas elija lo que elija, etiquetadas con lo que son de verdad.</td></tr><tr><td>Value</td><td>La dirección, el id de campaña o el nombre de archivo sobre el que opera &mdash; escrito, o tomado de una variable en tiempo de ejecución.</td></tr><tr><td>Put the result in</td><td>Para una carga, el NÚMERO de filas (o -1 si el proveedor dijo que no). Para lo demás, 1 significa que funcionó.</td></tr><tr><td>Show the error</td><td>Muestra las palabras del propio proveedor. En cualquier caso quedan en <code>LastErrorText</code>, y la dirección a la que llamó en <code>LastUrl</code>.</td></tr></tbody></table></div>
+<p>Lo que escribe es corto, porque el trabajo está en la clase:</p>
+<pre class="code" data-lang="clarion"><code>  Loc:Rows = MailApi.GetSuppressions(0)
+  IF MailApi.LastError
+    MailApi.ShowError()
+  END</code></pre>
+<p>Las filas caen en las colas del objeto, que tienen la misma forma sea quien sea el proveedor &mdash; <code>SuppQ</code>, <code>StatQ</code>, <code>EventQ</code> y las demás. Recórralas usted, o llame a <code>Manage()</code> y deje que lo haga la ventana que ya viene hecha.</p>
+<h2 id="button">emailTo - Botón de correo</h2>
+<p>Arrástrelo a cualquier ventana; póngalo más de una vez si quiere. AppGen hace único el equate del campo (<code>?EmailBtn</code>, <code>?EmailBtn:2</code>&hellip;) y la plantilla engancha el manejador al que le haya tocado a esta instancia.</p>
+<aside class="note note--tip"><p class="note__t">¿Cuál botón lleva la dirección del remitente? Ninguno</p><div class="note__b"><p>Una cuenta pertenece a la <em>aplicación</em>, no a un botón. El servidor, la dirección de remitente, el usuario, la contraseña y el cliente OAuth2 se configuran una sola vez, en la pestaña Cuenta de <b>emailTo - Global</b>. Un botón sólo dice <em>qué hacer</em>, así que puede poner dos en una misma ventana, uno para enviar y otro para abrir la configuración, y ninguno de los dos lleva una credencial.</p><p>La pestaña <b>Cuenta</b> del botón no tiene campos precisamente por eso. Está ahí para señalar el lugar que sí los tiene.</p></div></aside>
+<p>Cuál de los dos es cada instancia se ve en la lista de AppGen sin abrirla, porque la descripción nombra la acción:</p>
+<pre class="code" data-lang="dos"><code>emailTo - E-mail button   E-mail button - opens the COMPOSE window
+emailTo - E-mail button   E-mail button - opens ACCOUNT SETUP</code></pre>
+<h3 id="button-general">General</h3>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>Desactivar este botón</td><td>No genera nada para esta instancia. El botón se queda en la ventana, inerte.</td></tr><tr><td>Nombre del objeto de correo</td><td>Tiene que coincidir con la extensión global. <code>Mailer</code> por omisión.</td></tr><tr><td>Acción</td><td>Abrir la ventana de redacción, enviar de una vez sin ventana, o abrir la ventana de configuración de la cuenta.</td></tr><tr><td>Avisar al usuario que funcionó</td><td>Gris salvo que la acción sea <em>enviar de una vez</em>: la única que lo lee.</td></tr><tr><td>Mostrar el error si falló</td><td>Igual. Llama a <code>ShowError</code>; apagado, el motivo igual queda en <code>LastErrorText</code>.</td></tr></tbody></table></div>
+<aside class="note"><p class="note__t">Las tres acciones nacen rotuladas &quot;E-mail...&quot;</p><div class="note__b"><p>La acción se elige después de soltar el control, así que la plantilla no puede variar el texto por usted. Renombre el botón en el diseñador de ventanas: dos botones que dicen los dos <em>E-mail...</em> confunden al usuario del programa terminado tanto como lo confunden a usted en AppGen.</p></div></aside>
+<h3 id="button-account">Cuenta</h3>
+<p>Sin campos. Nombra el único lugar donde se configura la cuenta &mdash; <b>Aplicación &rarr; Propiedades globales &rarr; Extensiones &rarr; emailTo - Global &rarr; Cuenta</b> &mdash; y explica que un botón de configuración es como el usuario final la sobreescribe: a su tabla de ajustes si mapeó una, y si no, a un INI junto al <code>.EXE</code>.</p>
+<h3 id="button-message">Mensaje</h3>
+<p>A quién va y qué dice. Lo que esta pestaña <em>significa</em> depende de la acción, y por eso la pestaña General deletrea los tres casos:</p>
+<div class="tw"><table class=""><thead><tr><th>Acción</th><th>Qué hace la pestaña Mensaje</th></tr></thead><tbody><tr><td>Abrir la ventana de redacción</td><td>Prellena la ventana. El usuario puede cambiar cualquier cosa antes de enviar.</td></tr><tr><td>Enviar de una vez</td><td>Es el mensaje. No se muestra nada; lo que deje en blanco simplemente se omite.</td></tr><tr><td>Abrir la ventana de configuración</td><td>Nada: la pestaña entera se pone gris, porque no hay mensaje de por medio.</td></tr></tbody></table></div>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>Para / Copia / Asunto / Cuerpo</td><td>Literales, para un botón que siempre manda lo mismo.</td></tr><tr><td>&hellip;o tomarlo de una variable</td><td>Un selector de campo. Gana sobre el literal de al lado.</td></tr><tr><td>El cuerpo es HTML</td><td>Llama a <code>SetHtml</code> en vez de <code>SetText</code>.</td></tr><tr><td>Adjunto</td><td>Una ruta literal, o una variable que la tenga.</td></tr></tbody></table></div>
+<p>Aquí están las tres acciones, tal como se generan:</p>
+<pre class="code" data-lang="clarion"><code>!  %ControlEventHandling, on this button&#x27;s Accepted
+    OF ?EmailBtn
+      ThisWindow.Update()
+        Mailer.Compose(&#x27;bob@example.com&#x27;, &#x27;Hello from Clarion&#x27;, &#x27;It works.&#x27;, &#x27;&#x27;)
+    OF ?EmailBtn:2
+      ThisWindow.Update()
+          Mailer.Msg.ClearAll()
+          Mailer.Msg.AddList(&#x27;ops@example.com&#x27;, ETAddr:To)
+          Mailer.Msg.AddList(&#x27;audit@example.com&#x27;, ETAddr:Cc)
+          Mailer.Msg.SetSubject(&#x27;Nightly run finished&#x27;)
+          Mailer.Msg.SetHtml(&#x27;&lt;p&gt;Fixed &lt;b&gt;HTML&lt;/b&gt; body.&lt;/p&gt;&#x27;)
+        IF Mailer.Send(Mailer.Msg)
+          MESSAGE(Mailer.Txt(ETTxt:Sent), Mailer.Txt(ETTxt:Compose), ICON:Asterisk)
+        ELSE
+          Mailer.ShowError()
+        END
+    OF ?EmailBtn:3
+      ThisWindow.Update()
+        Mailer.Setup()</code></pre>
+<h2 id="codetemplates">Las tres plantillas de código</h2>
+<p><b>Enviar un correo aquí</b> es la que más se usa. Sus campos son los mismos de la pestaña Mensaje del botón, más un lugar donde dejar el resultado:</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué hace</th></tr></thead><tbody><tr><td>Para / Copia / Copia oculta</td><td>Literales, o una variable para Para.</td></tr><tr><td>Asunto / Cuerpo</td><td>Literales, o variables. El cuerpo puede ser HTML.</td></tr><tr><td>Adjunto</td><td>Una ruta literal, o una variable: así es como se manda un reporte.</td></tr><tr><td>Dejar el resultado en</td><td>Un campo que recibe 1 si se envió, 0 si no.</td></tr><tr><td>Avisar que funcionó / Mostrar el error</td><td>Los dos opcionales; el motivo siempre queda en <code>LastErrorText</code>.</td></tr></tbody></table></div>
+<aside class="note note--tip"><p class="note__t">Mandar un reporte por correo</p><div class="note__b"><p>Escriba el PDF y luego ponga <b>Enviar un correo aquí</b> justo después, apuntando el campo del adjunto a la variable que tiene el nombre del archivo. Esa es toda la receta: no hay una plantilla aparte para reportes porque no hace falta.</p></div></aside>
+<p><b>Abrir la ventana de redacción aquí</b> prellena y abre la ventana de escribir y enviar. <b>Abrir la ventana de configuración aquí</b> abre la ventana de la cuenta: póngala en un menú de configuración y sus usuarios pueden configurar su propio correo sin usted.</p>
+<p>Las tres llevan el mismo recordatorio que el botón: la dirección de remitente, el servidor y la contraseña no están entre sus campos, porque pertenecen a la extensión global.</p>
+<h2 id="embeds">Dónde cae el código generado</h2>
+<div class="tw"><table class=""><thead><tr><th>Plantilla</th><th>Punto de embed</th><th>Qué llega</th></tr></thead><tbody><tr><td>Global</td><td><code>%AfterGlobalIncludes</code></td><td>Un <code>INCLUDE</code>, <code>ONCE</code>.</td></tr><tr><td>Global</td><td><code>%GlobalData</code></td><td>El objeto y <code>emailToLanguage</code>.</td></tr><tr><td>Global</td><td><code>%ProgramSetup</code> PRIORITY(8000)</td><td>Init, los valores por omisión, <code>LoadAccount</code>.</td></tr><tr><td>Global</td><td><code>%ProgramProcedures</code></td><td>El enlace con la tabla, si hay una.</td></tr><tr><td>Global</td><td><code>%DLLExportList</code></td><td>El objeto y el byte de idioma, cuando esta aplicación es la dueña.</td></tr><tr><td>Global</td><td><code>%BeforeGenerateApplication</code></td><td>Registra la categoría de clases <code>EMAILTO</code>.</td></tr><tr><td>Botón</td><td><code>%CustomGlobalDeclarations</code></td><td>El <code>INCLUDE</code>, para que el módulo vea la clase.</td></tr><tr><td>Botón</td><td><code>%ControlEventHandling</code></td><td>El manejador, sobre el equate propio de esta instancia.</td></tr><tr><td>Plantillas de código</td><td>donde usted las ponga</td><td>Las llamadas, en línea.</td></tr></tbody></table></div>
+<div class="next"><a href="https://claude.ai/code/artifact/108af66d-ecbe-4a5b-bada-cb3500c741b6"><b>Referencia &rarr;</b><span>Cada clase, método, propiedad y equate</span></a><a href="https://claude.ai/code/artifact/f3e1c134-eca6-4292-9831-bf57d763f05f"><b>Guía del programador &rarr;</b><span>Cómo funciona, y cómo hacer que haga cosas</span></a><a href="https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c"><b>Primeros pasos &rarr;</b><span>Instalarlo y enviar el primer mensaje</span></a></div>
+    <footer>emailTo &mdash; cuatro vol&uacute;menes. La referencia se genera a partir de los cinco archivos include, de modo que sus firmas son las que est&aacute;n en la compilaci&oacute;n.</footer>
+  </div>
+</main>
+</div>
+<script>
+const q = document.getElementById('filter');
+if (q) {
+  const rows = [...document.querySelectorAll('tr.fn')];
+  q.addEventListener('input', () => {
+    const t = q.value.trim().toLowerCase();
+    rows.forEach(r => r.classList.toggle('hide', t && !r.dataset.k.includes(t)));
+    document.querySelectorAll('.tw').forEach(w => {
+      const body = w.querySelector('tbody');
+      if (!body) return;
+      const any = [...body.querySelectorAll('tr')].some(r => !r.classList.contains('hide'));
+      const h = w.previousElementSibling;
+      w.classList.toggle('hide', !any);
+      if (h && h.tagName === 'H3') h.classList.toggle('hide', !any);
+    });
+  });
+}
+/*  Which sidebar entry is lit.  An IntersectionObserver was the wrong
+    instrument: one click crosses several headings at once, every one of them
+    arrives in a single callback, and the last entry processed won - so the
+    highlight settled one or two sections past the one that was clicked, and
+    the page looked as though it had jumped there.  Position is the question,
+    so ask position.  */
+const links = [...document.querySelectorAll('.nav__l a')];
+if (links.length) {
+  const byId  = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const marks = [...document.querySelectorAll('h2[id],h3[id]')].filter(h => byId.has(h.id));
+  const light = a => links.forEach(l => l.classList.toggle('on', l === a));
+  let held = null, holdUntil = 0, queued = false;
+
+  function spy() {
+    queued = false;
+    if (held) { light(held); return; }
+    let cur = marks[0];
+    for (const h of marks) {
+      if (h.getBoundingClientRect().top <= 120) cur = h; else break;
+    }
+    //  the foot of the page belongs to the last section, however short it is
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2)
+      cur = marks[marks.length - 1];
+    if (cur) light(byId.get(cur.id));
+  }
+
+  //  a click owns the highlight until the scroll it started has landed
+  links.forEach(a => a.addEventListener('click', () => {
+    held = a; holdUntil = performance.now() + 700; light(a);
+  }));
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(spy); } };
+  addEventListener('scroll', () => {
+    if (held && performance.now() > holdUntil) held = null;
+    later();
+  }, {passive: true});
+  addEventListener('resize', later);
+  if (marks.length) spy();
+}
+</script>

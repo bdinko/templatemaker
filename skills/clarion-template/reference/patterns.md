@@ -573,8 +573,7 @@ a legal write; nothing complains and nothing changes.
 
 **UNBOUNDED ROUTINE recursion kills the process — but BOUNDED mutual recursion works.** The old rule
 here ("a ROUTINE holds a single return address, so a `DO` of itself dies") is disproven by shipped
-code: `BrowseGridLeg` (the Legacy BrowseGrid port in the ClarionLive fork) has `BGL:Fill` ending with
-`DO BGL:Bottom`, which may `DO BGL:Fill` again — mutual
+code: `BrowseGridLeg`'s `BGL:Fill` ends with `DO BGL:Bottom`, which may `DO BGL:Fill` again — mutual
 ROUTINE recursion, depth 3 — and it runs correctly (Clarion 6 Legacy chain, user-tested repeatedly,
 plus an adversarial review pass specifically on the recursion). Return addresses evidently stack.
 What actually dies is recursion with **no terminating guard** — a stack overflow, and the app

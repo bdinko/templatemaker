@@ -2,9 +2,9 @@
 
 Everything here was verified against `<CLARION_ROOT>\template\win` (Legacy chain root `CW.TPL`; browse
 control in `CtlBrow.TPW`; procedure template `Window.TPW`; program `Program.TPW`), against generated
-Legacy source, and by shipping `BrowseGridLeg.tpl` — a full port of an ABC control template to the
-Legacy chain (`templates/BrowseGridLeg/` in the ClarionLive fork,
-github.com/ClarionLive/templatemaker). Copy that template's shapes rather than re-deriving them.
+Legacy source, and by shipping `BrowseGridLeg.tpl` — a full port of an ABC control template
+(`templates/BrowseGridLeg/` in this repo) to the Legacy chain. Copy that template's shapes rather than
+re-deriving them.
 
 ## Attaching to the chain
 
@@ -91,8 +91,7 @@ even named `Queue:Browse:1`.
 
 ## Reference implementation
 
-`templates/BrowseGridLeg/` in the ClarionLive fork (github.com/ClarionLive/templatemaker): a
-`#CONTROL`-free extension suite (grid takeover, search box,
+`templates/BrowseGridLeg/` in this repo: a `#CONTROL`-free extension suite (grid takeover, search box,
 filter bar) targeting `FAMILY('CW20')`, with file-loaded and page-loaded modes split by
 `#IF(%bglLoad = 'File loaded')` throughout — a worked example of every remapping above, including
 `%EventCaseBeforeGenerated` custom events, `PROP:Order` sorting, GETINI/PUTINI persistence, and

@@ -1,0 +1,420 @@
+<meta charset="utf-8"><title>emailTo Getting Started</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#f1f5f9; --sunken:#e9eff5; --rule:#d6e0ea;
+  --ink:#0f1720; --soft:#4e5f70; --faint:#7d8ea0;
+  --accent:#2f6a9a; --accent-bg:#e4eef6; --accent-rule:#b9d3e6;
+  --clarion:#166f69; --clarion-bg:#e2f1ef;
+  --warn:#8a5a12; --warn-bg:#f7eeda;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+    --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+    --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+    --clarion:#4fb5ab; --clarion-bg:#102a29;
+    --warn:#d8a545; --warn-bg:#2b2413;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+  --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+  --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+  --clarion:#4fb5ab; --clarion-bg:#102a29;
+  --warn:#d8a545; --warn-bg:#2b2413;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Serif",Georgia,serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.ui{font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif}
+code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+a{color:var(--accent)}
+.wrap{display:grid; grid-template-columns:270px minmax(0,1fr); align-items:start}
+.side{position:sticky; top:0; height:100vh; overflow-y:auto; padding:24px 20px 60px;
+  border-right:1px solid var(--rule); background:var(--surface)}
+.brand{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:15px; margin:0 0 14px}
+.brand b{color:var(--accent)}
+/* ---- the four volumes ---- */
+.vols{list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:3px;
+  border-bottom:1px solid var(--rule); padding-bottom:16px}
+.vols a{display:block; padding:7px 10px; border-radius:6px; text-decoration:none;
+  font:500 13px/1.35 "IBM Plex Sans",sans-serif; color:var(--soft); border:1px solid transparent}
+.vols a:hover{background:var(--sunken); color:var(--ink)}
+.vols a.here{background:var(--accent-bg); border-color:var(--accent-rule); color:var(--accent)}
+.vols small{display:block; font:400 11px/1.35 "IBM Plex Sans",sans-serif; color:var(--faint);
+  margin-top:2px}
+.vols a.here small{color:var(--accent)}
+.filter{width:100%; margin:0 0 16px; padding:7px 10px; font:13px/1.4 "IBM Plex Sans",sans-serif;
+  color:var(--ink); background:var(--paper); border:1px solid var(--rule); border-radius:6px}
+.filter:focus{outline:2px solid var(--accent); outline-offset:1px}
+.nav__g{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--faint); margin:18px 0 8px}
+.nav__l{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+.nav__l a{display:block; padding:4px 8px; border-radius:5px; text-decoration:none; color:var(--soft);
+  font:400 13.5px/1.45 "IBM Plex Sans",sans-serif}
+.nav__l a:hover{background:var(--sunken); color:var(--ink)}
+.nav__l a.on{background:var(--accent-bg); color:var(--accent); font-weight:500}
+.main{padding:0 0 120px; min-width:0}
+.inner{max-width:980px; padding:0 40px}
+.hero{padding:52px 40px 30px; border-bottom:1px solid var(--rule);
+  background:linear-gradient(180deg,var(--accent-bg),transparent)}
+.hero .inner{padding:0}
+.eyebrow{font:600 11px/1 "IBM Plex Sans",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 12px}
+h1{font-size:37px; line-height:1.1; margin:0 0 10px; letter-spacing:-.015em; text-wrap:balance}
+.sub{font-size:17px; color:var(--soft); margin:0 0 18px; max-width:62ch}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font:500 11.5px/1 "IBM Plex Sans",sans-serif; padding:6px 10px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft)}
+.chip b{color:var(--ink); font-weight:600}
+h2{font-size:26px; margin:60px 0 6px; letter-spacing:-.01em; scroll-margin-top:18px; text-wrap:balance}
+h2 .k{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:9px}
+h3{font-size:17.5px; margin:36px 0 10px; scroll-margin-top:18px}
+h4{font-size:14.5px; margin:24px 0 6px; color:var(--soft); font-weight:600}
+p{margin:0 0 14px; max-width:70ch}
+.lead{color:var(--soft); max-width:70ch}
+ul.b,ol.b{max-width:70ch; padding-left:20px; margin:0 0 16px}
+ul.b li,ol.b li{margin:0 0 7px}
+.code{background:var(--sunken); border:1px solid var(--rule); border-left:3px solid var(--accent-rule);
+  border-radius:0 7px 7px 0; padding:14px 16px; overflow-x:auto; margin:0 0 18px;
+  font-size:12.9px; line-height:1.62; position:relative}
+.code code{white-space:pre; color:var(--ink)}
+.code::after{content:attr(data-lang); position:absolute; top:0; right:0; padding:3px 9px;
+  font:500 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--faint); background:var(--surface); border-left:1px solid var(--rule);
+  border-bottom:1px solid var(--rule); border-radius:0 0 0 6px}
+.code--use{margin:7px 0 2px; border-left-color:var(--clarion); background:var(--paper);
+  font-size:12.4px; padding:9px 12px}
+.code--use::after{content:'Clarion'; color:var(--clarion)}
+p code,li code,td code{background:var(--sunken); border:1px solid var(--rule); border-radius:4px;
+  padding:.06em .34em; font-size:.86em}
+.tw{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:8px;
+  background:var(--paper)}
+table{border-collapse:collapse; width:100%; font-size:13.5px;
+  font-family:"IBM Plex Sans",sans-serif}
+th{text-align:left; font-weight:600; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--faint); padding:9px 14px; border-bottom:1px solid var(--rule); background:var(--surface)}
+td{padding:10px 14px; border-bottom:1px solid var(--rule); vertical-align:top}
+tr:last-child td{border-bottom:0}
+.fns .fn__n{width:210px; white-space:nowrap}
+.fns .fn__n code{font-size:12.6px; color:var(--accent); font-weight:500; background:none;
+  border:0; padding:0}
+.fns .fn__s code{font-size:12.4px; color:var(--soft); background:none; border:0; padding:0;
+  white-space:pre-wrap}
+.fn__d{margin:5px 0 0; font-family:"IBM Plex Serif",serif; font-size:13.5px; color:var(--ink);
+  max-width:74ch}
+.ord{margin-left:7px; font:500 10px/1 "IBM Plex Mono",monospace; color:var(--faint);
+  border:1px solid var(--rule); border-radius:4px; padding:2px 4px; vertical-align:1px}
+.eq td:first-child code{color:var(--accent); background:none; border:0; padding:0}
+.eq .v{font-variant-numeric:tabular-nums; color:var(--soft)}
+.note{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface);
+  border-radius:0 7px 7px 0; padding:13px 16px; margin:0 0 18px; max-width:74ch}
+.note--warn{border-left-color:var(--warn); background:var(--warn-bg)}
+.note--cla{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note__t{font:600 12px/1.3 "IBM Plex Sans",sans-serif; letter-spacing:.03em; margin:0 0 5px;
+  text-transform:uppercase; color:var(--soft)}
+.note--warn .note__t{color:var(--warn)} .note--cla .note__t{color:var(--clarion)}
+.note__b p{margin:0 0 8px; font-size:14.5px} .note__b p:last-child{margin:0}
+.stack{display:flex; flex-direction:column; gap:9px; margin:0 0 22px; max-width:640px}
+.layer{border:1px solid var(--rule); border-radius:8px; padding:12px 15px; background:var(--surface);
+  display:grid; grid-template-columns:118px 1fr; gap:14px; align-items:baseline}
+.layer b{font:600 11px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--accent)}
+.layer.cla b{color:var(--clarion)}
+.layer p{margin:0; font-size:14px; color:var(--soft); max-width:none}
+.arrow{text-align:center; color:var(--faint); font-size:12px; margin:-4px 0}
+/* ---- where to next ---- */
+.next{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;
+  margin:26px 0 0}
+.next a{display:block; padding:14px 16px; border:1px solid var(--rule); border-radius:9px;
+  background:var(--surface); text-decoration:none}
+.next a:hover{border-color:var(--accent-rule); background:var(--accent-bg)}
+.next b{display:block; font:600 14px/1.3 "IBM Plex Sans",sans-serif; color:var(--accent);
+  margin-bottom:3px}
+.next span{font:400 13px/1.45 "IBM Plex Serif",serif; color:var(--soft)}
+.hide{display:none !important}
+footer{margin-top:70px; padding:22px 40px 0; border-top:1px solid var(--rule); color:var(--faint);
+  font:400 13px/1.6 "IBM Plex Sans",sans-serif}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static; height:auto; border-right:0; border-bottom:1px solid var(--rule)}
+  .inner,.hero{padding-left:22px; padding-right:22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+
+/* ------------------------------------------------------------------ *
+ *  emailTo additions.  Every colour below is a token defined at bare
+ *  :root and redefined in BOTH dark paths, so nothing is left with its
+ *  only definition inside a media query - which would render one
+ *  theme's text on the other theme's ground.
+ * ------------------------------------------------------------------ */
+:root{ --danger:#8f3520; --danger-bg:#f8e9e4; --danger-rule:#e3bcaf; }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+  }
+}
+:root[data-theme="dark"]{
+  --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+}
+
+.note--tip{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note--tip .note__t{color:var(--clarion)}
+.note--danger{border-left-color:var(--danger); background:var(--danger-bg)}
+.note--danger .note__t{color:var(--danger)}
+
+/* ---- the generated reference: one member per row ---- */
+table.api td{padding:14px 16px}
+tr.fn + tr.fn td{border-top:1px solid var(--rule)}
+code.mem{font:500 13.5px/1 "IBM Plex Mono",monospace; color:var(--accent);
+  background:none; border:0; padding:0}
+.sig{font:400 12.4px/1.5 "IBM Plex Mono",monospace; color:var(--soft);
+  margin:5px 0 0; white-space:pre-wrap; word-break:break-word}
+.mdoc{margin:7px 0 0; font-family:"IBM Plex Serif",Georgia,serif; font-size:13.8px;
+  color:var(--ink); max-width:74ch}
+.tag{display:inline-block; margin-left:7px; vertical-align:2px;
+  font:600 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--clarion); background:var(--clarion-bg);
+  border:1px solid var(--rule); border-radius:4px; padding:3px 5px}
+
+/*  The one link that crosses languages.  It sits above the volume list
+ *  because a reader who wants it is looking for it before anything else. */
+.langsw{display:inline-block; margin:0 0 14px; padding:5px 11px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft);
+  font:500 11.5px/1 "IBM Plex Sans",sans-serif; text-decoration:none;
+  letter-spacing:.02em}
+.langsw:hover{border-color:var(--accent-rule); background:var(--accent-bg); color:var(--accent)}
+.langsw:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.langsw::before{content:"\00A0"; margin-right:0}
+</style>
+<div class="wrap">
+<nav class="side">
+  <p class="brand"><b>emailTo</b></p>
+<a class="langsw" href="https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c" hreflang="es">Espa&ntilde;ol</a><ul class="vols"><li><a href="#" class="here">1. Getting Started<small>Install it and send the first message</small></a></li><li><a href="https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0">2. Programmer&#x27;s Guide<small>How it works, and how to make it do things</small></a></li><li><a href="https://claude.ai/code/artifact/d8272efa-aa88-4ab6-a61d-79d147907f01">3. Template Guide<small>Every template, tab, prompt and embed</small></a></li><li><a href="https://claude.ai/code/artifact/c98d7cfa-04e7-45ab-9054-9186cc2fbba5">4. Reference<small>Every class, method, property and equate</small></a></li></ul><p class="nav__g">Start here</p><ul class="nav__l"><li><a href="#what">What emailTo is</a></li><li><a href="#install">Install</a></li></ul><p class="nav__g">Send something</p><ul class="nav__l"><li><a href="#hello">The smallest thing that sends</a></li><li><a href="#handcoded">Building it by hand</a></li><li><a href="#fromappgen">The same thing from AppGen</a></li><li><a href="#attachments">A message with more in it</a></li></ul><p class="nav__g">OAuth2</p><ul class="nav__l"><li><a href="#oauthsetup">Setting up OAuth2, step by step</a></li><li><a href="#oauth-google">Google</a></li><li><a href="#oauth-microsoft">Microsoft &mdash; Outlook.com and Microsoft 365</a></li><li><a href="#oauth-verify">Google says &ldquo;Access blocked&rdquo;</a></li><li><a href="#oauth-run">Running it</a></li></ul><p class="nav__g">Ask the provider</p><ul class="nav__l"><li><a href="#ask">Who is blocked, and why</a></li><li><a href="#ask-more">The rest of the account</a></li></ul><p class="nav__g">Then</p><ul class="nav__l"><li><a href="#demo">The demo</a></li><li><a href="#firstrun">When the first send does not work</a></li></ul>
+</nav>
+<main class="main">
+  <header class="hero"><div class="inner">
+    <p class="eyebrow">Volume 1</p>
+    <h1>Getting Started</h1>
+    <p class="sub">Install the classes, register the template, and get a message out of a Clarion program in about twenty lines.</p>
+    <div class="chips"><span class="chip">No DLL to ship</span><span class="chip">No .NET</span><span class="chip">8 provider APIs</span><span class="chip">Clarion 12</span></div>
+  </div></header>
+  <div class="inner"><h2 id="what">What emailTo is</h2>
+<p>emailTo sends e-mail from a Clarion application, and manages the account it sends through. It is five classes, one bundled C file and seven templates, and it deploys as part of your <code>.EXE</code> &mdash; there is no DLL to ship, no .NET, no OpenSSL and nothing to register on the machine it runs on.</p>
+<p>It can put a message on the wire four ways, and they all send the same message: <b>SMTP</b> over plain, STARTTLS or implicit TLS; the <b>Gmail API</b>; <b>Microsoft Graph</b>; or a provider <b>API key</b> for SendGrid, Mailgun, Resend, Brevo, Postmark, Mailjet, SparkPost, MailerSend and <b>Amazon SES</b>.</p>
+<p>Those nine API providers answer questions as well as taking messages, and the same account asks them: <b>who is blocked and why</b>, what the last month looked like, which contacts and campaigns exist. One set of methods covers all nine &mdash; see <a href="#ask">Who is blocked, and why</a>.</p>
+<div class="tw"><table class=""><thead><tr><th>You have</th><th>Use</th><th>What you need</th></tr></thead><tbody><tr><td>A Gmail account</td><td>SMTP + app password</td><td>Two-factor on, then an app password</td></tr><tr><td>Outlook.com or Hotmail</td><td>SMTP + OAuth2</td><td>A desktop client ID from Azure</td></tr><tr><td>Microsoft 365 at work</td><td>Graph, or SMTP + OAuth2</td><td>A desktop client ID, and your tenant</td></tr><tr><td>A company mail server</td><td>SMTP + password</td><td>Host, port, and whether it wants STARTTLS</td></tr><tr><td>None of the above</td><td>An API key service</td><td>A free key from Resend or Brevo</td></tr></tbody></table></div>
+<h2 id="install">Install</h2>
+<p>Copy these eleven files to a folder on the Clarion redirection path &mdash; the application folder, or <code>\clarion12\accessory\libsrc\win</code>:</p>
+<div class="tw"><table class=""><thead><tr><th>File</th><th>What it is</th></tr></thead><tbody><tr><td><code>EmailNetClass.inc</code> / <code>.clw</code></td><td>Sockets, TLS, HTTPS, DPAPI. Compiles the C in.</td></tr><tr><td><code>EmailMsgClass.inc</code> / <code>.clw</code></td><td>The message and its MIME. Pure Clarion.</td></tr><tr><td><code>EmailToClass.inc</code> / <code>.clw</code></td><td>Accounts, the four transports, OAuth2, the windows.</td></tr><tr><td><code>EmailJsonClass.inc</code> / <code>.clw</code></td><td>Reading what a provider answers. Pure Clarion.</td></tr><tr><td><code>EmailApiClass.inc</code> / <code>.clw</code></td><td>The management API: blocked, statistics, campaigns.</td></tr><tr><td><code>emailc.c</code></td><td>Winsock, SCHANNEL, WinHTTP, DPAPI, SHA-256.</td></tr></tbody></table></div>
+<aside class="note note--tip"><p class="note__t">And a dictionary, if you want the answers kept</p><div class="note__b"><p><code>emailToTables.dctx</code> ships with them: seven tables &mdash; the blocked list, statistics, activity, contacts, lists, campaigns, and the account itself. Dictionary Editor &rarr; <b>File &rarr; Import</b>, and pick the <b>DCTX / XML</b> entry. You only need it if you add the <b>emailTo - Sync</b> extension; sending and the management window do not use it.</p><p><b>Not</b> the <code>.txd</code> beside it &mdash; that is Report Writer&rsquo;s format, and the Dictionary Editor says so in as many words.</p></div></aside>
+<p>Put <code>emailTo.tpl</code> in <code>\clarion12\accessory\template\win</code> and register it &mdash; in the IDE, or from a command line:</p>
+<pre class="code" data-lang="dos"><code>ClarionCL.exe -tr &quot;C:\clarion12\accessory\template\win\emailTo.tpl&quot;</code></pre>
+<aside class="note note--warn"><p class="note__t">The sources must be ANSI, with CRLF line endings</p><div class="note__b"><p>Clarion mis-parses an LF-only include: you get <code>Illegal data type: EMAILTOCLASS</code> reported at the <em>declaration</em>, with nothing flagged inside the include itself. If you have moved these files through a tool that rewrites line endings, convert them back before hunting for a phantom syntax error.</p></div></aside>
+<h2 id="hello">The smallest thing that sends</h2>
+<p>No template, no window, no dictionary. This is a complete program:</p>
+<pre class="code" data-lang="clarion"><code>  PROGRAM
+
+  INCLUDE(&#x27;EmailToClass.INC&#x27;),ONCE
+
+  MAP
+  END
+
+Mailer  EmailToClass
+
+  CODE
+  Mailer.Init(PATH() &amp; &#x27;\mail.ini&#x27;)          ! where the account is remembered
+
+  Mailer.SetProvider(ETPrv:Gmail)             ! host, port, security, sign-in
+  Mailer.Acc.UserName = &#x27;you@gmail.com&#x27;
+  Mailer.Acc.Password = &#x27;abcd efgh ijkl mnop&#x27; ! a Google APP PASSWORD, not your own
+  Mailer.Acc.FromAddr = &#x27;you@gmail.com&#x27;
+  Mailer.Acc.FromName = &#x27;Acme Dispatch&#x27;
+
+  IF Mailer.SendSimple(&#x27;bob@example.com&#x27;, &#x27;It works&#x27;, &#x27;Sent from Clarion.&#x27;)
+    MESSAGE(&#x27;Sent.&#x27;)
+  ELSE
+    MESSAGE(CLIP(Mailer.LastErrorText))
+  END</code></pre>
+<p>Two things are worth noticing. <code>SetProvider</code> fills in the host, the port, the security and the sign-in method for you, so the only lines left are the ones that are actually about your account. And nothing here checks a return code except the send itself &mdash; every failure ends up in <code>LastErrorText</code> as a sentence you can show a user.</p>
+<aside class="note note--tip"><p class="note__t">Where the app password comes from</p><div class="note__b"><p>Google, Yahoo and iCloud will not accept your normal password from a program. Turn on two-factor authentication, then generate an <b>app password</b> &mdash; a sixteen-character string issued for one application. Paste that into <code>Acc.Password</code>. Outlook.com no longer offers this route at all: it is OAuth2 or nothing, which the Programmer's Guide covers.</p></div></aside>
+<h2 id="handcoded">Building it by hand</h2>
+<p>The class files pull themselves into the build through their <code>LINK</code> attribute, and <code>EmailNetClass.clw</code> pulls in the C through its <code>PRAGMA</code>, so a hand-coded project needs no file list. It does need the two link-mode defines that the template would otherwise write for you:</p>
+<pre class="code" data-lang="xml"><code>&lt;Project DefaultTargets=&quot;Build&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
+  &lt;PropertyGroup&gt;
+    &lt;DefineConstants&gt;_ABCDllMode_=&amp;gt;0%3b_ABCLinkMode_=&amp;gt;1%3b_emailToDllMode_=&amp;gt;0%3b_emailToLinkMode_=&amp;gt;1&lt;/DefineConstants&gt;
+  &lt;/PropertyGroup&gt;
+&lt;/Project&gt;</code></pre>
+<aside class="note note--danger"><p class="note__t">Leaving the defines out does not fail to link</p><div class="note__b"><p>Without <code>_emailToLinkMode_</code> the classes link as <em>imports</em> from a DLL that is not there, and the program takes an access violation inside a constructor before <code>main()</code> runs. The call stack shows nothing of yours on it, so it looks like anything except a project setting.</p></div></aside>
+<h2 id="fromappgen">The same thing from AppGen</h2>
+<p>Two steps, and no code:</p>
+<ol class="b"><li><b>Global Properties &rarr; Extensions &rarr; Insert &rarr; emailTo - Global.</b> Fill in the Account tab: provider, from address, user name. That declares the object, sets the defaults and loads the stored account at start-up.</li><li><b>Drag <i>emailTo - E-mail button</i> onto a window.</b> Choose what it does &mdash; open the compose window, send a fixed message, or open the account setup window &mdash; and you are finished.</li></ol>
+<aside class="note note--tip"><p class="note__t">The account is set once, not per button</p><div class="note__b"><p>Step 1 is where the sender lives &mdash; server, from address, user name, password, OAuth2 client. Step 2 never asks for any of it. That division is the whole point: put five e-mail buttons on five windows and there is still exactly one account, in one place, for the whole application.</p><p>To let the <em>user</em> change it at run time, give them a button whose action is <b>open the account setup window</b>. What they save there overrides the Account tab.</p></div></aside>
+<p>From any embed anywhere else in the application, the object is simply there:</p>
+<pre class="code code--use" data-lang="use"><code>Mailer.SendSimple(Cus:Email, &#x27;Your statement&#x27;, &#x27;Attached.&#x27;, Loc:PdfName)</code></pre>
+<h2 id="attachments">A message with more in it</h2>
+<p><code>SendSimple</code> covers a note with one attachment. Anything richer is built on <code>Mailer.Msg</code> and handed to <code>Send</code>:</p>
+<pre class="code" data-lang="clarion"><code>  Mailer.Msg.ClearAll()
+  Mailer.Msg.AddTo(&#x27;bob@example.com&#x27;, &#x27;Bob Smith&#x27;)
+  Mailer.Msg.AddCc(&#x27;accounts@acme.com&#x27;)
+  Mailer.Msg.SetSubject(&#x27;Invoice &#x27; &amp; CLIP(Inv:Number))
+  Mailer.Msg.SetText(&#x27;The invoice is attached.&#x27;)
+  Mailer.Msg.SetHtml(&#x27;&lt;p&gt;The invoice is &lt;b&gt;attached&lt;/b&gt;.&lt;/p&gt;&#x27;)
+  Mailer.Msg.Attach(&#x27;C:\invoices\INV-1042.pdf&#x27;)
+
+  IF NOT Mailer.Send(Mailer.Msg)
+    Mailer.ShowError()
+  END</code></pre>
+<p>You do not tell it what kind of MIME document to build. Text alone is <code>text/plain</code>; text and HTML together become <code>multipart/alternative</code>; an inline image makes it <code>multipart/related</code>; a file attachment wraps the lot in <code>multipart/mixed</code>. A plain note does not arrive as a four-part tree.</p>
+<h2 id="oauthsetup">Setting up OAuth2, step by step</h2>
+<p>This is the part that stops people, and almost always for one of two reasons: the redirect URI does not match, or the application was registered as the wrong type. Both are fixed at the provider, not in your code.</p>
+<h3 id="oauth-google">Google</h3>
+<ol class="b"><li>Go to <b>console.cloud.google.com</b> and pick or create a project.</li><li><b>APIs &amp; Services &rarr; OAuth consent screen.</b> Choose <b>External</b>, fill in the app name and your e-mail, and save. While it is in <b>Testing</b>, add your own address under <b>Test users</b> &mdash; a project in testing will refuse anybody who is not on that list.</li><li>Add the scope you actually need: <code>https://mail.google.com/</code> for SMTP, or <code>https://www.googleapis.com/auth/gmail.send</code> for the Gmail API.</li><li><b>Credentials &rarr; Create credentials &rarr; OAuth client ID</b>, and set Application type to <b>Desktop app</b>. Not Web application &mdash; a web client will not accept a loopback redirect.</li><li>Copy the <b>Client ID</b> into the Sign-in tab. Google may also show a client secret; paste it if there is one, leave it blank if there is not. Neither is sensitive here, because the flow is PKCE.</li></ol>
+<aside class="note"><p class="note__t">You do not register a redirect URI for a Google desktop client</p><div class="note__b"><p>Desktop clients may use any loopback port, so there is nothing to type. emailTo sends <code>http://127.0.0.1:&lt;port&gt;</code>, which is the form Google documents.</p></div></aside>
+<h3 id="oauth-microsoft">Microsoft &mdash; Outlook.com and Microsoft 365</h3>
+<ol class="b"><li>Go to <b>portal.azure.com &rarr; App registrations &rarr; New registration</b>.</li><li>For supported account types pick <b>Accounts in any organizational directory and personal Microsoft accounts</b> if you want both work and Outlook.com; that is the one that matches a Tenant of <code>common</code>.</li><li>Under <b>Redirect URI</b> choose the platform <b>Mobile and desktop applications</b> and tick <code>http://localhost</code>. This is the step people miss &mdash; leave the platform as Web and the sign-in is refused with a redirect URI error.</li><li><b>Authentication &rarr; Allow public client flows &rarr; Yes.</b></li><li><b>API permissions &rarr; Add a permission &rarr; Microsoft Graph &rarr; Delegated</b>. Add <code>Mail.Send</code> and <code>offline_access</code> for Graph, or <code>SMTP.Send</code> and <code>offline_access</code> for SMTP.</li><li>Copy the <b>Application (client) ID</b> into the Sign-in tab. Leave the client secret <b>blank</b> &mdash; a public client that sends one is rejected.</li></ol>
+<aside class="note note--warn"><p class="note__t">Match the redirect host to what you registered</p><div class="note__b"><p>Because Azure offers <code>http://localhost</code> and Google documents <code>http://127.0.0.1</code>, emailTo sends whichever one suits the provider you picked. It listens on <b>both</b> loopbacks either way, so a browser that resolves <code>localhost</code> to <code>::1</code> &mdash; which is what Windows does first &mdash; still arrives. If you registered something different, say so:</p><p><code>Mailer.OAuth.RedirectHost = '127.0.0.1'</code></p></div></aside>
+<h3 id="oauth-verify">Google says &ldquo;Access blocked&rdquo;</h3>
+<p><i>&ldquo;Access blocked: &lt;your app&gt; has not completed the Google verification process.&rdquo;</i> This is the consent screen refusing you, not emailTo failing, and it has two causes that produce almost the same wording. Which one you have is decided by your app&rsquo;s <b>publishing status</b>.</p>
+<div class="tw"><table class=""><thead><tr><th>Publishing status</th><th>What the block means</th><th>What to do</th></tr></thead><tbody><tr><td><b>Testing</b></td><td>The account you are signing in with is not on the Test users list. The screen usually adds &ldquo;currently being tested&hellip; developer-approved testers&rdquo;.</td><td>Google Auth Platform &rarr; <b>Audience</b> &rarr; <b>Test users</b> &rarr; Add users, and add the exact address you sign in with.</td></tr><tr><td><b>In production</b>, unverified, with <code>https://mail.google.com/</code></td><td>That is a <b>restricted</b> scope. Unverified, Google blocks it outright &mdash; there is no <i>Advanced</i> link to click past.</td><td>Either go back to Testing and use Test users, or switch to the <code>gmail.send</code> scope.</td></tr><tr><td><b>In production</b>, unverified, with <code>gmail.send</code></td><td>That is a <b>sensitive</b> scope, so you get a warning rather than a block.</td><td>Click <b>Advanced</b> &rarr; <b>Go to &lt;your app&gt;</b>. It is your own app; the warning is expected.</td></tr></tbody></table></div>
+<aside class="note note--warn"><p class="note__t">Publishing is not automatically the fix</p><div class="note__b"><p>Staying in <b>Testing</b> has its own cost: Google expires a refresh token after <b>seven days</b>, so a sign-in that worked stops working the following week. Publishing removes that &mdash; but only helps if your scope is <code>gmail.send</code>. Publish while asking for <code>https://mail.google.com/</code> and you trade a weekly re-login for a permanent wall.</p><p>So if you are going to use OAuth on Gmail, use the <b>Gmail API</b> transport. emailTo then asks for <code>gmail.send</code>, which is the narrower scope and the one you can publish unverified.</p></div></aside>
+<aside class="note note--tip"><p class="note__t">For a single Gmail account, an app password avoids all of this</p><div class="note__b"><p>No consent screen, no verification, no seven-day expiry, and nothing to register. Turn on 2-Step Verification, generate an app password at <b>myaccount.google.com/apppasswords</b>, and use it as the SMTP password &mdash; <b>with the spaces removed</b>. OAuth earns its keep when you are shipping to other people&rsquo;s mailboxes, or when a Workspace admin has turned app passwords off.</p></div></aside>
+<h3 id="oauth-run">Running it</h3>
+<p>Set the account to use OAuth, then press <b>Sign in&hellip;</b> in the setup window &mdash; or call it yourself:</p>
+<pre class="code" data-lang="clarion"><code>  Mailer.SetProvider(ETPrv:Office365)         ! or ETPrv:Gmail, or ETPrv:Outlook
+  Mailer.Acc.Transport = ETTrn:GraphApi       ! or ETTrn:Smtp with AuthMode XOAUTH2
+  Mailer.Acc.ClientId  = &#x27;11111111-2222-3333-4444-555555555555&#x27;
+  Mailer.Acc.TenantId  = &#x27;common&#x27;
+  Mailer.Acc.UserName  = &#x27;you@company.com&#x27;
+  Mailer.Acc.FromAddr  = &#x27;you@company.com&#x27;
+
+  IF Mailer.Authorize()                       ! browser opens, user consents
+    Mailer.SaveAccount()                      ! keeps the refresh token, sealed
+    MESSAGE(&#x27;Signed in.&#x27;)
+  ELSE
+    MESSAGE(CLIP(Mailer.LastErrorText))
+  END</code></pre>
+<p>Your browser opens at the provider. Sign in, agree to the permissions, and the page comes back saying you can close the tab. That is the whole of it: from then on the refresh token is stored and nobody sees a browser again.</p>
+<aside class="note note--tip"><p class="note__t">When it fails, read the URL</p><div class="note__b"><p>The exact address that was opened is kept in <code>Mailer.OAuth.LastAuthUrl</code>, and it is written to the log. Paste it into a browser by hand and the provider will tell you precisely what it objects to &mdash; which beats guessing from a generic failure.</p></div></aside>
+<div class="tw"><table class=""><thead><tr><th>What the provider says</th><th>What to change</th></tr></thead><tbody><tr><td><code>redirect_uri_mismatch</code></td><td>Google: the client is a Web application, not a Desktop app. Microsoft: the platform is Web, not Mobile and desktop.</td></tr><tr><td><code>invalid_client</code> / The OAuth client was not found</td><td>The Client ID is wrong, or belongs to a different project or tenant.</td></tr><tr><td><code>unauthorized_client</code></td><td>Microsoft: <b>Allow public client flows</b> is still No.</td></tr><tr><td><code>access_denied</code>, and you are a test user</td><td>Google: your address is not in Test users on the consent screen.</td></tr><tr><td>Sign-in works, the second send asks again</td><td>No refresh token was issued. Google needs the consent screen re-approved; emailTo already sends <code>access_type=offline&amp;prompt=consent</code>.</td></tr><tr><td>The browser opens and nothing ever comes back</td><td>Something is holding the loopback port. Pin one with <code>Mailer.OAuth.RedirectPort</code> and allow it through the firewall.</td></tr></tbody></table></div>
+<h2 id="ask">Who is blocked, and why</h2>
+<p>Sending is half of what a mail provider does. The other half is keeping a list of the addresses it will not deliver to &mdash; the ones that hard bounced, the people who pressed "this is junk", the ones who unsubscribed. Left alone that list stays on their web site, and your program keeps mailing addresses that can never arrive, which is exactly what ruins a sending reputation.</p>
+<p><code>EmailApiClass</code> reads it. One object, borrowing the account you already set up:</p>
+<pre class="code" data-lang="clarion"><code>  PROGRAM
+
+  INCLUDE(&#x27;EmailApiClass.INC&#x27;),ONCE
+
+  MAP
+  END
+
+Mailer   EmailToClass
+MailApi  EmailApiClass
+i        LONG
+
+  CODE
+  Mailer.Init(PATH() &amp; &#x27;\mail.ini&#x27;)
+  Mailer.LoadAccount()                        ! the key you stored in Setup
+  MailApi.Init(Mailer)                        ! borrows that account - no second copy
+
+  IF MailApi.GetSuppressions(ETSup:All) &lt; 0
+    MESSAGE(CLIP(MailApi.LastErrorText))
+  ELSE
+    LOOP i = 1 TO RECORDS(MailApi.SuppQ)
+      GET(MailApi.SuppQ, i)
+      !  MailApi.SuppQ.Address   who
+      !  MailApi.SuppQ.KindName  bounce / blocked / spam report / unsubscribed
+      !  MailApi.SuppQ.Reason    what the receiving server actually said
+      !  MailApi.SuppQ.WhenDate  when
+    END
+  END</code></pre>
+<p>That program works unchanged against all nine API providers. It has to, because they agree about almost nothing:</p>
+<div class="tw"><table class=""><thead><tr><th>Provider</th><th>Where the blocked addresses are</th><th>What a row looks like</th></tr></thead><tbody><tr><td>SendGrid</td><td>Five separate lists: bounces, blocks, spam_reports, unsubscribes, invalid_emails</td><td><code>email</code>, <code>reason</code>, a unix <code>created</code></td></tr><tr><td>Brevo</td><td>One list, <code>/smtp/blockedContacts</code>, with a reason CODE saying which kind it is</td><td><code>email</code>, <code>reason.message</code>, an ISO <code>blockedAt</code></td></tr><tr><td>Mailgun</td><td>Per DOMAIN, and paged with a cursor rather than an offset</td><td><code>address</code>, <code>error</code>, <code>code</code>, an RFC-2822 date</td></tr><tr><td>Postmark</td><td>A stream dump, plus a richer <code>/bounces</code> for bounces alone</td><td><code>EmailAddress</code>, <code>SuppressionReason</code> &mdash; capitalised</td></tr><tr><td>Mailjet</td><td>Everything wrapped in <code>Data</code>, capitalised throughout</td><td><code>ContactAlt</code>, <code>ErrorRelatedTo</code>, <code>ErrorCode</code></td></tr><tr><td>Amazon SES</td><td>Signed with SigV4 rather than a key in a header, and paged with a continuation token</td><td><code>EmailAddress</code>, <code>Reason</code> &mdash; BOUNCE or COMPLAINT</td></tr></tbody></table></div>
+<p>After <code>GetSuppressions()</code> they are one queue with the same columns, and <code>SuppQ.Kind</code> says which sort of block each row really is &mdash; worked out from the provider's own wording where the provider keeps them all in one list.</p>
+<aside class="note note--tip"><p class="note__t">Ask before you send</p><div class="note__b"><p><code>IsBlocked()</code> searches whatever the last <code>GetSuppressions()</code> loaded. Calling it in the loop that builds a mailing costs nothing and stops you sending to an address the provider is going to refuse anyway:</p><pre class="code"><code>IF MailApi.IsBlocked(CUS:EMail) THEN CYCLE.</code></pre></div></aside>
+<h2 id="ask-more">The rest of the account</h2>
+<p>The same object answers the other questions, and every one of them fills a queue of the same shape whoever the provider is:</p>
+<div class="tw"><table class=""><thead><tr><th>You want</th><th>Call</th><th>It fills</th></tr></thead><tbody><tr><td>Who is blocked</td><td><code>GetSuppressions(kind)</code></td><td><code>SuppQ</code></td></tr><tr><td>Let one back in</td><td><code>DeleteSuppression(address, kind)</code></td><td>&mdash;</td></tr><tr><td>Let them all back in</td><td><code>DeleteAllSuppressions(kind)</code></td><td>&mdash;</td></tr><tr><td>Statistics per day</td><td><code>GetStats(from, to)</code></td><td><code>StatQ</code></td></tr><tr><td>What happened to a message</td><td><code>GetEvents(from, to)</code></td><td><code>EventQ</code></td></tr><tr><td>Contacts and lists</td><td><code>GetContacts()</code> <code>GetLists()</code></td><td><code>ContactQ</code> <code>ListQ</code></td></tr><tr><td>Campaigns</td><td><code>GetCampaigns()</code> <code>SendCampaign(id)</code></td><td><code>CampaignQ</code></td></tr><tr><td>Templates, senders, domains, webhooks</td><td><code>GetTemplates()</code> &hellip;</td><td><code>TemplateQ</code> &hellip;</td></tr><tr><td>All of it, in a window</td><td><code>Manage()</code></td><td>&mdash;</td></tr></tbody></table></div>
+<p>No provider offers every one. <code>Supports()</code> says which, so a window can grey out what this account genuinely cannot do rather than failing when somebody presses it:</p>
+<pre class="code" data-lang="clarion"><code>  IF NOT MailApi.Supports(ETOp:Campaigns)
+    DISABLE(?Campaigns)                       ! Mailgun has no campaign API at all
+  END
+  IF NOT MailApi.Supports(ETOp:Suppressions)
+    DISABLE(?Blocked)                         ! Resend keeps no block list
+  END</code></pre>
+<aside class="note note--info"><p class="note__t">Or just show them the window</p><div class="note__b"><p><code>MailApi.Manage()</code> is a complete tabbed window over all of it &mdash; blocked addresses with their reasons, unblock one or unblock every one, a CSV export, statistics, activity, contacts, lists, campaigns, templates, senders, domains and webhooks. Tabs this provider cannot answer are disabled rather than empty. The <b>emailTo - Mail account button</b> control template drops a button that opens it, on whichever tab you name.</p></div></aside>
+<h2 id="demo">The demo</h2>
+<p><code>examples/emailTo/emailToDemo.clw</code> is the hand-coded equivalent of what the templates generate: a window with <b>Account setup</b>, <b>Write a message</b> and <b>Send a test</b>, and the conversation log underneath. Build it and press the buttons before wiring anything into your own application.</p>
+<pre class="code" data-lang="dos"><code>MSBuild emailToDemo.cwproj -t:Build -p:Configuration=Debug -p:Platform=Win32
+emailToDemo.exe            ! the demo window
+emailToDemo.exe /setup     ! straight to the account window</code></pre>
+<p><b>Test account</b> is the button to press first. It connects, negotiates TLS and authenticates, then hangs up &mdash; it sends nothing to anybody, so you can prove the credentials without mailing a real person.</p>
+<h2 id="firstrun">When the first send does not work</h2>
+<p>Turn the log on (<code>Mailer.Trace = 1</code>) and read the Log tab of the setup window. Every line the server said is there, with passwords masked. These are the answers that come up first:</p>
+<div class="tw"><table class=""><thead><tr><th>What you see</th><th>What it means</th></tr></thead><tbody><tr><td><code>The password was refused</code> on Gmail</td><td>A normal password, not an app password. Or two-factor is off, so Google will not issue one.</td></tr><tr><td><code>The password was refused</code> on Outlook.com</td><td>Microsoft turned basic authentication off for personal accounts. Use OAuth2.</td></tr><tr><td><code>The TLS handshake failed</code>, Windows code 590624</td><td>That is <code>SEC_I_INCOMPLETE_CREDENTIALS</code>. emailTo already handles it; if you see it, you are running an older copy of <code>emailc.c</code>.</td></tr><tr><td><code>Could not connect to the mail server</code></td><td>A firewall, or the wrong port. 587 is STARTTLS, 465 is implicit TLS, 25 is plain.</td></tr><tr><td><code>The sender was refused</code></td><td>The From address is not one the account is allowed to send as.</td></tr><tr><td><code>Illegal data type: EMAILTOCLASS</code> at compile time</td><td>The includes arrived with LF line endings. Convert them to CRLF.</td></tr></tbody></table></div>
+<div class="next"><a href="https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0"><b>Programmer&#x27;s Guide &rarr;</b><span>How it works, and how to make it do things</span></a><a href="https://claude.ai/code/artifact/d8272efa-aa88-4ab6-a61d-79d147907f01"><b>Template Guide &rarr;</b><span>Every template, tab, prompt and embed</span></a><a href="https://claude.ai/code/artifact/c98d7cfa-04e7-45ab-9054-9186cc2fbba5"><b>Reference &rarr;</b><span>Every class, method, property and equate</span></a></div>
+    <footer>emailTo &mdash; four volumes. The reference is generated from the five include files, so its signatures are the ones in the build.</footer>
+  </div>
+</main>
+</div>
+<script>
+const q = document.getElementById('filter');
+if (q) {
+  const rows = [...document.querySelectorAll('tr.fn')];
+  q.addEventListener('input', () => {
+    const t = q.value.trim().toLowerCase();
+    rows.forEach(r => r.classList.toggle('hide', t && !r.dataset.k.includes(t)));
+    document.querySelectorAll('.tw').forEach(w => {
+      const body = w.querySelector('tbody');
+      if (!body) return;
+      const any = [...body.querySelectorAll('tr')].some(r => !r.classList.contains('hide'));
+      const h = w.previousElementSibling;
+      w.classList.toggle('hide', !any);
+      if (h && h.tagName === 'H3') h.classList.toggle('hide', !any);
+    });
+  });
+}
+/*  Which sidebar entry is lit.  An IntersectionObserver was the wrong
+    instrument: one click crosses several headings at once, every one of them
+    arrives in a single callback, and the last entry processed won - so the
+    highlight settled one or two sections past the one that was clicked, and
+    the page looked as though it had jumped there.  Position is the question,
+    so ask position.  */
+const links = [...document.querySelectorAll('.nav__l a')];
+if (links.length) {
+  const byId  = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const marks = [...document.querySelectorAll('h2[id],h3[id]')].filter(h => byId.has(h.id));
+  const light = a => links.forEach(l => l.classList.toggle('on', l === a));
+  let held = null, holdUntil = 0, queued = false;
+
+  function spy() {
+    queued = false;
+    if (held) { light(held); return; }
+    let cur = marks[0];
+    for (const h of marks) {
+      if (h.getBoundingClientRect().top <= 120) cur = h; else break;
+    }
+    //  the foot of the page belongs to the last section, however short it is
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2)
+      cur = marks[marks.length - 1];
+    if (cur) light(byId.get(cur.id));
+  }
+
+  //  a click owns the highlight until the scroll it started has landed
+  links.forEach(a => a.addEventListener('click', () => {
+    held = a; holdUntil = performance.now() + 700; light(a);
+  }));
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(spy); } };
+  addEventListener('scroll', () => {
+    if (held && performance.now() > holdUntil) held = null;
+    later();
+  }, {passive: true});
+  addEventListener('resize', later);
+  if (marks.length) spy();
+}
+</script>

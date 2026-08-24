@@ -1,0 +1,4 @@
+# Python bytecode from build-docs.py. Its own .gitignore rather than the
+# repo-wide one, so this stays a local concern of the docs generator.
+__pycache__/
+*.pyc

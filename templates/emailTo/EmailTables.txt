@@ -1,0 +1,167 @@
+emailTo - the settings table
+============================
+
+  -------------------------------------------------------------------------
+  THERE IS A READY-MADE DICTIONARY.  You do not have to build any of this by
+  hand:
+
+      emailToTables.dctx        Dictionary Editor > File > Import, and pick
+                                the DCTX / XML entry.
+
+  It holds the account table below AND the six tables the sync template
+  fills - MailBlocked, MailStat, MailEvent, MailContact, MailList and
+  MailCampaign.
+
+  NOT emailToTables.txd.  A .txd is Report Writer's format, and the
+  Dictionary Editor refuses it outright: "This TXD file is a Report Writer
+  only format".  It ships only for ClarionCL /di, which builds a whole
+  dictionary from text rather than importing into an existing one.
+
+  The rest of this file is the account structure written out, for anyone who
+  would rather add it by hand or map onto a table they already have.
+  -------------------------------------------------------------------------
+
+The emailToGlobal extension can keep the mail account in a table of your own
+instead of an INI file (Global Properties > Extensions > emailToGlobal >
+Table tab). Nominate the table, pick the key, map a column onto each account
+field, and the template generates the LoadAccount / SaveAccount code for you.
+
+This file is the structure that mapping expects. Paste it into your dictionary
+(File > Import > Text) or build it by hand - the column NAMES do not matter,
+only what you map them to.
+
+  -------------------------------------------------------------------------
+  IMPORTANT - the four secrets
+
+  Password, ClientSecret, RefreshToken, ApiKey and ApiKey2 are written
+  through Seal():
+  DPAPI encrypts them for the current Windows user, then base64 makes the
+  result safe for a text column. That means
+
+      * the stored value is 3 to 4 times longer than what was typed, and
+      * a row copied to another machine, or read by another Windows user,
+        decrypts to nothing.
+
+  So size those columns generously (see below), and if several people share
+  one account on one machine, let each of them run the Setup window once.
+
+  A value you type into the column BY HAND, in plain text, still works:
+  Unseal() recognises that it is not one of its own and hands it back
+  unchanged. Handy for seeding a test row.
+  -------------------------------------------------------------------------
+
+
+TopSpeed / SQL structure
+------------------------
+
+MailAcct             FILE,DRIVER('TopSpeed'),PRE(MAI),CREATE,BINDABLE,THREAD
+ByName                 KEY(MAI:Name),NOCASE,OPT,PRIMARY
+Record                 RECORD,PRE()
+Name                     CSTRING(65)      ! the account label: 'default', 'billing', ...
+Provider                 BYTE             ! 0 other, 1 Gmail, 2 Outlook.com, 3 Microsoft 365,
+                                          !   4 Yahoo, 5 iCloud, 6 Zoho, 7 Amazon SES,
+                                          !   8 SendGrid, 9 Mailgun, 10 Resend, 11 Brevo,
+                                          !   12 Postmark, 13 Mailjet, 14 SparkPost,
+                                          !   15 MailerSend
+Transport                BYTE             ! 1 SMTP, 2 Gmail API, 3 MS Graph, 4 provider API key
+Host                     CSTRING(129)     ! smtp.gmail.com
+Port                     LONG             ! 587
+Security                 BYTE             ! 0 none, 1 STARTTLS, 2 TLS/SSL
+AuthMode                 BYTE             ! 0 none, 1 AUTH LOGIN, 2 AUTH PLAIN, 3 XOAUTH2
+UserName                 CSTRING(256)
+Password                 CSTRING(513)     ! SEALED - hold 4x the real password
+FromAddr                 CSTRING(256)
+FromName                 CSTRING(129)
+ReplyTo                  CSTRING(256)
+ClientId                 CSTRING(256)     ! OAuth2 - not secret, stored as typed
+ClientSecret             CSTRING(513)     ! SEALED
+TenantId                 CSTRING(129)     ! Microsoft: common / organizations / a GUID
+RefreshToken             CSTRING(2049)    ! SEALED - the long-lived OAuth2 grant
+ApiKey                   CSTRING(1025)    ! SEALED
+ApiKey2                  CSTRING(1025)    ! SEALED - the second credential, where a
+                                          !   provider has one: Postmark's ACCOUNT token,
+                                          !   which its senders and domains endpoints
+                                          !   want instead of the server token
+ApiDomain                CSTRING(129)     ! Mailgun: the domain you send from.
+                                          !   MailerSend: the domain id
+ApiRegion                CSTRING(33)      ! 'eu' picks a provider's European endpoint
+                                          !   (Mailgun, SparkPost); otherwise blank
+ApiBase                  CSTRING(129)     ! replaces the provider's host - and its
+                                          !   scheme, if you give one. For a private
+                                          !   relay, or for pointing a test build at a
+                                          !   stand-in. Blank in production.
+                       END
+                     END
+
+
+How the columns are used
+------------------------
+
+Only ACCOUNT NAME is required. Every other mapping is optional: a column you
+leave unmapped simply keeps whatever the extension's Account tab set, so you
+can put the server in the template and only the credential in the table.
+
+  Load    at start-up, the template does
+              MAI:Name = '<the account you named>'
+              GET(MailAcct, MAI:ByName)
+          and copies every mapped column into the object. If the GET fails,
+          the compiled-in defaults stand and nothing is reported - a first run
+          with an empty table is normal, not an error.
+
+  Save    the Setup window's Save button calls SaveAccount(), which GETs the
+          same row, updates every mapped column and PUTs it. If the row is not
+          there and "Create the row if it is missing" is ticked, it ADDs it.
+
+  Open    both methods call Access:MailAcct.Open() and .Close() around their
+          work. Those are reference-counted, so it is safe whether or not the
+          table is already open elsewhere in the program.
+
+
+Per-user accounts
+-----------------
+
+To give every operator their own mailbox, make the account name the thing that
+varies - map ACCOUNT NAME to a column holding the user id, and load it with
+that id instead of 'default':
+
+    Mailer.LoadAccount(Glo:UserId)
+
+Set "Account to load at start-up" to blank in the template and call
+LoadAccount yourself once you know who has logged in.
+
+
+The management API uses the same row
+------------------------------------
+
+EmailApiClass - the object the Provider API tab declares - borrows this
+account rather than keeping one of its own. So the key stored here is the key
+that reads the block list, the statistics and the campaigns; there is nothing
+else to configure and no second copy of a credential anywhere.
+
+Three of the columns above exist only for it:
+
+  ApiKey2    Postmark alone needs two tokens. Sending and reading bounces use
+             the SERVER token in ApiKey; senders and domains belong to the
+             account, and want the ACCOUNT token. Leave it blank for everybody
+             else.
+
+  ApiRegion  Mailgun and SparkPost run separate European services with their
+             own hostnames and their own data. An account created there cannot
+             be read at the default endpoint at all - it comes back as "not
+             found", which looks exactly like an empty block list. Put eu here
+             and the class talks to api.eu.mailgun.net / api.eu.sparkpost.com.
+
+  ApiBase    Everything else: a relay of your own, an endpoint a provider has
+             moved, or a stand-in server while you are still writing the code.
+             It replaces the host, and the scheme too if you spell one out
+             (http://... is honoured, which is what makes a local test double
+             possible without a certificate).
+
+
+Sharing one account across a multi-DLL suite
+--------------------------------------------
+
+Add the emailToGlobal extension to every app in the suite. The app that owns
+the data (External: None) compiles the classes in, exports them and owns the
+mail object; the others import it. Only the owner needs the table mapping -
+the rest reach the same loaded account through the shared object.

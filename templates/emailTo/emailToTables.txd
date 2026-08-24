@@ -1,0 +1,679 @@
+[VERSION2]
+[DICTIONARY]
+
+
+
+
+[FILES]
+
+[USEROPTION]
+!Version(2)
+MailAcct FILE,DRIVER('TOPSPEED'),NAME('MailAcct'),PRE(MAI),BINDABLE,CREATE,THREAD
+!!> IDENT(101),USAGE(File)
+ByName KEY(MAI:Name),NOCASE,PRIMARY
+!!> IDENT(102)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('Name:'),USE(?MAI:Name:Prompt)
+! ENTRY(@s64),USE(MAI:Name)
+[REPORTCONTROLS]
+! STRING(@s64),USE(MAI:Name)
+Name STRING(64)
+!!> IDENT(103),PROMPT('Name:'),HEADER('Name'),TOOLTIP('The account label: ''default'', ''billing''...'),PICTURE(@s64)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MAI:Provider:Prompt)
+! ENTRY(@n3),USE(MAI:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MAI:Provider)
+Provider BYTE
+!!> IDENT(104),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('0 other, 1 Gmail ... 14 SparkPost, 15 MailerSend'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Transport:'),USE(?MAI:Transport:Prompt)
+! ENTRY(@n3),USE(MAI:Transport)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MAI:Transport)
+Transport BYTE
+!!> IDENT(105),PROMPT('Transport:'),HEADER('Transport'),TOOLTIP('1 SMTP, 2 Gmail API, 3 MS Graph, 4 provider API key'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Host:'),USE(?MAI:Host:Prompt)
+! ENTRY(@s128),USE(MAI:Host)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MAI:Host)
+Host STRING(128)
+!!> IDENT(106),PROMPT('Host:'),HEADER('Host'),TOOLTIP('smtp.gmail.com'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Port:'),USE(?MAI:Port:Prompt)
+! ENTRY(@n-14),USE(MAI:Port)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MAI:Port)
+Port LONG
+!!> IDENT(107),PROMPT('Port:'),HEADER('Port'),TOOLTIP('587'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Security:'),USE(?MAI:Security:Prompt)
+! ENTRY(@n3),USE(MAI:Security)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MAI:Security)
+Security BYTE
+!!> IDENT(108),PROMPT('Security:'),HEADER('Security'),TOOLTIP('0 none, 1 STARTTLS, 2 TLS/SSL'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Auth Mode:'),USE(?MAI:AuthMode:Prompt)
+! ENTRY(@n3),USE(MAI:AuthMode)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MAI:AuthMode)
+AuthMode BYTE
+!!> IDENT(109),PROMPT('Auth Mode:'),HEADER('Auth Mode'),TOOLTIP('0 none, 1 AUTH LOGIN, 2 AUTH PLAIN, 3 XOAUTH2'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('User Name:'),USE(?MAI:UserName:Prompt)
+! ENTRY(@s255),USE(MAI:UserName)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MAI:UserName)
+UserName STRING(255)
+!!> IDENT(110),PROMPT('User Name:'),HEADER('User Name'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Password:'),USE(?MAI:Password:Prompt)
+! ENTRY(@s512),USE(MAI:Password)
+[REPORTCONTROLS]
+! STRING(@s512),USE(MAI:Password)
+Password STRING(512)
+!!> IDENT(111),PROMPT('Password:'),HEADER('Password'),TOOLTIP('SEALED - DPAPI + base64, so 4x the real length'),PICTURE(@s512)
+[SCREENCONTROLS]
+! PROMPT('From Addr:'),USE(?MAI:FromAddr:Prompt)
+! ENTRY(@s255),USE(MAI:FromAddr)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MAI:FromAddr)
+FromAddr STRING(255)
+!!> IDENT(112),PROMPT('From Addr:'),HEADER('From Addr'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('From Name:'),USE(?MAI:FromName:Prompt)
+! ENTRY(@s128),USE(MAI:FromName)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MAI:FromName)
+FromName STRING(128)
+!!> IDENT(113),PROMPT('From Name:'),HEADER('From Name'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Reply To:'),USE(?MAI:ReplyTo:Prompt)
+! ENTRY(@s255),USE(MAI:ReplyTo)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MAI:ReplyTo)
+ReplyTo STRING(255)
+!!> IDENT(114),PROMPT('Reply To:'),HEADER('Reply To'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Client Id:'),USE(?MAI:ClientId:Prompt)
+! ENTRY(@s255),USE(MAI:ClientId)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MAI:ClientId)
+ClientId STRING(255)
+!!> IDENT(115),PROMPT('Client Id:'),HEADER('Client Id'),TOOLTIP('OAuth2 - not secret, stored as typed'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Client Secret:'),USE(?MAI:ClientSecret:Prompt)
+! ENTRY(@s512),USE(MAI:ClientSecret)
+[REPORTCONTROLS]
+! STRING(@s512),USE(MAI:ClientSecret)
+ClientSecret STRING(512)
+!!> IDENT(116),PROMPT('Client Secret:'),HEADER('Client Secret'),TOOLTIP('SEALED'),PICTURE(@s512)
+[SCREENCONTROLS]
+! PROMPT('Tenant Id:'),USE(?MAI:TenantId:Prompt)
+! ENTRY(@s128),USE(MAI:TenantId)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MAI:TenantId)
+TenantId STRING(128)
+!!> IDENT(117),PROMPT('Tenant Id:'),HEADER('Tenant Id'),TOOLTIP('Microsoft: common / organizations / a GUID'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Refresh Token:'),USE(?MAI:RefreshToken:Prompt)
+! ENTRY(@s2048),USE(MAI:RefreshToken)
+[REPORTCONTROLS]
+! STRING(@s2048),USE(MAI:RefreshToken)
+RefreshToken STRING(2048)
+!!> IDENT(118),PROMPT('Refresh Token:'),HEADER('Refresh Token'),TOOLTIP('SEALED - the long-lived OAuth2 grant'),PICTURE(@s2048)
+[SCREENCONTROLS]
+! PROMPT('Api Key:'),USE(?MAI:ApiKey:Prompt)
+! ENTRY(@s1024),USE(MAI:ApiKey)
+[REPORTCONTROLS]
+! STRING(@s1024),USE(MAI:ApiKey)
+ApiKey STRING(1024)
+!!> IDENT(119),PROMPT('Api Key:'),HEADER('Api Key'),TOOLTIP('SEALED'),PICTURE(@s1024)
+[SCREENCONTROLS]
+! PROMPT('Api Key2:'),USE(?MAI:ApiKey2:Prompt)
+! ENTRY(@s1024),USE(MAI:ApiKey2)
+[REPORTCONTROLS]
+! STRING(@s1024),USE(MAI:ApiKey2)
+ApiKey2 STRING(1024)
+!!> IDENT(120),PROMPT('Api Key2:'),HEADER('Api Key2'),TOOLTIP('SEALED - Postmark account token'),PICTURE(@s1024)
+[SCREENCONTROLS]
+! PROMPT('Api Domain:'),USE(?MAI:ApiDomain:Prompt)
+! ENTRY(@s128),USE(MAI:ApiDomain)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MAI:ApiDomain)
+ApiDomain STRING(128)
+!!> IDENT(121),PROMPT('Api Domain:'),HEADER('Api Domain'),TOOLTIP('Mailgun sending domain; MailerSend domain id'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Api Region:'),USE(?MAI:ApiRegion:Prompt)
+! ENTRY(@s32),USE(MAI:ApiRegion)
+[REPORTCONTROLS]
+! STRING(@s32),USE(MAI:ApiRegion)
+ApiRegion STRING(32)
+!!> IDENT(122),PROMPT('Api Region:'),HEADER('Api Region'),TOOLTIP('''eu'' for a European Mailgun / SparkPost account'),PICTURE(@s32)
+[SCREENCONTROLS]
+! PROMPT('Api Base:'),USE(?MAI:ApiBase:Prompt)
+! ENTRY(@s128),USE(MAI:ApiBase)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MAI:ApiBase)
+ApiBase STRING(128)
+!!> IDENT(123),PROMPT('Api Base:'),HEADER('Api Base'),TOOLTIP('Replaces the host, and the scheme if you give one'),PICTURE(@s128)
+                         END
+                       END
+
+[USEROPTION]
+!Version(2)
+MailBlocked FILE,DRIVER('TOPSPEED'),NAME('MailBlocked'),PRE(MBL),BINDABLE,CREATE,THREAD
+!!> IDENT(124),USAGE(File)
+ByAddress KEY(MBL:Provider,MBL:Address,MBL:Kind),NOCASE,PRIMARY
+!!> IDENT(125)
+ByKind KEY(MBL:Provider,MBL:Kind,MBL:Address),DUP,NOCASE,OPT
+!!> IDENT(126)
+ByDate KEY(MBL:Provider,MBL:BlockedOn),DUP,NOCASE,OPT
+!!> IDENT(127)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('Address:'),USE(?MBL:Address:Prompt)
+! ENTRY(@s255),USE(MBL:Address)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MBL:Address)
+Address STRING(255)
+!!> IDENT(128),PROMPT('Address:'),HEADER('Address'),TOOLTIP('The blocked address'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Kind:'),USE(?MBL:Kind:Prompt)
+! ENTRY(@n3),USE(MBL:Kind)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MBL:Kind)
+Kind BYTE
+!!> IDENT(129),PROMPT('Kind:'),HEADER('Kind'),TOOLTIP('1 bounce, 2 blocked, 3 spam, 4 unsub, 5 invalid'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Kind Name:'),USE(?MBL:KindName:Prompt)
+! ENTRY(@s32),USE(MBL:KindName)
+[REPORTCONTROLS]
+! STRING(@s32),USE(MBL:KindName)
+KindName STRING(32)
+!!> IDENT(130),PROMPT('Kind Name:'),HEADER('Kind Name'),TOOLTIP('The same, in words, in the object language'),PICTURE(@s32)
+[SCREENCONTROLS]
+! PROMPT('Reason:'),USE(?MBL:Reason:Prompt)
+! ENTRY(@s255),USE(MBL:Reason)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MBL:Reason)
+Reason STRING(255)
+!!> IDENT(131),PROMPT('Reason:'),HEADER('Reason'),TOOLTIP('What the receiving server actually said'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Code:'),USE(?MBL:Code:Prompt)
+! ENTRY(@n-14),USE(MBL:Code)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MBL:Code)
+Code LONG
+!!> IDENT(132),PROMPT('Code:'),HEADER('Code'),TOOLTIP('The SMTP status, where the provider keeps one'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Blocked On:'),USE(?MBL:BlockedOn:Prompt)
+! ENTRY(@d17),USE(MBL:BlockedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MBL:BlockedOn)
+BlockedOn DATE
+!!> IDENT(133),PROMPT('Blocked On:'),HEADER('Blocked On'),PICTURE(@d17)
+[SCREENCONTROLS]
+! PROMPT('Blocked At:'),USE(?MBL:BlockedAt:Prompt)
+! ENTRY(@t7),USE(MBL:BlockedAt)
+[REPORTCONTROLS]
+! STRING(@t7),USE(MBL:BlockedAt)
+BlockedAt TIME
+!!> IDENT(134),PROMPT('Blocked At:'),HEADER('Blocked At'),PICTURE(@t7)
+[SCREENCONTROLS]
+! PROMPT('Ref:'),USE(?MBL:Ref:Prompt)
+! ENTRY(@s64),USE(MBL:Ref)
+[REPORTCONTROLS]
+! STRING(@s64),USE(MBL:Ref)
+Ref STRING(64)
+!!> IDENT(135),PROMPT('Ref:'),HEADER('Ref'),TOOLTIP('The provider''s own id - some delete by it, not by address'),PICTURE(@s64)
+[SCREENCONTROLS]
+! PROMPT('Sender:'),USE(?MBL:Sender:Prompt)
+! ENTRY(@s255),USE(MBL:Sender)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MBL:Sender)
+Sender STRING(255)
+!!> IDENT(136),PROMPT('Sender:'),HEADER('Sender'),TOOLTIP('Which of your senders it happened to'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MBL:Provider:Prompt)
+! ENTRY(@n3),USE(MBL:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MBL:Provider)
+Provider BYTE
+!!> IDENT(137),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('Which provider this row came from (ETPrv:...)'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Synced On:'),USE(?MBL:SyncedOn:Prompt)
+! ENTRY(@d17),USE(MBL:SyncedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MBL:SyncedOn)
+SyncedOn DATE
+!!> IDENT(138),PROMPT('Synced On:'),HEADER('Synced On'),TOOLTIP('When the sync last wrote this row'),PICTURE(@d17)
+                         END
+                       END
+
+[USEROPTION]
+!Version(2)
+MailStat FILE,DRIVER('TOPSPEED'),NAME('MailStat'),PRE(MST),BINDABLE,CREATE,THREAD
+!!> IDENT(139),USAGE(File)
+ByDate KEY(MST:Provider,MST:StatDate),NOCASE,PRIMARY
+!!> IDENT(140)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('Stat Date:'),USE(?MST:StatDate:Prompt)
+! ENTRY(@d17),USE(MST:StatDate)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MST:StatDate)
+StatDate DATE
+!!> IDENT(141),PROMPT('Stat Date:'),HEADER('Stat Date'),PICTURE(@d17)
+[SCREENCONTROLS]
+! PROMPT('Requests:'),USE(?MST:Requests:Prompt)
+! ENTRY(@n-14),USE(MST:Requests)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Requests)
+Requests LONG
+!!> IDENT(142),PROMPT('Requests:'),HEADER('Requests'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Delivered:'),USE(?MST:Delivered:Prompt)
+! ENTRY(@n-14),USE(MST:Delivered)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Delivered)
+Delivered LONG
+!!> IDENT(143),PROMPT('Delivered:'),HEADER('Delivered'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Opens:'),USE(?MST:Opens:Prompt)
+! ENTRY(@n-14),USE(MST:Opens)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Opens)
+Opens LONG
+!!> IDENT(144),PROMPT('Opens:'),HEADER('Opens'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Unique Opens:'),USE(?MST:UniqueOpens:Prompt)
+! ENTRY(@n-14),USE(MST:UniqueOpens)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:UniqueOpens)
+UniqueOpens LONG
+!!> IDENT(145),PROMPT('Unique Opens:'),HEADER('Unique Opens'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Clicks:'),USE(?MST:Clicks:Prompt)
+! ENTRY(@n-14),USE(MST:Clicks)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Clicks)
+Clicks LONG
+!!> IDENT(146),PROMPT('Clicks:'),HEADER('Clicks'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Unique Clicks:'),USE(?MST:UniqueClicks:Prompt)
+! ENTRY(@n-14),USE(MST:UniqueClicks)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:UniqueClicks)
+UniqueClicks LONG
+!!> IDENT(147),PROMPT('Unique Clicks:'),HEADER('Unique Clicks'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Hard Bounces:'),USE(?MST:HardBounces:Prompt)
+! ENTRY(@n-14),USE(MST:HardBounces)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:HardBounces)
+HardBounces LONG
+!!> IDENT(148),PROMPT('Hard Bounces:'),HEADER('Hard Bounces'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Soft Bounces:'),USE(?MST:SoftBounces:Prompt)
+! ENTRY(@n-14),USE(MST:SoftBounces)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:SoftBounces)
+SoftBounces LONG
+!!> IDENT(149),PROMPT('Soft Bounces:'),HEADER('Soft Bounces'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Blocks:'),USE(?MST:Blocks:Prompt)
+! ENTRY(@n-14),USE(MST:Blocks)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Blocks)
+Blocks LONG
+!!> IDENT(150),PROMPT('Blocks:'),HEADER('Blocks'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Spam Reports:'),USE(?MST:SpamReports:Prompt)
+! ENTRY(@n-14),USE(MST:SpamReports)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:SpamReports)
+SpamReports LONG
+!!> IDENT(151),PROMPT('Spam Reports:'),HEADER('Spam Reports'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Unsubscribed:'),USE(?MST:Unsubscribed:Prompt)
+! ENTRY(@n-14),USE(MST:Unsubscribed)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Unsubscribed)
+Unsubscribed LONG
+!!> IDENT(152),PROMPT('Unsubscribed:'),HEADER('Unsubscribed'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Invalid:'),USE(?MST:Invalid:Prompt)
+! ENTRY(@n-14),USE(MST:Invalid)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MST:Invalid)
+Invalid LONG
+!!> IDENT(153),PROMPT('Invalid:'),HEADER('Invalid'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MST:Provider:Prompt)
+! ENTRY(@n3),USE(MST:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MST:Provider)
+Provider BYTE
+!!> IDENT(154),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('Which provider this row came from (ETPrv:...)'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Synced On:'),USE(?MST:SyncedOn:Prompt)
+! ENTRY(@d17),USE(MST:SyncedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MST:SyncedOn)
+SyncedOn DATE
+!!> IDENT(155),PROMPT('Synced On:'),HEADER('Synced On'),TOOLTIP('When the sync last wrote this row'),PICTURE(@d17)
+                         END
+                       END
+
+[USEROPTION]
+!Version(2)
+MailEvent FILE,DRIVER('TOPSPEED'),NAME('MailEvent'),PRE(MEV),BINDABLE,CREATE,THREAD
+!!> IDENT(156),USAGE(File)
+ByStamp KEY(MEV:Provider,MEV:Address,MEV:EventDate,MEV:EventTime,MEV:EventName),NOCASE,PRIMARY
+!!> IDENT(157)
+ByDate KEY(MEV:Provider,MEV:EventDate,MEV:EventTime),DUP,NOCASE,OPT
+!!> IDENT(158)
+ByAddress KEY(MEV:Provider,MEV:Address,MEV:EventDate),DUP,NOCASE,OPT
+!!> IDENT(159)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('Event Date:'),USE(?MEV:EventDate:Prompt)
+! ENTRY(@d17),USE(MEV:EventDate)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MEV:EventDate)
+EventDate DATE
+!!> IDENT(160),PROMPT('Event Date:'),HEADER('Event Date'),PICTURE(@d17)
+[SCREENCONTROLS]
+! PROMPT('Event Time:'),USE(?MEV:EventTime:Prompt)
+! ENTRY(@t7),USE(MEV:EventTime)
+[REPORTCONTROLS]
+! STRING(@t7),USE(MEV:EventTime)
+EventTime TIME
+!!> IDENT(161),PROMPT('Event Time:'),HEADER('Event Time'),PICTURE(@t7)
+[SCREENCONTROLS]
+! PROMPT('Address:'),USE(?MEV:Address:Prompt)
+! ENTRY(@s255),USE(MEV:Address)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MEV:Address)
+Address STRING(255)
+!!> IDENT(162),PROMPT('Address:'),HEADER('Address'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Event Name:'),USE(?MEV:EventName:Prompt)
+! ENTRY(@s32),USE(MEV:EventName)
+[REPORTCONTROLS]
+! STRING(@s32),USE(MEV:EventName)
+EventName STRING(32)
+!!> IDENT(163),PROMPT('Event Name:'),HEADER('Event Name'),TOOLTIP('delivered / opened / clicked / bounced / spam'),PICTURE(@s32)
+[SCREENCONTROLS]
+! PROMPT('Reason:'),USE(?MEV:Reason:Prompt)
+! ENTRY(@s255),USE(MEV:Reason)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MEV:Reason)
+Reason STRING(255)
+!!> IDENT(164),PROMPT('Reason:'),HEADER('Reason'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Subject:'),USE(?MEV:Subject:Prompt)
+! ENTRY(@s255),USE(MEV:Subject)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MEV:Subject)
+Subject STRING(255)
+!!> IDENT(165),PROMPT('Subject:'),HEADER('Subject'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Message Id:'),USE(?MEV:MessageId:Prompt)
+! ENTRY(@s128),USE(MEV:MessageId)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MEV:MessageId)
+MessageId STRING(128)
+!!> IDENT(166),PROMPT('Message Id:'),HEADER('Message Id'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Link:'),USE(?MEV:Link:Prompt)
+! ENTRY(@s255),USE(MEV:Link)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MEV:Link)
+Link STRING(255)
+!!> IDENT(167),PROMPT('Link:'),HEADER('Link'),TOOLTIP('The URL, for a click'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MEV:Provider:Prompt)
+! ENTRY(@n3),USE(MEV:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MEV:Provider)
+Provider BYTE
+!!> IDENT(168),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('Which provider this row came from (ETPrv:...)'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Synced On:'),USE(?MEV:SyncedOn:Prompt)
+! ENTRY(@d17),USE(MEV:SyncedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MEV:SyncedOn)
+SyncedOn DATE
+!!> IDENT(169),PROMPT('Synced On:'),HEADER('Synced On'),TOOLTIP('When the sync last wrote this row'),PICTURE(@d17)
+                         END
+                       END
+
+[USEROPTION]
+!Version(2)
+MailContact FILE,DRIVER('TOPSPEED'),NAME('MailContact'),PRE(MCO),BINDABLE,CREATE,THREAD
+!!> IDENT(170),USAGE(File)
+ByAddress KEY(MCO:Provider,MCO:Address),NOCASE,PRIMARY
+!!> IDENT(171)
+ById KEY(MCO:Provider,MCO:ContactId),DUP,NOCASE,OPT
+!!> IDENT(172)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('Contact Id:'),USE(?MCO:ContactId:Prompt)
+! ENTRY(@s64),USE(MCO:ContactId)
+[REPORTCONTROLS]
+! STRING(@s64),USE(MCO:ContactId)
+ContactId STRING(64)
+!!> IDENT(173),PROMPT('Contact Id:'),HEADER('Contact Id'),TOOLTIP('The provider''s own id'),PICTURE(@s64)
+[SCREENCONTROLS]
+! PROMPT('Address:'),USE(?MCO:Address:Prompt)
+! ENTRY(@s255),USE(MCO:Address)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MCO:Address)
+Address STRING(255)
+!!> IDENT(174),PROMPT('Address:'),HEADER('Address'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Name:'),USE(?MCO:Name:Prompt)
+! ENTRY(@s128),USE(MCO:Name)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MCO:Name)
+Name STRING(128)
+!!> IDENT(175),PROMPT('Name:'),HEADER('Name'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Blocked:'),USE(?MCO:Blocked:Prompt)
+! ENTRY(@n3),USE(MCO:Blocked)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MCO:Blocked)
+Blocked BYTE
+!!> IDENT(176),PROMPT('Blocked:'),HEADER('Blocked'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Unsubscribed:'),USE(?MCO:Unsubscribed:Prompt)
+! ENTRY(@n3),USE(MCO:Unsubscribed)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MCO:Unsubscribed)
+Unsubscribed BYTE
+!!> IDENT(177),PROMPT('Unsubscribed:'),HEADER('Unsubscribed'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Created On:'),USE(?MCO:CreatedOn:Prompt)
+! ENTRY(@d17),USE(MCO:CreatedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MCO:CreatedOn)
+CreatedOn DATE
+!!> IDENT(178),PROMPT('Created On:'),HEADER('Created On'),PICTURE(@d17)
+[SCREENCONTROLS]
+! PROMPT('List Ids:'),USE(?MCO:ListIds:Prompt)
+! ENTRY(@s255),USE(MCO:ListIds)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MCO:ListIds)
+ListIds STRING(255)
+!!> IDENT(179),PROMPT('List Ids:'),HEADER('List Ids'),TOOLTIP('The lists it belongs to'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MCO:Provider:Prompt)
+! ENTRY(@n3),USE(MCO:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MCO:Provider)
+Provider BYTE
+!!> IDENT(180),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('Which provider this row came from (ETPrv:...)'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Synced On:'),USE(?MCO:SyncedOn:Prompt)
+! ENTRY(@d17),USE(MCO:SyncedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MCO:SyncedOn)
+SyncedOn DATE
+!!> IDENT(181),PROMPT('Synced On:'),HEADER('Synced On'),TOOLTIP('When the sync last wrote this row'),PICTURE(@d17)
+                         END
+                       END
+
+[USEROPTION]
+!Version(2)
+MailList FILE,DRIVER('TOPSPEED'),NAME('MailList'),PRE(MLI),BINDABLE,CREATE,THREAD
+!!> IDENT(182),USAGE(File)
+ById KEY(MLI:Provider,MLI:ListId),NOCASE,PRIMARY
+!!> IDENT(183)
+ByName KEY(MLI:Provider,MLI:Name),DUP,NOCASE,OPT
+!!> IDENT(184)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('List Id:'),USE(?MLI:ListId:Prompt)
+! ENTRY(@s64),USE(MLI:ListId)
+[REPORTCONTROLS]
+! STRING(@s64),USE(MLI:ListId)
+ListId STRING(64)
+!!> IDENT(185),PROMPT('List Id:'),HEADER('List Id'),PICTURE(@s64)
+[SCREENCONTROLS]
+! PROMPT('Name:'),USE(?MLI:Name:Prompt)
+! ENTRY(@s128),USE(MLI:Name)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MLI:Name)
+Name STRING(128)
+!!> IDENT(186),PROMPT('Name:'),HEADER('Name'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Members:'),USE(?MLI:Members:Prompt)
+! ENTRY(@n-14),USE(MLI:Members)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MLI:Members)
+Members LONG
+!!> IDENT(187),PROMPT('Members:'),HEADER('Members'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Blocked:'),USE(?MLI:Blocked:Prompt)
+! ENTRY(@n-14),USE(MLI:Blocked)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MLI:Blocked)
+Blocked LONG
+!!> IDENT(188),PROMPT('Blocked:'),HEADER('Blocked'),TOOLTIP('How many of them the provider refuses'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Folder Id:'),USE(?MLI:FolderId:Prompt)
+! ENTRY(@s64),USE(MLI:FolderId)
+[REPORTCONTROLS]
+! STRING(@s64),USE(MLI:FolderId)
+FolderId STRING(64)
+!!> IDENT(189),PROMPT('Folder Id:'),HEADER('Folder Id'),PICTURE(@s64)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MLI:Provider:Prompt)
+! ENTRY(@n3),USE(MLI:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MLI:Provider)
+Provider BYTE
+!!> IDENT(190),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('Which provider this row came from (ETPrv:...)'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Synced On:'),USE(?MLI:SyncedOn:Prompt)
+! ENTRY(@d17),USE(MLI:SyncedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MLI:SyncedOn)
+SyncedOn DATE
+!!> IDENT(191),PROMPT('Synced On:'),HEADER('Synced On'),TOOLTIP('When the sync last wrote this row'),PICTURE(@d17)
+                         END
+                       END
+
+[USEROPTION]
+!Version(2)
+MailCampaign FILE,DRIVER('TOPSPEED'),NAME('MailCampaign'),PRE(MCA),BINDABLE,CREATE,THREAD
+!!> IDENT(192),USAGE(File)
+ById KEY(MCA:Provider,MCA:CampaignId),NOCASE,PRIMARY
+!!> IDENT(193)
+ByDate KEY(MCA:Provider,MCA:SendDate),DUP,NOCASE,OPT
+!!> IDENT(194)
+Record                   RECORD
+[SCREENCONTROLS]
+! PROMPT('Campaign Id:'),USE(?MCA:CampaignId:Prompt)
+! ENTRY(@s64),USE(MCA:CampaignId)
+[REPORTCONTROLS]
+! STRING(@s64),USE(MCA:CampaignId)
+CampaignId STRING(64)
+!!> IDENT(195),PROMPT('Campaign Id:'),HEADER('Campaign Id'),PICTURE(@s64)
+[SCREENCONTROLS]
+! PROMPT('Name:'),USE(?MCA:Name:Prompt)
+! ENTRY(@s128),USE(MCA:Name)
+[REPORTCONTROLS]
+! STRING(@s128),USE(MCA:Name)
+Name STRING(128)
+!!> IDENT(196),PROMPT('Name:'),HEADER('Name'),PICTURE(@s128)
+[SCREENCONTROLS]
+! PROMPT('Subject:'),USE(?MCA:Subject:Prompt)
+! ENTRY(@s255),USE(MCA:Subject)
+[REPORTCONTROLS]
+! STRING(@s255),USE(MCA:Subject)
+Subject STRING(255)
+!!> IDENT(197),PROMPT('Subject:'),HEADER('Subject'),PICTURE(@s255)
+[SCREENCONTROLS]
+! PROMPT('Status:'),USE(?MCA:Status:Prompt)
+! ENTRY(@s32),USE(MCA:Status)
+[REPORTCONTROLS]
+! STRING(@s32),USE(MCA:Status)
+Status STRING(32)
+!!> IDENT(198),PROMPT('Status:'),HEADER('Status'),PICTURE(@s32)
+[SCREENCONTROLS]
+! PROMPT('Send Date:'),USE(?MCA:SendDate:Prompt)
+! ENTRY(@d17),USE(MCA:SendDate)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MCA:SendDate)
+SendDate DATE
+!!> IDENT(199),PROMPT('Send Date:'),HEADER('Send Date'),PICTURE(@d17)
+[SCREENCONTROLS]
+! PROMPT('Send Time:'),USE(?MCA:SendTime:Prompt)
+! ENTRY(@t7),USE(MCA:SendTime)
+[REPORTCONTROLS]
+! STRING(@t7),USE(MCA:SendTime)
+SendTime TIME
+!!> IDENT(200),PROMPT('Send Time:'),HEADER('Send Time'),PICTURE(@t7)
+[SCREENCONTROLS]
+! PROMPT('Recipients:'),USE(?MCA:Recipients:Prompt)
+! ENTRY(@n-14),USE(MCA:Recipients)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MCA:Recipients)
+Recipients LONG
+!!> IDENT(201),PROMPT('Recipients:'),HEADER('Recipients'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Opens:'),USE(?MCA:Opens:Prompt)
+! ENTRY(@n-14),USE(MCA:Opens)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MCA:Opens)
+Opens LONG
+!!> IDENT(202),PROMPT('Opens:'),HEADER('Opens'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Clicks:'),USE(?MCA:Clicks:Prompt)
+! ENTRY(@n-14),USE(MCA:Clicks)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(MCA:Clicks)
+Clicks LONG
+!!> IDENT(203),PROMPT('Clicks:'),HEADER('Clicks'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('Provider:'),USE(?MCA:Provider:Prompt)
+! ENTRY(@n3),USE(MCA:Provider)
+[REPORTCONTROLS]
+! STRING(@n3),USE(MCA:Provider)
+Provider BYTE
+!!> IDENT(204),PROMPT('Provider:'),HEADER('Provider'),TOOLTIP('Which provider this row came from (ETPrv:...)'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Synced On:'),USE(?MCA:SyncedOn:Prompt)
+! ENTRY(@d17),USE(MCA:SyncedOn)
+[REPORTCONTROLS]
+! STRING(@d17),USE(MCA:SyncedOn)
+SyncedOn DATE
+!!> IDENT(205),PROMPT('Synced On:'),HEADER('Synced On'),TOOLTIP('When the sync last wrote this row'),PICTURE(@d17)
+                         END
+                       END

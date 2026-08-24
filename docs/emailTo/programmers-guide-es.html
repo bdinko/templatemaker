@@ -1,0 +1,499 @@
+<meta charset="utf-8"><title>emailTo Guía del programador</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#f1f5f9; --sunken:#e9eff5; --rule:#d6e0ea;
+  --ink:#0f1720; --soft:#4e5f70; --faint:#7d8ea0;
+  --accent:#2f6a9a; --accent-bg:#e4eef6; --accent-rule:#b9d3e6;
+  --clarion:#166f69; --clarion-bg:#e2f1ef;
+  --warn:#8a5a12; --warn-bg:#f7eeda;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+    --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+    --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+    --clarion:#4fb5ab; --clarion-bg:#102a29;
+    --warn:#d8a545; --warn-bg:#2b2413;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+  --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+  --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+  --clarion:#4fb5ab; --clarion-bg:#102a29;
+  --warn:#d8a545; --warn-bg:#2b2413;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Serif",Georgia,serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.ui{font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif}
+code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+a{color:var(--accent)}
+.wrap{display:grid; grid-template-columns:270px minmax(0,1fr); align-items:start}
+.side{position:sticky; top:0; height:100vh; overflow-y:auto; padding:24px 20px 60px;
+  border-right:1px solid var(--rule); background:var(--surface)}
+.brand{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:15px; margin:0 0 14px}
+.brand b{color:var(--accent)}
+/* ---- the four volumes ---- */
+.vols{list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:3px;
+  border-bottom:1px solid var(--rule); padding-bottom:16px}
+.vols a{display:block; padding:7px 10px; border-radius:6px; text-decoration:none;
+  font:500 13px/1.35 "IBM Plex Sans",sans-serif; color:var(--soft); border:1px solid transparent}
+.vols a:hover{background:var(--sunken); color:var(--ink)}
+.vols a.here{background:var(--accent-bg); border-color:var(--accent-rule); color:var(--accent)}
+.vols small{display:block; font:400 11px/1.35 "IBM Plex Sans",sans-serif; color:var(--faint);
+  margin-top:2px}
+.vols a.here small{color:var(--accent)}
+.filter{width:100%; margin:0 0 16px; padding:7px 10px; font:13px/1.4 "IBM Plex Sans",sans-serif;
+  color:var(--ink); background:var(--paper); border:1px solid var(--rule); border-radius:6px}
+.filter:focus{outline:2px solid var(--accent); outline-offset:1px}
+.nav__g{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--faint); margin:18px 0 8px}
+.nav__l{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+.nav__l a{display:block; padding:4px 8px; border-radius:5px; text-decoration:none; color:var(--soft);
+  font:400 13.5px/1.45 "IBM Plex Sans",sans-serif}
+.nav__l a:hover{background:var(--sunken); color:var(--ink)}
+.nav__l a.on{background:var(--accent-bg); color:var(--accent); font-weight:500}
+.main{padding:0 0 120px; min-width:0}
+.inner{max-width:980px; padding:0 40px}
+.hero{padding:52px 40px 30px; border-bottom:1px solid var(--rule);
+  background:linear-gradient(180deg,var(--accent-bg),transparent)}
+.hero .inner{padding:0}
+.eyebrow{font:600 11px/1 "IBM Plex Sans",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 12px}
+h1{font-size:37px; line-height:1.1; margin:0 0 10px; letter-spacing:-.015em; text-wrap:balance}
+.sub{font-size:17px; color:var(--soft); margin:0 0 18px; max-width:62ch}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font:500 11.5px/1 "IBM Plex Sans",sans-serif; padding:6px 10px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft)}
+.chip b{color:var(--ink); font-weight:600}
+h2{font-size:26px; margin:60px 0 6px; letter-spacing:-.01em; scroll-margin-top:18px; text-wrap:balance}
+h2 .k{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:9px}
+h3{font-size:17.5px; margin:36px 0 10px; scroll-margin-top:18px}
+h4{font-size:14.5px; margin:24px 0 6px; color:var(--soft); font-weight:600}
+p{margin:0 0 14px; max-width:70ch}
+.lead{color:var(--soft); max-width:70ch}
+ul.b,ol.b{max-width:70ch; padding-left:20px; margin:0 0 16px}
+ul.b li,ol.b li{margin:0 0 7px}
+.code{background:var(--sunken); border:1px solid var(--rule); border-left:3px solid var(--accent-rule);
+  border-radius:0 7px 7px 0; padding:14px 16px; overflow-x:auto; margin:0 0 18px;
+  font-size:12.9px; line-height:1.62; position:relative}
+.code code{white-space:pre; color:var(--ink)}
+.code::after{content:attr(data-lang); position:absolute; top:0; right:0; padding:3px 9px;
+  font:500 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--faint); background:var(--surface); border-left:1px solid var(--rule);
+  border-bottom:1px solid var(--rule); border-radius:0 0 0 6px}
+.code--use{margin:7px 0 2px; border-left-color:var(--clarion); background:var(--paper);
+  font-size:12.4px; padding:9px 12px}
+.code--use::after{content:'Clarion'; color:var(--clarion)}
+p code,li code,td code{background:var(--sunken); border:1px solid var(--rule); border-radius:4px;
+  padding:.06em .34em; font-size:.86em}
+.tw{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:8px;
+  background:var(--paper)}
+table{border-collapse:collapse; width:100%; font-size:13.5px;
+  font-family:"IBM Plex Sans",sans-serif}
+th{text-align:left; font-weight:600; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--faint); padding:9px 14px; border-bottom:1px solid var(--rule); background:var(--surface)}
+td{padding:10px 14px; border-bottom:1px solid var(--rule); vertical-align:top}
+tr:last-child td{border-bottom:0}
+.fns .fn__n{width:210px; white-space:nowrap}
+.fns .fn__n code{font-size:12.6px; color:var(--accent); font-weight:500; background:none;
+  border:0; padding:0}
+.fns .fn__s code{font-size:12.4px; color:var(--soft); background:none; border:0; padding:0;
+  white-space:pre-wrap}
+.fn__d{margin:5px 0 0; font-family:"IBM Plex Serif",serif; font-size:13.5px; color:var(--ink);
+  max-width:74ch}
+.ord{margin-left:7px; font:500 10px/1 "IBM Plex Mono",monospace; color:var(--faint);
+  border:1px solid var(--rule); border-radius:4px; padding:2px 4px; vertical-align:1px}
+.eq td:first-child code{color:var(--accent); background:none; border:0; padding:0}
+.eq .v{font-variant-numeric:tabular-nums; color:var(--soft)}
+.note{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface);
+  border-radius:0 7px 7px 0; padding:13px 16px; margin:0 0 18px; max-width:74ch}
+.note--warn{border-left-color:var(--warn); background:var(--warn-bg)}
+.note--cla{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note__t{font:600 12px/1.3 "IBM Plex Sans",sans-serif; letter-spacing:.03em; margin:0 0 5px;
+  text-transform:uppercase; color:var(--soft)}
+.note--warn .note__t{color:var(--warn)} .note--cla .note__t{color:var(--clarion)}
+.note__b p{margin:0 0 8px; font-size:14.5px} .note__b p:last-child{margin:0}
+.stack{display:flex; flex-direction:column; gap:9px; margin:0 0 22px; max-width:640px}
+.layer{border:1px solid var(--rule); border-radius:8px; padding:12px 15px; background:var(--surface);
+  display:grid; grid-template-columns:118px 1fr; gap:14px; align-items:baseline}
+.layer b{font:600 11px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--accent)}
+.layer.cla b{color:var(--clarion)}
+.layer p{margin:0; font-size:14px; color:var(--soft); max-width:none}
+.arrow{text-align:center; color:var(--faint); font-size:12px; margin:-4px 0}
+/* ---- where to next ---- */
+.next{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;
+  margin:26px 0 0}
+.next a{display:block; padding:14px 16px; border:1px solid var(--rule); border-radius:9px;
+  background:var(--surface); text-decoration:none}
+.next a:hover{border-color:var(--accent-rule); background:var(--accent-bg)}
+.next b{display:block; font:600 14px/1.3 "IBM Plex Sans",sans-serif; color:var(--accent);
+  margin-bottom:3px}
+.next span{font:400 13px/1.45 "IBM Plex Serif",serif; color:var(--soft)}
+.hide{display:none !important}
+footer{margin-top:70px; padding:22px 40px 0; border-top:1px solid var(--rule); color:var(--faint);
+  font:400 13px/1.6 "IBM Plex Sans",sans-serif}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static; height:auto; border-right:0; border-bottom:1px solid var(--rule)}
+  .inner,.hero{padding-left:22px; padding-right:22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+
+/* ------------------------------------------------------------------ *
+ *  emailTo additions.  Every colour below is a token defined at bare
+ *  :root and redefined in BOTH dark paths, so nothing is left with its
+ *  only definition inside a media query - which would render one
+ *  theme's text on the other theme's ground.
+ * ------------------------------------------------------------------ */
+:root{ --danger:#8f3520; --danger-bg:#f8e9e4; --danger-rule:#e3bcaf; }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+  }
+}
+:root[data-theme="dark"]{
+  --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+}
+
+.note--tip{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note--tip .note__t{color:var(--clarion)}
+.note--danger{border-left-color:var(--danger); background:var(--danger-bg)}
+.note--danger .note__t{color:var(--danger)}
+
+/* ---- the generated reference: one member per row ---- */
+table.api td{padding:14px 16px}
+tr.fn + tr.fn td{border-top:1px solid var(--rule)}
+code.mem{font:500 13.5px/1 "IBM Plex Mono",monospace; color:var(--accent);
+  background:none; border:0; padding:0}
+.sig{font:400 12.4px/1.5 "IBM Plex Mono",monospace; color:var(--soft);
+  margin:5px 0 0; white-space:pre-wrap; word-break:break-word}
+.mdoc{margin:7px 0 0; font-family:"IBM Plex Serif",Georgia,serif; font-size:13.8px;
+  color:var(--ink); max-width:74ch}
+.tag{display:inline-block; margin-left:7px; vertical-align:2px;
+  font:600 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--clarion); background:var(--clarion-bg);
+  border:1px solid var(--rule); border-radius:4px; padding:3px 5px}
+
+/*  The one link that crosses languages.  It sits above the volume list
+ *  because a reader who wants it is looking for it before anything else. */
+.langsw{display:inline-block; margin:0 0 14px; padding:5px 11px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft);
+  font:500 11.5px/1 "IBM Plex Sans",sans-serif; text-decoration:none;
+  letter-spacing:.02em}
+.langsw:hover{border-color:var(--accent-rule); background:var(--accent-bg); color:var(--accent)}
+.langsw:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.langsw::before{content:"\00A0"; margin-right:0}
+</style>
+<div class="wrap">
+<nav class="side">
+  <p class="brand"><b>emailTo</b></p>
+<a class="langsw" href="https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0" hreflang="en">English</a><ul class="vols"><li><a href="https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c">1. Primeros pasos<small>Instalarlo y enviar el primer mensaje</small></a></li><li><a href="#">2. Guía del programador<small>Cómo funciona, y cómo hacer que haga cosas</small></a></li><li><a href="https://claude.ai/code/artifact/07f9ecdf-232b-4cbd-8d20-f423561f3ba0">3. Guía de plantillas<small>Cada plantilla, pestaña, campo y embed</small></a></li><li><a href="https://claude.ai/code/artifact/108af66d-ecbe-4a5b-bada-cb3500c741b6">4. Referencia<small>Cada clase, método, propiedad y equate</small></a></li></ul><p class="nav__g">Cómo encaja</p><ul class="nav__l"><li><a href="#model">El modelo de objetos</a></li><li><a href="#account">La cuenta</a></li></ul><p class="nav__g">Armar un mensaje</p><ul class="nav__l"><li><a href="#composing">Armar un mensaje</a></li><li><a href="#accents">Los acentos, y por qué sobreviven</a></li></ul><p class="nav__g">Sacarlo</p><ul class="nav__l"><li><a href="#transports">Elegir un transporte</a></li><li><a href="#oauth">OAuth2, de principio a fin</a></li></ul><p class="nav__g">La API del proveedor</p><ul class="nav__l"><li><a href="#api">Una clase, nueve proveedores</a></li><li><a href="#api-matrix">La matriz</a></li><li><a href="#api-queues">Las respuestas normalizadas</a></li><li><a href="#api-paging">Paginación, de tres maneras</a></li><li><a href="#api-add">Añadir un proveedor</a></li></ul><p class="nav__g">Conservarlo</p><ul class="nav__l"><li><a href="#settings">Dónde vive la configuración</a></li><li><a href="#secrets">Los secretos guardados</a></li><li><a href="#errors">Los errores, y el registro</a></li><li><a href="#deriving">Hacer que haga otra cosa</a></li></ul><p class="nav__g">Notas de Clarion</p><ul class="nav__l"><li><a href="#notes">Notas de Clarion</a></li><li><a href="#note-clear">Un método llamado Clear rompe CLEAR() en todas partes</a></li><li><a href="#note-string">Un STRING ligado a una variable necesita una picture</a></li><li><a href="#note-picture">Ninguna picture de Clarion pasa de @s255</a></li><li><a href="#note-map">Un módulo MEMBER sin MAP pierde las intrínsecas</a></li><li><a href="#note-return">Un método que devuelve STRING no puede liberar su propio buffer</a></li><li><a href="#note-crlf">Las fuentes de Clarion tienen que ser CRLF</a></li><li><a href="#note-schannel">SCHANNEL pide un certificado de cliente que usted no tiene</a></li><li><a href="#note-dot">El punto solitario</a></li></ul>
+</nav>
+<main class="main">
+  <header class="hero"><div class="inner">
+    <p class="eyebrow">Volumen 2</p>
+    <h1>Guía del programador</h1>
+    <p class="sub">Qué posee cada una de las cinco clases, cómo un mensaje se vuelve MIME, cómo corre OAuth2 de verdad, y el comportamiento de Clarion con el que tropezamos en el camino.</p>
+    <div class="chips"><span class="chip">Modelo de objetos</span><span class="chip">MIME</span><span class="chip">OAuth2 + PKCE</span><span class="chip">Notas de Clarion</span></div>
+  </div></header>
+  <div class="inner"><h2 id="model">El modelo de objetos</h2>
+<p>Un objeto es suyo. Todo lo que cuelga de él se construye y se libera solo.</p>
+<pre class="code" data-lang="clarion"><code>Mailer  EmailToClass          ! you declare this one
+
+  !  and it builds, at Construct:
+  !     Mailer.Net    EmailNetClass    the socket, TLS, HTTPS, DPAPI
+  !     Mailer.Msg    EmailMsgClass    the message SendSimple and Compose use
+  !     Mailer.OAuth  EmailOAuthClass  the sign-in
+  !
+  !  EmailOAuthClass only BORROWS Net and a second message object; it frees
+  !  neither.  One owner, one Destruct, no double-dispose.</code></pre>
+<p>La separación es deliberada, y es la razón por la que emailTo no necesita ninguna librería de terceros. <b>EmailNetClass</b> es lo único que toca C: sockets, el handshake de SCHANNEL, WinHTTP, DPAPI, SHA-256. <b>EmailMsgClass</b> es Clarion puro y no sabe nada de redes: convierte campos en un documento RFC 5322. <b>EmailToClass</b> une los dos: tiene una cuenta y sabe cuatro maneras de entregar los bytes que produjo la clase del mensaje.</p>
+<aside class="note"><p class="note__t">Por qué la clase del mensaje no sabe de sockets</p><div class="note__b"><p>Porque los cuatro transportes quieren los mismos bytes. SMTP los escribe después de <code>DATA</code>, la API de Gmail los codifica en base64url dentro de un campo JSON, Graph los publica como texto en base64, y Mailgun los sube como archivo. Se construye el MIME una vez y cada transporte es una envoltura delgada.</p></div></aside>
+<h2 id="account">La cuenta</h2>
+<p><code>Mailer.Acc</code> es un <code>GROUP</code>, y es el contrato entre la clase y donde sea que usted guarde su configuración. La plantilla asigna una columna de tabla a cada campo. Los que más importan:</p>
+<div class="tw"><table class=""><thead><tr><th>Campo</th><th>Qué decide</th></tr></thead><tbody><tr><td><code>Transport</code></td><td>SMTP, API de Gmail, Graph, o una clave API del proveedor.</td></tr><tr><td><code>Provider</code></td><td>Qué preajuste llenó lo demás, y qué forma de API hablar.</td></tr><tr><td><code>Host</code> / <code>Port</code> / <code>Security</code></td><td>La conexión SMTP.</td></tr><tr><td><code>AuthMode</code></td><td>Nada, AUTH LOGIN, AUTH PLAIN, o un token OAuth2.</td></tr><tr><td><code>UserName</code> / <code>Password</code></td><td>La credencial, cuando es una contraseña.</td></tr><tr><td><code>ClientId</code> / <code>TenantId</code></td><td>La aplicación registrada, cuando es OAuth2.</td></tr><tr><td><code>RefreshToken</code></td><td>Lo que hace que el segundo envío no necesite navegador.</td></tr><tr><td><code>ApiKey</code> / <code>ApiDomain</code></td><td>SendGrid, Mailgun, Resend, Brevo, Postmark, Mailjet.</td></tr><tr><td><code>VerifyCert</code></td><td>Déjelo en 1 salvo que el servidor sea suyo y con certificado propio.</td></tr></tbody></table></div>
+<p><code>SetProvider</code> llena servidor, puerto, seguridad y autenticación para catorce proveedores, así que una cuenta suelen ser tres líneas: el proveedor, la dirección y la credencial.</p>
+<h2 id="composing">Armar un mensaje</h2>
+<p>Los destinatarios entran de uno en uno con <code>AddTo</code> / <code>AddCc</code> / <code>AddBcc</code>, o todos juntos con <code>AddList</code>, que acepta la forma en que la gente los escribe de verdad: separados por <code>;</code> o <code>,</code>, con los espacios de más que sean.</p>
+<p><b>La copia oculta se comporta como debe.</b> Una dirección en Bcc se agrega al sobre como un <code>RCPT TO</code> más y deliberadamente <em>no</em> se escribe en los encabezados, así que los demás destinatarios nunca la ven.</p>
+<p>Los cuerpos se fijan con <code>SetText</code> y <code>SetHtml</code>, y se amplían con <code>AddText</code> y <code>AddHtml</code>. Los adjuntos vienen del disco con <code>Attach</code>, de memoria con <code>AttachData</code>, y una imagen a la que se refiere el HTML entra con <code>AttachInline</code>:</p>
+<pre class="code" data-lang="clarion"><code>  Mailer.Msg.ClearAll()
+  Mailer.Msg.AddTo(Cus:Email)
+  Mailer.Msg.SetSubject(&#x27;Your statement&#x27;)
+  Mailer.Msg.SetHtml(&#x27;&lt;p&gt;&lt;img src=&quot;cid:logo&quot; width=&quot;180&quot;&gt;&lt;/p&gt;&#x27; &amp; |
+                     &#x27;&lt;p&gt;Your statement is attached.&lt;/p&gt;&#x27;)
+  Mailer.Msg.AttachInline(&#x27;C:\art\logo.png&#x27;, &#x27;logo&#x27;)
+  Mailer.Msg.Attach(&#x27;C:\stmt\&#x27; &amp; CLIP(Cus:Id) &amp; &#x27;.pdf&#x27;)
+  Mailer.Send(Mailer.Msg)</code></pre>
+<h2 id="accents">Los acentos, y por qué sobreviven</h2>
+<p>Un <code>STRING</code> de Clarion guarda bytes Windows-1252. Enviado tal cual, <i>Factura Número</i> llega hecho un desastre, porque nada le dijo al lector qué significaban esos bytes.</p>
+<p>emailTo convierte el asunto, los nombres visibles, los cuerpos y los nombres de archivo adjuntos a <b>UTF-8</b> y los etiqueta. Los encabezados se envuelven en palabras codificadas RFC 2047 partidas en los límites de carácter &mdash; nunca a la mitad de uno &mdash; y los cuerpos salen en quoted-printable. Una nota sencilla en inglés sigue saliendo como texto <code>7bit</code> legible, porque el codificador sólo recurre a quoted-printable cuando el contenido, o una línea de 998 bytes, de verdad lo necesita.</p>
+<pre class="code code--use" data-lang="use"><code>Mailer.Msg.CharSet = ETChs:Ansi   ! mandar los bytes crudos como windows-1252</code></pre>
+<h2 id="transports">Elegir un transporte</h2>
+<div class="tw"><table class=""><thead><tr><th>Transporte</th><th>Cuándo es el correcto</th></tr></thead><tbody><tr><td><code>ETTrn:Smtp</code></td><td>Casi siempre. Cualquier servidor, cualquier proveedor que todavía acepte una contraseña o que soporte XOAUTH2.</td></tr><tr><td><code>ETTrn:GmailApi</code></td><td>Una cuenta de Google donde prefiere no habilitar SMTP. Requiere OAuth2.</td></tr><tr><td><code>ETTrn:GraphApi</code></td><td>Inquilinos de Microsoft 365 con SMTP AUTH deshabilitado, que cada vez son más.</td></tr><tr><td><code>ETTrn:ApiKey</code></td><td>Una aplicación desplegada que sólo tiene que enviar, en una red donde el puerto 587 puede estar bloqueado.</td></tr></tbody></table></div>
+<p>Cambiar es un campo. El mensaje, los adjuntos y el manejo de errores son idénticos:</p>
+<pre class="code code--use" data-lang="use"><code>Mailer.Acc.Transport = ETTrn:GraphApi</code></pre>
+<h2 id="oauth">OAuth2, de principio a fin</h2>
+<p>Google y Microsoft ya no aceptan una contraseña común desde un programa de escritorio. El flujo que corre emailTo es el de código de autorización con PKCE, que es el que ellos documentan para aplicaciones nativas:</p>
+<ol class="b"><li>Inventar un <b>verificador</b> al azar y sacarle SHA-256 para obtener un <b>desafío</b>.</li><li>Abrir un escucha en <code>http://127.0.0.1:&lt;un puerto libre&gt;/</code>, antes que el navegador, para que no se pierda ninguna redirección.</li><li>Abrir el navegador del propio usuario en la pantalla de consentimiento del proveedor, llevando el desafío y un <b>state</b> al azar.</li><li>Atrapar la redirección, comprobar que el state coincide, y cambiar el código devuelto más el verificador por un <b>token de acceso</b> y un <b>token de refresco</b>.</li></ol>
+<pre class="code" data-lang="clarion"><code>  Mailer.Acc.Provider  = ETPrv:Office365
+  Mailer.Acc.Transport = ETTrn:GraphApi
+  Mailer.Acc.ClientId  = &#x27;11111111-2222-3333-4444-555555555555&#x27;
+  Mailer.Acc.TenantId  = &#x27;common&#x27;
+  Mailer.Acc.UserName  = &#x27;you@company.com&#x27;
+
+  IF Mailer.Authorize()                     ! browser opens; user consents
+    Mailer.SaveAccount()                    ! stores the refresh token, sealed
+  ELSE
+    MESSAGE(CLIP(Mailer.LastErrorText))
+  END</code></pre>
+<aside class="note note--tip"><p class="note__t">Un ID de cliente de escritorio no es un secreto</p><div class="note__b"><p>Para eso es PKCE. Los clientes públicos de Microsoft no deben mandar <em>ningún</em> secreto de cliente, y emailTo sólo manda uno cuando la cuenta realmente lo tiene. En su <code>.EXE</code> no queda compilado nada confidencial.</p><p>Regístrelo en <b>console.cloud.google.com</b> &rarr; Credenciales &rarr; ID de cliente de OAuth &rarr; <b>Aplicación de escritorio</b>, o en <b>portal.azure.com</b> &rarr; Registros de aplicaciones &rarr; <b>Cliente público</b> con redirección <code>http://localhost</code>.</p></div></aside>
+<p>Después del primer consentimiento nadie vuelve a ver un navegador. <code>EnsureToken</code> corre antes de cada envío: si el token de acceso todavía sirve no hace nada, si venció gasta el token de refresco en silencio, y sólo cuando ya no queda token de refresco le pide al usuario que inicie sesión.</p>
+<aside class="note note--warn"><p class="note__t">Google sólo emite token de refresco si se le pide bien</p><div class="note__b"><p>Necesita <code>access_type=offline</code> <em>y</em> <code>prompt=consent</code>, y sin ellos el segundo envío falla sin causa aparente. emailTo manda los dos. Microsoft en cambio <b>rota</b> el token de refresco en cada uso, así que hay que guardar el nuevo cada vez, que es por lo que <code>Refresh</code> lo vuelve a escribir.</p></div></aside>
+<h2 id="api">Una clase, nueve proveedores</h2>
+<p><code>EmailToClass</code> responde a una pregunta: envía esto. <code>EmailApiClass</code> responde a todas las demás &mdash; quién está bloqueado, qué pasó el mes pasado, qué contactos y campañas hay &mdash; y las responde igual sea cual sea el proveedor con el que usted se dio de alta.</p>
+<p>No tiene nada propio. <code>Init(Mailer)</code> toma prestadas la cuenta y la capa HTTPS, así que la clave que selló la ventana de configuración es la que usan estas llamadas, y no hay una segunda copia de ninguna credencial en ninguna parte del programa.</p>
+<pre class="code" data-lang="clarion"><code>  PROGRAM
+
+  INCLUDE(&#x27;EmailApiClass.INC&#x27;),ONCE
+
+  MAP
+  END
+
+Mailer   EmailToClass
+MailApi  EmailApiClass
+i        LONG
+
+  CODE
+  Mailer.Init(PATH() &amp; &#x27;\mail.ini&#x27;)
+  Mailer.LoadAccount()                        ! the key you stored in Setup
+  MailApi.Init(Mailer)                        ! borrows that account - no second copy
+
+  IF MailApi.GetSuppressions(ETSup:All) &lt; 0
+    MESSAGE(CLIP(MailApi.LastErrorText))
+  ELSE
+    LOOP i = 1 TO RECORDS(MailApi.SuppQ)
+      GET(MailApi.SuppQ, i)
+      !  MailApi.SuppQ.Address   who
+      !  MailApi.SuppQ.KindName  bounce / blocked / spam report / unsubscribed
+      !  MailApi.SuppQ.Reason    what the receiving server actually said
+      !  MailApi.SuppQ.WhenDate  when
+    END
+  END</code></pre>
+<p>Por dentro son tres capas, y sólo la del medio sabe algo de un proveedor:</p>
+<div class="tw"><table class=""><thead><tr><th>Capa</th><th>Qué es</th><th>¿Sabe de proveedores?</th></tr></thead><tbody><tr><td><code>BuildMap()</code></td><td>La matriz. Una fila por operación y proveedor.</td><td>Sí &mdash; y es lo único que lo sabe</td></tr><tr><td><code>Fetch</code> / <code>Perform</code></td><td>El motor: arma la dirección, la firma, sigue la paginación, analiza, mapea.</td><td>No</td></tr><tr><td><code>GetXxx</code> / <code>AddXxx</code></td><td>Los métodos públicos. Ponen los argumentos y llaman al motor.</td><td>No</td></tr></tbody></table></div>
+<h2 id="api-matrix">La matriz</h2>
+<p>Añadir un proveedor es añadir filas, no escribir ramas. Una fila dice: para ESTE proveedor y ESTA operación, use este verbo y esta dirección, la lista está en esta ruta de la respuesta, y estos miembros JSON llenan estas columnas.</p>
+<pre class="code" data-lang="clarion"><code>  SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Bounce, &#x27;GET&#x27;, |
+           &#x27;{scheme}{host}/v3/suppression/bounces?limit={limit}&amp;offset={offset}&#x27;, &#x27;&#x27;, |
+           &#x27;Address=email;Reason=reason;Id=status;When=#created&#x27;)
+
+  SELF.Row(ETPrv:Brevo, ETOp:Suppressions, ETSup:All, &#x27;GET&#x27;, |
+           &#x27;{scheme}{host}/v3/smtp/blockedContacts?limit={limit}&amp;offset={offset}&#x27;, |
+           &#x27;contacts&#x27;, |
+           &#x27;Address=email;Reason=reason.message;KindText=reason.code;When=@blockedAt&#x27;)</code></pre>
+<p>Las piezas de una fila:</p>
+<div class="tw"><table class=""><thead><tr><th>Pieza</th><th>Qué significa</th></tr></thead><tbody><tr><td><code>{scheme}{host}</code></td><td>La dirección del proveedor, respetando <code>ApiRegion</code> (eu) y <code>ApiBase</code> (lo que usted diga, esquema incluido).</td></tr><tr><td><code>{limit} {offset} {page}</code></td><td>Los llena el bucle de paginación, una y otra vez, hasta que el proveedor se queda sin filas.</td></tr><tr><td><code>{email} {id} {text} {subject} {html}</code></td><td>Sus datos. Codificados con % en una URL y escapados como JSON en un cuerpo &mdash; el motor sabe cuál de los dos está armando.</td></tr><tr><td><code>{ymdfrom} {isofrom} {epochfrom} {rfcfrom}</code></td><td>El mismo rango de fechas en las cuatro escrituras que quieren los ocho.</td></tr><tr><td>la ruta del elemento</td><td>Dónde está el arreglo de filas: vacío significa que la respuesta ES el arreglo, <code>*</code> que la respuesta es UN elemento. Una ruta que resulte no estar ahí cae en el primer arreglo del documento.</td></tr><tr><td>el mapa</td><td>Pares <code>Columna=origen</code>. Un origen puede ser una ruta (<code>reason.message</code>), ofrecer alternativas (<code>recipient.email|email</code>), ser un literal (<code>!spam report</code>) y llevar un convertidor de fecha: <code>#</code> unix, <code>@</code> ISO-8601, <code>%</code> RFC-2822, <code>$</code> un día suelto.</td></tr></tbody></table></div>
+<aside class="note note--info"><p class="note__t">ETSup:All en una fila de lista significa algo concreto</p><div class="note__b"><p>Los proveedores parten sus listas de bloqueo de dos maneras. SendGrid guarda cinco separadas y cada fila se registra con su propio tipo. Brevo, Postmark y SparkPost guardan UNA sola y etiquetan cada entrada, así que su fila se registra con <code>ETSup:All</code> &mdash; y entonces el motor deduce el tipo real de cada fila de las palabras del propio proveedor (<code>hardBounce</code>, <code>SpamNotification</code>, <code>policy_suppression</code>) con <code>SuppKindOf()</code>. Pídale un tipo a cualquiera de los dos y recibe ese tipo.</p></div></aside>
+<h2 id="api-queues">Las respuestas normalizadas</h2>
+<p>Cada lectura llena una cola que se ve igual conteste quien conteste. Ése es el trato completo: las diferencias se absorben en la matriz, y su código no llega a aprenderlas nunca.</p>
+<aside class="note note--cla"><p class="note__t">Amazon es el que no acepta una clave en una cabecera</p><div class="note__b"><p>SES firma la petición &mdash; verbo, ruta, consulta, cabeceras y un hash del cuerpo &mdash; con una clave derivada del secreto, la fecha, la región y el servicio. Por eso <code>EmailNetClass</code> ganó <code>SignAws</code>, <code>Hmac256</code> y los demás: están junto al SHA-256 sobre el que se construyen, y tanto enviar como preguntar usan los mismos. Cada pieza está comprobada contra un vector que publican el RFC 4231 o Amazon.</p><p>Ponga el <b>access key id</b> de AWS en Second key y el <b>secreto</b> en la clave de API. User name y Password quedan libres para las credenciales SMTP, muy distintas, que SES también emite, de modo que una cuenta puede hacer las dos cosas. La región forma parte de la firma, así que tiene que ser la correcta &mdash; en blanco significa <code>us-east-1</code>.</p></div></aside>
+<div class="tw"><table class=""><thead><tr><th>Cola</th><th>Qué hay en una fila</th></tr></thead><tbody><tr><td><code>SuppQ</code></td><td>Address, Kind, KindName, Reason, Code, WhenDate, WhenTime, Id, Sender, Raw</td></tr><tr><td><code>StatQ</code></td><td>WhenDate, Requests, Delivered, Opens, UniqueOpens, Clicks, UniqueClicks, HardBounces, SoftBounces, Blocks, SpamReports, Unsubscribed, Invalid</td></tr><tr><td><code>EventQ</code></td><td>WhenDate, WhenTime, Address, EventName, Reason, Subject, MessageId, Link</td></tr><tr><td><code>ContactQ</code> <code>ListQ</code> <code>CampaignQ</code></td><td>Id, Address, Name, Blocked, Unsubscribed &hellip; / Id, Name, Members &hellip; / Id, Name, Subject, Status &hellip;</td></tr><tr><td><code>TemplateQ</code> <code>SenderQ</code> <code>DomainQ</code> <code>HookQ</code></td><td>Lo mismo para el resto de la cuenta</td></tr></tbody></table></div>
+<p><code>SuppQ.Raw</code> conserva el objeto original del proveedor para esa fila, así que lo que la cola no tiene columna para guardar sigue estando ahí cuando haga falta registrar la entrada que se ve rara.</p>
+<aside class="note note--warn"><p class="note__t">Un LIST no puede apuntar a estas colas</p><div class="note__b"><p><code>FROM(MailApi.SuppQ)</code> compila y luego truena al primer dibujado: son REFERENCIAS a cola, y el control se liga a la variable de referencia. Copie las filas a un <code>QUEUE</code> local de verdad para mostrarlas &mdash; que es donde va a querer formatear las fechas de todos modos. <code>Manage()</code> hace exactamente eso, y la demostración lo enseña.</p></div></aside>
+<h2 id="api-paging">Paginación, de tres maneras</h2>
+<p>Una lista de bloqueados no cabe en una página, y los nueve proveedores no se ponen de acuerdo en cómo recorrerla. El motor se ocupa de las tres sin que quien llama se entere:</p>
+<div class="tw"><table class=""><thead><tr><th>Estilo</th><th>Quién</th><th>Qué hace el motor</th></tr></thead><tbody><tr><td>límite y desplazamiento</td><td>SendGrid, Brevo, Mailjet, Postmark</td><td>Vuelve a pedir con el desplazamiento avanzado, y para cuando una página vuelve más corta que el tamaño de página.</td></tr><tr><td>número de página</td><td>SparkPost, MailerSend</td><td>Lo mismo, contado en páginas en vez de en filas.</td></tr><tr><td>un cursor</td><td>Mailgun</td><td>Sigue la dirección que la respuesta trae en <code>paging.next</code>, y para cuando una página vuelve vacía.</td></tr><tr><td>un token de continuación</td><td>Amazon SES</td><td>Devuelve el token como un parámetro que se llama igual que la ruta por la que llegó, así que la fila de la matriz dice <code>NextToken</code> y el motor no necesita saber nada de Amazon.</td></tr></tbody></table></div>
+<p><code>PageSize</code> dice cuántas pedir de una vez y <code>MaxRows</code> es la guarda &mdash; 5000 por omisión, 0 para no poner límite. Cien mil direcciones suprimidas es algo real en un remitente grande, y leerlas todas en memoria debería ser una decisión, no una sorpresa.</p>
+<aside class="note note--tip"><p class="note__t">Que una lista falle no pierde las demás</p><div class="note__b"><p>Pedirle todo a SendGrid son cinco peticiones. Si una falla &mdash; un endpoint que el plan de esa cuenta no abre, un permiso que la clave no tiene &mdash; las otras cuatro siguen contestando, y el fallo queda en <code>LastErrorText</code>. Una respuesta parcial sirve muchísimo más que ninguna.</p></div></aside>
+<h2 id="api-add">Añadir un proveedor</h2>
+<p><code>BuildMap</code> es VIRTUAL, así que un proveedor que la matriz de fábrica no conoce no obliga a tocar ningún archivo de los que emailTo entrega:</p>
+<pre class="code" data-lang="clarion"><code>MyApiClass  CLASS(EmailApiClass)
+BuildMap      PROCEDURE(),DERIVED
+            END
+
+MyApiClass.BuildMap PROCEDURE()
+  CODE
+  PARENT.BuildMap()                           ! keep the eight that are already there
+  SELF.Row(ETPrv:Custom, ETOp:Suppressions, ETSup:All, &#x27;GET&#x27;, |
+           &#x27;{scheme}{host}/api/blocked?page={page}&#x27;, &#x27;rows&#x27;, |
+           &#x27;Address=addr;Reason=why;When=@stamp&#x27;)
+  SELF.Row(ETPrv:Custom, ETOp:SuppDelete, ETSup:All, &#x27;DELETE&#x27;, |
+           &#x27;{scheme}{host}/api/blocked/{email}&#x27;)</code></pre>
+<p>Ponga <code>Acc.Provider</code> en <code>ETPrv:Custom</code> y <code>Acc.ApiBase</code> en el host, y todos los métodos de arriba funcionan contra él &mdash; incluida <code>Manage()</code>, que lee <code>Supports()</code> para decidir qué pestañas ofrecer.</p>
+<p>Para una llamada suelta que no merece una fila, <code>RawCall()</code> firma la petición con esta cuenta y le devuelve el estado; la respuesta está en <code>Net.Body()</code>, y <code>Json</code> está ahí mismo para analizarla.</p>
+<h2 id="settings">Dónde vive la configuración</h2>
+<p><code>LoadAccount</code> y <code>SaveAccount</code> son <code>VIRTUAL</code>. De fábrica leen y escriben un INI junto al <code>.EXE</code>, que alcanza para una demostración y para un programa de un solo usuario. Señale una tabla en la extensión global y la plantilla los reemplaza con código de esta forma:</p>
+<pre class="code" data-lang="clarion"><code>Mailer.LoadAccount PROCEDURE(&lt;STRING pName&gt;)
+  CODE
+  IF NOT OMITTED(pName) AND CLIP(pName)
+    SELF.Acc.Name = CLIP(pName)
+  END
+  Access:MailAcct.Open()
+  Access:MailAcct.UseFile()
+  CLEAR(MAI:Record)
+  MAI:Name = SELF.Acc.Name
+  GET(MailAcct, MAI:ByName)
+  IF ERRORCODE()
+    Access:MailAcct.Close()
+    RETURN 0                                ! nothing stored yet - keep the defaults
+  END
+  SELF.Acc.Host     = CLIP(MAI:Host)
+  SELF.Acc.Password = SELF.Unseal(MAI:Password)
+  ! ... one line per mapped column ...
+  Access:MailAcct.Close()
+  RETURN 1</code></pre>
+<p>Los dos métodos abren y cierran el archivo alrededor de su propio trabajo con el FileManager de ABC, cuyos <code>Open</code> y <code>Close</code> llevan cuenta de referencias, así que da igual si la tabla ya estaba abierta en otra parte del programa.</p>
+<h2 id="secrets">Los secretos guardados</h2>
+<p>Cuatro campos nunca se guardan en claro: la contraseña, el secreto de cliente, el token de refresco y la clave API. Cada uno pasa por <code>Seal()</code>: DPAPI lo cifra para el usuario actual de Windows, y luego base64 deja el resultado apto para una columna de texto.</p>
+<pre class="code code--use" data-lang="use"><code>Set:Password = Mailer.Seal(Loc:Typed)      ! &#x27;dpapi:AQAAANCMnd8BFdERjHoAwE...&#x27;</code></pre>
+<p>Una fila copiada a otra máquina, o leída por otro usuario de Windows, se descifra en nada. Dele tamaño de sobra a esas columnas: el valor guardado es tres o cuatro veces más largo que lo que se escribió.</p>
+<aside class="note"><p class="note__t">Una contraseña escrita a mano en la columna igual funciona</p><div class="note__b"><p><code>Unseal()</code> reconoce un valor que no es de los suyos y lo devuelve tal cual, lo que hace fácil sembrar una fila de prueba. Una máquina sin DPAPI recibe un prefijo <code>plain:</code>, para que nadie lo confunda con algo cifrado.</p></div></aside>
+<h2 id="errors">Los errores, y el registro</h2>
+<p>Todo método público contesta <code>1</code> si funcionó y <code>0</code> si no, y deja el motivo en <code>LastErrorText</code> como una frase que se le puede mostrar al usuario. <code>LastServerReply</code> guarda lo último que dijo el servidor, que casi siempre es más específico que cualquier cosa que emailTo pudiera inventar.</p>
+<pre class="code code--use" data-lang="use"><code>IF NOT Mailer.Send(Mailer.Msg) THEN Mailer.ShowError().</code></pre>
+<p>Con <code>Trace</code> encendido, toda la conversación queda en <code>Mailer.Net.TraceQ</code> y se muestra en la pestaña Registro de la ventana de configuración. Las credenciales se ocultan antes de llegar ahí, así que un cliente puede mandarle el registro de un envío fallido sin mandarle su contraseña.</p>
+<aside class="note note--danger"><p class="note__t">Un LIST no se puede apuntar directo a TraceQ</p><div class="note__b"><p><code>TraceQ</code> es una <em>referencia</em> a cola, y <code>FROM(Mailer.Net.TraceQ)</code> liga el control a la variable de referencia en vez de a la cola. La ventana entonces truena en su primer dibujado. Copie a una <code>QUEUE</code> local de verdad para mostrarla, como hacen la demostración y la ventana de configuración.</p></div></aside>
+<h2 id="deriving">Hacer que haga otra cosa</h2>
+<p>Los métodos que vale la pena sobrescribir están marcados <code>VIRTUAL</code>: <code>Txt</code> para un tercer idioma, <code>LoadAccount</code> / <code>SaveAccount</code> para su propio almacén, y los cuatro métodos <code>Send*</code> para bitácora, limitación de ritmo o una política de reintentos.</p>
+<pre class="code" data-lang="clarion"><code>MyMailer  CLASS(EmailToClass)
+Txt         PROCEDURE(LONG pId),STRING,DERIVED
+SendSmtp    PROCEDURE(EmailMsgClass pMsg),BYTE,PROC,DERIVED
+          END
+
+MyMailer.Txt PROCEDURE(LONG pId)
+  CODE
+  IF GlobalLanguage = LNG:Portuguese
+    CASE pId
+    OF ETTxt:Send  ; RETURN &#x27;Enviar&#x27;
+    OF ETTxt:Sent  ; RETURN &#x27;A mensagem foi enviada.&#x27;
+    END
+  END
+  RETURN PARENT.Txt(pId)                    ! English and Spanish still work
+
+MyMailer.SendSmtp PROCEDURE(EmailMsgClass pMsg)
+Ok  BYTE
+  CODE
+  Ok = PARENT.SendSmtp(pMsg)
+  Log:Sent = Ok; Log:Reason = SELF.LastErrorText; ADD(SendLog)
+  RETURN Ok</code></pre>
+<h2 id="notes">Notas de Clarion</h2>
+<p>Esto no son comportamientos de emailTo: son de Clarion. Cada uno costó tiempo real de encontrar mientras se construía esto, y cada uno es de esos que no se ven hasta que muerden.</p>
+<h3 id="note-clear">Un método llamado Clear rompe CLEAR() en todas partes</h3>
+<p>Un miembro de clase cuya etiqueta coincide con una intrínseca de Clarion redefine esa intrínseca para <em>cada módulo que incluya el archivo</em>. El compilador dice <code>Redefining system intrinsic: CLEAR</code> en el include, y después <code>CLEAR(UnaVariable)</code> en código que no tiene nada que ver con su clase deja de compilar.</p>
+<pre class="code" data-lang="clarion"><code>!  In the CLASS declaration:
+ClearAll             PROCEDURE       ! correct
+!  Clear              PROCEDURE      ! WRONG - redefines the CLEAR intrinsic
+
+!  With a method called Clear, this line, in code that has nothing to do
+!  with e-mail, stops compiling:
+  CLEAR(GlobalRequest)               ! error: No matching prototype available</code></pre>
+<p>Por eso las clases de buffer y de mensaje tienen <code>ClearAll</code>. <code>RESET</code>, <code>ADD</code>, <code>LEN</code> y <code>FREE</code> son los otros nombres de los que hay que alejarse.</p>
+<h3 id="note-string">Un STRING ligado a una variable necesita una picture</h3>
+<p>Escrito con un literal en su lugar, el control sobrevive solo, y luego truena dentro de <code>OPEN(Window)</code> en cuanto la misma ventana tiene también un <code>LIST</code>. No se dibuja nada, así que en pantalla no hay ninguna pista de qué control tiene la culpa.</p>
+<pre class="code" data-lang="clarion"><code>!  WRONG - a literal, on a control bound to a variable.  Survives on its own,
+!  faults inside OPEN(Window) as soon as the window also holds a LIST.
+         STRING(&#x27;&#x27;),AT(10,130,280,10),USE(LocStatus),FONT(,8)
+
+!  RIGHT - a picture wide enough for the variable
+         STRING(@s128),AT(10,130,280,10),USE(LocStatus),FONT(,8)</code></pre>
+<p>La forma de encontrar uno así es abrir variantes de la ventana quitando un control cada vez: la variante que sí abre señala al culpable. Aquí lo arreglaban dos supresiones distintas &mdash; el LIST, o los STRING ligados &mdash; que es lo que dijo que era la combinación y no uno de los dos.</p>
+<h3 id="note-picture">Ninguna picture de Clarion pasa de @s255</h3>
+<p><code>ENTRY(@s512)</code> es error de compilación: <code>Invalid picture token</code>. En una cadena <code>FORMAT</code> es peor, porque <code>FORMAT</code> para el compilador es sólo texto y no se reporta nada. Deje los formatos de lista en <code>@s255</code> y dele una variable más ancha al ENTRY si la necesita.</p>
+<h3 id="note-map">Un módulo MEMBER sin MAP pierde las intrínsecas</h3>
+<p>Un <code>MAP</code> a nivel de módulo es lo que trae <code>BUILTINS.CLW</code>. Sin uno &mdash; aunque esté vacío &mdash; <code>CLIP</code>, <code>CHOOSE</code> y las demás vuelven como <code>Unknown function label</code>, decenas de veces, que se lee como un include corrupto y no como cuatro líneas que faltan.</p>
+<pre class="code" data-lang="clarion"><code>  MEMBER
+
+  INCLUDE(&#x27;EmailToClass.INC&#x27;),ONCE
+
+  MAP
+  END</code></pre>
+<h3 id="note-return">Un método que devuelve STRING no puede liberar su propio buffer</h3>
+<p>La copia ocurre en el <code>RETURN</code>, así que cualquier cosa que se libere antes ya no está cuando el llamador la ve. El buffer tiene que sobrevivir al retorno, y eso quiere decir que es del objeto; y cada codificador necesita el suyo, porque se anidan.</p>
+<pre class="code" data-lang="clarion"><code>!  A method that returns a STRING cannot free the buffer it built the answer
+!  in: the copy happens at the RETURN.  So the buffer belongs to the object.
+EmailMsgClass.Base64 PROCEDURE(STRING pRaw)
+  CODE
+  SELF.EncBuf.ClearAll()
+  ! ... fill SELF.EncBuf ...
+  RETURN SELF.EncBuf.Value()
+
+!  And each encoder gets its OWN buffer, because they nest: the inner result
+!  is still live while the outer call reads it.
+  pOut.Add(SELF.QuotedPrintable(SELF.Utf8(pBody.Value())))</code></pre>
+<h3 id="note-crlf">Las fuentes de Clarion tienen que ser CRLF</h3>
+<p>Un include sólo con LF se interpreta mal como <code>Illegal data type: &lt;CLASS&gt;</code> en la <em>declaración</em>, sin marcar nada dentro del include. Ojo con que <code>sed -i</code> quita el CR y escribe LF, así que una edición de una línea basta para romper un archivo que compilaba hace un minuto.</p>
+<h3 id="note-schannel">SCHANNEL pide un certificado de cliente que usted no tiene</h3>
+<p>El SMTP de Google, y Office 365, piden un certificado de cliente <em>opcional</em>. Sin certificado en la credencial, <code>InitializeSecurityContext</code> devuelve <code>SEC_I_INCOMPLETE_CREDENTIALS</code> (<code>0x00090320</code>) en vez de continuar, y el handshake se detiene. La solución es volver a emitir el mismo token &mdash; repetir sin leer más datos &mdash; y el handshake termina de forma anónima. Sin eso, toda conexión a Gmail falla.</p>
+<h3 id="note-dot">El punto solitario</h3>
+<p>En SMTP, una línea que sólo tiene un <code>.</code> termina el mensaje. Una línea del cuerpo que legítimamente empiece con punto tiene entonces que mandarse con dos, y el servidor que recibe quita uno. Si esto sale mal, un mensaje se corta en silencio en la primera línea de ésas, que es justo la clase de cosa que nunca aparece en pruebas y luego le pasa a un cliente.</p>
+<div class="next"><a href="https://claude.ai/code/artifact/07f9ecdf-232b-4cbd-8d20-f423561f3ba0"><b>Guía de plantillas &rarr;</b><span>Cada plantilla, pestaña, campo y embed</span></a><a href="https://claude.ai/code/artifact/108af66d-ecbe-4a5b-bada-cb3500c741b6"><b>Referencia &rarr;</b><span>Cada clase, método, propiedad y equate</span></a><a href="https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c"><b>Primeros pasos &rarr;</b><span>Instalarlo y enviar el primer mensaje</span></a></div>
+    <footer>emailTo &mdash; cuatro vol&uacute;menes. La referencia se genera a partir de los cinco archivos include, de modo que sus firmas son las que est&aacute;n en la compilaci&oacute;n.</footer>
+  </div>
+</main>
+</div>
+<script>
+const q = document.getElementById('filter');
+if (q) {
+  const rows = [...document.querySelectorAll('tr.fn')];
+  q.addEventListener('input', () => {
+    const t = q.value.trim().toLowerCase();
+    rows.forEach(r => r.classList.toggle('hide', t && !r.dataset.k.includes(t)));
+    document.querySelectorAll('.tw').forEach(w => {
+      const body = w.querySelector('tbody');
+      if (!body) return;
+      const any = [...body.querySelectorAll('tr')].some(r => !r.classList.contains('hide'));
+      const h = w.previousElementSibling;
+      w.classList.toggle('hide', !any);
+      if (h && h.tagName === 'H3') h.classList.toggle('hide', !any);
+    });
+  });
+}
+/*  Which sidebar entry is lit.  An IntersectionObserver was the wrong
+    instrument: one click crosses several headings at once, every one of them
+    arrives in a single callback, and the last entry processed won - so the
+    highlight settled one or two sections past the one that was clicked, and
+    the page looked as though it had jumped there.  Position is the question,
+    so ask position.  */
+const links = [...document.querySelectorAll('.nav__l a')];
+if (links.length) {
+  const byId  = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const marks = [...document.querySelectorAll('h2[id],h3[id]')].filter(h => byId.has(h.id));
+  const light = a => links.forEach(l => l.classList.toggle('on', l === a));
+  let held = null, holdUntil = 0, queued = false;
+
+  function spy() {
+    queued = false;
+    if (held) { light(held); return; }
+    let cur = marks[0];
+    for (const h of marks) {
+      if (h.getBoundingClientRect().top <= 120) cur = h; else break;
+    }
+    //  the foot of the page belongs to the last section, however short it is
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2)
+      cur = marks[marks.length - 1];
+    if (cur) light(byId.get(cur.id));
+  }
+
+  //  a click owns the highlight until the scroll it started has landed
+  links.forEach(a => a.addEventListener('click', () => {
+    held = a; holdUntil = performance.now() + 700; light(a);
+  }));
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(spy); } };
+  addEventListener('scroll', () => {
+    if (held && performance.now() > holdUntil) held = null;
+    later();
+  }, {passive: true});
+  addEventListener('resize', later);
+  if (marks.length) spy();
+}
+</script>

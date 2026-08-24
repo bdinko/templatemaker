@@ -190,3 +190,26 @@ docs/comlesscalendar*
 # demo runtime leftovers (saved views, modes, build logs - regenerated on every run)
 examples/**/*Demo.INI
 examples/**/build.log
+
+# emailTo keeps the mail account in an INI beside the EXE. The password,
+# client secret and refresh token in it are DPAPI-sealed to one Windows user,
+# but a credential is a credential and does not belong in a repository. The
+# demo's file was already covered by the *Demo.INI rule above; these catch the
+# default name EmailToClass.Init() uses, and any case of it.
+emailTo.ini
+emailToDemo.ini
+
+# emailTo examples: the class sources are COPIED next to the example for a
+# local build, and the demo writes a table and a log beside the exe
+# (named one by one: git matches these case-insensitively on Windows, so
+#  Email*.clw would also swallow emailApiDemo.clw)
+examples/emailTo/EmailNetClass.*
+examples/emailTo/EmailMsgClass.*
+examples/emailTo/EmailToClass.*
+examples/emailTo/EmailJsonClass.*
+examples/emailTo/EmailApiClass.*
+examples/emailTo/emailc.c
+examples/emailTo/*.tps
+examples/emailTo/*.log
+examples/emailTo/*.csv
+examples/emailTo/*.ini

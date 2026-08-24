@@ -1,0 +1,18 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{A47E9C31-2D68-4B5F-9E07-6C3A8F1D2B51}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>emailApiDemo</AssemblyName>
+    <OutputName>emailApiDemo</OutputName>
+    <DefineConstants>_ABCDllMode_=&gt;0%3b_ABCLinkMode_=&gt;1%3b_emailToDllMode_=&gt;0%3b_emailToLinkMode_=&gt;1</DefineConstants>
+    <Model>Local</Model>
+    <stack_size>32768</stack_size>
+    <warnings>on</warnings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="emailApiDemo.clw" />
+  </ItemGroup>
+  <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
+</Project>

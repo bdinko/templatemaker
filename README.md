@@ -113,11 +113,30 @@ templates/                      # ready-to-register Clarion templates
   BrowseGrid/                   #   take over any ABC browse and draw it with Direct2D (see below)
     BrowseGrid.tpl              #     the extension: one prompt sheet, no class to ship
     d2grid.c                    #     the grid: Direct2D + DirectWrite, bound at run time
+  BrowseGridLeg/                #   the same grid for the Legacy (CW20) chain (see below)
+    BrowseGridLeg.tpl           #     global + procedure extensions, search box, filter bar
+    d2grid.c                    #     the grid, plus filter buttons and drag-reorder
+    README.md                   #     what the port adds over the ABC original
   weatherWidget/                #   a weather card when your program starts (see below)
     MyWeatherClass.inc          #     the widget (settings, the reading, EN/ES strings)
     MyWeatherClass.clw          #     the implementation (curl + JSON + the drawn card)
     weatherWidget.tpl           #     global extension + code template
     weatherWidget.zip           #     the three files above, zipped for easy distribution
+  emailTo/                      #   send e-mail and manage the account: SMTP/TLS, OAuth2,
+                                #     nine provider APIs (see below)
+    EmailNetClass.inc/.clw      #     transport: sockets, TLS, HTTPS, DPAPI (wraps emailc.c)
+    EmailMsgClass.inc/.clw      #     the message: MIME, base64, quoted-printable, UTF-8
+    EmailToClass.inc/.clw       #     the sender: accounts, SMTP, OAuth2, REST, the windows
+    EmailJsonClass.inc/.clw     #     reading the reply: a JSON parser in pure Clarion
+    EmailApiClass.inc/.clw      #     the management API: blocked, stats, campaigns, the window
+    emailc.c                    #     Winsock + SCHANNEL + WinHTTP + SHA-256 (Clacpp-compiled)
+    emailTo.tpl                 #     3 app extensions + 3 buttons + 4 code templates
+    EmailTables.txt             #     the settings-table structure, written out by hand
+    emailToTables.dctx          #     the dictionary to IMPORT: 7 tables (Dictionary
+                                #       Editor > File > Import > DCTX/XML)
+    emailToTables.dct           #     the same, prebuilt, if you would rather copy tables across
+    emailToTables.txd           #     Report Writer's format - for ClarionCL /di only
+    emailTo.zip                 #     all of the above, zipped for easy distribution
 designer/ClarionTplDesigner/    # WPF visual designer for the prompt UI (see below)
 installer/                      # builds the installer + a portable single-file exe
 README.md
@@ -504,6 +523,37 @@ at run time by harnesses rather than argued: column-edge hit testing (`edgetest`
 concealment (`novis` — `winvis 1>0 | PROP:Hide 0>0 | recs 20`), group resizing being reversible
 (`proptest` — `PROP-PASS was 200,300,160,140 now 200,300,160,140`), and the row-height clamp
 (`GridTest grew=33 shrank=19`). See [`examples/BrowseGrid/`](examples/BrowseGrid/).
+
+### `templates/BrowseGridLeg/` — the same grid for the **Legacy (CW20)** chain
+BrowseGrid ported to the Legacy template family, and grown up on the way. The browse engine underneath is
+untouched — file access, sort orders, range limits, locators and the update round-trip stay the generated
+Legacy browse's own — while the `LIST` is concealed and the Direct2D grid draws in its place, exactly as the
+ABC version does. It attaches with `FAMILY('CW20')`, and it is a `#CONTROL`-free extension suite, because the
+Legacy chain has no ABC objects to hang one on.
+**What the port adds over the original.** A **file-loaded mode** reads the whole view into the queue once
+(5,000 SQLite records in ~10ms), which buys an exact scrollbar thumb, instant in-memory sorts and live
+thumb-drag scrolling; page-loaded mode is still there, and the two are split by `#IF(%bglLoad = 'File loaded')`
+throughout. A **live search box** narrows the list browser-style as you type, case-blind, with type-to-search
+straight from the list. A **criteria filter bar** — a full-width, self-describing button — is driven by
+[myFilter](templates/myFilter)'s `MyFilterClass` used unchanged (it is pure Clarion): build conditions per
+field, save filters by name, apply them from the button's menu. It applies through `PROP:Filter` on the view,
+so it filters on joined files' fields too.
+**And the rest.** Excel-style value menus on the headings, case-blind header-click sorting
+(decorate–sort–undecorate — the queue `SORT` string form is case-sensitive and the comparison-function form
+is a silent no-op), column drag-resize, a right-click column chooser, and **drag-to-reorder** with a ghost
+heading chip and an insertion marker — widths, visibility and order all remembered per user in an INI.
+Double-click opens the Change form through the browse's own `AlertKey` machinery. **Word wrap gives
+variable-height rows**: each row is measured with `CreateTextLayout` + `GetMetrics` and takes only the lines
+its own text needs, paging works from a conservative page size while fills push the measured optimum, and the last
+screen bottom-anchors at the final record the way a stock browse does.
+Needs `d2grid.c` on the redirection path, and `MyFilterClass.inc`/`.clw` from
+[`templates/myFilter/`](templates/myFilter) if you use the filter bar. Tested against Clarion 12 with the
+TopSpeed and SQLite drivers on browses of 5,000 and 10,000 records; the SQLite conversion notes (padded CHAR
+storage, the optimistic-concurrency WHERE clause, POSITION drift after a Change, error 37 from CLOSE on a
+never-opened view) live as comments at the relevant spots in the template. See
+[`templates/BrowseGridLeg/README.md`](templates/BrowseGridLeg/README.md), and
+[the Legacy chain reference](skills/clarion-template/reference/legacy-cw20.md) for the porting rules it
+demonstrates.
 
 ### `templates/myGauge/` — analog gauges/dials on windows and reports
 A configurable **analog gauge** drawn entirely with native Clarion graphics (`ARC`, `ELLIPSE`, `LINE`,
@@ -1101,6 +1151,235 @@ hand-coded project that omits the `_myWeatherLinkMode_` / `_myWeatherDllMode_` p
 import and faults in the constructor. A runnable demo is
 [`examples/weatherWidget/WeatherDemo.clw`](examples/weatherWidget/WeatherDemo.clw); its `/shots` switch and
 `shoot.ps1` regenerate every image above.
+
+### `templates/emailTo/` — send e-mail, and manage the account: SMTP/TLS, OAuth2 and nine provider APIs
+Add **emailTo - Global** to an application and every procedure in it can send mail. Drag **emailTo - E-mail
+button** onto a window for a wired-up button, or drop the **Send an e-mail here** code template into any embed
+— the end of a report, a menu item, a batch process. One line does it from hand-written code:
+
+```clarion
+IF NOT Mailer.SendSimple('bob@acme.com', 'Your invoice', 'It is attached.', 'INV-1042.pdf')
+   MESSAGE(Mailer.LastErrorText)
+END
+```
+
+**Four ways to send, one message.** `EmailMsgClass` builds the MIME once and each transport delivers those
+same bytes its own way: **SMTP** (plain, STARTTLS or implicit TLS, signing in with `AUTH LOGIN`, `AUTH PLAIN`
+or **OAuth2 `XOAUTH2`**); the **Gmail API**; **Microsoft Graph** — the only route many locked-down Microsoft
+365 tenants still permit; and a **provider API key** for SendGrid, Mailgun, Resend, Brevo, Postmark,
+Mailjet, SparkPost, MailerSend or **Amazon SES**, which needs no OAuth and no consent screen at all. Sixteen provider presets
+fill in host, port, security and sign-in method, so the only things left to type are the address and the
+credential.
+
+**And it asks them questions too.** Sending is half of what a mail provider does. The other half is knowing
+which of your addresses it will not deliver to — the hard bounces, the spam complaints, the unsubscribes —
+and `EmailApiClass` reads that, through **one set of methods for all nine providers**:
+
+```clarion
+MailApi.Init(Mailer)                                  ! borrows the account you already set up
+IF MailApi.GetSuppressions(ETSup:All) >= 0
+   LOOP i = 1 TO RECORDS(MailApi.SuppQ)
+      GET(MailApi.SuppQ, i)
+      !  .Address  .KindName  .Reason  .WhenDate  —  the same six columns, whoever answered
+   END
+END
+MailApi.DeleteSuppression('bob@acme.com', ETSup:Bounce)   ! let one back in
+MailApi.DeleteAllSuppressions(ETSup:All)                  ! or all of them
+MailApi.Manage()                                          ! or just show them the window
+```
+
+That program is unchanged across providers that agree about almost nothing. SendGrid keeps **five** separate
+lists and pages with an offset; Brevo keeps **one** and labels each row with a reason code; Mailgun is
+per-domain and pages with a **cursor**; Postmark capitalises everything and deletes a bounce by *its own id*;
+Mailjet buries the lot in `Data`; Amazon SES wants every request **signed**, and pages with a token.
+The differences live in a **matrix** — one row per operation per provider,
+saying which verb, which address, where the array is in the reply, and which JSON member fills which column —
+so adding a provider is adding rows, and `BuildMap` is VIRTUAL if the one you want is not there yet.
+
+Beyond the block lists, the same object reads **statistics** per day, the **activity** feed (delivered,
+opened, clicked, bounced — with the reason), **contacts** and **lists**, **campaigns** (create, and send),
+**templates**, **senders**, **domains** and **webhooks**. No provider offers all of it, and `Supports()` says
+which — so `Manage()`, the ready-made tabbed window, *disables* what an account genuinely cannot do rather
+than showing an empty list. `IsBlocked()` is the one worth calling in a mailing loop: never send again to an
+address the provider is going to refuse.
+
+**And it can land all of that in your own tables.** The management window asks the provider live and keeps
+nothing, which is fine for looking but no use for a browse, a report, or a join to your customer table. So
+there is a dictionary and a sync:
+
+* **`emailToTables.dctx`** — a ready-made dictionary: `MailBlocked`, `MailStat`, `MailEvent`, `MailContact`,
+  `MailList`, `MailCampaign` and the account table. *Dictionary Editor → File → Import*, and pick the
+  **DCTX / XML** entry. (Not the `.txd` — that is Report Writer's format and the Dictionary Editor refuses it
+  outright. It ships only for `ClarionCL /di`.)
+* **`emailTo - Sync provider data into your tables`** — a *separate* application extension. Nominate the
+  tables and their keys and it generates a small object with one method, `Run`, that fills them.
+* **`emailTo - Sync mail data into your tables`** — a control template that drops a wired *Sync* button, and
+  a *Sync it all into my tables* entry on the code template for a menu item or a batch run.
+
+Columns are matched **by name**, so a table imported from the dictionary needs no mapping at all — and a
+column of your own that the template does not recognise is left alone, surviving every sync. Each row is
+looked up by its key before it is written, so running the sync twice updates rather than duplicates: the
+same eleven rows come back as eleven, not twenty-two.
+
+**No DLL, no .NET, no OpenSSL.** Everything is pure Clarion except one bundled C file, `emailc.c`, compiled
+into your `.EXE` by Clarion's own C compiler through `PRAGMA('compile(emailc.c)')`. It exists because Clarion
+cannot do four things for itself: **TCP sockets**, the **SCHANNEL TLS handshake**, **WinHTTP** and **DPAPI**.
+MIME, base64, quoted-printable, the SMTP conversation, OAuth2 with PKCE, JSON and every provider preset are
+Clarion source you can read and step through. `ws2_32`, `secur32`, `winhttp` and `crypt32` are all parts of
+Windows and are bound at **run time**, so there is no import library, nothing to redistribute, and a machine
+missing one gives a clean error code instead of failing to start.
+
+**OAuth2 that a desktop app can actually use.** Press **Sign in…** in the setup window and emailTo invents a
+PKCE verifier, hashes it (SHA-256, ours), opens the user's own browser at the provider's consent screen and
+listens on `http://127.0.0.1:<a free port>/` for the redirect — then swaps the returned code for an access
+and refresh token. It checks the `state` value before trusting the reply, and only a **desktop client ID** is
+needed, which is not a secret: nothing confidential is compiled into your program. Microsoft public clients
+correctly send **no** client secret; Google gets `access_type=offline&prompt=consent` so a refresh token
+actually comes back. After that, sending refreshes the token silently — the user never sees the browser again.
+
+**Accents survive.** A Clarion `STRING` holds Windows-1252 bytes, so left alone `Factura Número` arrives as
+mojibake. The subject, the display names, the bodies and the attachment file names are transcoded to **UTF-8**
+and labelled as such, with headers wrapped in **RFC 2047** encoded words split on character boundaries — never
+mid-character — and bodies in quoted-printable. A plain English note still goes out as readable `7bit` text,
+because the encoder only reaches for quoted-printable when the content, or a 998-byte line, actually needs it.
+`CharSet = ETChs:Ansi` sends the raw bytes labelled `windows-1252` instead.
+
+**It builds the smallest MIME that carries what you gave it.** Text only is `text/plain`; text and HTML is
+`multipart/alternative`; add an inline image (`<img src="cid:logo">`) and it becomes
+`multipart/related( alternative, image )`; add a file and the lot is wrapped in `multipart/mixed`. A plain
+note does not arrive as a four-part tree. Attachments stream through a doubling buffer, so a 10 MB PDF is
+base64-ed in linear time rather than the quadratic crawl `s = s & more` would give you.
+
+**Where the settings live is your decision.** `LoadAccount` and `SaveAccount` are `VIRTUAL`. Out of the box
+they read and write an INI beside the `.EXE`. Nominate a **table** on the global extension's Table tab — pick
+the key, map a column onto each account field — and the template **generates** the code that reads it at
+start-up and writes it back when the setup window saves, so accounts live in your own data with your own
+backup and security around them. `EmailTables.txt` ships the structure ready to paste into a dictionary.
+
+**The four secrets are encrypted at rest.** Password, client secret, refresh token and API key go through
+`Seal()`: **DPAPI** encrypts them for the current Windows user, then base64 makes the result safe for a text
+column. A settings row copied to another machine, or read by another Windows user, decrypts to nothing. A
+value typed into the column by hand in plain text still works — `Unseal()` recognises it is not one of its own
+and hands it back unchanged.
+
+**A setup window your end users can drive.** Provider, server, port, security, user name and password on one
+tab; **Sign in…** and the API key on another; a **Test account** button that connects, negotiates TLS and
+authenticates **without sending anything to anybody**; and a **Log** tab showing the entire conversation —
+with passwords and tokens masked, so a customer can e-mail you the log of a failed send without e-mailing you
+their password. Everything the user reads comes from one virtual `Txt(id)` method, in **English and Spanish**.
+
+**How it was verified.** The network layer was proved against the live servers before anything was built on
+it: an implicit-TLS handshake to `smtp.gmail.com:465`, a `STARTTLS` upgrade on `:587`, HTTPS to Google's and
+Microsoft's token endpoints, SHA-256 against the RFC test vector and a DPAPI round trip. That flushed out a
+real defect — Google's SMTP asks for an *optional client certificate*, and SCHANNEL answers
+`SEC_I_INCOMPLETE_CREDENTIALS`; the fix is to re-issue the same token so the handshake completes anonymously,
+and without it every Gmail connection dies at `0x00090320`. A complete send — EHLO, AUTH LOGIN, envelope,
+DATA, dot-stuffing, QUIT — was then run against a local SMTP sink and the delivered message compared byte for
+byte: **Bcc in the envelope but not in the headers**, a body line consisting of a single full stop correctly
+doubled on the wire, UTF-8 headers intact and the attachment decoding back to its original bytes. Finally a
+real ABC application was generated from the templates with `ClarionCL` and **compiled and linked**, which also
+confirmed the multi-DLL category writes `_emailToLinkMode_` / `_emailToDllMode_` exactly as the classes expect.
+
+**Files** (copy to the redirection path, all ANSI): `EmailNetClass.inc/.clw`, `EmailMsgClass.inc/.clw`,
+`EmailToClass.inc/.clw`, `emailc.c`. The `.clw` files pull themselves into the build through their `LINK`
+attribute, and `EmailNetClass.clw` pulls in the C through its `PRAGMA`. A hand-coded project with no template
+must define `_emailToLinkMode_=>1;_emailToDllMode_=>0` itself — `examples/emailTo/emailToDemo.cwproj` shows how.
+
+**The manual** is four linked volumes in English and Spanish — eight pages — built by `docs/emailTo/build-docs.py`. The reference volume is
+generated from the `.inc` files, so its signatures cannot drift from the build, and the build fails if a
+nav entry lands on no heading, a heading sits in no nav, or any of the 288 public members lacks a worked
+line of code, or an English one-liner has gained no Spanish twin.
+
+| Volume | English | Español |
+|---|---|---|
+| 1 — install, the smallest thing that sends, OAuth2 setup, the demo | [Getting Started](https://claude.ai/code/artifact/9a35a14f-4479-46c6-b03d-66da4186438c) | [Primeros pasos](https://claude.ai/code/artifact/f96f229b-5344-499a-a9a7-f070e3d4343c) |
+| 2 — the object model, MIME, OAuth2, and a Clarion notes chapter | [Programmer's Guide](https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0) | [Guía del programador](https://claude.ai/code/artifact/f3e1c134-eca6-4292-9831-bf57d763f05f) |
+| 3 — every template, tab and prompt, and the code it writes | [Template Guide](https://claude.ai/code/artifact/d8272efa-aa88-4ab6-a61d-79d147907f01) | [Guía de plantillas](https://claude.ai/code/artifact/07f9ecdf-232b-4cbd-8d20-f423561f3ba0) |
+| 4 — every class, method, property and equate | [Reference](https://claude.ai/code/artifact/c98d7cfa-04e7-45ab-9054-9186cc2fbba5) | [Referencia](https://claude.ai/code/artifact/108af66d-ecbe-4a5b-bada-cb3500c741b6) |
+
+**The ten templates.** Three application extensions — `emailToGlobal` (required once per app),
+`emailToProviderApi` (the management object) and `emailToSync` (the tables to fill); three control templates —
+`emailToButton` (compose, send, or open setup), `emailToApiButton` (opens the management window on whichever
+tab you name, and hides itself when the account has no API) and `emailToSyncButton`; and four code templates —
+`emailToSend`, `emailToCompose`, `emailToSetup` and `emailToApi` — for any embed.
+
+**v1.06 (2026-08-24).** **Amazon SES**, the ninth provider — and the first that will not answer a request just
+because you attached a key. Every call has to be signed with **AWS Signature Version 4**, so the signing lives
+on `EmailNetClass` (`SignAws`, over `Hmac256`, `Sha256Hex` and a derived key that walks date → region →
+service → `aws4_request`) where both the sender and the management object can reach it. Sending posts the same
+MIME the other transports build, base64'd into `/v2/email/outbound-emails`; the management side maps the
+suppression list, contact lists and their members, identities and the account itself. SES pages with neither
+an offset nor a cursor URL but a **continuation token**, which is a fourth paging style the engine now knows.
+
+Two things worth remembering. The credential lands in a different place than everywhere else: **`ApiKey2` is
+the access key id, `ApiKey` the secret, `ApiRegion` the region** — which leaves `UserName` and `Password` free
+for the quite separate SMTP credentials SES also issues, so one account row can do both. And an empty HMAC key
+is not an empty Clarion `STRING`: assigning `''` pads with **spaces**, which signs correctly-shaped garbage.
+The zero-fill is explicit. The signer is checked against the RFC 4231 vectors and against Amazon's own worked
+example, and the suite is 140 assertions green — but with no AWS account here, **SES has never been run
+against the live service**; the canonical path's double-encoding is the line most likely to want a real reply.
+
+**v1.05 (2026-08-24).** The upgrade friction from v1.03, fixed properly. The Provider API was a *tab* on the
+global extension, and that broke every application built before v1.03: an app stores the set of prompts it was
+built with, AppGen does not backfill one added later, and generation stopped with `Unknown Variable %ETgApi` on
+a symbol nobody typed. It is now **`emailTo - Provider API`**, an extension of its own — an app that does not
+add it never names its symbols, so anything older generates untouched. Verified both ways: a v1.02-era app
+generates clean, and an app still carrying the v1.03 prompt values generates clean too (a stored value the
+template no longer declares is simply ignored). The three account columns v1.03 added lose their prompts
+entirely and are matched **by name** instead — call a column `ApiKey2`, `ApiRegion` or `ApiBase` and it is
+filled, in both directions; `SaveAccount` never wrote them back before, and now does.
+
+**v1.04 (2026-08-24).** The data half: a shipped dictionary and a sync into it. Also two template defects
+this uncovered, both of which would have bitten any template that needs a table of its own:
+`#ADD(%UsedFile, …)` fills a list nothing reads — what actually makes ABC declare the table and its
+`Access:` FileManager is `#FIX(%File, …)` then `#SET(%CacheFileUsed, %True)`, and it has to happen at
+`%BeforeFileDeclarations`, a DATA embed, because by `%ProgramSetup` the declarations are already written.
+Without both, every `Access:<table>` line the template writes came back as *Unknown procedure label* on a
+line nobody typed — which is exactly what the **account** settings-table binding had been doing since v1.00,
+silently, for anyone whose table was not already in a browse.
+
+Third, and the reason the sync is its own extension rather than two more tabs on the global one: **an
+application stores the set of prompts it was built with, and AppGen does not backfill a prompt added later** —
+generation stops with `Unknown Variable` on a symbol the developer never typed. An app that never adds the new
+extension never names the new symbols, so every existing application keeps generating untouched. The
+**Provider API** tab added in v1.03 had the same flaw, and v1.05 fixes it by moving it to an extension too. Verified by a harness that imports the shipped
+`.dctx`, generates an application against it, compiles it, and runs the generated sync twice against a
+stand-in provider: eleven rows into six tables, and eleven again the second time.
+
+**v1.03 (2026-08-24).** The management half. Two new classes — `EmailJsonClass`, a real JSON reader in pure
+Clarion (a sorted path index, so a 5,000-node reply answers a lookup in a dozen comparisons), and
+`EmailApiClass`, the provider matrix — plus SparkPost and MailerSend as senders, three new account fields
+(`ApiKey2` for Postmark's account token, `ApiRegion` for the European endpoints, `ApiBase` for a relay of
+your own), a **Provider API** tab on the global extension, the `emailToApiButton` control template and the
+`emailToApi` code template. Verified by 110 assertions in `apitest` — the parser, the four date shapes, URL
+and body expansion, the matrix — of which 22 run the whole engine, paging and all, against a stand-in
+provider on a local socket; by an AppGen-generated application that compiles; and by `emailBounceSync`, which
+really does read a block list and mark the matching customers in a TPS table.
+
+**v1.01 (2026-08-23).** The eighteen column prompts on the **Table** and **Table columns** tabs asked for
+`COMPONENT(%ETgFile)`. `COMPONENT()` lists the component fields of a *key*, so the `...` lookup offered
+nothing and typing a column by hand was rejected with *"Could not find mai:UserName in key 'mailAcct'"* &mdash;
+AppGen was validating against the key on the tab above. Listing a table's columns is `FIELD(%ETgFile)`, which
+is what all five templates now use. Every prompt sheet also carries a version and build stamp on its first
+tab, so the registered copy identifies itself.
+
+**v1.02 (2026-08-23).** Prompt clarity, after a report that two buttons on one window gave no clue which
+one carried the sender's details. The answer is neither &mdash; the account belongs to the whole application &mdash;
+but nothing said so. The control template now has an **Account** tab whose only job is to point at
+*Global Properties &rarr; Extensions &rarr; emailTo - Global &rarr; Account*; the **Message** tab greys out entirely when the
+action is *open the account setup window*, where none of it applied; the *After it runs* box greys unless the
+action is *send straight away*, the only action that used it; and the three code templates carry the same
+one-line signpost. The AppGen list also read `E-mail (1)` / `E-mail (3)` &mdash; the raw prompt number &mdash; and now
+reads `E-mail button - opens ACCOUNT SETUP`, built with `CHOOSE()` in the `DESCRIPTION` so no stored value
+moved. The code-generating half of the template is byte-identical: this release changes prompts only.
+
+The manual was rebuilt and the four affected volumes republished. Volume 3 gains an **Account** and a
+**Message** section under the e-mail button, and a note that answers the question the prompts had left open:
+*which button holds the sender's address? Neither.* Volume 1 gains the same point where it first tells you to
+add the extension and drop a button. Rebuilding also surfaced a latent generator bug: `secnav()` prints the
+heading text back into the sidebar and `headings()` scrapes it out of already-escaped HTML, so `esc()` ran a
+second time and a deliberate `&mdash;` reached the page as four literal characters &mdash; in the heading as well,
+since `h2()`/`h3()` escaped their text where `p()` does not. Headings now take HTML like every other helper.
 
 ## Install
 

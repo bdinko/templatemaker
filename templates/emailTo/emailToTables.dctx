@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dictionary Name="emailToTables" DctxFormat="4">
+	<Table Guid="{93a58b94-5e88-4f2f-b03d-7d974a2b43b8}" Ident="101" Name="MailAcct" Prefix="MAI" Driver="TOPSPEED" Path="MailAcct" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{93eb0872-2f61-4768-b046-00e73871c1b5}" Ident="103" Name="Name" DataType="STRING" Size="64" ScreenPicture="@s64" ScreenPrompt="Name:" ReportHeading="Name" Tooltip="The account label: &apos;default&apos;, &apos;billing&apos;...">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Name:&apos;),USE(?MAI:Name:Prompt)"/>
+				<Line Text=" ENTRY(@s64),USE(MAI:Name)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s64),USE(MAI:Name)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{aac3380a-1226-45a6-b320-7bbbbfd02081}" Ident="104" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="0 other, 1 Gmail ... 14 SparkPost, 15 MailerSend">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MAI:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MAI:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MAI:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{0b2d30aa-3907-4f7d-9031-82009b07a1d5}" Ident="105" Name="Transport" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Transport:" ReportHeading="Transport" Tooltip="1 SMTP, 2 Gmail API, 3 MS Graph, 4 provider API key">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Transport:&apos;),USE(?MAI:Transport:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MAI:Transport)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MAI:Transport)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{85191980-628e-4daa-a7e2-b0c8225e9479}" Ident="106" Name="Host" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Host:" ReportHeading="Host" Tooltip="smtp.gmail.com">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Host:&apos;),USE(?MAI:Host:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MAI:Host)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MAI:Host)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{71151909-03ff-4f4e-93da-d8e68a3d0886}" Ident="107" Name="Port" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Port:" ReportHeading="Port" Tooltip="587">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Port:&apos;),USE(?MAI:Port:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MAI:Port)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MAI:Port)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{c13f06ed-1519-4972-b8d0-a345d08b7604}" Ident="108" Name="Security" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Security:" ReportHeading="Security" Tooltip="0 none, 1 STARTTLS, 2 TLS/SSL">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Security:&apos;),USE(?MAI:Security:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MAI:Security)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MAI:Security)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{8ed1752a-9335-4819-8e8f-654adf8ff1a6}" Ident="109" Name="AuthMode" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Auth Mode:" ReportHeading="Auth Mode" Tooltip="0 none, 1 AUTH LOGIN, 2 AUTH PLAIN, 3 XOAUTH2">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Auth Mode:&apos;),USE(?MAI:AuthMode:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MAI:AuthMode)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MAI:AuthMode)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{8a4864f6-dcd3-45cd-a76f-aed556db287b}" Ident="110" Name="UserName" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="User Name:" ReportHeading="User Name">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;User Name:&apos;),USE(?MAI:UserName:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MAI:UserName)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MAI:UserName)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{9889cc1c-cd68-4d38-9409-9a85652508a8}" Ident="111" Name="Password" DataType="STRING" Size="512" ScreenPicture="@s512" ScreenPrompt="Password:" ReportHeading="Password" Tooltip="SEALED - DPAPI + base64, so 4x the real length">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Password:&apos;),USE(?MAI:Password:Prompt)"/>
+				<Line Text=" ENTRY(@s512),USE(MAI:Password)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s512),USE(MAI:Password)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{582532e2-4d9f-4bad-acd2-f827f018971e}" Ident="112" Name="FromAddr" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="From Addr:" ReportHeading="From Addr">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;From Addr:&apos;),USE(?MAI:FromAddr:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MAI:FromAddr)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MAI:FromAddr)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{92f7c715-78f4-492f-97b1-dd5c9cea134b}" Ident="113" Name="FromName" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="From Name:" ReportHeading="From Name">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;From Name:&apos;),USE(?MAI:FromName:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MAI:FromName)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MAI:FromName)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{957ca31e-0140-41da-a485-3e26694bd202}" Ident="114" Name="ReplyTo" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Reply To:" ReportHeading="Reply To">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Reply To:&apos;),USE(?MAI:ReplyTo:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MAI:ReplyTo)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MAI:ReplyTo)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{96538f8c-1947-4421-8778-97709f2bc370}" Ident="115" Name="ClientId" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Client Id:" ReportHeading="Client Id" Tooltip="OAuth2 - not secret, stored as typed">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Client Id:&apos;),USE(?MAI:ClientId:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MAI:ClientId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MAI:ClientId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{0a8b6181-dec9-4ef9-bf73-3d3f48204c96}" Ident="116" Name="ClientSecret" DataType="STRING" Size="512" ScreenPicture="@s512" ScreenPrompt="Client Secret:" ReportHeading="Client Secret" Tooltip="SEALED">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Client Secret:&apos;),USE(?MAI:ClientSecret:Prompt)"/>
+				<Line Text=" ENTRY(@s512),USE(MAI:ClientSecret)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s512),USE(MAI:ClientSecret)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{5049a032-4cbe-4369-8b9d-a9d6ea227907}" Ident="117" Name="TenantId" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Tenant Id:" ReportHeading="Tenant Id" Tooltip="Microsoft: common / organizations / a GUID">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Tenant Id:&apos;),USE(?MAI:TenantId:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MAI:TenantId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MAI:TenantId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{17f7c106-8f39-4994-b325-55d47b1f322b}" Ident="118" Name="RefreshToken" DataType="STRING" Size="2048" ScreenPicture="@s2048" ScreenPrompt="Refresh Token:" ReportHeading="Refresh Token" Tooltip="SEALED - the long-lived OAuth2 grant">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Refresh Token:&apos;),USE(?MAI:RefreshToken:Prompt)"/>
+				<Line Text=" ENTRY(@s2048),USE(MAI:RefreshToken)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s2048),USE(MAI:RefreshToken)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{935e8e19-12b9-4703-9cde-fc1017a7517b}" Ident="119" Name="ApiKey" DataType="STRING" Size="1024" ScreenPicture="@s1024" ScreenPrompt="Api Key:" ReportHeading="Api Key" Tooltip="SEALED">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Api Key:&apos;),USE(?MAI:ApiKey:Prompt)"/>
+				<Line Text=" ENTRY(@s1024),USE(MAI:ApiKey)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s1024),USE(MAI:ApiKey)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{3222a15a-3859-4e87-a407-178d884d4678}" Ident="120" Name="ApiKey2" DataType="STRING" Size="1024" ScreenPicture="@s1024" ScreenPrompt="Api Key2:" ReportHeading="Api Key2" Tooltip="SEALED - Postmark account token">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Api Key2:&apos;),USE(?MAI:ApiKey2:Prompt)"/>
+				<Line Text=" ENTRY(@s1024),USE(MAI:ApiKey2)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s1024),USE(MAI:ApiKey2)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{8533da49-d324-4216-91d7-47f8bae2e1ee}" Ident="121" Name="ApiDomain" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Api Domain:" ReportHeading="Api Domain" Tooltip="Mailgun sending domain; MailerSend domain id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Api Domain:&apos;),USE(?MAI:ApiDomain:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MAI:ApiDomain)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MAI:ApiDomain)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{4c4a433a-a821-4577-8dfa-c26a337f628b}" Ident="122" Name="ApiRegion" DataType="STRING" Size="32" ScreenPicture="@s32" ScreenPrompt="Api Region:" ReportHeading="Api Region" Tooltip="&apos;eu&apos; for a European Mailgun / SparkPost account">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Api Region:&apos;),USE(?MAI:ApiRegion:Prompt)"/>
+				<Line Text=" ENTRY(@s32),USE(MAI:ApiRegion)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s32),USE(MAI:ApiRegion)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{dc107dc3-1f2c-44e4-bd5d-7fb07da6dfbc}" Ident="123" Name="ApiBase" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Api Base:" ReportHeading="Api Base" Tooltip="Replaces the host, and the scheme if you give one">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Api Base:&apos;),USE(?MAI:ApiBase:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MAI:ApiBase)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MAI:ApiBase)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{8e38dcb0-bb32-4a2b-8030-5bfaadb1303d}" Ident="102" Order="1" Name="ByName" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{dee10f7f-0b88-4eb2-9502-026be22f4021}" FieldId="{93eb0872-2f61-4768-b046-00e73871c1b5}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+	<Table Guid="{508c7b30-81cb-4465-86f0-f788a0d8e4d5}" Ident="124" Name="MailBlocked" Prefix="MBL" Driver="TOPSPEED" Path="MailBlocked" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{234a2238-45c2-4f35-a179-a91140393e85}" Ident="128" Name="Address" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Address:" ReportHeading="Address" Tooltip="The blocked address">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Address:&apos;),USE(?MBL:Address:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MBL:Address)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MBL:Address)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{3cfe506f-f1c9-44e3-b343-85e6ab471bc0}" Ident="129" Name="Kind" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Kind:" ReportHeading="Kind" Tooltip="1 bounce, 2 blocked, 3 spam, 4 unsub, 5 invalid">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Kind:&apos;),USE(?MBL:Kind:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MBL:Kind)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MBL:Kind)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{bb6cedce-0fbe-4236-9a7a-18f96517f2b9}" Ident="130" Name="KindName" DataType="STRING" Size="32" ScreenPicture="@s32" ScreenPrompt="Kind Name:" ReportHeading="Kind Name" Tooltip="The same, in words, in the object language">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Kind Name:&apos;),USE(?MBL:KindName:Prompt)"/>
+				<Line Text=" ENTRY(@s32),USE(MBL:KindName)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s32),USE(MBL:KindName)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{6488010e-3b03-469d-a55d-968a734c3196}" Ident="131" Name="Reason" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Reason:" ReportHeading="Reason" Tooltip="What the receiving server actually said">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Reason:&apos;),USE(?MBL:Reason:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MBL:Reason)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MBL:Reason)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{53bd5ac7-8de7-4722-8e27-4d76c2c6edaa}" Ident="132" Name="Code" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Code:" ReportHeading="Code" Tooltip="The SMTP status, where the provider keeps one">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Code:&apos;),USE(?MBL:Code:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MBL:Code)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MBL:Code)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{52d28f2f-0549-4ec1-b0df-e410ebb5e919}" Ident="133" Name="BlockedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Blocked On:" ReportHeading="Blocked On">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Blocked On:&apos;),USE(?MBL:BlockedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MBL:BlockedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MBL:BlockedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{acdff5ba-74df-432d-8f0b-a22d0606884e}" Ident="134" Name="BlockedAt" DataType="TIME" ScreenPicture="@t7" ScreenPrompt="Blocked At:" ReportHeading="Blocked At">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Blocked At:&apos;),USE(?MBL:BlockedAt:Prompt)"/>
+				<Line Text=" ENTRY(@t7),USE(MBL:BlockedAt)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@t7),USE(MBL:BlockedAt)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{052af290-bfb2-425b-828a-92d7903cec72}" Ident="135" Name="Ref" DataType="STRING" Size="64" ScreenPicture="@s64" ScreenPrompt="Ref:" ReportHeading="Ref" Tooltip="The provider&apos;s own id - some delete by it, not by address">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Ref:&apos;),USE(?MBL:Ref:Prompt)"/>
+				<Line Text=" ENTRY(@s64),USE(MBL:Ref)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s64),USE(MBL:Ref)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{f75ba065-e225-4a91-a7b2-5fe63246ba56}" Ident="136" Name="Sender" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Sender:" ReportHeading="Sender" Tooltip="Which of your senders it happened to">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Sender:&apos;),USE(?MBL:Sender:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MBL:Sender)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MBL:Sender)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{a9739488-dcdf-4220-b276-86dadd20f1b2}" Ident="137" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="Which provider this row came from (ETPrv:...)">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MBL:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MBL:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MBL:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{53e4b32e-e8af-4daf-9900-2d8e654d27a8}" Ident="138" Name="SyncedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Synced On:" ReportHeading="Synced On" Tooltip="When the sync last wrote this row">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Synced On:&apos;),USE(?MBL:SyncedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MBL:SyncedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MBL:SyncedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{592481fb-d956-4723-8f10-0039293d47a0}" Ident="125" Order="1" Name="ByAddress" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{2a5762ac-e4cf-4285-9c7d-bad4f6fe945d}" FieldId="{a9739488-dcdf-4220-b276-86dadd20f1b2}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{9a93f18d-9080-40ee-8f27-d0dc7803c3f1}" FieldId="{234a2238-45c2-4f35-a179-a91140393e85}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{5a3c040d-604f-4a62-9a4b-c3d00d3cec35}" FieldId="{3cfe506f-f1c9-44e3-b343-85e6ab471bc0}" Order="3" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{192c0b8b-6b19-419c-82a0-577b38a68d42}" Ident="126" Order="2" Name="ByKind" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{336c0f25-18cf-4237-a257-3d2c4828143d}" FieldId="{a9739488-dcdf-4220-b276-86dadd20f1b2}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{a23f250a-8f9e-4ca9-aca8-d0946415be2b}" FieldId="{3cfe506f-f1c9-44e3-b343-85e6ab471bc0}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{5d7c5fa5-8844-4f10-9653-ca01e5e60ef5}" FieldId="{234a2238-45c2-4f35-a179-a91140393e85}" Order="3" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{75279499-7aca-4cab-a5bf-4466651e5682}" Ident="127" Order="3" Name="ByDate" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{d644014a-6f87-443a-b0b4-c1c5f225b6c6}" FieldId="{a9739488-dcdf-4220-b276-86dadd20f1b2}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{c129617f-c03a-4b07-ad09-1501b6e271d8}" FieldId="{52d28f2f-0549-4ec1-b0df-e410ebb5e919}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+	<Table Guid="{195b2dce-632d-4dcd-aef2-479e076e066d}" Ident="139" Name="MailStat" Prefix="MST" Driver="TOPSPEED" Path="MailStat" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{0b4098dd-cacc-41e2-b8bb-acec5dff7eb3}" Ident="141" Name="StatDate" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Stat Date:" ReportHeading="Stat Date">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Stat Date:&apos;),USE(?MST:StatDate:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MST:StatDate)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MST:StatDate)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{dd25150d-06b7-4999-9713-cdcff25682f3}" Ident="142" Name="Requests" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Requests:" ReportHeading="Requests">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Requests:&apos;),USE(?MST:Requests:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Requests)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Requests)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{705c6ac0-a81e-45f0-bf98-7a145adf19a4}" Ident="143" Name="Delivered" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Delivered:" ReportHeading="Delivered">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Delivered:&apos;),USE(?MST:Delivered:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Delivered)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Delivered)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{666968a4-4742-480e-8e21-c5a0c89d1bfb}" Ident="144" Name="Opens" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Opens:" ReportHeading="Opens">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Opens:&apos;),USE(?MST:Opens:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Opens)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Opens)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{465d9809-382d-403f-adbe-ecaea8ab0c31}" Ident="145" Name="UniqueOpens" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Unique Opens:" ReportHeading="Unique Opens">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Unique Opens:&apos;),USE(?MST:UniqueOpens:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:UniqueOpens)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:UniqueOpens)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{c3a8d712-0518-49b8-801f-2e6c6785eb89}" Ident="146" Name="Clicks" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Clicks:" ReportHeading="Clicks">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Clicks:&apos;),USE(?MST:Clicks:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Clicks)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Clicks)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{2aa1b4c4-2d6b-47eb-ac0c-47887c79a993}" Ident="147" Name="UniqueClicks" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Unique Clicks:" ReportHeading="Unique Clicks">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Unique Clicks:&apos;),USE(?MST:UniqueClicks:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:UniqueClicks)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:UniqueClicks)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{16318033-5508-466f-9e1e-b8af442eb8ca}" Ident="148" Name="HardBounces" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Hard Bounces:" ReportHeading="Hard Bounces">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Hard Bounces:&apos;),USE(?MST:HardBounces:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:HardBounces)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:HardBounces)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{62802003-f1a1-460b-b448-5795892bcc20}" Ident="149" Name="SoftBounces" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Soft Bounces:" ReportHeading="Soft Bounces">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Soft Bounces:&apos;),USE(?MST:SoftBounces:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:SoftBounces)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:SoftBounces)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{211a9fa5-364c-413b-bd28-58a15c1a562c}" Ident="150" Name="Blocks" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Blocks:" ReportHeading="Blocks">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Blocks:&apos;),USE(?MST:Blocks:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Blocks)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Blocks)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{075ce4ca-8a30-40cc-b2ac-a22fc8f5340a}" Ident="151" Name="SpamReports" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Spam Reports:" ReportHeading="Spam Reports">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Spam Reports:&apos;),USE(?MST:SpamReports:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:SpamReports)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:SpamReports)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{97abe43c-d501-407d-8666-5d461e5b8604}" Ident="152" Name="Unsubscribed" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Unsubscribed:" ReportHeading="Unsubscribed">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Unsubscribed:&apos;),USE(?MST:Unsubscribed:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Unsubscribed)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Unsubscribed)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{0dd05c0a-0796-4d07-826f-90bd8a1c4fe9}" Ident="153" Name="Invalid" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Invalid:" ReportHeading="Invalid">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Invalid:&apos;),USE(?MST:Invalid:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MST:Invalid)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MST:Invalid)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{9713443d-45ce-468a-b56f-4e7048d7d149}" Ident="154" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="Which provider this row came from (ETPrv:...)">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MST:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MST:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MST:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{b85c1ed3-a089-42d0-a07c-5b6b7491a95b}" Ident="155" Name="SyncedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Synced On:" ReportHeading="Synced On" Tooltip="When the sync last wrote this row">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Synced On:&apos;),USE(?MST:SyncedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MST:SyncedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MST:SyncedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{74a22960-43ff-496d-964b-fda038944ac3}" Ident="140" Order="1" Name="ByDate" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{c599c6b9-2b4c-4e34-9acb-ee45f8afdc7c}" FieldId="{9713443d-45ce-468a-b56f-4e7048d7d149}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{99c874de-194f-4e75-8dfb-865f0fe10048}" FieldId="{0b4098dd-cacc-41e2-b8bb-acec5dff7eb3}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+	<Table Guid="{bf9a0e5e-5b74-4dee-a353-c626182c39c4}" Ident="156" Name="MailEvent" Prefix="MEV" Driver="TOPSPEED" Path="MailEvent" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{4911d8bc-3ec9-4e4a-aaef-5687f463147e}" Ident="160" Name="EventDate" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Event Date:" ReportHeading="Event Date">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Event Date:&apos;),USE(?MEV:EventDate:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MEV:EventDate)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MEV:EventDate)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{03514092-25f8-4543-93eb-ebedfaa32173}" Ident="161" Name="EventTime" DataType="TIME" ScreenPicture="@t7" ScreenPrompt="Event Time:" ReportHeading="Event Time">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Event Time:&apos;),USE(?MEV:EventTime:Prompt)"/>
+				<Line Text=" ENTRY(@t7),USE(MEV:EventTime)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@t7),USE(MEV:EventTime)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{f575b7e2-4469-4e99-98c8-8c30c6af7ec3}" Ident="162" Name="Address" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Address:" ReportHeading="Address">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Address:&apos;),USE(?MEV:Address:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MEV:Address)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MEV:Address)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{eb403960-88d8-4b5f-aa72-14a6935771ed}" Ident="163" Name="EventName" DataType="STRING" Size="32" ScreenPicture="@s32" ScreenPrompt="Event Name:" ReportHeading="Event Name" Tooltip="delivered / opened / clicked / bounced / spam">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Event Name:&apos;),USE(?MEV:EventName:Prompt)"/>
+				<Line Text=" ENTRY(@s32),USE(MEV:EventName)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s32),USE(MEV:EventName)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{8a49a691-3819-4762-aa48-d6ac72d10c56}" Ident="164" Name="Reason" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Reason:" ReportHeading="Reason">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Reason:&apos;),USE(?MEV:Reason:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MEV:Reason)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MEV:Reason)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{c9776d99-baee-4915-bd80-20b1a81ae6e0}" Ident="165" Name="Subject" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Subject:" ReportHeading="Subject">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Subject:&apos;),USE(?MEV:Subject:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MEV:Subject)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MEV:Subject)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{ed5ca620-f2ef-4d4b-ad1d-723364baf19c}" Ident="166" Name="MessageId" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Message Id:" ReportHeading="Message Id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Message Id:&apos;),USE(?MEV:MessageId:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MEV:MessageId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MEV:MessageId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{6951dbbf-6dc6-4a17-9cc8-84b177a10286}" Ident="167" Name="Link" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Link:" ReportHeading="Link" Tooltip="The URL, for a click">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Link:&apos;),USE(?MEV:Link:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MEV:Link)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MEV:Link)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{6a22a323-c6b2-4c0e-a377-f131230898b6}" Ident="168" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="Which provider this row came from (ETPrv:...)">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MEV:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MEV:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MEV:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{931d9c5a-f986-41bd-b394-2ac809a8dbec}" Ident="169" Name="SyncedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Synced On:" ReportHeading="Synced On" Tooltip="When the sync last wrote this row">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Synced On:&apos;),USE(?MEV:SyncedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MEV:SyncedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MEV:SyncedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{2146ec02-363f-487a-beab-11f238c65524}" Ident="157" Order="1" Name="ByStamp" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{5351f261-2dd2-49fb-8d59-5dea6cef3fa5}" FieldId="{6a22a323-c6b2-4c0e-a377-f131230898b6}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{56896a89-cfff-42ee-8a61-172a952e2b3f}" FieldId="{f575b7e2-4469-4e99-98c8-8c30c6af7ec3}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{d7823434-6e0d-41b0-a07a-1277543dd4f8}" FieldId="{4911d8bc-3ec9-4e4a-aaef-5687f463147e}" Order="3" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{0f5ba96a-7b88-4803-a2ea-10094d69dc36}" FieldId="{03514092-25f8-4543-93eb-ebedfaa32173}" Order="4" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{3bf33853-65de-4931-9afa-7f91e073ff70}" FieldId="{eb403960-88d8-4b5f-aa72-14a6935771ed}" Order="5" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{1f75a4a8-2e52-4411-ac2c-bcde1cadb320}" Ident="158" Order="2" Name="ByDate" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{a82c67d5-5f18-413b-b313-63cdfe008a72}" FieldId="{6a22a323-c6b2-4c0e-a377-f131230898b6}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{25bec851-8332-42b2-a6e0-806a9236981b}" FieldId="{4911d8bc-3ec9-4e4a-aaef-5687f463147e}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{30d233b2-de01-4bb7-b127-eab86f3cc44c}" FieldId="{03514092-25f8-4543-93eb-ebedfaa32173}" Order="3" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{7d7a5148-37b2-4303-8240-056aafac64a8}" Ident="159" Order="3" Name="ByAddress" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{8f8ae04a-b7a8-4aee-845d-9c3be6f101dd}" FieldId="{6a22a323-c6b2-4c0e-a377-f131230898b6}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{252bd476-e2fe-4cb7-a510-036889cf3a56}" FieldId="{f575b7e2-4469-4e99-98c8-8c30c6af7ec3}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{a876a8a6-288a-4926-b543-56c747e5f54e}" FieldId="{4911d8bc-3ec9-4e4a-aaef-5687f463147e}" Order="3" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+	<Table Guid="{b9d2a880-d22d-429a-9234-0c9c768e8248}" Ident="170" Name="MailContact" Prefix="MCO" Driver="TOPSPEED" Path="MailContact" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{867e843c-13bb-416d-863c-c87a9050df10}" Ident="173" Name="ContactId" DataType="STRING" Size="64" ScreenPicture="@s64" ScreenPrompt="Contact Id:" ReportHeading="Contact Id" Tooltip="The provider&apos;s own id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Contact Id:&apos;),USE(?MCO:ContactId:Prompt)"/>
+				<Line Text=" ENTRY(@s64),USE(MCO:ContactId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s64),USE(MCO:ContactId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{be400432-9804-4acf-b249-7a1ae386da81}" Ident="174" Name="Address" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Address:" ReportHeading="Address">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Address:&apos;),USE(?MCO:Address:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MCO:Address)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MCO:Address)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{2f7fd27d-338a-4fe6-af83-bad4e9630321}" Ident="175" Name="Name" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Name:" ReportHeading="Name">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Name:&apos;),USE(?MCO:Name:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MCO:Name)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MCO:Name)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{d446999e-d418-4a2c-bc72-7a9b48b35539}" Ident="176" Name="Blocked" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Blocked:" ReportHeading="Blocked">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Blocked:&apos;),USE(?MCO:Blocked:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MCO:Blocked)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MCO:Blocked)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{fa5260fb-97a3-41c3-80f2-303769b03e46}" Ident="177" Name="Unsubscribed" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Unsubscribed:" ReportHeading="Unsubscribed">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Unsubscribed:&apos;),USE(?MCO:Unsubscribed:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MCO:Unsubscribed)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MCO:Unsubscribed)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{5d0222ad-c9b7-4dd9-ac4a-bd550e703e69}" Ident="178" Name="CreatedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Created On:" ReportHeading="Created On">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Created On:&apos;),USE(?MCO:CreatedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MCO:CreatedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MCO:CreatedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{3127a514-c0b4-4b71-a1c7-d985c8edb986}" Ident="179" Name="ListIds" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="List Ids:" ReportHeading="List Ids" Tooltip="The lists it belongs to">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;List Ids:&apos;),USE(?MCO:ListIds:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MCO:ListIds)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MCO:ListIds)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{3d154e98-2c96-48dd-a6fb-11551545f8a5}" Ident="180" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="Which provider this row came from (ETPrv:...)">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MCO:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MCO:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MCO:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{b7f699f1-496d-4471-b6b9-f727d72af7ed}" Ident="181" Name="SyncedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Synced On:" ReportHeading="Synced On" Tooltip="When the sync last wrote this row">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Synced On:&apos;),USE(?MCO:SyncedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MCO:SyncedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MCO:SyncedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{5f99f174-02a2-4702-817b-e305ef4fd8b9}" Ident="171" Order="1" Name="ByAddress" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{632cb90f-e82e-45ba-9d10-60096f6f69c8}" FieldId="{3d154e98-2c96-48dd-a6fb-11551545f8a5}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{c546a81e-71be-4719-aae6-32a16d40b9fc}" FieldId="{be400432-9804-4acf-b249-7a1ae386da81}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{5766d381-12fb-4e17-9b11-926d1542bb7c}" Ident="172" Order="2" Name="ById" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{e5a4757b-4ccf-42c7-93c8-e31014cc9d3f}" FieldId="{3d154e98-2c96-48dd-a6fb-11551545f8a5}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{2f7a1197-1c9d-4418-9207-00156303e70e}" FieldId="{867e843c-13bb-416d-863c-c87a9050df10}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+	<Table Guid="{0acf97d2-8d85-4d07-9c3f-cc5f9c9f0789}" Ident="182" Name="MailList" Prefix="MLI" Driver="TOPSPEED" Path="MailList" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{65cbbc4b-9ab7-48de-b324-b12b1d0b8d0a}" Ident="185" Name="ListId" DataType="STRING" Size="64" ScreenPicture="@s64" ScreenPrompt="List Id:" ReportHeading="List Id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;List Id:&apos;),USE(?MLI:ListId:Prompt)"/>
+				<Line Text=" ENTRY(@s64),USE(MLI:ListId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s64),USE(MLI:ListId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{6ce7c331-0054-425a-9721-572015a0dcaf}" Ident="186" Name="Name" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Name:" ReportHeading="Name">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Name:&apos;),USE(?MLI:Name:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MLI:Name)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MLI:Name)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{064a07c5-597c-44c6-8f74-4aa79e224c60}" Ident="187" Name="Members" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Members:" ReportHeading="Members">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Members:&apos;),USE(?MLI:Members:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MLI:Members)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MLI:Members)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{5b199e9d-672c-4b96-ab8f-afe9b03c05e3}" Ident="188" Name="Blocked" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Blocked:" ReportHeading="Blocked" Tooltip="How many of them the provider refuses">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Blocked:&apos;),USE(?MLI:Blocked:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MLI:Blocked)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MLI:Blocked)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{6c8ada52-d8d8-4d2f-9151-7d209a25c200}" Ident="189" Name="FolderId" DataType="STRING" Size="64" ScreenPicture="@s64" ScreenPrompt="Folder Id:" ReportHeading="Folder Id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Folder Id:&apos;),USE(?MLI:FolderId:Prompt)"/>
+				<Line Text=" ENTRY(@s64),USE(MLI:FolderId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s64),USE(MLI:FolderId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{9e67de04-1902-4078-96d6-a86de18d7318}" Ident="190" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="Which provider this row came from (ETPrv:...)">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MLI:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MLI:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MLI:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{0dad3404-b189-4157-a469-2a80be064688}" Ident="191" Name="SyncedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Synced On:" ReportHeading="Synced On" Tooltip="When the sync last wrote this row">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Synced On:&apos;),USE(?MLI:SyncedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MLI:SyncedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MLI:SyncedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{b43a5896-85b6-4174-890b-fdd6b47bd80e}" Ident="183" Order="1" Name="ById" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{f07fe994-f6a2-4699-8010-03a61e9513d2}" FieldId="{9e67de04-1902-4078-96d6-a86de18d7318}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{9d880772-2c05-404b-b12a-bec8dd330898}" FieldId="{65cbbc4b-9ab7-48de-b324-b12b1d0b8d0a}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{12227158-31e5-4612-b929-8a73ca080172}" Ident="184" Order="2" Name="ByName" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{99bc9e60-966a-4498-98bd-cecf11fd95c1}" FieldId="{9e67de04-1902-4078-96d6-a86de18d7318}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{b794de54-1aeb-415b-ab6e-27f383d0061b}" FieldId="{6ce7c331-0054-425a-9721-572015a0dcaf}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+	<Table Guid="{1ea1280b-44ca-4ba4-ba1c-dc4822d0f86c}" Ident="192" Name="MailCampaign" Prefix="MCA" Driver="TOPSPEED" Path="MailCampaign" Create="true" Thread="true" Bindable="true">
+		<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+		<Option Property="Version" PropertyType="1" PropertyValue="2"/>
+		<Field Guid="{2c5a51d6-9e26-48e5-8121-a2d1800c28b8}" Ident="195" Name="CampaignId" DataType="STRING" Size="64" ScreenPicture="@s64" ScreenPrompt="Campaign Id:" ReportHeading="Campaign Id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Campaign Id:&apos;),USE(?MCA:CampaignId:Prompt)"/>
+				<Line Text=" ENTRY(@s64),USE(MCA:CampaignId)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s64),USE(MCA:CampaignId)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{b079421b-846c-4c96-bf22-87d1de209157}" Ident="196" Name="Name" DataType="STRING" Size="128" ScreenPicture="@s128" ScreenPrompt="Name:" ReportHeading="Name">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Name:&apos;),USE(?MCA:Name:Prompt)"/>
+				<Line Text=" ENTRY(@s128),USE(MCA:Name)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s128),USE(MCA:Name)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{d7092de4-53ca-4f2d-b86e-052e3578fb94}" Ident="197" Name="Subject" DataType="STRING" Size="255" ScreenPicture="@s255" ScreenPrompt="Subject:" ReportHeading="Subject">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Subject:&apos;),USE(?MCA:Subject:Prompt)"/>
+				<Line Text=" ENTRY(@s255),USE(MCA:Subject)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s255),USE(MCA:Subject)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{dff4c4bf-1396-4fd5-a822-bf11e44cbbe5}" Ident="198" Name="Status" DataType="STRING" Size="32" ScreenPicture="@s32" ScreenPrompt="Status:" ReportHeading="Status">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Status:&apos;),USE(?MCA:Status:Prompt)"/>
+				<Line Text=" ENTRY(@s32),USE(MCA:Status)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@s32),USE(MCA:Status)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{51145a16-a966-4928-b234-8f06c508b092}" Ident="199" Name="SendDate" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Send Date:" ReportHeading="Send Date">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Send Date:&apos;),USE(?MCA:SendDate:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MCA:SendDate)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MCA:SendDate)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{cde1233f-aff3-4383-95a6-132b3b5b4ea2}" Ident="200" Name="SendTime" DataType="TIME" ScreenPicture="@t7" ScreenPrompt="Send Time:" ReportHeading="Send Time">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Send Time:&apos;),USE(?MCA:SendTime:Prompt)"/>
+				<Line Text=" ENTRY(@t7),USE(MCA:SendTime)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@t7),USE(MCA:SendTime)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{eeb66259-e938-473e-8802-d353137a0f21}" Ident="201" Name="Recipients" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Recipients:" ReportHeading="Recipients">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Recipients:&apos;),USE(?MCA:Recipients:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MCA:Recipients)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MCA:Recipients)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{03bb6ef7-9fa7-47db-9d79-0cc7ea995dae}" Ident="202" Name="Opens" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Opens:" ReportHeading="Opens">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Opens:&apos;),USE(?MCA:Opens:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MCA:Opens)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MCA:Opens)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{69160810-10af-454a-a3c4-8e290008916a}" Ident="203" Name="Clicks" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Clicks:" ReportHeading="Clicks">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Clicks:&apos;),USE(?MCA:Clicks:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(MCA:Clicks)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n-14),USE(MCA:Clicks)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{697582c6-7268-447d-bc11-3cfa45041ad6}" Ident="204" Name="Provider" DataType="BYTE" ScreenPicture="@n3" ScreenPrompt="Provider:" ReportHeading="Provider" Tooltip="Which provider this row came from (ETPrv:...)">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Provider:&apos;),USE(?MCA:Provider:Prompt)"/>
+				<Line Text=" ENTRY(@n3),USE(MCA:Provider)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@n3),USE(MCA:Provider)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{3a911630-fb53-4bd8-aea3-6d57db55202a}" Ident="205" Name="SyncedOn" DataType="DATE" ScreenPicture="@d17" ScreenPrompt="Synced On:" ReportHeading="Synced On" Tooltip="When the sync last wrote this row">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Synced On:&apos;),USE(?MCA:SyncedOn:Prompt)"/>
+				<Line Text=" ENTRY(@d17),USE(MCA:SyncedOn)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" END"/>
+				<Line Text=" STRING(@d17),USE(MCA:SyncedOn)"/>
+			</ReportControl>
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{2432c05e-cd54-40d9-b0e1-f36ee612a498}" Ident="193" Order="1" Name="ById" KeyType="KEY" Unique="true" Primary="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{3b1050d1-5c3a-4c51-ae2f-205e87a3b98d}" FieldId="{697582c6-7268-447d-bc11-3cfa45041ad6}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{05ca9672-36f8-4f2a-8c68-038a8b3bf569}" FieldId="{2c5a51d6-9e26-48e5-8121-a2d1800c28b8}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+		<Key Guid="{b502eafa-9d43-4f47-9c80-fbc987f1e23b}" Ident="194" Order="2" Name="ByDate" KeyType="KEY" Exclude="true">
+			<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			<Component Guid="{c18aeb15-c87c-45bc-aa29-e8608ceb22b3}" FieldId="{697582c6-7268-447d-bc11-3cfa45041ad6}" Order="1" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+			<Component Guid="{8ff41483-2a5f-4a06-a6b9-2d80fd0e6bab}" FieldId="{51145a16-a966-4928-b234-8f06c508b092}" Order="2" Ascend="true">
+				<Audit CreateUser="Administrator" CreateDate="24 AUG 2026" CreateTime=" 1:27:25PM" CreateVersionNumber="0" ModifiedUser="Administrator" ModifiedVersionNumber="0"/>
+			</Component>
+		</Key>
+	</Table>
+</Dictionary>
+

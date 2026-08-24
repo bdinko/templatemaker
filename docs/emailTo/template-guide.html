@@ -1,0 +1,439 @@
+<meta charset="utf-8"><title>emailTo Template Guide</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#fbfcfd; --surface:#f1f5f9; --sunken:#e9eff5; --rule:#d6e0ea;
+  --ink:#0f1720; --soft:#4e5f70; --faint:#7d8ea0;
+  --accent:#2f6a9a; --accent-bg:#e4eef6; --accent-rule:#b9d3e6;
+  --clarion:#166f69; --clarion-bg:#e2f1ef;
+  --warn:#8a5a12; --warn-bg:#f7eeda;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+    --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+    --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+    --clarion:#4fb5ab; --clarion-bg:#102a29;
+    --warn:#d8a545; --warn-bg:#2b2413;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d131a; --surface:#151d26; --sunken:#111922; --rule:#25313d;
+  --ink:#e2eaf2; --soft:#9aabbc; --faint:#6f8092;
+  --accent:#6fadde; --accent-bg:#152738; --accent-rule:#28455f;
+  --clarion:#4fb5ab; --clarion-bg:#102a29;
+  --warn:#d8a545; --warn-bg:#2b2413;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Serif",Georgia,serif; font-size:16px; line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.ui{font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif}
+code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+a{color:var(--accent)}
+.wrap{display:grid; grid-template-columns:270px minmax(0,1fr); align-items:start}
+.side{position:sticky; top:0; height:100vh; overflow-y:auto; padding:24px 20px 60px;
+  border-right:1px solid var(--rule); background:var(--surface)}
+.brand{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:15px; margin:0 0 14px}
+.brand b{color:var(--accent)}
+/* ---- the four volumes ---- */
+.vols{list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:3px;
+  border-bottom:1px solid var(--rule); padding-bottom:16px}
+.vols a{display:block; padding:7px 10px; border-radius:6px; text-decoration:none;
+  font:500 13px/1.35 "IBM Plex Sans",sans-serif; color:var(--soft); border:1px solid transparent}
+.vols a:hover{background:var(--sunken); color:var(--ink)}
+.vols a.here{background:var(--accent-bg); border-color:var(--accent-rule); color:var(--accent)}
+.vols small{display:block; font:400 11px/1.35 "IBM Plex Sans",sans-serif; color:var(--faint);
+  margin-top:2px}
+.vols a.here small{color:var(--accent)}
+.filter{width:100%; margin:0 0 16px; padding:7px 10px; font:13px/1.4 "IBM Plex Sans",sans-serif;
+  color:var(--ink); background:var(--paper); border:1px solid var(--rule); border-radius:6px}
+.filter:focus{outline:2px solid var(--accent); outline-offset:1px}
+.nav__g{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--faint); margin:18px 0 8px}
+.nav__l{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+.nav__l a{display:block; padding:4px 8px; border-radius:5px; text-decoration:none; color:var(--soft);
+  font:400 13.5px/1.45 "IBM Plex Sans",sans-serif}
+.nav__l a:hover{background:var(--sunken); color:var(--ink)}
+.nav__l a.on{background:var(--accent-bg); color:var(--accent); font-weight:500}
+.main{padding:0 0 120px; min-width:0}
+.inner{max-width:980px; padding:0 40px}
+.hero{padding:52px 40px 30px; border-bottom:1px solid var(--rule);
+  background:linear-gradient(180deg,var(--accent-bg),transparent)}
+.hero .inner{padding:0}
+.eyebrow{font:600 11px/1 "IBM Plex Sans",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 12px}
+h1{font-size:37px; line-height:1.1; margin:0 0 10px; letter-spacing:-.015em; text-wrap:balance}
+.sub{font-size:17px; color:var(--soft); margin:0 0 18px; max-width:62ch}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font:500 11.5px/1 "IBM Plex Sans",sans-serif; padding:6px 10px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft)}
+.chip b{color:var(--ink); font-weight:600}
+h2{font-size:26px; margin:60px 0 6px; letter-spacing:-.01em; scroll-margin-top:18px; text-wrap:balance}
+h2 .k{font:600 10.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:9px}
+h3{font-size:17.5px; margin:36px 0 10px; scroll-margin-top:18px}
+h4{font-size:14.5px; margin:24px 0 6px; color:var(--soft); font-weight:600}
+p{margin:0 0 14px; max-width:70ch}
+.lead{color:var(--soft); max-width:70ch}
+ul.b,ol.b{max-width:70ch; padding-left:20px; margin:0 0 16px}
+ul.b li,ol.b li{margin:0 0 7px}
+.code{background:var(--sunken); border:1px solid var(--rule); border-left:3px solid var(--accent-rule);
+  border-radius:0 7px 7px 0; padding:14px 16px; overflow-x:auto; margin:0 0 18px;
+  font-size:12.9px; line-height:1.62; position:relative}
+.code code{white-space:pre; color:var(--ink)}
+.code::after{content:attr(data-lang); position:absolute; top:0; right:0; padding:3px 9px;
+  font:500 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--faint); background:var(--surface); border-left:1px solid var(--rule);
+  border-bottom:1px solid var(--rule); border-radius:0 0 0 6px}
+.code--use{margin:7px 0 2px; border-left-color:var(--clarion); background:var(--paper);
+  font-size:12.4px; padding:9px 12px}
+.code--use::after{content:'Clarion'; color:var(--clarion)}
+p code,li code,td code{background:var(--sunken); border:1px solid var(--rule); border-radius:4px;
+  padding:.06em .34em; font-size:.86em}
+.tw{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:8px;
+  background:var(--paper)}
+table{border-collapse:collapse; width:100%; font-size:13.5px;
+  font-family:"IBM Plex Sans",sans-serif}
+th{text-align:left; font-weight:600; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--faint); padding:9px 14px; border-bottom:1px solid var(--rule); background:var(--surface)}
+td{padding:10px 14px; border-bottom:1px solid var(--rule); vertical-align:top}
+tr:last-child td{border-bottom:0}
+.fns .fn__n{width:210px; white-space:nowrap}
+.fns .fn__n code{font-size:12.6px; color:var(--accent); font-weight:500; background:none;
+  border:0; padding:0}
+.fns .fn__s code{font-size:12.4px; color:var(--soft); background:none; border:0; padding:0;
+  white-space:pre-wrap}
+.fn__d{margin:5px 0 0; font-family:"IBM Plex Serif",serif; font-size:13.5px; color:var(--ink);
+  max-width:74ch}
+.ord{margin-left:7px; font:500 10px/1 "IBM Plex Mono",monospace; color:var(--faint);
+  border:1px solid var(--rule); border-radius:4px; padding:2px 4px; vertical-align:1px}
+.eq td:first-child code{color:var(--accent); background:none; border:0; padding:0}
+.eq .v{font-variant-numeric:tabular-nums; color:var(--soft)}
+.note{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface);
+  border-radius:0 7px 7px 0; padding:13px 16px; margin:0 0 18px; max-width:74ch}
+.note--warn{border-left-color:var(--warn); background:var(--warn-bg)}
+.note--cla{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note__t{font:600 12px/1.3 "IBM Plex Sans",sans-serif; letter-spacing:.03em; margin:0 0 5px;
+  text-transform:uppercase; color:var(--soft)}
+.note--warn .note__t{color:var(--warn)} .note--cla .note__t{color:var(--clarion)}
+.note__b p{margin:0 0 8px; font-size:14.5px} .note__b p:last-child{margin:0}
+.stack{display:flex; flex-direction:column; gap:9px; margin:0 0 22px; max-width:640px}
+.layer{border:1px solid var(--rule); border-radius:8px; padding:12px 15px; background:var(--surface);
+  display:grid; grid-template-columns:118px 1fr; gap:14px; align-items:baseline}
+.layer b{font:600 11px/1.4 "IBM Plex Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--accent)}
+.layer.cla b{color:var(--clarion)}
+.layer p{margin:0; font-size:14px; color:var(--soft); max-width:none}
+.arrow{text-align:center; color:var(--faint); font-size:12px; margin:-4px 0}
+/* ---- where to next ---- */
+.next{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;
+  margin:26px 0 0}
+.next a{display:block; padding:14px 16px; border:1px solid var(--rule); border-radius:9px;
+  background:var(--surface); text-decoration:none}
+.next a:hover{border-color:var(--accent-rule); background:var(--accent-bg)}
+.next b{display:block; font:600 14px/1.3 "IBM Plex Sans",sans-serif; color:var(--accent);
+  margin-bottom:3px}
+.next span{font:400 13px/1.45 "IBM Plex Serif",serif; color:var(--soft)}
+.hide{display:none !important}
+footer{margin-top:70px; padding:22px 40px 0; border-top:1px solid var(--rule); color:var(--faint);
+  font:400 13px/1.6 "IBM Plex Sans",sans-serif}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static; height:auto; border-right:0; border-bottom:1px solid var(--rule)}
+  .inner,.hero{padding-left:22px; padding-right:22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+
+/* ------------------------------------------------------------------ *
+ *  emailTo additions.  Every colour below is a token defined at bare
+ *  :root and redefined in BOTH dark paths, so nothing is left with its
+ *  only definition inside a media query - which would render one
+ *  theme's text on the other theme's ground.
+ * ------------------------------------------------------------------ */
+:root{ --danger:#8f3520; --danger-bg:#f8e9e4; --danger-rule:#e3bcaf; }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+  }
+}
+:root[data-theme="dark"]{
+  --danger:#e3907a; --danger-bg:#2c1913; --danger-rule:#4a2a20;
+}
+
+.note--tip{border-left-color:var(--clarion); background:var(--clarion-bg)}
+.note--tip .note__t{color:var(--clarion)}
+.note--danger{border-left-color:var(--danger); background:var(--danger-bg)}
+.note--danger .note__t{color:var(--danger)}
+
+/* ---- the generated reference: one member per row ---- */
+table.api td{padding:14px 16px}
+tr.fn + tr.fn td{border-top:1px solid var(--rule)}
+code.mem{font:500 13.5px/1 "IBM Plex Mono",monospace; color:var(--accent);
+  background:none; border:0; padding:0}
+.sig{font:400 12.4px/1.5 "IBM Plex Mono",monospace; color:var(--soft);
+  margin:5px 0 0; white-space:pre-wrap; word-break:break-word}
+.mdoc{margin:7px 0 0; font-family:"IBM Plex Serif",Georgia,serif; font-size:13.8px;
+  color:var(--ink); max-width:74ch}
+.tag{display:inline-block; margin-left:7px; vertical-align:2px;
+  font:600 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--clarion); background:var(--clarion-bg);
+  border:1px solid var(--rule); border-radius:4px; padding:3px 5px}
+
+/*  The one link that crosses languages.  It sits above the volume list
+ *  because a reader who wants it is looking for it before anything else. */
+.langsw{display:inline-block; margin:0 0 14px; padding:5px 11px; border-radius:99px;
+  border:1px solid var(--rule); background:var(--paper); color:var(--soft);
+  font:500 11.5px/1 "IBM Plex Sans",sans-serif; text-decoration:none;
+  letter-spacing:.02em}
+.langsw:hover{border-color:var(--accent-rule); background:var(--accent-bg); color:var(--accent)}
+.langsw:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.langsw::before{content:"\00A0"; margin-right:0}
+</style>
+<div class="wrap">
+<nav class="side">
+  <p class="brand"><b>emailTo</b></p>
+<a class="langsw" href="https://claude.ai/code/artifact/07f9ecdf-232b-4cbd-8d20-f423561f3ba0" hreflang="es">Espa&ntilde;ol</a><ul class="vols"><li><a href="https://claude.ai/code/artifact/9a35a14f-4479-46c6-b03d-66da4186438c">1. Getting Started<small>Install it and send the first message</small></a></li><li><a href="https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0">2. Programmer&#x27;s Guide<small>How it works, and how to make it do things</small></a></li><li><a href="#" class="here">3. Template Guide<small>Every template, tab, prompt and embed</small></a></li><li><a href="https://claude.ai/code/artifact/c98d7cfa-04e7-45ab-9054-9186cc2fbba5">4. Reference<small>Every class, method, property and equate</small></a></li></ul><p class="nav__g">Overview</p><ul class="nav__l"><li><a href="#five">The ten templates</a></li></ul><p class="nav__g">The global extension</p><ul class="nav__l"><li><a href="#global">emailTo - Global</a></li><li><a href="#global-general">General</a></li><li><a href="#global-account">Account</a></li><li><a href="#global-signin">Sign-in</a></li><li><a href="#global-api">emailTo - Provider API</a></li><li><a href="#global-sync">emailTo - Sync</a></li><li><a href="#global-table">Table, and Table columns</a></li><li><a href="#global-multidll">Multi-DLL</a></li><li><a href="#global-writes">What the global extension writes</a></li></ul><p class="nav__g">The rest</p><ul class="nav__l"><li><a href="#apibutton">The mail account button</a></li><li><a href="#syncbutton">The sync button</a></li><li><a href="#apicode">Asking from an embed</a></li><li><a href="#button">emailTo - E-mail button</a></li><li><a href="#button-general">General</a></li><li><a href="#button-account">Account</a></li><li><a href="#button-message">Message</a></li><li><a href="#codetemplates">The three code templates</a></li><li><a href="#embeds">Where the generated code lands</a></li></ul>
+</nav>
+<main class="main">
+  <header class="hero"><div class="inner">
+    <p class="eyebrow">Volume 3</p>
+    <h1>Template Guide</h1>
+    <p class="sub">Every template, every tab, every prompt &mdash; and the code the generator actually writes into your application.</p>
+    <div class="chips"><span class="chip">10 templates</span><span class="chip">Every prompt</span><span class="chip">Generated code</span><span class="chip">Multi-DLL</span></div>
+  </div></header>
+  <div class="inner"><h2 id="five">The ten templates</h2>
+<div class="tw"><table class=""><thead><tr><th>Template</th><th>Kind</th><th>What it is for</th></tr></thead><tbody><tr><td><b>emailTo - Global</b></td><td>Application extension</td><td>Required, once per app. Declares the object, sets the defaults, generates the settings-table binding.</td></tr><tr><td><b>emailTo - E-mail button</b></td><td>Control template, MULTI</td><td>Drag onto a window. Compose, send straight away, or open the account window.</td></tr><tr><td><b>emailTo - Send an e-mail here</b></td><td>Code template</td><td>Any embed: after a report, on a menu item, inside a batch process.</td></tr><tr><td><b>emailTo - Open the compose window here</b></td><td>Code template</td><td>The write-and-send window, optionally pre-filled.</td></tr><tr><td><b>emailTo - Open the mail account setup window here</b></td><td>Code template</td><td>The account window, for a Setup menu.</td></tr><tr><td><b>emailTo - Provider API</b></td><td>Application extension</td><td>Add once. Declares the object that reads the blocked list, statistics, contacts and campaigns.</td></tr><tr><td><b>emailTo - Sync provider data into your tables</b></td><td>Application extension</td><td>Add once. Writes all of that into tables of your own.</td></tr><tr><td><b>emailTo - Mail account button</b></td><td>Control template, MULTI</td><td>Drag onto a window. Opens the management window: blocked addresses and why, statistics, activity, contacts, campaigns.</td></tr><tr><td><b>emailTo - Ask the provider</b></td><td>Code template</td><td>Any embed: load the blocked list, unblock one or all of them, check an address, read the statistics, send a campaign, sync the tables.</td></tr><tr><td><b>emailTo - Sync mail data into your tables</b></td><td>Control template, MULTI</td><td>Drag onto a window. Brings the blocked list, statistics, activity, contacts, lists and campaigns down into your own tables.</td></tr></tbody></table></div>
+<aside class="note note--tip"><p class="note__t">Only the first one is required</p><div class="note__b"><p>Add <b>emailTo - Global</b> and both objects exist everywhere. The other six are conveniences that call them &mdash; anything they do, you can do from a hand-written embed with the same one-line calls.</p></div></aside>
+<h2 id="global">emailTo - Global</h2>
+<p>Global Properties &rarr; Extensions &rarr; Insert. Six tabs.</p>
+<h3 id="global-general">General</h3>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>Default</th><th>What it does</th></tr></thead><tbody><tr><td>Disable this template</td><td>off</td><td>Generates nothing at all. Use it to bisect a build.</td></tr><tr><td>Object name</td><td><code>Mailer</code></td><td>The label every other template refers to.</td></tr><tr><td>Language</td><td>English</td><td>Sets <code>emailToLanguage</code>, which the object reads at start-up.</td></tr><tr><td>Keep a conversation log</td><td>on</td><td>Sets <code>Trace</code>. Passwords are masked before they reach it.</td></tr></tbody></table></div>
+<h3 id="global-account">Account</h3>
+<p>The defaults the object starts with. If a settings table is nominated, whatever it holds overrides these at start-up and the setup window writes changes back; with no table these <em>are</em> the settings and the setup window saves to an INI.</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>Notes</th></tr></thead><tbody><tr><td>Provider</td><td>Fourteen presets. Choosing one fills in server, port, security and sign-in.</td></tr><tr><td>Send using</td><td>SMTP, Gmail API, Microsoft Graph, or a provider API key.</td></tr><tr><td>From address / From name / Reply to</td><td>Used when the message does not set its own.</td></tr><tr><td>Server / Port / Security</td><td>Only for the SMTP transport.</td></tr><tr><td>Sign in with</td><td>Nothing, AUTH LOGIN, AUTH PLAIN, or OAuth2 XOAUTH2.</td></tr><tr><td>User name / Password</td><td>A password typed here is compiled into the <code>.EXE</code>.</td></tr></tbody></table></div>
+<aside class="note note--warn"><p class="note__t">A password on this tab is in your executable</p><div class="note__b"><p>Anyone with the <code>.EXE</code> has it. For anything you would not publish, leave it blank and let the setup window store it &mdash; that path puts it through DPAPI for the Windows user.</p></div></aside>
+<h3 id="global-signin">Sign-in</h3>
+<p>The OAuth2 application and the API keys. <b>Client ID</b> is the desktop client you registered with Google or Microsoft; it is not a secret. <b>Client secret</b> stays blank for Microsoft public clients. <b>Tenant</b> is Microsoft only &mdash; <code>common</code> accepts both a personal account and a work one, which is what an application shipped to unknown customers needs. <b>API domain</b> is Mailgun only; for Mailjet the public key goes in User name and the private key in API key.</p>
+<h2 id="global-sync">emailTo - Sync</h2>
+<p>A SEPARATE application extension &mdash; <b>emailTo - Sync provider data into your tables</b>, added once alongside the global one. The management window asks the provider live and keeps nothing; this is the other option: nominate tables, and the same answers are also written into your own data &mdash; so you can put an ABC browse on the blocked list, join it to your customer table, or report on last month&rsquo;s opens without going near the network.</p>
+<aside class="note note--tip"><p class="note__t">There is a ready-made dictionary &amp;mdash; import the .dctx</p><div class="note__b"><p><code>emailToTables.dctx</code> ships beside the template and holds all six tables plus the account table. In the Dictionary Editor: <b>File &rarr; Import</b>, and pick the <b>DCTX / XML</b> entry.</p><p><b>Not</b> <code>emailToTables.txd</code>. A <code>.txd</code> is Report Writer&rsquo;s format and the Dictionary Editor refuses it outright &mdash; <i>"This TXD file is a Report Writer only format"</i>. It ships only for <code>ClarionCL /di</code>, which builds a whole dictionary from text rather than importing into an existing one.</p></div></aside>
+<div class="tw"><table class=""><thead><tr><th>Table</th><th>One row is</th><th>Filled from</th></tr></thead><tbody><tr><td><code>MailBlocked</code></td><td>An address the provider refuses, with the reason, the SMTP code and when</td><td><code>GetSuppressions()</code></td></tr><tr><td><code>MailStat</code></td><td>One day</td><td><code>GetStats()</code></td></tr><tr><td><code>MailEvent</code></td><td>One thing that happened to one message</td><td><code>GetEvents()</code></td></tr><tr><td><code>MailContact</code></td><td>A contact</td><td><code>GetContacts()</code></td></tr><tr><td><code>MailList</code></td><td>A contact list and its size</td><td><code>GetLists()</code></td></tr><tr><td><code>MailCampaign</code></td><td>A campaign and its status</td><td><code>GetCampaigns()</code></td></tr></tbody></table></div>
+<p>Every table but the account carries <code>Provider</code> and <code>SyncedOn</code>, so one dictionary serves an application that switches provider or keeps two accounts.</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>Sync object name / API object name</td><td>What to call the object it declares, and the API object the global extension declared for it to read through.</td></tr><tr><td>Keep the provider&rsquo;s data in tables</td><td>Turns the tables on. Off, nothing here generates.</td></tr><tr><td>Stamp each row with the provider and the date</td><td>Fills <code>Provider</code> and <code>SyncedOn</code> if the table has them. Leave it on unless one table serves exactly one account.</td></tr><tr><td>Table / Key (six times)</td><td>The table, and the key that identifies one row &mdash; that key is what makes the sync an update rather than a duplicate.</td></tr><tr><td>How many days back</td><td>For statistics and activity, which are asked for over a date range rather than in full.</td></tr></tbody></table></div>
+<aside class="note note--info"><p class="note__t">Columns are matched by NAME, not mapped one by one</p><div class="note__b"><p>A table imported from the shipped dictionary needs no mapping at all: the template walks the columns of whatever table you nominate and fills the ones whose names it recognises. A column called anything else is left alone &mdash; so a flag of your own, a note, or a link to your customer row all survive every sync.</p><p>That also means you can point it at a table you already have: name the columns as the dictionary does and it fills them.</p></div></aside>
+<p>What it generates is a small object of its own with one method, <code>Run</code>.</p>
+<aside class="note note--warn"><p class="note__t">Why this is a separate extension, and not another tab</p><div class="note__b"><p>An application stores the set of prompts it was built with. A prompt added to an extension the app <em>already carries</em> is simply not there, and generating stops with <code>Unknown Variable</code> on a symbol the developer never typed &mdash; AppGen does not fill in the DEFAULT from the command line.</p><p>An app that does not add THIS extension never names these symbols, so every existing application keeps generating exactly as it did. That is worth one extra Insert.</p><p>The <b>Provider API</b> tab, added to the global extension in v1.03, does not have that protection: upgrading an app older than v1.03 means opening that extension's property sheet once, so the IDE writes the new prompts back. From a build script that never opens the IDE, delete the extension and insert it again.</p></div></aside>
+<pre class="code" data-lang="clarion"><code>MailApi          CLASS(EmailApiClass)              ! the object, writing into your tables
+SyncTables         PROCEDURE(BYTE pSilent=0),LONG,PROC,DERIVED
+                 END
+
+!  ... and, generated beside it:
+
+MailApi.SyncTables PROCEDURE(BYTE pSilent)
+  CODE
+  DO ETySyncBlocked                               ! one routine per table you nominated
+  DO ETySyncStats
+  ...
+
+ETySyncBlocked ROUTINE
+  ETyN = SELF.GetSuppressions(ETSup:All)
+  IF ETyN &lt; 0 THEN ETyBad = 1; EXIT.
+  Access:MailBlocked.Open()
+  Access:MailBlocked.UseFile()
+  LOOP ETyi = 1 TO RECORDS(SELF.SuppQ)
+    GET(SELF.SuppQ, ETyi)
+    CLEAR(MailBlocked:Record)
+    DO ETyMapBlocked
+    GET(MailBlocked, MBL:ByAddress)               ! already there?
+    IF ERRORCODE()
+      CLEAR(MailBlocked:Record); DO ETyMapBlocked
+      ADD(MailBlocked)
+    ELSE
+      DO ETyMapBlocked
+      PUT(MailBlocked)                            ! update, never duplicate
+    END
+  END
+  Access:MailBlocked.Close()
+
+ETyMapBlocked ROUTINE
+  MBL:Address   = SELF.SuppQ.Address
+  MBL:Kind      = SELF.SuppQ.Kind
+  MBL:Reason    = SELF.SuppQ.Reason
+  MBL:BlockedOn = SELF.SuppQ.WhenDate
+  MBL:Provider  = SELF.Mailer.Acc.Provider
+  MBL:SyncedOn  = TODAY()</code></pre>
+<p>Each row is looked up by its key before it is written, so running the sync twice changes nothing: a row already there is updated, a new one is added, and the count comes back the same. That is what makes it safe on a button anybody can press twice, or on a timer.</p>
+<h2 id="syncbutton">The sync button</h2>
+<p><b>emailTo - Sync mail data into your tables</b> is a control template: drag it onto a window and it drops a wired button that calls the generated method.</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>Sync object name</td><td>The object the <b>emailTo - Sync</b> extension declared.</td></tr><tr><td>Quietly &mdash; no message when it finishes</td><td>Off, it reports how many rows came down and how many were new. On for a button that runs unattended.</td></tr><tr><td>Put the row count in</td><td>A variable of yours, for a status line.</td></tr><tr><td>Reset the browse afterwards</td><td>Calls <code>ResetFromFile()</code> on the browse you name, so a browse of the synced table shows the new rows without the user closing the window.</td></tr></tbody></table></div>
+<p>For a menu item or a batch process instead, the <b>emailTo - Ask the provider</b> code template has <i>Sync it all into my tables</i> as one of its operations.</p>
+<h3 id="global-table">Table, and Table columns</h3>
+<p>Nominate a table and the template generates <code>LoadAccount</code> and <code>SaveAccount</code> against it. Pick the key it finds an account by, name the account to load at start-up, then map a column onto each field.</p>
+<p>Each column prompt is a picker: the <code>&hellip;</code> button beside it lists the columns of the table you nominated, so the mapping is chosen rather than typed.</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>Notes</th></tr></thead><tbody><tr><td>Settings table</td><td>Blank means use an INI beside the <code>.EXE</code>.</td></tr><tr><td>Key to find the account by</td><td>Used for the <code>GET</code> in both directions.</td></tr><tr><td>Account to load at start-up</td><td>Blank loads the first record instead.</td></tr><tr><td>Create the row if it is missing</td><td>On, the setup window can <code>ADD</code> the account.</td></tr><tr><td>Account name</td><td>The only required column.</td></tr><tr><td>Every other column</td><td>Optional. Unmapped keeps whatever the Account tab set.</td></tr></tbody></table></div>
+<aside class="note"><p class="note__t">Four columns need to be wide</p><div class="note__b"><p>Password, client secret, refresh token and API key are stored sealed, so they are three to four times longer than what was typed. Make them at least 400 characters, and the refresh token 2000. <code>EmailTables.txt</code> ships a structure ready to paste into a dictionary.</p></div></aside>
+<h3 id="global-multidll">Multi-DLL</h3>
+<p>Add the extension to every application in the suite and leave the box alone. The app that owns the data compiles the classes in and exports them; the others import them. The classes are tagged <code>!ABCIncludeFile(EMAILTO)</code>, and registering that category hands the whole job to the shipped ABC machinery &mdash; it writes the project defines and walks the registry to build the <code>.EXP</code>.</p>
+<pre class="code" data-lang="dos"><code>#pragma define(_emailToDllMode_=&gt;0)
+#pragma define(_emailToLinkMode_=&gt;1)</code></pre>
+<p>That is why nothing in the template lists a mangled symbol: add a method to a class and the export list follows on the next generate. <code>emailc.c</code> is compiled only into the application that owns the classes, because the <code>PRAGMA</code> lives in <code>EmailNetClass.clw</code>.</p>
+<h2 id="global-writes">What the global extension writes</h2>
+<p>With no settings table, into the <code>PROGRAM</code> module:</p>
+<pre class="code" data-lang="clarion"><code>!  %AfterGlobalIncludes
+INCLUDE(&#x27;EmailToClass.INC&#x27;),ONCE
+
+!  %GlobalData
+Mailer             EmailToClass                            ! the mail object
+emailToLanguage        BYTE(1)                             ! 1 = English, 2 = Espanol
+
+!  %ProgramSetup, PRIORITY(8000)
+    Mailer.Init()
+    Mailer.Language = emailToLanguage
+    Mailer.Trace = 1
+    Mailer.SetProvider(1)                     ! host, port, security and auth
+    Mailer.Acc.Transport = 1
+    Mailer.Acc.Host      = &#x27;smtp.gmail.com&#x27;
+    Mailer.Acc.Port      = 587
+    Mailer.Acc.Security  = 1
+    Mailer.Acc.AuthMode  = 1
+    Mailer.Acc.UserName  = &#x27;sales@acme.com&#x27;
+    Mailer.Acc.FromAddr  = &#x27;sales@acme.com&#x27;
+    Mailer.LoadAccount()</code></pre>
+<p>With one, the object is <em>derived</em> instead, and the binding is written out in full at <code>%ProgramProcedures</code>:</p>
+<pre class="code" data-lang="clarion"><code>!  %GlobalData, when a settings table is nominated
+Mailer             CLASS(EmailToClass)
+LoadAccount              PROCEDURE(&lt;STRING pName&gt;),BYTE,PROC,DERIVED
+SaveAccount              PROCEDURE(),BYTE,PROC,DERIVED
+                       END
+
+!  %ProgramProcedures - the whole binding, written from your column mapping
+Mailer.LoadAccount PROCEDURE(&lt;STRING pName&gt;)
+  CODE
+  ...</code></pre>
+<aside class="note"><p class="note__t">Why deriving still works across a suite</p><div class="note__b"><p>The derived instance is declared only in the application that owns it. The others import it as the base type and still reach the derived methods, because both are <code>VIRTUAL</code> and dispatch through the object&rsquo;s own VMT.</p></div></aside>
+<h2 id="global-api">emailTo - Provider API</h2>
+<p>A SEPARATE application extension, added once alongside the global one. The same key that sends the mail can also answer for the account, so this needs nothing except a name.</p>
+<aside class="note note--warn"><p class="note__t">It was a tab on the global extension in v1.03</p><div class="note__b"><p>That was a mistake, and it broke every application built before v1.03: an app stores the set of prompts it was built with, and AppGen does not backfill one added later &mdash; generation stopped with <code>Unknown Variable %ETgApi</code>, on a symbol nobody typed.</p><p>As an extension of its own it cannot do that: an app that does not add it never names its symbols. If you had the tab switched on in v1.03, insert this extension and put the object name back &mdash; what the old tab stored is simply ignored.</p></div></aside>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>Object name</td><td>What to call it. <code>MailApi</code> unless you have a reason &mdash; the control and code templates default to that name too.</td></tr><tr><td>Mail object name</td><td>The object <b>emailTo - Global</b> declared. This one borrows its account and its HTTPS layer, so there is no second copy of a credential anywhere in the program.</td></tr><tr><td>Rows per request</td><td>The page size. The class keeps asking until the provider runs out, so this is not a limit, only how much comes back at a time.</td></tr><tr><td>Stop after this many rows</td><td>The guard: 5,000 by default, 0 for no limit.</td></tr><tr><td>Second key</td><td>Postmark alone needs two tokens: the SERVER token sends and reads bounces, the ACCOUNT token opens senders and domains. Blank for everybody else. All three of these can come from your settings table instead &mdash; name a column <code>ApiKey2</code>, <code>ApiRegion</code> or <code>ApiBase</code> and the global extension fills it, by name, with no prompt to set.</td></tr><tr><td>Region</td><td><code>eu</code> for a Mailgun or SparkPost account created in Europe. Those are separate services with their own hostnames and their own data &mdash; asked at the default endpoint, a European account looks empty rather than wrong.</td></tr><tr><td>Base address</td><td>Replaces the provider&rsquo;s host, and its scheme if you give one. For a relay of your own, or for pointing a test build at a stand-in. Blank in production.</td></tr></tbody></table></div>
+<p>Nominate a settings table on the Table tab and three more columns become available for these on the second columns tab: second key (sealed), region and base address.</p>
+<h2 id="apibutton">The mail account button</h2>
+<p><b>emailTo - Mail account button</b> is a control template: drag it onto any window and it drops a wired button that opens the management window.</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>API object name</td><td>The object the global extension declared.</td></tr><tr><td>Open on</td><td>Which tab: Account, Blocked addresses, Statistics, Activity, Contacts, Lists, Campaigns, Templates, Senders and domains, or Webhooks. If this provider cannot answer that one, the window opens on the first tab it CAN answer rather than showing an empty list.</td></tr><tr><td>Hide the button if the provider has no API</td><td>An account sending over plain SMTP &mdash; a company Exchange server, Gmail with an app password &mdash; has no management API at all. Ticked, the button disappears for those accounts instead of opening a window with every tab greyed out. It is a run-time test, so one build serves both.</td></tr></tbody></table></div>
+<p>Drop it more than once and each instance gets its own tab: one button for the blocked list, another for campaigns. The template writes the event handler against whichever field equate AppGen gave that instance.</p>
+<h2 id="apicode">Asking from an embed</h2>
+<p><b>emailTo - Ask the provider</b> is the code template. Drop it in any embed &mdash; a button, a menu item, the end of a process &mdash; and pick the operation:</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>Do this</td><td>Load the blocked addresses, unblock one, unblock every one, block an address, is this address blocked, load the statistics, the activity, the contacts, the lists, the campaigns, send a campaign, export the blocked list to CSV, or open the management window.</td></tr><tr><td>Which list</td><td>Everything, bounces, blocked, spam reports, unsubscribed or invalid. A provider that keeps one list for all of them answers the same rows whichever you pick, labelled with what they really are.</td></tr><tr><td>Value</td><td>The address, campaign id or file name the operation works on &mdash; typed, or taken from a variable at run time.</td></tr><tr><td>Put the result in</td><td>For a load, the NUMBER of rows (or -1 if the provider said no). For everything else, 1 means it worked.</td></tr><tr><td>Show the error</td><td>Pops the provider&rsquo;s own words. Either way they are in <code>LastErrorText</code>, and the address called is in <code>LastUrl</code>.</td></tr></tbody></table></div>
+<p>What it writes is short, because the class is where the work is:</p>
+<pre class="code" data-lang="clarion"><code>  Loc:Rows = MailApi.GetSuppressions(0)
+  IF MailApi.LastError
+    MailApi.ShowError()
+  END</code></pre>
+<p>The rows land in the object&rsquo;s queues, which are the same shape whoever the provider is &mdash; <code>SuppQ</code>, <code>StatQ</code>, <code>EventQ</code> and the rest. Loop them yourself, or call <code>Manage()</code> and let the shipped window do it.</p>
+<h2 id="button">emailTo - E-mail button</h2>
+<p>Drag it onto any window; drop it more than once if you want to. AppGen uniques the field equate (<code>?EmailBtn</code>, <code>?EmailBtn:2</code>&hellip;) and the template attaches the handler to whichever one this instance got.</p>
+<aside class="note note--tip"><p class="note__t">Which button holds the sender&#x27;s address? Neither</p><div class="note__b"><p>An account belongs to the <em>application</em>, not to a button. The server, the from address, the user name, the password and the OAuth2 client are set once, on <b>emailTo - Global</b>&rsquo;s Account tab. A button only says <em>what to do</em> &mdash; so you can put two on one window, one to send and one to open the setup window, and neither of them carries a credential.</p><p>The button&rsquo;s own <b>Account</b> tab has no prompts for exactly that reason. It is there to point at the place that does.</p></div></aside>
+<p>Which of the two a given instance is shows in the AppGen list without opening it, because the description names the action:</p>
+<pre class="code" data-lang="dos"><code>emailTo - E-mail button   E-mail button - opens the COMPOSE window
+emailTo - E-mail button   E-mail button - opens ACCOUNT SETUP</code></pre>
+<h3 id="button-general">General</h3>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>Disable this button</td><td>Generates nothing for this instance. The button stays on the window, inert.</td></tr><tr><td>Mail object name</td><td>Must match the global extension. <code>Mailer</code> by default.</td></tr><tr><td>Action</td><td>Open the compose window, send straight away with no window, or open the account setup window.</td></tr><tr><td>Tell the user it worked</td><td>Greyed unless the action is <em>send straight away</em> &mdash; the only action that reads it.</td></tr><tr><td>Show the error if it failed</td><td>Same. Calls <code>ShowError</code>; off, the reason is still in <code>LastErrorText</code>.</td></tr></tbody></table></div>
+<aside class="note"><p class="note__t">All three actions start life labelled &quot;E-mail...&quot;</p><div class="note__b"><p>The action is chosen after the control is dropped, so the template cannot vary the caption for you. Rename the button in the window designer &mdash; two buttons that both read <em>E-mail...</em> confuse the user of the finished program as much as they confuse you in AppGen.</p></div></aside>
+<h3 id="button-account">Account</h3>
+<p>No prompts. It names the one place the account is configured &mdash; <b>Application &rarr; Global Properties &rarr; Extensions &rarr; emailTo - Global &rarr; Account</b> &mdash; and explains that a setup-window button is how an end user overrides it: into your settings table if you mapped one, otherwise into an INI beside the <code>.EXE</code>.</p>
+<h3 id="button-message">Message</h3>
+<p>Who it goes to and what it says. What this tab <em>means</em> depends on the action, which is why the General tab spells the three cases out:</p>
+<div class="tw"><table class=""><thead><tr><th>Action</th><th>What the Message tab does</th></tr></thead><tbody><tr><td>Open the compose window</td><td>Pre-fills the window. The user can change any of it before sending.</td></tr><tr><td>Send straight away</td><td>Is the message. Nothing is shown; anything left blank is omitted.</td></tr><tr><td>Open the account setup window</td><td>Nothing &mdash; the whole tab greys out, because no message is involved.</td></tr></tbody></table></div>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>To / Cc / Subject / Body</td><td>Literals for a button that always sends the same thing.</td></tr><tr><td>&hellip;or take it from a variable</td><td>A field picker. Overrides the literal beside it.</td></tr><tr><td>Body is HTML</td><td>Calls <code>SetHtml</code> instead of <code>SetText</code>.</td></tr><tr><td>Attachment</td><td>A literal path, or a variable holding one.</td></tr></tbody></table></div>
+<p>Here are all three actions, as generated:</p>
+<pre class="code" data-lang="clarion"><code>!  %ControlEventHandling, on this button&#x27;s Accepted
+    OF ?EmailBtn
+      ThisWindow.Update()
+        Mailer.Compose(&#x27;bob@example.com&#x27;, &#x27;Hello from Clarion&#x27;, &#x27;It works.&#x27;, &#x27;&#x27;)
+    OF ?EmailBtn:2
+      ThisWindow.Update()
+          Mailer.Msg.ClearAll()
+          Mailer.Msg.AddList(&#x27;ops@example.com&#x27;, ETAddr:To)
+          Mailer.Msg.AddList(&#x27;audit@example.com&#x27;, ETAddr:Cc)
+          Mailer.Msg.SetSubject(&#x27;Nightly run finished&#x27;)
+          Mailer.Msg.SetHtml(&#x27;&lt;p&gt;Fixed &lt;b&gt;HTML&lt;/b&gt; body.&lt;/p&gt;&#x27;)
+        IF Mailer.Send(Mailer.Msg)
+          MESSAGE(Mailer.Txt(ETTxt:Sent), Mailer.Txt(ETTxt:Compose), ICON:Asterisk)
+        ELSE
+          Mailer.ShowError()
+        END
+    OF ?EmailBtn:3
+      ThisWindow.Update()
+        Mailer.Setup()</code></pre>
+<h2 id="codetemplates">The three code templates</h2>
+<p><b>Send an e-mail here</b> is the one that gets used most. Its prompts mirror the button&rsquo;s Message tab, plus a place to put the result:</p>
+<div class="tw"><table class=""><thead><tr><th>Prompt</th><th>What it does</th></tr></thead><tbody><tr><td>To / Cc / Bcc</td><td>Literals, or a variable for To.</td></tr><tr><td>Subject / Body</td><td>Literals, or variables. Body can be HTML.</td></tr><tr><td>Attachment</td><td>A literal path, or a variable &mdash; this is how a report gets mailed.</td></tr><tr><td>Put the result in</td><td>A field that receives 1 for sent, 0 for not.</td></tr><tr><td>Tell the user it worked / Show the error</td><td>Both optional; the reason is always in <code>LastErrorText</code>.</td></tr></tbody></table></div>
+<aside class="note note--tip"><p class="note__t">Mailing a report</p><div class="note__b"><p>Write the PDF, then drop <b>Send an e-mail here</b> immediately after it and point the attachment prompt at the variable holding the file name. That is the whole recipe &mdash; there is no separate report template because there does not need to be one.</p></div></aside>
+<p><b>Open the compose window here</b> pre-fills and opens the write-and-send window. <b>Open the mail account setup window here</b> opens the account window &mdash; put it on a Setup menu and your users can configure their own mail without you.</p>
+<p>All three carry the same reminder the button does: the sender address, the server and the password are not among their prompts, because they belong to the global extension.</p>
+<h2 id="embeds">Where the generated code lands</h2>
+<div class="tw"><table class=""><thead><tr><th>Template</th><th>Embed point</th><th>What arrives</th></tr></thead><tbody><tr><td>Global</td><td><code>%AfterGlobalIncludes</code></td><td>One <code>INCLUDE</code>, <code>ONCE</code>.</td></tr><tr><td>Global</td><td><code>%GlobalData</code></td><td>The object and <code>emailToLanguage</code>.</td></tr><tr><td>Global</td><td><code>%ProgramSetup</code> PRIORITY(8000)</td><td>Init, the defaults, <code>LoadAccount</code>.</td></tr><tr><td>Global</td><td><code>%ProgramProcedures</code></td><td>The table binding, when one is mapped.</td></tr><tr><td>Global</td><td><code>%DLLExportList</code></td><td>The object and the language byte, when this app is the owner.</td></tr><tr><td>Global</td><td><code>%BeforeGenerateApplication</code></td><td>Registers the <code>EMAILTO</code> class category.</td></tr><tr><td>Button</td><td><code>%CustomGlobalDeclarations</code></td><td>The <code>INCLUDE</code>, so the module sees the class.</td></tr><tr><td>Button</td><td><code>%ControlEventHandling</code></td><td>The handler, on this instance&rsquo;s own equate.</td></tr><tr><td>Code templates</td><td>wherever you drop them</td><td>The calls, inline.</td></tr></tbody></table></div>
+<div class="next"><a href="https://claude.ai/code/artifact/c98d7cfa-04e7-45ab-9054-9186cc2fbba5"><b>Reference &rarr;</b><span>Every class, method, property and equate</span></a><a href="https://claude.ai/code/artifact/b00929bb-198c-4afb-b303-22bbfdfd06b0"><b>Programmer&#x27;s Guide &rarr;</b><span>How it works, and how to make it do things</span></a><a href="https://claude.ai/code/artifact/9a35a14f-4479-46c6-b03d-66da4186438c"><b>Getting Started &rarr;</b><span>Install it and send the first message</span></a></div>
+    <footer>emailTo &mdash; four volumes. The reference is generated from the five include files, so its signatures are the ones in the build.</footer>
+  </div>
+</main>
+</div>
+<script>
+const q = document.getElementById('filter');
+if (q) {
+  const rows = [...document.querySelectorAll('tr.fn')];
+  q.addEventListener('input', () => {
+    const t = q.value.trim().toLowerCase();
+    rows.forEach(r => r.classList.toggle('hide', t && !r.dataset.k.includes(t)));
+    document.querySelectorAll('.tw').forEach(w => {
+      const body = w.querySelector('tbody');
+      if (!body) return;
+      const any = [...body.querySelectorAll('tr')].some(r => !r.classList.contains('hide'));
+      const h = w.previousElementSibling;
+      w.classList.toggle('hide', !any);
+      if (h && h.tagName === 'H3') h.classList.toggle('hide', !any);
+    });
+  });
+}
+/*  Which sidebar entry is lit.  An IntersectionObserver was the wrong
+    instrument: one click crosses several headings at once, every one of them
+    arrives in a single callback, and the last entry processed won - so the
+    highlight settled one or two sections past the one that was clicked, and
+    the page looked as though it had jumped there.  Position is the question,
+    so ask position.  */
+const links = [...document.querySelectorAll('.nav__l a')];
+if (links.length) {
+  const byId  = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const marks = [...document.querySelectorAll('h2[id],h3[id]')].filter(h => byId.has(h.id));
+  const light = a => links.forEach(l => l.classList.toggle('on', l === a));
+  let held = null, holdUntil = 0, queued = false;
+
+  function spy() {
+    queued = false;
+    if (held) { light(held); return; }
+    let cur = marks[0];
+    for (const h of marks) {
+      if (h.getBoundingClientRect().top <= 120) cur = h; else break;
+    }
+    //  the foot of the page belongs to the last section, however short it is
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2)
+      cur = marks[marks.length - 1];
+    if (cur) light(byId.get(cur.id));
+  }
+
+  //  a click owns the highlight until the scroll it started has landed
+  links.forEach(a => a.addEventListener('click', () => {
+    held = a; holdUntil = performance.now() + 700; light(a);
+  }));
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(spy); } };
+  addEventListener('scroll', () => {
+    if (held && performance.now() > holdUntil) held = null;
+    later();
+  }, {passive: true});
+  addEventListener('resize', later);
+  if (marks.length) spy();
+}
+</script>
