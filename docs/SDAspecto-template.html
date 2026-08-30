@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SDAspecto — Programmer's Documentation</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-d:#084d93; --navy:#0E1A2B; --navy-2:#16263c;
+    --ink:#22303f; --muted:#6b7785; --line:#e3e8ef; --bg:#f5f7fa;
+    --card:#ffffff; --green:#1e7c5a; --amber:#9a6a12; --amber-bg:#fff7e8;
+    --green-bg:#eef8f3; --blue-bg:#eef4fc; --red-bg:#fcecec; --red:#b23a2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  nav{width:280px;flex:0 0 280px;background:linear-gradient(180deg,var(--navy),var(--navy-2));
+    color:#cdd8e6;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  nav .brand{padding:0 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  nav .brand h1{font-size:16px;margin:0;color:#fff} nav .brand span{font-size:12px;color:#8aa0bb}
+  nav a{display:block;color:#b9c7d8;padding:6px 22px;font-size:13.5px;border-left:3px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+  nav a.h2{padding-left:34px;font-size:13px;color:#9fb2c8}
+  nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#6e85a1;
+    padding:14px 22px 4px;font-weight:700}
+  main{flex:1;min-width:0}
+  header.hero{background:linear-gradient(120deg,#0c2a4d,var(--blue));color:#fff;padding:46px 52px 38px}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.3px}
+  header.hero p{margin:0;font-size:15.5px;color:#dbe8f8;max-width:780px}
+  header.hero .pill{display:inline-block;margin-top:16px;background:rgba(255,255,255,.16);
+    padding:4px 12px;border-radius:20px;font-size:12.5px}
+  .body{padding:14px 52px 80px;max-width:940px}
+  section{padding:22px 0;border-bottom:1px solid var(--line);scroll-margin-top:50px} section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:14px 0 10px;color:var(--navy);scroll-margin-top:50px}
+  h3{font-size:16px;margin:20px 0 6px;color:var(--blue-d)}
+  p{margin:9px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  code,kbd,pre{font-family:"Cascadia Code",Consolas,monospace}
+  code{background:#eef1f5;padding:1px 6px;border-radius:4px;font-size:13px;color:#1d3b5e}
+  kbd{background:#1d2a3a;color:#e7eef7;padding:2px 7px;border-radius:5px;font-size:12px;
+    border:1px solid #324558;box-shadow:0 1px 0 #0b1420}
+  pre{background:#0f1d2e;color:#dbe6f2;padding:16px 18px;border-radius:10px;overflow:auto;
+    font-size:13px;line-height:1.55;margin:12px 0}
+  pre .c{color:#7fa6c9} pre .k{color:#79c0ff} pre .s{color:#7ee0b8} pre .t{color:#ffd591}
+  .callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid}
+  .tip{background:var(--green-bg);border-color:#bfe3d3;color:#155}
+  .note{background:var(--blue-bg);border-color:#c5dcf6;color:#13456f}
+  .warn{background:var(--amber-bg);border-color:#ecd9a6;color:#6f5210}
+  .danger{background:var(--red-bg);border-color:#e6b8b2;color:#7c241b}
+  .callout b{display:block;margin-bottom:2px}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f0f4f9;color:var(--navy);font-weight:600}
+  tr:hover td{background:#fafcff}
+  .lead{font-size:16px;color:#3a4756}
+  footer{padding:24px 52px;color:var(--muted);font-size:13px}
+  .top{font-size:12px;color:var(--muted);float:right}
+  .filetree{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:14px 18px;line-height:1.7;color:#37485a}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+  .gcard{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff}
+  .gcard h4{margin:0 0 4px;font-size:14px;color:var(--blue-d)}
+  .gcard p{margin:0;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><h1>SDAspecto</h1><span>Programmer's Documentation &middot; v3.06</span></div>
+    <a href="#over">Overview</a>
+    <div class="grp">Using it</div>
+    <a href="#install" class="h2">Install &amp; register</a>
+    <a href="#quick" class="h2">Quick start</a>
+    <a href="#tabs" class="h2">The four prompt tabs</a>
+    <a href="#exceptions" class="h2">Windows that need an exception</a>
+    <div class="grp">The rule engine</div>
+    <a href="#rules" class="h2">What a rule is</a>
+    <a href="#cascade" class="h2">The cascade</a>
+    <a href="#bitmasks" class="h2">Two bitmasks</a>
+    <a href="#ini" class="h2">The INI format</a>
+    <div class="grp">How it works</div>
+    <a href="#when" class="h2">When it runs</a>
+    <a href="#rescale" class="h2">Rescaling</a>
+    <a href="#threads" class="h2">Threads</a>
+    <a href="#multidll" class="h2">Multi-DLL</a>
+    <div class="grp">Reference</div>
+    <a href="#api" class="h2">Run-time API</a>
+    <a href="#trouble" class="h2">Troubleshooting</a>
+  </nav>
+  <main>
+    <header class="hero">
+      <h1>SDAspecto</h1>
+      <p>One look for <b>every window in the application</b> &mdash; typography, colours and a
+         CSS-like rule engine &mdash; from a single global extension. No per-window work, no
+         per-control work, and nothing to undo when you change your mind.</p>
+      <span class="pill">ABC &middot; 1 app extension + 2 procedure extensions &middot; rules live in an INI &middot; multi-DLL &middot; thread-safe</span>
+    </header>
+    <div class="body">
+
+    <section id="over">
+      <h2>Overview <a href="#over" class="top">#</a></h2>
+      <p class="lead">SDAspecto walks the controls of every window as it opens and restyles them from
+        a set of rules held in memory. It is the successor to <code>SdTpl.TPL</code> and
+        <code>BSTheme</code>.</p>
+      <p>It does four separate jobs, and they are worth keeping apart in your head because they are
+        configured separately and fail separately:</p>
+      <table>
+        <tr><th>Job</th><th>What it does</th><th>Conditional?</th></tr>
+        <tr><td><b>Typography</b></td><td>One typeface, size, colour, style and charset for the whole program</td><td>No &mdash; applied to everything in scope</td></tr>
+        <tr><td><b>Rescaling</b></td><td>Puts the controls back where they belong after the font changed their size</td><td>No</td></tr>
+        <tr><td><b>Fixed settings</b></td><td>A minimum control height, and a background colour per control type</td><td>No</td></tr>
+        <tr><td><b>Rules</b></td><td>Background, font colour/style, flat buttons, tips and cursors</td><td><b>Yes</b> &mdash; matched per control</td></tr>
+      </table>
+      <p>The first three are applied always and identically. The rules run <b>after</b> them, so a rule
+        can override a fixed setting on one particular control without you having to carve an exception
+        into the fixed setting itself.</p>
+      <div class="callout note"><b>Language</b>
+        The prompt UI, the INI keys and the source comments of this template are in <b>Spanish</b>, as
+        written. This document is in English.</div>
+    </section>
+
+    <section id="install">
+      <h2>Install &amp; register <a href="#install" class="top">#</a></h2>
+      <div class="filetree">
+        SDAspecto.inc&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <b>libsrc\win</b> &mdash; the class: rule queue, per-window state, prototypes<br>
+        SDAspecto.clw&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <b>libsrc\win</b> &mdash; the engine: matching, painting, rescaling, the INI<br>
+        SDAspecto.tpl&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <b>template\win</b> &mdash; the chain file<br>
+        SDAspecto.tpw&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <b>template\win</b> &mdash; the extensions
+      </div>
+      <ol>
+        <li>Copy the four files as above.</li>
+        <li><b>Setup &rarr; Template Registry &rarr; Add</b> &rarr; <code>SDAspecto.tpl</code>.</li>
+        <li>In the Application Tree: <b>Global &rarr; Extensions &rarr; Add</b> &rarr;
+            <b>SDAspecto - Personalizacion visual de controles</b>.</li>
+      </ol>
+      <div class="callout warn"><b>The .tpw is not optional</b>
+        <code>SDAspecto.tpl</code> is a chain file whose only job is
+        <code>#INCLUDE('SDAspecto.tpw')</code>. If you copy the <code>.tpl</code> and leave the
+        <code>.tpw</code> behind, registration fails on a file it cannot find.</div>
+    </section>
+
+    <section id="quick">
+      <h2>Quick start <a href="#quick" class="top">#</a></h2>
+      <p>Add the global extension, set a typeface on the <b>Tipografia</b> tab, generate and build.
+        That alone restyles the whole application. Everything else is refinement.</p>
+      <p>The <b>scheme name</b> and the <b>global instance name</b> are the only two required prompts.
+        The instance defaults to <code>GLO_SDAspecto</code>, which is the name you use from your own
+        code:</p>
+      <pre><code>GLO_SDAspecto.FuenteNombre = 'Segoe UI'
+SDAspectoApply()                     <span class="c">! repaint the current window</span></code></pre>
+      <div class="callout danger"><b>Multi-DLL: the instance name must be identical everywhere</b>
+        It is <b>one variable for the whole system</b>. The app that owns the globals declares and
+        exports it; every other app declares that same name as <code>EXTERNAL</code> and imports it. If
+        the name differs in one app, the linker asks for a symbol nobody defined.</div>
+    </section>
+
+    <section id="tabs">
+      <h2>The four prompt tabs <a href="#tabs" class="top">#</a></h2>
+
+      <h3>General</h3>
+      <p>Scheme name, global instance name, a switch that disables the whole template
+        (<code>%SDADisable</code> &mdash; every <code>#AT</code> carries
+        <code>WHERE(%SDADisable=0)</code>, so nothing is generated at all), and a diagnostic mode that
+        pops a message per window listing the rules loaded, the buttons found, the text they were
+        compared against, and which rule matched each one. Turn it off in production.</p>
+
+      <h3>Tipografia</h3>
+      <p>Typeface, size, font colour, style and charset. Every parameter is either a literal or a
+        program variable &mdash; a tick chooses which &mdash; so a global theme variable can drive it.
+        <b>Scope</b> selects the window, its controls, or both.</p>
+      <div class="callout note"><b>&minus;1 and empty mean &ldquo;leave this one alone&rdquo;</b>
+        That is the convention throughout: a size of <code>-1</code> or an empty typeface name is not a
+        value, it is an instruction to skip that parameter. It is what lets you change only the size
+        and inherit the rest.</div>
+      <p>This tab also carries <b>rescaling</b> and <b>recentring</b> &mdash; see
+        <a href="#rescale">Rescaling</a>, which is where the interesting part is.</p>
+      <div class="callout warn"><b>Only one template may own the fonts</b>
+        If something else in the application already reapplies fonts or rescales windows, turn this off.
+        Two engines rescaling the same window fight each other, and the winner depends on embed
+        priority rather than on intent.</div>
+
+      <h3>INI</h3>
+      <p>Where the settings and the rules are read from. The path is relative to the executable if it
+        starts with <code>.\</code>.</p>
+      <div class="callout note"><b>The template is the factory default; the INI is the customisation</b>
+        The INI is read <b>after</b> everything configured in the template, so it overrides it. If the
+        file does not exist, or does not carry some key, what the template said stands. This matters
+        more than it sounds: reading a prompt at generate time tells you the factory value, <b>not</b>
+        what the program will actually apply.</div>
+
+      <h3>Fijos</h3>
+      <p>Settings that are applied always and unconditionally, like the typography &mdash; not rules.
+        A minimum height for <code>ENTRY</code>, <code>SPIN</code>, <code>CHECK</code>,
+        <code>COMBO</code>, <code>LIST</code> and <code>BUTTON</code>; and a background colour per
+        control type, each behind its own tick so that unticked means <i>do not touch that type</i>.</p>
+      <div class="callout note"><b>GROUP is deliberately absent</b>
+        A <code>GROUP</code> is not a fillable surface. To colour the area of a group, put a
+        <code>PANEL</code> or a <code>REGION</code> behind it.</div>
+      <p><code>TAB</code> colouring requires the visual style to be switched off in the application
+        manifest; with it on, Windows draws the tab itself and ignores the colour.</p>
+    </section>
+
+    <section id="exceptions">
+      <h2>Windows that need an exception <a href="#exceptions" class="top">#</a></h2>
+      <p>Two procedure extensions, added to individual procedures.</p>
+
+      <h3><code>SDAspecto - Excluir esta ventana</code></h3>
+      <p>Leaves one window completely alone &mdash; no colours, no typography, no rescaling, no minimum
+        height. It generates <b>no code of its own</b>: its mere presence makes the global extension
+        emit nothing into that procedure's embeds, so the window is untouched rather than touched and
+        then reverted. Nothing to configure.</p>
+
+      <h3><code>SDAspecto - Ventana redimensionable o maximizada</code></h3>
+      <p>Needed when a window uses the ABC resizer, or has to start maximised. It is a per-procedure
+        extension rather than a global option on purpose: the resizer belongs to the window, not to the
+        application, and a global switch would force all-or-nothing &mdash; and in procedures without a
+        resizer the compiler would object to an object that does not exist.</p>
+      <p><b>The problem is ordering.</b> Three things happen in <code>Init</code>, in this order:</p>
+      <table>
+        <tr><th>Priority</th><th>What happens</th></tr>
+        <tr><td><code>8125</code></td><td><code>Resizer.Init</code> takes its baseline: it walks the controls and stores each one's position and size.</td></tr>
+        <tr><td><code>8600</code></td><td>SDAspecto rescales for typography and moves all of them.</td></tr>
+        <tr><td>deferred</td><td>SDAspecto's second pass, with the window fully built.</td></tr>
+      </table>
+      <p>So the resizer photographs the layout <b>before</b> the rescale and is left with a baseline
+        that does not correspond to anything. It is worse if the window maximises during
+        <code>Init</code>: the resizer stores the <b>maximised</b> size alongside the design-time
+        positions, concludes that this small layout is what a full screen looks like, and never spreads
+        anything out again. This extension puts the two back in order at the end of the deferred
+        pass.</p>
+    </section>
+
+    <section id="rules">
+      <h2>What a rule is <a href="#rules" class="top">#</a></h2>
+      <p>A rule is <b>match criteria + actions</b>.</p>
+      <table>
+        <tr><th>Criteria</th><th>Matches on</th></tr>
+        <tr><td>Types</td><td>A list of control types (<code>ENTRY,SPIN,TEXT,LIST,COMBO,&hellip;</code>)</td></tr>
+        <tr><td>Text</td><td>A list of strings, compared <b>exact</b>, <b>contains</b> or <b>starts-with</b></td></tr>
+        <tr><td>Picture</td><td>A wildcard over <code>PROP:Text</code> &mdash; so &ldquo;every currency field&rdquo; is expressible</td></tr>
+        <tr><td>Required / read-only / disabled</td><td>The control's state</td></tr>
+      </table>
+      <table>
+        <tr><th>Actions</th><th>Sets</th></tr>
+        <tr><td><code>sdAct:Color</code></td><td>Background colour</td></tr>
+        <tr><td><code>sdAct:FontColor</code></td><td>Font colour &mdash; or <code>sdColor:Auto</code></td></tr>
+        <tr><td><code>sdAct:FontStyle</code></td><td>Font style</td></tr>
+        <tr><td><code>sdAct:Flat</code></td><td>Flattens a button</td></tr>
+        <tr><td><code>sdAct:Tip</code></td><td>Tooltip</td></tr>
+        <tr><td><code>sdAct:Cursor</code></td><td>Mouse cursor</td></tr>
+      </table>
+      <p>Criteria are restricted to properties the actions do <b>not</b> modify. That is what keeps the
+        engine from matching on something it just changed.</p>
+      <div class="callout tip"><b>sdColor:Auto</b>
+        Font colour accepts <code>sdColor:Auto</code>, which derives black or white from the
+        <b>luminance of the background</b> &mdash; so a rule can set a background without also having to
+        work out whether the text will still be readable on it. Its value
+        (<code>7FFFFFFFh</code>) is chosen to dodge both real colours (<code>00BBGGRRh</code>) and
+        system colours (<code>80000000h</code>&ndash;<code>8000001Eh</code>).</div>
+    </section>
+
+    <section id="cascade">
+      <h2>The cascade <a href="#cascade" class="top">#</a></h2>
+      <p>Rules are evaluated <b>in order</b>. Every rule that matches applies, and the <b>last one wins
+        per property</b> &mdash; exactly like CSS. A broad rule sets the ground, a narrow one overrides a
+        single property of it, and the narrow rule does not have to restate everything the broad one
+        said.</p>
+      <p>A rule marked <b>Cortar</b> stops the cascade for that control. That is <code>ELSIF</code>
+        semantics, available when you want it and out of the way when you do not.</p>
+      <p>The factory scheme is six rules: required fields, read-only fields, normal fields, the confirm
+        button, the cancel button, and browse buttons.</p>
+    </section>
+
+    <section id="bitmasks">
+      <h2>Two bitmasks, and why <a href="#bitmasks" class="top">#</a></h2>
+      <p>Both of these look like over-engineering until the alternative is tried.</p>
+
+      <h3>The actions are a bitmask</h3>
+      <p>Because <code>COLOR:NONE</code> is <code>-1</code>, which is a <b>valid colour</b> and therefore
+        useless as a &ldquo;not set&rdquo; sentinel. There is no value a colour field can hold that means
+        &ldquo;this rule does not set the colour&rdquo;, so a separate bitmask declares <b>which fields of
+        the rule are defined</b>.</p>
+
+      <h3>&ldquo;Required&rdquo; is a bitmask too</h3>
+      <table>
+        <tr><th>Value</th><th>Means</th></tr>
+        <tr><td><code>sdReq:AtributoREQ</code></td><td>The control carries the <code>REQ</code> attribute</td></tr>
+        <tr><td><code>sdReq:FondoDisenio</code></td><td>The control was given a background colour in the designer</td></tr>
+        <tr><td><code>sdReq:Ambos</code></td><td>Either of the two</td></tr>
+      </table>
+      <p><code>REQ</code> is the clean answer. But plenty of applications never used it and instead
+        marked required fields by colouring them at design time &mdash; that is what
+        <code>SdTpl.TPL</code> relied on. Supporting only <code>REQ</code> would mean those applications
+        get nothing, and supporting only the colour would mean the tidy ones do.</p>
+    </section>
+
+    <section id="ini">
+      <h2>The INI format <a href="#ini" class="top">#</a></h2>
+      <p><b>Rules are data, not code.</b> They live in the INI, one <code>[Regla:n]</code> section each,
+        with a count in the main section:</p>
+      <pre><code><span class="t">[SDAspecto]</span>
+<span class="k">Esquema</span>=SDigitales
+<span class="k">FuenteNombre</span>=Roboto Medium
+<span class="k">FuenteTamano</span>=9
+<span class="k">Reglas</span>=13                <span class="c">! how many [Regla:n] sections follow</span>
+
+<span class="t">[Regla:1]</span>
+<span class="c">! ... one section per rule, with every field of it</span></code></pre>
+      <p>The factory scheme is built in code and written out the first time, when the INI brings no
+        rules. After that the INI is the source of truth, which means a scheme can be changed, shipped
+        or rolled back without rebuilding anything.</p>
+    </section>
+
+    <section id="when">
+      <h2>When it runs <a href="#when" class="top">#</a></h2>
+      <table>
+        <tr><th>Embed</th><th>Priority</th><th>What goes in</th></tr>
+        <tr><td><code>WindowManager.Init</code></td><td><code>8600</code></td><td><code>SDAspectoApply()</code> + <code>POST(SDAspecto:EventoRefresh)</code></td></tr>
+        <tr><td><code>WindowManager.TakeEvent</code></td><td><code>990</code></td><td><code>SDAspectoTakeEvent()</code> &mdash; the deferred pass</td></tr>
+        <tr><td><code>WindowManager.Kill</code></td><td><code>8600</code></td><td><code>SDAspectoReset()</code></td></tr>
+      </table>
+      <p><code>8600</code> is deliberately <b>late</b> in <code>Init</code>, so that any other template
+        which reapplies fonts or moves controls has already finished.</p>
+      <div class="callout tip"><b>Why there is a second pass at all</b>
+        Late in <code>Init</code> is still not late enough. ABC has code left to run after it &mdash;
+        restoring the window position from the INI, initialising resizers &mdash; and that code can
+        overwrite the geometry that was just set. <b>This is why the first open used to look wrong and
+        the second one right.</b> The posted event is processed once the window has finished building
+        itself, and the second pass fixes what moved. <code>PRIORITY(990)</code> is the same slot
+        <code>stabbwcs.tpw</code> uses for this embed.</div>
+      <p>The scheme is loaded <b>once</b> at program start-up
+        (<code>%ProgramSetup</code>, <code>PRIORITY(1000)</code>). Windows afterwards only walk their
+        controls against the queue already in memory &mdash; there is no file access per window.</p>
+    </section>
+
+    <section id="rescale">
+      <h2>Rescaling <a href="#rescale" class="top">#</a></h2>
+      <p>Changing the font changes how big everything is, so every control ends up the wrong size. The
+        engine puts them back, and the method is the whole trick:</p>
+      <ol>
+        <li>Save each control's geometry <b>in dialog units</b>.</li>
+        <li>Apply the font with <code>SETFONT</code>.</li>
+        <li>Force Clarion to recompute the dialog unit.</li>
+        <li>Write <b>the same numbers</b> back.</li>
+      </ol>
+      <p>The values did not change; what a dialog unit is worth did. Because every control starts from
+        its <b>original</b> geometry and never from its current one, applying the font twice gives the
+        same result as applying it once &mdash; the operation is idempotent instead of cumulative, which
+        is what makes a live settings window safe.</p>
+      <p><code>LIST</code> and <code>COMBO</code> line height and column widths come along too. Those are
+        read as <b>indexed properties</b> (<code>PROPLIST:width</code>, <code>PROPLIST:group</code>), so
+        no <code>PROP:Format</code> string ever has to be parsed or rebuilt.</p>
+      <h3>Recentring</h3>
+      <p>A window that grows keeps its top-left corner fixed, so it drifts down and to the right. With
+        recentring on it is moved back by half of what it grew, and the centre stays where it was.</p>
+    </section>
+
+    <section id="threads">
+      <h2>Threads <a href="#threads" class="top">#</a></h2>
+      <p>The class instance is <b>global and shared across every thread</b>, and Clarion does not protect
+        a shared <code>QUEUE</code>. So:</p>
+      <ul>
+        <li>the <b>rule queue</b> carries a lock;</li>
+        <li>the <b>per-window state</b> queue is declared <code>,THREAD</code>.</li>
+      </ul>
+      <div class="callout note"><b>Per-window state is not class properties</b>
+        The current window's geometry and typography used to live as properties of the class, and that
+        was wrong: the instance is unique and global, so two windows opening on different threads
+        overwrote each other's state. They are a <code>,THREAD</code> instance of a <code>TYPE</code>d
+        group instead.</div>
+    </section>
+
+    <section id="multidll">
+      <h2>Multi-DLL <a href="#multidll" class="top">#</a></h2>
+      <p>The skeleton is the one <code>cleansdw.tpw</code> uses. <code>MEMBER</code> modules
+        <b>never see the <code>SDAspectoClass</code> type at all</b> &mdash; they only ever call the five
+        global functions.</p>
+      <table>
+        <tr><th></th><th>App that owns the globals</th><th>Satellite DLLs</th></tr>
+        <tr><td>The <code>INCLUDE</code></td><td colspan="2">In <b>both</b> &mdash; it brings the equates and the type, and a <code>,TYPE</code> generates nothing by itself</td></tr>
+        <tr><td>The instance</td><td>Declared and exported</td><td><b>Not declared</b> &mdash; only the functions are imported</td></tr>
+      </table>
+      <div class="callout note"><b>Why the satellites do not declare it</b>
+        Declaring it <code>EXTERNAL,DLL</code> there would make the linker ask for every method of the
+        class to be exported one by one. Calling five plain functions makes that problem not exist.
+        Likewise the export list carries the five functions and the instance, but <b>not</b> the class:
+        Clarion already exports the <code>TYPE$</code>, the <code>VMT$</code> and the methods of a global
+        instance, and doing it by hand produces <i>Duplicate export name</i> on all 46 symbols.</div>
+    </section>
+
+    <section id="api">
+      <h2>Run-time API <a href="#api" class="top">#</a></h2>
+      <p>Five global functions, visible from every module including <code>MEMBER</code> ones:</p>
+      <table>
+        <tr><th>Function</th><th>Does</th></tr>
+        <tr><td><code>SDAspectoApply()</code></td><td>Applies everything to the current window</td></tr>
+        <tr><td><code>SDAspectoReset()</code></td><td>Undoes it for the current window</td></tr>
+        <tr><td><code>SDAspectoTakeEvent()</code></td><td>The deferred pass; called from the generated embed</td></tr>
+        <tr><td><code>SDAspectoCargar()</code></td><td>Rereads the INI &mdash; <code>BYTE,PROC</code></td></tr>
+        <tr><td><code>SDAspectoGuardar()</code></td><td>Writes the current state to the INI &mdash; <code>BYTE,PROC</code></td></tr>
+      </table>
+      <p>Parameters are edited straight on the global instance. A settings window is therefore just:</p>
+      <pre><code>GLO_SDAspecto.FuenteNombre = 'Segoe UI'
+GLO_SDAspecto.FuenteTamano = 10
+SDAspectoGuardar()                   <span class="c">! persist</span>
+SDAspectoApply()                     <span class="c">! and show it now</span></code></pre>
+      <p><code>VentanaConfigAspecto.txa</code> in the template folder is a ready-made settings window;
+        import it with <b>Application &rarr; Import</b>.</p>
+      <div class="callout tip"><b>Reading the settings from another template</b>
+        Ask the <b>instance</b>, not the prompts. <code>GLO_SDAspecto.FuenteNombre</code> and
+        <code>.FuenteTamano</code> are what the program is actually applying; the template prompts are
+        only the factory default, and the INI overrides them at start-up. Honour
+        <code>FuenteActiva</code>, honour <code>FuenteAControles</code> if what you are styling is a
+        control, and treat empty / <code>-1</code> as &ldquo;leave it alone&rdquo;.
+        <a href="BrowseGrid-template.html">BrowseGrid</a> integrates exactly this way.</div>
+    </section>
+
+    <section id="trouble">
+      <h2>Troubleshooting <a href="#trouble" class="top">#</a></h2>
+      <table>
+        <tr><th>Symptom</th><th>Cause</th></tr>
+        <tr><td>Registration fails on a missing file</td><td>The <code>.tpw</code> was not copied next to the <code>.tpl</code>.</td></tr>
+        <tr><td>The linker asks for a symbol nobody defines</td><td>The global instance name differs between apps in a multi-DLL system. It has to be identical everywhere.</td></tr>
+        <tr><td>A resizable window never spreads its controls</td><td>Add <b>SDAspecto - Ventana redimensionable o maximizada</b> to that procedure. The resizer took its baseline before the rescale.</td></tr>
+        <tr><td>A <code>TAB</code> ignores its colour</td><td>Visual styles are on in the application manifest; Windows is drawing the tab itself.</td></tr>
+        <tr><td>Controls drift further every time the font is applied</td><td>Something else is rescaling the same window. Only one engine may own the geometry.</td></tr>
+        <tr><td>A settings change does not show up</td><td>The INI is read at start-up. Call <code>SDAspectoCargar()</code> then <code>SDAspectoApply()</code>.</td></tr>
+        <tr><td>One window must not be touched</td><td>Add <b>SDAspecto - Excluir esta ventana</b> to it.</td></tr>
+        <tr><td>Nothing matches what you expected</td><td>Turn on diagnostic mode: it reports the rules loaded, the controls found, the text compared and which rule matched each one.</td></tr>
+      </table>
+    </section>
+
+    </div>
+    <footer>SDAspecto v3.06 &mdash; Adri&aacute;n E. Santarelli / SDigitales.</footer>
+  </main>
+</div>
+</body>
+</html>

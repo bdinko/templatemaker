@@ -85,11 +85,11 @@ S_SUPPORTS = """
 
 S_MATRIX = """
   SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Bounce, 'GET', |
-           '{scheme}{host}/v3/suppression/bounces?limit={limit}&offset={offset}', '', |
+           '{{scheme}{{host}/v3/suppression/bounces?limit={{limit}&offset={{offset}', '', |
            'Address=email;Reason=reason;Id=status;When=#created')
 
   SELF.Row(ETPrv:Brevo, ETOp:Suppressions, ETSup:All, 'GET', |
-           '{scheme}{host}/v3/smtp/blockedContacts?limit={limit}&offset={offset}', |
+           '{{scheme}{{host}/v3/smtp/blockedContacts?limit={{limit}&offset={{offset}', |
            'contacts', |
            'Address=email;Reason=reason.message;KindText=reason.code;When=@blockedAt')
 """
@@ -103,10 +103,10 @@ MyApiClass.BuildMap PROCEDURE()
   CODE
   PARENT.BuildMap()                           ! keep the eight that are already there
   SELF.Row(ETPrv:Custom, ETOp:Suppressions, ETSup:All, 'GET', |
-           '{scheme}{host}/api/blocked?page={page}', 'rows', |
+           '{{scheme}{{host}/api/blocked?page={{page}', 'rows', |
            'Address=addr;Reason=why;When=@stamp')
   SELF.Row(ETPrv:Custom, ETOp:SuppDelete, ETSup:All, 'DELETE', |
-           '{scheme}{host}/api/blocked/{email}')
+           '{{scheme}{{host}/api/blocked/{{email}')
 """
 
 S_APIEMBED = """
@@ -202,7 +202,7 @@ def build_getting_started():
 
     add(h2('what', 'What emailTo is'))
     add(p('emailTo sends e-mail from a Clarion application, and manages the account '
-          'it sends through. It is five classes, one bundled C file and seven '
+          'it sends through. It is seven classes, one bundled C file and ten '
           'templates, and it deploys as part of your <code>.EXE</code> &mdash; there is '
           'no DLL to ship, no .NET, no OpenSSL and nothing to register on the machine '
           'it runs on.'))
@@ -224,6 +224,17 @@ def build_getting_started():
     ]))
 
     add(h2('install', 'Install'))
+    add(note('tip', 'Or let the installer do it',
+             '<p><b>emailToSetup.exe</b> finds every Clarion <b>10 or later</b> on the machine '
+             '&mdash; from the IDE&rsquo;s own settings and from a sweep of the fixed drives '
+             '&mdash; copies the templates and the classes into the ones you tick, and '
+             'registers each with that installation&rsquo;s own <code>ClarionCL</code>. It '
+             'leaves this manual, the dictionary and the demos on disk beside them. The rest '
+             'of this page is exactly what it does, for anyone who would rather place the '
+             'files themselves.</p>'
+             '<p>Clarion 10 gets a build of the template whose prompts are laid out for its '
+             'narrower AppGen dialog &mdash; 480 px, against 960 from Clarion 11 on. Same '
+             'template name, same generated code, so an application moves between them.</p>'))
     add(p('Copy these eleven files to a folder on the Clarion redirection path &mdash; '
           'the application folder, or <code>\\clarion12\\accessory\\libsrc\\win</code>:'))
     add(table(['File', 'What it is'], [
@@ -573,7 +584,7 @@ def build_getting_started():
                 'Getting Started',
                 'Install the classes, register the template, and get a message out of '
                 'a Clarion program in about twenty lines.',
-                ['No DLL to ship', 'No .NET', '8 provider APIs', 'Clarion 12'],
+                ['No DLL to ship', 'No .NET', '9 provider APIs', 'Clarion 10 &ndash; 12'],
                 groups, body)
 
 # =====================================================================
@@ -604,6 +615,16 @@ S_OAUTHFLOW = """
     MESSAGE(CLIP(Mailer.LastErrorText))
   END
 """
+
+S_ACCOUNTS = """Mailer.Acc.Name     = 'brevo'                 ! a name nothing has used yet
+Mailer.Acc.Provider = ETPrv:Brevo
+Mailer.Acc.ApiKey   = 'xkeysib-...'
+Mailer.SaveAccount()                          ! creates a SECOND account
+
+IF Mailer.ListAccounts() > 1                  ! AccountQ: .Name .Provider .ProviderText .FromAddr
+   Mailer.LoadAccount('brevo')                ! switch - the other one is untouched
+   MailApi.Manage(2)                          ! it borrows whatever is loaded
+END"""
 
 S_TABLE = """
 Mailer.LoadAccount PROCEDURE(<STRING pName>)
@@ -670,6 +691,22 @@ ClearAll             PROCEDURE       ! correct
 !  With a method called Clear, this line, in code that has nothing to do
 !  with e-mail, stops compiling:
   CLEAR(GlobalRequest)               ! error: No matching prototype available
+"""
+
+S_BRACETRAP = """
+!  '{' opens Clarion's repeat-count escape:  'ab{3}'  IS  'abbb'.
+!  So a brace that is meant to be a brace has to be doubled.
+
+  body.Add('{"personalizations":[')     ! WRONG.  Clarion 10 and 11 refuse the
+                                        ! literal: Invalid string (misused
+                                        ! <...> or {...}, or literal too long)
+
+  body.Add('{{"personalizations":[')    ! RIGHT.  One '{' in every version.
+
+!  The URL templates handed to Row() are the same story:
+  SELF.Row(ETPrv:Custom, ETOp:Stats, 0, 'GET', '{{scheme}{{host}/stats', 'days', 'When=@d')
+
+!  A closing '}' needs nothing.  Neither does a brace inside a ! comment.
 """
 
 S_STRINGTRAP = """
@@ -949,6 +986,43 @@ def build_programmers_guide():
           'reference-counted &mdash; so it is safe whether or not the table is already '
           'open elsewhere in the program.'))
 
+    add(h2('accounts', 'Several accounts, one program'))
+    add(p('An account has a <b>name</b>, and the store keeps one set of settings per '
+          'name. Nothing is shared between them &mdash; provider, key, region, domain, '
+          'sign-in, all of it belongs to the account &mdash; so a program can be set up '
+          'for SendGrid and Brevo at once and switched between them in a line:'))
+    add(code(S_ACCOUNTS))
+    add(p('With an INI the default account is section <code>[emailTo]</code> and a named '
+          'one is <code>[emailTo_brevo]</code>. With a table it is one row per name, '
+          'fetched by the key on the name column. An INI cannot be asked which sections '
+          'it holds, so the named ones keep an index in the base section that '
+          '<code>SaveAccount</code> maintains; a table is simply walked. That is why '
+          '<code>ListAccounts</code> and <code>DeleteAccount</code> are '
+          '<code>VIRTUAL</code> like the other two &mdash; only the generated code knows '
+          'how to read your table.'))
+    add(table(['Method', 'What it does'], [
+        ['<code>LoadAccount(name)</code>', 'Switch to that account. No argument means the '
+         'unnamed default.'],
+        ['<code>SaveAccount()</code>', 'Write back under <code>Acc.Name</code>. A name '
+         'nothing has used yet creates a second account.'],
+        ['<code>ListAccounts()</code>', 'Fill <code>AccountQ</code> with every account the '
+         'store holds &mdash; name, provider, provider text and from-address &mdash; and '
+         'answer how many. Row 1 is the unnamed default.'],
+        ['<code>DeleteAccount(name)</code>', 'Forget one. The unnamed default cannot be '
+         'deleted.'],
+        ['<code>RememberAccount(name)</code>', 'Which one to open with next time.'],
+        ['<code>PreferredAccount(fallback)</code>', 'That name, or the fallback if it was '
+         'never set &mdash; or if the account it names has since been deleted.'],
+    ]))
+    add(note('note', 'The setup window does all of this without code',
+             '<p>Above the tabs it carries <b>Account:</b>, a drop list of everything '
+             'stored, with <b>Load</b> and <b>Remove</b>; and <b>Save as:</b> underneath, '
+             'where a new name makes a second account. Loading or saving one remembers '
+             'it, and the generated start-up line is '
+             '<code>LoadAccount(PreferredAccount(&#39;default&#39;))</code> &mdash; so a '
+             'program switched to a second provider comes back up on it instead of always '
+             'reopening the first.</p>'))
+
     add(h2('secrets', 'Secrets at rest'))
     add(p('Four fields are never stored in the clear: the password, the client secret, '
           'the refresh token and the API key. Each goes through <code>Seal()</code> '
@@ -1004,6 +1078,19 @@ def build_programmers_guide():
     add(p('This is why the buffer and message classes have <code>ClearAll</code>. '
           '<code>RESET</code>, <code>ADD</code>, <code>LEN</code> and <code>FREE</code> '
           'are the other names to keep away from.'))
+
+    add(h3('note-brace', 'A brace inside a literal has to be doubled'))
+    add(p('<code>{</code> opens Clarion&rsquo;s repeat-count escape &mdash; '
+          '<code>&#39;ab{3}&#39;</code> is <code>&#39;abbb&#39;</code>. Clarion 12 lets a brace '
+          'that no digits follow pass as text, so a hand-written JSON literal compiles there '
+          'and nowhere else: Clarion 10 and 11 refuse the whole literal with <code>Invalid '
+          'string (misused &lt;...&gt; or {...}, or literal is too long)</code>. The portable '
+          'spelling is <code>{{</code>, and it is one brace in every version.'))
+    add(code(S_BRACETRAP))
+    add(p('It matters in this class set because it writes JSON by hand and carries nine '
+          'providers&rsquo; URL templates. If you derive <code>BuildMap()</code> to add a '
+          'provider of your own, double the braces in the URL you pass to <code>Row()</code> '
+          '&mdash; the placeholders expand exactly as they did before.'))
 
     add(h3('note-string', 'A STRING bound to a variable needs a picture'))
     add(p('Written with a literal instead, the control survives on its own &mdash; and '
@@ -1075,11 +1162,13 @@ def build_programmers_guide():
                               ('api-paging', 'Paging, three ways'),
                               ('api-add', 'Adding a provider')]),
         ('Keeping it', [('settings', 'Where the settings live'),
+                        ('accounts', 'Several accounts, one program'),
                         ('secrets', 'Secrets at rest'),
                         ('errors', 'Errors, and the log'),
                         ('deriving', 'Making it do something else')]),
         ('Clarion notes', [('notes', 'Clarion notes'),
                            ('note-clear', 'Clear breaks CLEAR()'),
+                           ('note-brace', 'Braces in a literal'),
                            ('note-string', 'STRING needs a picture'),
                            ('note-picture', 'The @s255 ceiling'),
                            ('note-map', 'MEMBER needs a MAP'),
@@ -1211,7 +1300,7 @@ def build_template_guide():
           'changes back; with no table these <em>are</em> the settings and the setup '
           'window saves to an INI.'))
     add(table(['Prompt', 'Notes'], [
-        ['Provider', 'Fourteen presets. Choosing one fills in server, port, security and sign-in.'],
+        ['Provider', 'Sixteen presets. Choosing one fills in server, port, security and sign-in.'],
         ['Send using', 'SMTP, Gmail API, Microsoft Graph, or a provider API key.'],
         ['From address / From name / Reply to', 'Used when the message does not set its own.'],
         ['Server / Port / Security', 'Only for the SMTP transport.'],
@@ -1222,6 +1311,9 @@ def build_template_guide():
              '<p>Anyone with the <code>.EXE</code> has it. For anything you would not '
              'publish, leave it blank and let the setup window store it &mdash; that '
              'path puts it through DPAPI for the Windows user.</p>'))
+
+    add(note('note', 'The setup window is where a second account is made',
+             '<p>Above its tabs it carries <b>Account:</b> &mdash; a drop list of everything stored, with <b>Load</b> and <b>Remove</b> &mdash; and <b>Save as:</b> underneath. Type a name nothing has used yet, press Save, and that is a second account with its own provider and key. The one you last loaded is the one the program opens with.</p>'))
 
     add(h3('global-signin', 'Sign-in'))
     add(p('The OAuth2 application and the API keys. <b>Client ID</b> is the desktop '
@@ -1393,6 +1485,18 @@ def build_template_guide():
              'add it never names its symbols. If you had the tab switched on in '
              'v1.03, insert this extension and put the object name back &mdash; what '
              'the old tab stored is simply ignored.</p>'))
+    add(note('tip', 'The templates now say so themselves',
+             '<p>A window generates before the global module does, so the '
+             '<b>Mail account button</b> cannot tell, at the moment it writes '
+             '<code>MailApi.Manage(1)</code>, whether anything will declare '
+             '<code>MailApi</code>. It records what it needs; the global extension '
+             'checks once the whole application is known.</p>'
+             '<p>So from v1.07, a button or an embed that calls the provider API in '
+             'an application carrying no <b>Provider API</b> extension stops '
+             'generation with one plain line naming the procedure &mdash; instead of '
+             'a handful of <code>Unknown function label</code> and '
+             '<code>Field not found: SUPPORTS</code> errors on generated code you '
+             'never wrote.</p>'))
     add(table(['Prompt', 'What it does'], [
         ['Object name', 'What to call it. <code>MailApi</code> unless you have a '
          'reason &mdash; the control and code templates default to that name too.'],

@@ -1,5 +1,7 @@
 /* ============================================================================
  *  d2grid.c - a grid drawn with Direct2D and DirectWrite, for Clarion.
+ *  v1.25 - it ships with the BrowseGrid template of the same number, and the
+ *  two are versioned together because the template declares every export here.
  *
  *  WHY. Clarion's LIST is drawn by the runtime and looks it. This draws every
  *  pixel itself into an ordinary Clarion REGION - which owns a real HWND, like
@@ -86,6 +88,16 @@ typedef struct { int type; PIXFMT pf; float dpiX, dpiY;
                  int usage; int minLevel; }          RTPROPS;
 typedef struct { HWND hwnd; SIZEU size; int present; } HRTPROPS;
 
+/* DrawText does NOT clip to the rectangle it is given. That rectangle says
+   where to LAY the text out, not where to keep it: a value wider than its
+   column is drawn straight over the columns to its right, and a heading too
+   long for its own column lands on the next one. Asking for CLIP is what
+   makes the rectangle mean what it looks like it means.
+   Cut rather than an ellipsis on purpose: trimming needs a sign object and
+   another vtable slot taken on trust, and the whole value is a hover away
+   in the tooltip. */
+#define D2D_CLIPTEXT 2       /* D2D1_DRAW_TEXT_OPTIONS_CLIP */
+
 #define DXGI_B8G8R8A8_UNORM  87
 #define ALPHA_IGNORE          3
 #define FACTORY_SINGLE        0
@@ -109,9 +121,12 @@ typedef struct { HWND hwnd; SIZEU size; int present; } HRTPROPS;
 typedef HRESULT (WINAPI *PFN_D2D1CreateFactory)(int, const GUID*, const void*, void**);
 typedef HRESULT (WINAPI *PFN_DWriteCreateFactory)(int, const GUID*, void**);
 
-#define G_MAX      8            /* grids at once                              */
-#define G_COLS    32            /* columns                                    */
-#define G_VIS     96            /* visible rows the Clarion side pushes in     */
+#define G_MAX     16            /* grids at once                              */
+#define G_COLS    64            /* columns                                    */
+/* A CEILING, not a reservation. The rows on screen are asked for when the
+   shape is known, so this only says where a bug stops being a bug and starts
+   being a request for a gigabyte. Nothing is reserved for rows nobody has.  */
+#define G_MAXROWS 512           /* visible rows the Clarion side may push in  */
 #define G_TEXT   128            /* characters per cell. Long enough to be worth
                                    wrapping: at 64 a cell was cut at 63
                                    characters before it ever reached
@@ -144,7 +159,40 @@ typedef struct {
     int   scrollY;              /* pixels the page is nudged UP by; 0..rowH-1
                                    is a part-row at the top, which is what
                                    makes scrolling smooth rather than jumpy   */
-    char  cell[G_VIS][G_COLS][G_TEXT];
+    /* The rows on screen, one string per cell. This is the only thing in a
+       Grid big enough to be worth ASKING for rather than reserving: at a
+       fixed 96 rows by 32 columns it was 393 KB per grid, times every slot,
+       or 3,5 MB of an executable that had not drawn a pixel yet - and an
+       application with no grid at all paid all of it. Asked for once the
+       shape is known, a typical grid - forty rows of a dozen columns - takes
+       61 KB, and a grid nobody opened takes nothing.
+       Indexed by hand rather than declared [rows][cols] because the column
+       count is not known until the LIST has been read, and a stride only
+       fixed at run time cannot be spelled in a C declaration. */
+    char* cells;                /* rowCap * colCap * G_TEXT, or 0           */
+    /* What ABC worked out for each cell: NormalFG NormalBG SelectedFG
+       SelectedBG, four to a cell. Asked for ONLY when a browse turns out to
+       have conditional colours at all, which most do not - sixteen bytes a
+       cell against the text's hundred and twenty-eight, and no reason to
+       charge it to a grid that never uses one. A negative entry is ABC's own
+       COLOR:None: leave the row's colour alone. */
+    int*  cellCol;              /* rowCap * colCap * 4 ints, or 0           */
+    /* And the colours the FORMATTER put on a whole column, which are a
+       different thing from the conditional ones above: those come out of the
+       queue and change row by row, these are set once in the window and hold
+       for the column. Cheap enough to keep for every column - four ints - and
+       read once per column instead of once per cell. -1 is 'none' here too. */
+    int   colCheck[G_COLS];     /* draw a tick box instead of the text?     */
+    /* A row of totals along the bottom. Asked for like the cells and for the
+       same reason: one string per column is small, but a grid that never
+       shows totals should not carry it. footH is 0 when there is no footer,
+       and everything below reads that as 'there is no footer'. */
+    int   footH;
+    char* footTxt;              /* footCap * G_TEXT, or 0                   */
+    int   footCap;              /* the column count it was asked for        */
+    int   colFg[G_COLS], colBg[G_COLS];
+    int   colSFg[G_COLS], colSBg[G_COLS];
+    int   rowCap, colCap;       /* what was actually asked for and granted  */
 
     unsigned int cBack, cBand, cGrid, cText, cHdrBack, cHdrText, cSelBack, cSelText;
 
@@ -208,6 +256,12 @@ typedef struct {
     int   wrapLines;            /* how many lines a cell is allowed         */
 } Grid;
 
+/* Where cell (row, col) lives. The stride is colCap, NOT cols: the block
+   keeps its shape when a column is hidden and the count drops. */
+#define CELL(c,r,k) ((c)->cells + (((r) * (c)->colCap + (k)) * G_TEXT))
+#define CELLCOL(c,r,k) ((c)->cellCol + (((r) * (c)->colCap + (k)) * 4))
+#define FOOT(c,k)      ((c)->footTxt + ((k) * G_TEXT))
+
 #define D2G_BARW 15
 
 static Grid  g_g[G_MAX + 1];
@@ -220,10 +274,14 @@ static long WINAPI d2g_WndProc(HWND h, UINT msg, UINT wp, long lp);
 /* How tall a row and a heading are for a given point size. Leading has to grow
    WITH the type, not sit at a fixed number of pixels above it: pt + 10 is
    roomy at 9 point and cramped at 24, where the descenders start being cut off
-   by the row below. Three halves and a bit keeps the same look all the way up,
-   and lands on the same numbers as the old rule at the default size, so
-   nothing moves for anyone who never touches it. */
-#define D2G_ROWFOR(pt) ((pt) * 3 / 2 + 6)
+   by the row below.
+   These numbers went UP when the point-to-DIP bug above was fixed. The old
+   rule - three halves and a bit - was tuned by eye against type that was a
+   quarter too small, so it was right for the wrong reason: the rows fitted
+   because the letters were undersized. At the true size a nine point line
+   wants about fifteen pixels, so the row is a shade under twice the point
+   size plus a little air. */
+#define D2G_ROWFOR(pt) ((pt) * 9 / 5 + 5)
 /* A record is as tall as its format needs times as many lines as a wrapped
    cell is allowed. Every row is the same height either way - variable-height
    rows would take the page size, the hit testing and the scrolling with them,
@@ -235,7 +293,7 @@ static long WINAPI d2g_WndProc(HWND h, UINT msg, UINT wp, long lp);
    more; a grouped record has been told exactly how many it wants. */
 #define D2G_ROWH(c) (D2G_ROWFOR((c)->pt) * (c)->lines *                        \
                      (((c)->lines > 1) ? 1 : (c)->wrapLines))
-#define D2G_HDRFOR(pt) ((pt) * 3 / 2 + 8)
+#define D2G_HDRFOR(pt) ((pt) * 9 / 5 + 7)
 static void d2g_VGeom(Grid* c, int* top, int* len, int* tTop, int* tLen);
 static void d2g_HGeom(Grid* c, int* left, int* len, int* tLeft, int* tLen);
 static int  barThick(Grid* c);
@@ -254,6 +312,16 @@ static void glyph(Grid* c, unsigned short ch, float l, float t, float r, float b
 #define D2G_G_DESC  0x25BC      /* ...and pointing down                */
 #define D2G_G_FILT  0xE71C      /* the funnel, out of Windows' own icon font */
 #define D2G_BTNW 15         /* the drop-down box on a heading, as Excel draws it */
+/* A column too narrow to hold the drop-down does not get one. Drawn anyway it
+   covers its own heading and spills onto the neighbour's, which is what a
+   tick box column looked like. The menu is not lost with it: a right-click
+   on the heading still opens it.
+   IN PIXELS. Widths arrive here doubled - the LIST keeps them in dialog
+   units and the Clarion side hands over wid * 2 - so this is the twenty
+   units the developer sees in the formatter, not twenty pixels. Written as
+   twenty it read true for a ten unit column and changed nothing at all. */
+#define D2G_BTNMIN 40
+#define BTNON(c,col) ((c)->btns && (c)->colW[col] >= D2G_BTNMIN)
 
 /* ---- the two factories --------------------------------------------------- */
 static int d2g_Factories(void) {
@@ -287,6 +355,75 @@ static int d2g_Factories(void) {
     return 1;
 }
 
+/* Grow the cell block to hold rows x cols. GROWS ONLY - a browse paging back
+   and forth would otherwise free and allocate on every fill - and the old
+   contents are dropped rather than copied, because changing the column count
+   changes the stride, and the Clarion side rewrites every visible cell on
+   every fill regardless. Returns 0 if Windows refused, and the caller then
+   draws fewer rows rather than writing where it must not. */
+/* -1 is 'nothing said here', which is what ABC means by COLOR:None. It has to
+   be written in rather than left at the zero LocalAlloc gives, because zero
+   is a colour: black. */
+static void unsetAll(int* p, long n) {
+    long i;
+    for (i = 0; i < n; i++) p[i] = -1;
+}
+
+/* The colour block exists only from the first coloured cell onwards. */
+static int ensureColours(Grid* c) {
+    long n;
+    if (c->cellCol) return 1;
+    if (!c->cells)  return 0;
+    n = (long)c->rowCap * (long)c->colCap * 4L;
+    c->cellCol = (int*)LocalAlloc(LPTR, n * (long)sizeof(int));
+    if (!c->cellCol) return 0;
+    unsetAll(c->cellCol, n);
+    return 1;
+}
+
+/* The footer is indexed by COLUMN and by nothing else, so it follows the
+   column count and not the shape of the cell block. Tying it to the cells -
+   which is what this did - meant every fill that needed one more row threw
+   the totals away, and since they are only written when the set changes they
+   never came back. The band was there, empty, for good. */
+static int ensureFoot(Grid* c) {
+    long n;
+    if (c->colCap < 1) return 0;
+    if (c->footTxt && c->footCap == c->colCap) return 1;
+    if (c->footTxt) LocalFree(c->footTxt);
+    n = (long)c->colCap * (long)G_TEXT;
+    c->footTxt = (char*)LocalAlloc(LPTR, n);
+    c->footCap = c->footTxt ? c->colCap : 0;
+    return c->footTxt ? 1 : 0;
+}
+
+static int ensureCells(Grid* c, int rows, int cols) {
+    char* p;
+    long  need;
+    if (rows < 1) rows = 1;
+    if (cols < 1) cols = 1;
+    if (rows > G_MAXROWS) rows = G_MAXROWS;
+    if (cols > G_COLS)    cols = G_COLS;
+    if (c->cells && rows <= c->rowCap && cols <= c->colCap) return 1;
+    if (rows < c->rowCap) rows = c->rowCap;
+    if (cols < c->colCap) cols = c->colCap;
+    need = (long)rows * (long)cols * (long)G_TEXT;
+    p = (char*)LocalAlloc(LPTR, need);
+    if (!p) return 0;
+    if (c->cells) LocalFree(c->cells);
+    c->cells  = p;
+    c->rowCap = rows;
+    c->colCap = cols;
+    /* The colours are indexed with the same stride, so they cannot outlive a
+       change of shape. Dropped, not copied: the next fill writes them again. */
+    if (c->cellCol) {
+        LocalFree(c->cellCol);
+        c->cellCol = 0;
+        ensureColours(c);
+    }
+    return 1;
+}
+
 static Grid* slot(int h) {
     if (h < 1 || h > G_MAX || !g_g[h].used) return 0;
     return &g_g[h];
@@ -298,6 +435,14 @@ static void wide(const char* src, WCHAR* dst, int cap) {
 }
 
 /* one text format (a font) */
+/* POINTS ARE NOT PIXELS. DirectWrite sizes a format in DIPs, and this render
+   target is built at 96 DPI, so a DIP is a pixel. A point is 1/72 inch and a
+   pixel here is 1/96, so nine POINTS is twelve pixels - and handing the point
+   size straight to CreateTextFormat drew everything at three quarters of the
+   size that was asked for. Same font, same number in the prompt, visibly
+   smaller than the rest of the application. */
+#define D2G_PT2DIP(pt) ((pt) * 96.0f / 72.0f)
+
 static void* d2g_Font(const char* face, float size, int bold) {
     WCHAR wf[64], wl[8];
     void* fmt = 0;
@@ -308,7 +453,7 @@ static void* d2g_Font(const char* face, float size, int bold) {
     if (((HRESULT (WINAPI*)(void*, const WCHAR*, void*, int, int, int, float,
                             const WCHAR*, void**))VT(g_dw)[15])
         (g_dw, wf, 0, bold ? FONT_BOLD : FONT_NORMAL, STYLE_NORMAL,
-         STRETCH_NORMAL, size, wl, &fmt) < 0) return 0;
+         STRETCH_NORMAL, D2G_PT2DIP(size), wl, &fmt) < 0) return 0;
     /* down the middle of the row, and one line only */
     ((HRESULT (WINAPI*)(void*, int))VT(fmt)[4])(fmt, DW_PARA_CENTER);
     ((HRESULT (WINAPI*)(void*, int))VT(fmt)[5])(fmt, DW_NO_WRAP);
@@ -360,6 +505,27 @@ static void fillRect(Grid* c, float l, float t, float r, float b, unsigned int r
     ((void (WINAPI*)(void*, const RECTF*, void*))VT(c->rt)[17])(c->rt, &rc, c->brush);
 }
 
+/* The colours ABC worked out for this cell, if it worked any out. Paints the
+   cell's own background first when there is one, and gives back the colour to
+   draw the text in - the row's own when this cell has nothing to say. */
+static unsigned int cellColour(Grid* c, int row, int col, int sel,
+                               unsigned int rowFore,
+                               float l, float t, float r, float b) {
+    int* p;
+    int  fg = -1, bg = -1;
+    /* The cell has the last word, the column speaks if the cell did not, and
+       the row is what is left. */
+    if (c->cellCol) {
+        p  = CELLCOL(c, row, col);
+        fg = sel ? p[2] : p[0];
+        bg = sel ? p[3] : p[1];
+    }
+    if (fg < 0) fg = sel ? c->colSFg[col] : c->colFg[col];
+    if (bg < 0) bg = sel ? c->colSBg[col] : c->colBg[col];
+    if (bg >= 0) fillRect(c, l, t, r, b, (unsigned int)bg);
+    return (fg >= 0) ? (unsigned int)fg : rowFore;
+}
+
 static void line(Grid* c, float x1, float y1, float x2, float y2, unsigned int rgb) {
     setColour(c, rgb);
     /* DrawLine - slot 15. Two POINT_2F by value = four floats on the stack. */
@@ -381,7 +547,7 @@ static void glyph(Grid* c, unsigned short ch, float l, float t, float r, float b
     ((HRESULT (WINAPI*)(void*, int))VT(fmt)[3])(fmt, DW_CENTER);
     ((HRESULT (WINAPI*)(void*, int))VT(fmt)[5])(fmt, DW_NO_WRAP);
     ((void (WINAPI*)(void*, const WCHAR*, unsigned, void*, const RECTF*, void*, int, int))
-     VT(c->rt)[27])(c->rt, w, 1, fmt, &rc, c->brush, 0, 0);
+     VT(c->rt)[27])(c->rt, w, 1, fmt, &rc, c->brush, D2D_CLIPTEXT, 0);
 }
 
 static void text(Grid* c, const char* s, float l, float t, float r, float b,
@@ -404,7 +570,48 @@ static void text(Grid* c, const char* s, float l, float t, float r, float b,
        the same reason: it is a field assignment, not work. */
     ((HRESULT (WINAPI*)(void*, int))VT(fmt)[5])(fmt, wrap ? DW_WRAP : DW_NO_WRAP);
     ((void (WINAPI*)(void*, const WCHAR*, unsigned, void*, const RECTF*, void*, int, int))
-     VT(c->rt)[27])(c->rt, w, (unsigned)n, fmt, &rc, c->brush, 0, 0);
+     VT(c->rt)[27])(c->rt, w, (unsigned)n, fmt, &rc, c->brush, D2D_CLIPTEXT, 0);
+}
+
+/* A tick box drawn rather than fetched. Clarion's own is a pair of icons,
+   ~BoxOff.ico and ~BoxOn.ico, and honouring those literally would mean
+   teaching this file to read .ico files - WIC, another set of interfaces
+   declared by hand - for two shapes that are a square and a tick. Drawn here
+   they also grow with the row instead of staying sixteen pixels while the
+   type gets bigger around them.
+   Which icon means ticked is decided on the Clarion side, where the icon
+   list's names can be read; by the time it arrives the cell holds '1' or
+   '0' and there is nothing left to interpret. */
+static void checkBox(Grid* c, int row, int col, float l, float t, float r,
+                     float b, unsigned int rgb) {
+    const char* s = CELL(c, row, col);
+    int   on = (s && s[0] == '1');
+    float sz = (b - t) * 0.55f;
+    float cx, cy, x0, y0, x1, y1;
+    if (sz <  7.0f) sz =  7.0f;
+    if (sz > 20.0f) sz = 20.0f;
+    cx = (l + r) / 2.0f;  cy = (t + b) / 2.0f;
+    x0 = cx - sz / 2.0f;  y0 = cy - sz / 2.0f;
+    x1 = x0 + sz;         y1 = y0 + sz;
+    line(c, x0, y0, x1, y0, rgb);
+    line(c, x1, y0, x1, y1, rgb);
+    line(c, x1, y1, x0, y1, rgb);
+    line(c, x0, y1, x0, y0, rgb);
+    if (on) {
+        line(c, x0 + sz * 0.22f, cy, cx - sz * 0.04f, y1 - sz * 0.24f, rgb);
+        line(c, cx - sz * 0.04f, y1 - sz * 0.24f, x1 - sz * 0.16f, y0 + sz * 0.24f, rgb);
+    }
+}
+
+/* One cell: its colour worked out, then either a tick box or its text. The
+   three places that draw a cell - scrolling, frozen, and frozen inside a
+   group - all come through here, so the padding is in one place. */
+static void cellOut(Grid* c, int row, int col, int sel, unsigned int rowFore,
+                    float l, float t, float r, float b, int align) {
+    unsigned int fore = cellColour(c, row, col, sel, rowFore, l, t, r, b);
+    if (c->colCheck[col]) { checkBox(c, row, col, l, t, r, b, fore); return; }
+    text(c, CELL(c, row, col), l + 4.0f, t + 1.0f, r - 4.0f, b,
+         fore, align, c->fmt, c->wrap);
 }
 
 /* ---- the paint -----------------------------------------------------------
@@ -424,6 +631,7 @@ static void d2g_Draw(Grid* c) {
     barW = c->vBar ? barTakes(c) : 0;
     r.right  -= barW;                      /* the columns stop at the scrollbar */
     r.bottom -= c->hBar ? barTakes(c) : 0; /* and the rows stop above one       */
+    r.bottom -= c->footH;                  /* and above the totals, if there are */
 
     lineH = (c->lines > 1) ? (c->rowH / c->lines) : c->rowH;
     frozenW = 0;
@@ -481,8 +689,8 @@ static void d2g_Draw(Grid* c) {
             }
             cr = cl + c->colW[col];
             if ((c->grps || col >= c->frozen) && cr > (float)frozenW && cl < (float)r.right)
-                text(c, c->cell[i][col], cl + 4.0f, ty + 1.0f, cr - 4.0f, tb,
-                     fore, c->colAlign[col], c->fmt, c->wrap);
+                cellOut(c, i, col, absRow == c->selRow, fore,
+                        cl, ty, cr, tb, c->colAlign[col]);
             x += c->colW[col];
         }
         ((void (WINAPI*)(void*))VT(c->rt)[46])(c->rt);
@@ -497,15 +705,17 @@ static void d2g_Draw(Grid* c) {
                     float ty;
                     if (c->colGrp[col] >= c->frozen) continue;
                     ty = top + (float)(c->colLine[col] * lineH);
-                    text(c, c->cell[i][col], (float)c->colX[col] + 4.0f, ty + 1.0f,
-                         (float)(c->colX[col] + c->colW[col]) - 4.0f, ty + (float)lineH,
-                         fore, c->colAlign[col], c->fmt, c->wrap);
+                    cellOut(c, i, col, absRow == c->selRow, fore,
+                            (float)c->colX[col], ty,
+                            (float)(c->colX[col] + c->colW[col]), ty + (float)lineH,
+                            c->colAlign[col]);
                 }
             } else {
                 fx = 0;
                 for (col = 0; col < c->frozen && col < c->cols; col++) {
-                    text(c, c->cell[i][col], (float)fx + 4.0f, top + 1.0f,
-                         (float)(fx + c->colW[col]) - 4.0f, bot, fore, c->colAlign[col], c->fmt, c->wrap);
+                    cellOut(c, i, col, absRow == c->selRow, fore,
+                            (float)fx, top, (float)(fx + c->colW[col]), bot,
+                            c->colAlign[col]);
                     fx += c->colW[col];
                 }
             }
@@ -578,11 +788,12 @@ static void d2g_Draw(Grid* c) {
         cl = (float)x;
         cr = cl + c->colW[col];
         if (col >= c->frozen && cr > (float)frozenW && cl < (float)r.right) {
-            float bw = c->btns ? (float)(D2G_BTNW + 4) : 0.0f;
-            float tr = cr - bw - ((!c->btns && col == c->sortCol) ? 14.0f : 4.0f);
+            int   bon = BTNON(c, col);
+            float bw = bon ? (float)(D2G_BTNW + 4) : 0.0f;
+            float tr = cr - bw - ((!bon && col == c->sortCol) ? 14.0f : 4.0f);
             text(c, c->colTitle[col], cl + 4.0f, 2.0f, tr, (float)c->hdrH,
                  c->cHdrText, c->colAlign[col], c->fmtHdr, 0);
-            if (c->btns)
+            if (bon)
                 filterBtn(c, cr, (float)(c->hdrH / 2), c->cHdrText,
                           c->colFilt[col] ? c->cSelBack : c->cHdrBack,
                           (col == c->sortCol) ? c->sortDir : 0,
@@ -620,11 +831,12 @@ static void d2g_Draw(Grid* c) {
         for (col = 0; col < c->frozen && col < c->cols && !c->grps; col++) {
             float cre = (float)(fx + c->colW[col]);
             {
-                float bw = c->btns ? (float)(D2G_BTNW + 4) : 0.0f;
+                int   bon = BTNON(c, col);
+                float bw = bon ? (float)(D2G_BTNW + 4) : 0.0f;
                 text(c, c->colTitle[col], (float)fx + 4.0f, 2.0f,
-                     cre - bw - ((!c->btns && col == c->sortCol) ? 14.0f : 4.0f), (float)c->hdrH,
+                     cre - bw - ((!bon && col == c->sortCol) ? 14.0f : 4.0f), (float)c->hdrH,
                      c->cHdrText, c->colAlign[col], c->fmtHdr, 0);
-                if (c->btns)
+                if (bon)
                     filterBtn(c, cre, (float)(c->hdrH / 2), c->cHdrText,
                               c->colFilt[col] ? c->cSelBack : c->cHdrBack,
                               (col == c->sortCol) ? c->sortDir : 0,
@@ -640,6 +852,43 @@ static void d2g_Draw(Grid* c) {
         line(c, (float)frozenW - 0.5f, 0.0f, (float)frozenW - 0.5f, (float)r.bottom, c->cGrid);
     }
     line(c, 0.0f, (float)c->hdrH - 0.5f, (float)r.right, (float)c->hdrH - 0.5f, c->cGrid);
+
+    /* ---- the row of totals, along the bottom -----------------------------
+       Laid out from the same numbers as the header - same widths, same frozen
+       block, same sideways offset - because a total that does not sit under
+       its column is worse than no total at all. Grouped formats are left
+       alone: there a column is not a column but a field somewhere inside a
+       record, and there is no single line along the bottom that means
+       anything. */
+    if (c->footH > 0 && c->footTxt && !c->grps) {
+        float ft = (float)r.bottom;
+        float fb = ft + (float)c->footH;
+        fillRect(c, 0.0f, ft, (float)r.right, fb, c->cHdrBack);
+        line(c, 0.0f, ft + 0.5f, (float)r.right, ft + 0.5f, c->cGrid);
+        clip.l = (float)frozenW; clip.t = ft;
+        clip.r = (float)r.right; clip.b = fb;
+        ((void (WINAPI*)(void*, const RECTF*, int))VT(c->rt)[45])(c->rt, &clip, AA_ALIASED);
+        x = -c->scrollX;
+        for (col = 0; col < c->cols; col++) {
+            cl = (float)x;
+            cr = cl + c->colW[col];
+            if (col >= c->frozen && cr > (float)frozenW && cl < (float)r.right)
+                text(c, FOOT(c, col), cl + 4.0f, ft + 1.0f, cr - 4.0f, fb,
+                     c->cHdrText, c->colAlign[col], c->fmtHdr, 0);
+            x += c->colW[col];
+        }
+        ((void (WINAPI*)(void*))VT(c->rt)[46])(c->rt);
+        if (c->frozen > 0) {
+            fillRect(c, 0.0f, ft + 1.0f, (float)frozenW, fb, c->cHdrBack);
+            fx = 0;
+            for (col = 0; col < c->frozen && col < c->cols; col++) {
+                text(c, FOOT(c, col), (float)fx + 4.0f, ft + 1.0f,
+                     (float)(fx + c->colW[col]) - 4.0f, fb,
+                     c->cHdrText, c->colAlign[col], c->fmtHdr, 0);
+                fx += c->colW[col];
+            }
+        }
+    }
 
     /* ---- the scrollbars, drawn last so nothing paints over them ---------
        An overlay is drawn ON TOP of the rows rather than beside them, so it
@@ -707,6 +956,12 @@ int d2g_Attach(void* hwnd, const char* face, int pt) {
     if (i > G_MAX) return 0;
     c = &g_g[i];
     c->used = 1; c->hwnd = (HWND)hwnd; c->rt = 0; c->brush = 0;
+    c->cells = 0; c->rowCap = 0; c->colCap = 0; c->cellCol = 0;
+    c->footH = 0; c->footTxt = 0; c->footCap = 0;
+    { int k; for (k = 0; k < G_COLS; k++) {
+        c->colCheck[k] = 0;
+        c->colFg[k] = -1; c->colBg[k] = -1;
+        c->colSFg[k] = -1; c->colSBg[k] = -1; } }
     c->sortCol = -1; c->sortDir = 1;
     { int k; for (k = 0; k < G_COLS; k++) c->colFilt[k] = 0; }
     c->grps = 0; c->lines = 1; c->wrapLines = 1; c->btns = 0;
@@ -744,6 +999,11 @@ void d2g_Detach(int h) {
     if (c->fmt)    ((unsigned long (WINAPI*)(void*))VT(c->fmt)[2])(c->fmt);
     if (c->fmtHdr) ((unsigned long (WINAPI*)(void*))VT(c->fmtHdr)[2])(c->fmtHdr);
     if (c->rt)     ((unsigned long (WINAPI*)(void*))VT(c->rt)[2])(c->rt);
+    if (c->cells)   LocalFree(c->cells);
+    if (c->cellCol) LocalFree(c->cellCol);
+    if (c->footTxt) LocalFree(c->footTxt);
+    c->cells = 0; c->rowCap = 0; c->colCap = 0; c->cellCol = 0;
+    c->footH = 0; c->footTxt = 0; c->footCap = 0;
     c->used = 0; c->hwnd = 0; c->rt = 0; c->brush = 0;
 }
 
@@ -753,6 +1013,7 @@ void d2g_Columns(int h, int n) {
     if (!c) return;
     if (n < 0) n = 0;
     if (n > G_COLS) n = G_COLS;
+    if (n > 0 && !ensureCells(c, c->rowCap, n) && n > c->colCap) n = c->colCap;
     c->cols = n;
 }
 
@@ -760,6 +1021,15 @@ void d2g_Column(int h, int col, int width, int align, const char* title) {
     Grid* c = slot(h);
     int i;
     if (!c || col < 0 || col >= G_COLS) return;
+    /* Anything ELSE said about this column starts again from nothing here.
+       Not in d2g_Columns: that is called with the total AFTER the loop that
+       describes each one, so clearing there wiped every flag the loop had
+       just set - the tick boxes came out as their raw 1 and 0, and the
+       column colours quietly did nothing at all. Per column there is no
+       order to get wrong. */
+    c->colCheck[col] = 0;
+    c->colFg[col]  = -1; c->colBg[col]  = -1;
+    c->colSFg[col] = -1; c->colSBg[col] = -1;
     c->colW[col] = width < 8 ? 8 : width;
     c->colAlign[col] = align;
     for (i = 0; i < G_TEXT - 1 && title && title[i]; i++) c->colTitle[col][i] = title[i];
@@ -811,7 +1081,9 @@ void d2g_Page(int h, int firstRow, int rows) {
     Grid* c = slot(h);
     if (!c) return;
     if (rows < 0) rows = 0;
-    if (rows > G_VIS) rows = G_VIS;
+    if (rows > G_MAXROWS) rows = G_MAXROWS;
+    if (rows > 0) ensureCells(c, rows, c->cols);
+    if (rows > c->rowCap) rows = c->rowCap;   /* refused: draw what fits */
     c->firstRow = firstRow;
     c->visRows  = rows;
 }
@@ -819,9 +1091,12 @@ void d2g_Page(int h, int firstRow, int rows) {
 void d2g_Cell(int h, int visRow, int col, const char* s) {
     Grid* c = slot(h);
     int i;
-    if (!c || visRow < 0 || visRow >= G_VIS || col < 0 || col >= G_COLS) return;
-    for (i = 0; i < G_TEXT - 1 && s && s[i]; i++) c->cell[visRow][col][i] = s[i];
-    c->cell[visRow][col][i] = 0;
+    char* d;
+    if (!c || !c->cells) return;
+    if (visRow < 0 || visRow >= c->rowCap || col < 0 || col >= c->colCap) return;
+    d = CELL(c, visRow, col);
+    for (i = 0; i < G_TEXT - 1 && s && s[i]; i++) d[i] = s[i];
+    d[i] = 0;
 }
 
 void d2g_Repaint(int h) { Grid* c = slot(h); if (c) InvalidateRect(c->hwnd, 0, 0); }
@@ -833,6 +1108,58 @@ int d2g_PaintNow(int h) { Grid* c = slot(h); if (!c) return 0; d2g_Draw(c); retu
    scrollbar appearing or disappearing resizes the client area behind your
    back: hide the horizontal bar and the client grows by its height, and the
    strip it vacated is not covered by the render target until this has run. */
+/* The four colours ABC put in its queue for this cell. All four negative -
+   the row where no condition fired - says nothing, and deliberately does NOT
+   bring the colour block into existence: a browse whose conditions never fire
+   should not pay for a block full of -1. */
+/* The colours the formatter put on a whole column. -1 for any of them means
+   the column says nothing about it. */
+/* The footer is as tall as a row: it IS a row, in every way that matters to
+   the eye. Off is 0, which every reader of footH takes as 'no footer'. */
+void d2g_Footer(int h, int on) {
+    Grid* c = slot(h);
+    if (!c) return;
+    c->footH = on ? c->rowH : 0;
+    if (on) ensureFoot(c);
+}
+
+void d2g_FootCell(int h, int col, const char* s) {
+    Grid* c = slot(h);
+    char* d;
+    int   i;
+    if (!c || col < 0) return;
+    if (!ensureFoot(c)) return;
+    if (col >= c->footCap) return;
+    d = FOOT(c, col);
+    for (i = 0; i < G_TEXT - 1 && s && s[i]; i++) d[i] = s[i];
+    d[i] = 0;
+}
+
+void d2g_CheckCol(int h, int col, int on) {
+    Grid* c = slot(h);
+    if (!c || col < 0 || col >= G_COLS) return;
+    c->colCheck[col] = on ? 1 : 0;
+}
+
+void d2g_ColumnColour(int h, int col, int fg, int bg, int sfg, int sbg) {
+    Grid* c = slot(h);
+    if (!c || col < 0 || col >= G_COLS) return;
+    c->colFg[col]  = fg;  c->colBg[col]  = bg;
+    c->colSFg[col] = sfg; c->colSBg[col] = sbg;
+}
+
+void d2g_CellColour(int h, int visRow, int col, int nfg, int nbg, int sfg, int sbg) {
+    Grid* c = slot(h);
+    int*  p;
+    if (!c || !c->cells) return;
+    if (visRow < 0 || visRow >= c->rowCap || col < 0 || col >= c->colCap) return;
+    if (nfg < 0 && nbg < 0 && sfg < 0 && sbg < 0) {
+        if (!c->cellCol) return;
+    } else if (!ensureColours(c)) return;
+    p = CELLCOL(c, visRow, col);
+    p[0] = nfg; p[1] = nbg; p[2] = sfg; p[3] = sbg;
+}
+
 int d2g_Resize(int h) {
     Grid* c = slot(h);
     RECT  r;
@@ -882,14 +1209,33 @@ int d2g_PageSize(int h) {
     if (!c || !IsWindow(c->hwnd)) return 0;
     GetClientRect(c->hwnd, &r);
     if (c->rowH < 1) return 0;
-    return (int)((r.bottom - r.top - c->hdrH) / c->rowH);
+    /* The horizontal bar takes its height off the rows, exactly as d2g_Draw
+       does ("the rows stop above one"), as d2g_HitRow does when it decides a
+       point is in the footer, and as d2g_VGeom does when it measures the
+       trough. This was the one of the four that did not, and the Clarion side
+       sizes the browse through it: BG:Items asks how many rows fit and sets
+       the LIST line height so ABC loads that many. One too many meant the
+       last record was loaded, drawn, and then clipped away behind the bar -
+       selectable with the arrow key and impossible to see.
+       barTakes is 0 for the overlay style, which floats over the rows and
+       therefore takes nothing, so this costs that style nothing. */
+    return (int)((r.bottom - r.top - c->hdrH - c->footH
+                  - (c->hBar ? barTakes(c) : 0)) / c->rowH);
 }
 
 /* which row and column a point landed on; row is absolute, -1 for the header */
 int d2g_HitRow(int h, int y) {
     Grid* c = slot(h);
+    RECT  r;
     if (!c) return -1;
     if (y < c->hdrH) return -1;
+    /* The totals are not a record and cannot be clicked into one. Without
+       this the arithmetic below happily returns a row number for a point
+       inside the footer, and the browse would select whatever it landed on. */
+    if (c->footH > 0 && IsWindow(c->hwnd)) {
+        GetClientRect(c->hwnd, &r);
+        if (y >= r.bottom - c->footH - (c->hBar ? barTakes(c) : 0)) return -1;
+    }
     return c->firstRow + (int)((y - c->hdrH + c->scrollY) / c->rowH);
 }
 
@@ -1060,12 +1406,13 @@ int d2g_HitBtn(int h, int x, int y) {
     }
     for (col = 0; col < c->frozen && col < c->cols; col++) {
         fx += c->colW[col];
-        if (x >= fx - D2G_BTNW - 2 && x < fx - 2) return col;
+        if (BTNON(c, col) && x >= fx - D2G_BTNW - 2 && x < fx - 2) return col;
     }
     at = -c->scrollX;
     for (col = 0; col < c->cols; col++) {
         at += c->colW[col];
-        if (col >= c->frozen && at > fx && x >= at - D2G_BTNW - 2 && x < at - 2) return col;
+        if (col >= c->frozen && at > fx && BTNON(c, col)
+            && x >= at - D2G_BTNW - 2 && x < at - 2) return col;
     }
     return -1;
 }
@@ -1181,7 +1528,6 @@ void d2g_VBar(int h, int show, int pos, int pct) {
     c->vPct = pct < 4 ? 4 : (pct > 100 ? 100 : pct);
 }
 
-int d2g_VBarW(int h) { Grid* c = slot(h); return (c && c->vBar) ? barTakes(c) : 0; }
 
 /* where the trough runs, and where the thumb sits inside it */
 static void d2g_VGeom(Grid* c, int* top, int* len, int* tTop, int* tLen) {

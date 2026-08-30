@@ -29,6 +29,7 @@ i  LONG
   SELF.LineWidth = 2;  SELF.Smooth = 0
   SELF.Percent = 0
   SELF.ColorText = 1
+  SELF.FontName = ''; SELF.FontSize = 0; SELF.FontStyle = 0    ! the target's own type, until told otherwise
   SELF.Depth3D = 0;    SELF.DonutPct = 55; SELF.DonutText = ''
   SELF.HoleColor = COLOR:None
   SELF.StartAngle = 0
@@ -47,7 +48,10 @@ i  LONG
   LOOP i = 1 TO GraficaBarra:MaxSeries
     SELF.SeriesName[i] = ''
     SELF.SeriesColor[i] = COLOR:None
+    SELF.SeriesPlot[i] = Plot:Default
   END
+  SELF.ClearBars()                                           ! and the cells, so a local object cannot
+                                                             ! open with stack rubbish in NoVal
 
 GraficaBarraClass.ClearBars PROCEDURE()
 s  LONG
@@ -64,6 +68,11 @@ i  LONG
       SELF.SeriesValue[s,i] = 0
     END
   END
+  LOOP s = 1 TO GraficaBarra:MaxSeries                       ! every cell has a value again
+    LOOP i = 1 TO GraficaBarra:MaxBars
+      SELF.NoVal[s,i] = 0
+    END
+  END
 
 GraficaBarraClass.ClearAll PROCEDURE()
 i  LONG
@@ -73,6 +82,7 @@ i  LONG
   LOOP i = 1 TO GraficaBarra:MaxSeries
     SELF.SeriesName[i] = ''
     SELF.SeriesColor[i] = COLOR:None
+    SELF.SeriesPlot[i] = Plot:Default
   END
 
 GraficaBarraClass.AddBar PROCEDURE(STRING pLabel,REAL pValue,LONG pColor=-1)
@@ -83,13 +93,24 @@ GraficaBarraClass.AddBar PROCEDURE(STRING pLabel,REAL pValue,LONG pColor=-1)
   SELF.BarValue[SELF.NBars] = pValue
   SELF.BarColor[SELF.NBars] = pColor
 
-GraficaBarraClass.AddSeries PROCEDURE(STRING pName,LONG pColor=-1)
+GraficaBarraClass.AddSeries PROCEDURE(STRING pName,LONG pColor=-1,LONG pPlot=0)
   CODE
   IF SELF.NSeries >= GraficaBarra:MaxSeries THEN RETURN SELF.NSeries.
   SELF.NSeries += 1
   SELF.SeriesName[SELF.NSeries] = pName
   SELF.SeriesColor[SELF.NSeries] = pColor
+  SELF.SeriesPlot[SELF.NSeries] = pPlot                       ! Plot:Default = as ChartType says
   RETURN SELF.NSeries
+
+GraficaBarraClass.SetSeriesPlot PROCEDURE(LONG pSeries,LONG pPlot)
+  CODE
+  IF pSeries < 1 OR pSeries > GraficaBarra:MaxSeries THEN RETURN.
+  SELF.SeriesPlot[pSeries] = pPlot                           ! deliberately does NOT grow NSeries the
+                                                             ! way SetValue does: a series with no data
+                                                             ! has nothing to draw, so growing the count
+                                                             ! here would only buy an empty legend entry
+                                                             ! and an empty slot. A shape for a series
+                                                             ! that does not exist yet is simply kept.
 
 GraficaBarraClass.AddCat PROCEDURE(STRING pLabel,REAL v1,REAL v2=0,REAL v3=0,REAL v4=0,REAL v5=0,REAL v6=0,REAL v7=0,REAL v8=0)
 c  LONG
@@ -114,11 +135,30 @@ GraficaBarraClass.SetValue PROCEDURE(LONG pSeries,LONG pCat,REAL pValue)
   IF pSeries < 1 OR pSeries > GraficaBarra:MaxSeries THEN RETURN.
   IF pSeries > SELF.NSeries THEN SELF.NSeries = pSeries.
   IF pCat > SELF.NBars THEN SELF.NBars = pCat.
+  SELF.NoVal[pSeries,pCat] = 0                               ! giving it a value gives it back
   IF pSeries = 1
     SELF.BarValue[pCat] = pValue
   ELSE
     SELF.SeriesValue[pSeries-1,pCat] = pValue
   END
+
+!  A category the whole chart shows, that ONE series has nothing to say about.
+!  The bar is not drawn and the line BREAKS at it rather than diving to zero -
+!  a trend that must stop short of an average bar at the end of the row is the
+!  case that asks for it. Honoured by the bar and line painters; a stack, an
+!  area, a pie and a radar all read the cell as a plain zero.
+GraficaBarraClass.SetNoValue PROCEDURE(LONG pSeries,LONG pCat)
+  CODE
+  IF pCat < 1 OR pCat > GraficaBarra:MaxBars THEN RETURN.
+  IF pSeries < 1 OR pSeries > GraficaBarra:MaxSeries THEN RETURN.
+  SELF.NoVal[pSeries,pCat] = 1
+
+GraficaBarraClass.HasValue PROCEDURE(LONG pSeries,LONG pCat)
+  CODE
+  IF pCat < 1 OR pCat > GraficaBarra:MaxBars THEN RETURN 0.
+  IF pSeries < 1 OR pSeries > GraficaBarra:MaxSeries THEN RETURN 0.
+  IF SELF.NoVal[pSeries,pCat] = 1 THEN RETURN 0.
+  RETURN 1
 
 GraficaBarraClass.GetValue PROCEDURE(LONG pSeries,LONG pCat)
   CODE
@@ -174,6 +214,24 @@ f  REAL
   IF f <= 5 THEN RETURN 5 * m.
   RETURN 10 * m
 
+!  The gap between two gridlines, rounded UP to something a reader can add
+!  up in their head. 2.5 earns its rung here even though NiceMax does not
+!  have it: a step is divided into the axis, so 2.5 buys a tighter fit
+!  without ever printing an awkward number.
+GraficaBarraClass.NiceStep PROCEDURE(REAL v)
+m  REAL
+f  REAL
+  CODE
+  IF v <= 0 THEN RETURN 0.
+  m = 10 ^ INT(LOG10(v))
+  IF m > v THEN m = m / 10.                                  ! guard rounding on exact powers
+  f = v / m
+  IF f <= 1 THEN RETURN m.
+  IF f <= 2 THEN RETURN 2 * m.
+  IF f <= 2.5 THEN RETURN 2.5 * m.
+  IF f <= 5 THEN RETURN 5 * m.
+  RETURN 10 * m
+
 GraficaBarraClass.Palette PROCEDURE(LONG i)
 k  LONG
   CODE
@@ -208,6 +266,68 @@ GraficaBarraClass.SeriesCount PROCEDURE()
   IF SELF.NSeries < 1 THEN RETURN 1.
   IF SELF.NSeries > GraficaBarra:MaxSeries THEN RETURN GraficaBarra:MaxSeries.
   RETURN SELF.NSeries
+
+!  A COMBO is a chart whose series are not all drawn the same shape: bars for
+!  sales and a line for the trend, over the one value axis. It is not a chart
+!  TYPE - it is the chart type plus a per-series override, so every scale,
+!  grid, label and legend decision stays exactly where it was. Only the
+!  upright cartesian types can hold one: a stack has nothing to overlay, a
+!  horizontal bar chart has no vertical line painter, and a pie is not a
+!  cartesian chart at all.
+GraficaBarraClass.PlotOf PROCEDURE(LONG pSeries)
+  CODE
+  IF pSeries > 0 AND pSeries <= GraficaBarra:MaxSeries
+    CASE SELF.SeriesPlot[pSeries]
+    OF Plot:Bar OROF Plot:Line
+      RETURN SELF.SeriesPlot[pSeries]
+    END
+  END
+  CASE SELF.ChartType                                        ! Plot:Default: what the type says
+  OF Chart:Line OROF Chart:Scatter
+    RETURN Plot:Line
+  END
+  RETURN Plot:Bar
+
+GraficaBarraClass.IsCombo PROCEDURE()
+s  LONG
+  CODE
+  IF SELF.IsPie() OR SELF.IsStacked() OR SELF.IsHorizontal() THEN RETURN 0.
+  CASE SELF.ChartType
+  OF Chart:Column OROF Chart:Line OROF Chart:Scatter
+  ELSE
+    RETURN 0                                                 ! areas and radars keep their own painter
+  END
+  LOOP s = 1 TO SELF.SeriesCount()
+    CASE SELF.SeriesPlot[s]
+    OF Plot:Bar OROF Plot:Line
+      RETURN 1                                               ! at least one series was told its shape
+    END
+  END
+  RETURN 0
+
+GraficaBarraClass.BarSeriesCount PROCEDURE()
+s  LONG
+k  LONG
+  CODE
+  IF SELF.IsCombo() = 0 THEN RETURN SELF.SeriesCount().
+  k = 0
+  LOOP s = 1 TO SELF.SeriesCount()
+    IF SELF.PlotOf(s) = Plot:Bar THEN k += 1.
+  END
+  RETURN k
+
+GraficaBarraClass.BarSeriesIndex PROCEDURE(LONG pSeries)
+s  LONG
+k  LONG
+  CODE
+  IF SELF.IsCombo() = 0 THEN RETURN pSeries.                 ! no combo: the slot order IS the series order
+  k = 0
+  LOOP s = 1 TO SELF.SeriesCount()
+    IF SELF.PlotOf(s) <> Plot:Bar THEN CYCLE.
+    k += 1
+    IF s = pSeries THEN RETURN k.
+  END
+  RETURN 0                                                   ! a line: it takes no room in the slot
 
 GraficaBarraClass.IsStacked PROCEDURE()
   CODE
@@ -325,6 +445,20 @@ hf  LONG
     ELLIPSE(px - hf, py - hf, sz, sz, pColor)
   END
 
+GraficaBarraClass.LegendKey PROCEDURE(LONG px,LONG py,LONG pw,LONG pSeries,LONG pColor)
+  CODE
+  IF pSeries > 0 AND SELF.IsCombo() AND SELF.PlotOf(pSeries) = Plot:Line
+    SETPENWIDTH(SELF.LineWidth * SELF.zSc)                   ! a stroke, not a block, so the key shows
+    SETPENCOLOR(pColor)                                      ! which shape to look for on the plot
+    LINE(px, py + INT(pw/2), pw, 0)
+    SETPENWIDTH(SELF.zSc)
+    IF SELF.ShowMarkers = 1
+      SELF.Marker(px + INT(pw/2), py + INT(pw/2), pColor)
+    END
+  ELSE
+    SELF.FillBox(px, py, pw, pw, pColor)
+  END
+
 GraficaBarraClass.PolyStart PROCEDURE()
   CODE
   SELF.zNPoly = 0
@@ -365,6 +499,13 @@ GraficaBarraClass.VX PROCEDURE(REAL v)
 
 !=== Paint - set the stage, then hand over to the right painter =============
 GraficaBarraClass.Paint PROCEDURE(SIGNED pFeq,BYTE pWindowMode=0)
+oFont  CSTRING(64)                                           ! the type the target came with, so it can
+oSize  LONG                                                  ! be handed back untouched at the end
+oColor LONG
+oStyle LONG
+oChar  LONG
+fSwap  LONG                                                  ! 1 = this chart put its own type on
+pt     LONG                                                  ! points the layout is being measured for
 x      LONG
 y      LONG
 w      LONG
@@ -376,30 +517,61 @@ maxlen LONG
 totw   LONG
 avail  LONG
 rows   LONG
-dummy  LONG
 saved  LONG
 ex     LONG
 ey     LONG
 txt    STRING(64)
   CODE
-  GETPOSITION(pFeq, x, y, w, h)
   SELF.zFeq = pFeq
   SELF.zWin = pWindowMode
+  ! ---- the type ----------------------------------------------------------
+  !  SETFONT on the target is the WINDOW's font - there is no separate channel
+  !  for one control - so this chart's type goes on, the chart is drawn, and the
+  !  target's own type is handed back before Paint returns. Measured: twenty
+  !  swaps in a row move no control by a pixel and raise no EVENT:Sized, so the
+  !  window cannot be walked into a redraw loop by it.
+  SELF.zFont = ''; SELF.zFSize = 0; SELF.zFStyle = 0; SELF.zFChar = 0
+  fSwap = 0
+  IF SELF.ColorText = 1 OR SELF.FontName OR SELF.FontSize > 0 OR SELF.FontStyle > 0
+    oFont = ''; oSize = 0; oColor = 0; oStyle = 0; oChar = 0
+    GETFONT(0, oFont, oSize, oColor, oStyle, oChar)
+    SELF.zFont = oFont; SELF.zFSize = oSize
+    SELF.zFStyle = oStyle; SELF.zFChar = oChar
+    IF SELF.FontName THEN SELF.zFont = SELF.FontName.        ! each one overrides on its own, so a
+    IF SELF.FontSize > 0 THEN SELF.zFSize = SELF.FontSize.   ! size alone keeps the target's typeface
+    IF SELF.FontStyle > 0 THEN SELF.zFStyle = SELF.FontStyle.
+    IF SELF.zFont <> oFont OR SELF.zFSize <> oSize OR SELF.zFStyle <> oStyle
+      SETFONT(0, SELF.zFont, SELF.zFSize, oColor, SELF.zFStyle, SELF.zFChar)
+      fSwap = 1
+    END
+  END
+  !  MEASURE AFTER THE SWAP, never before. A dialog unit is a fraction of the
+  !  window's character cell, so changing the type changes the unit itself -
+  !  a rectangle read at 9 point and then drawn at 14 overflows its control,
+  !  and at 6 point it draws into a corner of it.
+  GETPOSITION(pFeq, x, y, w, h)
   ! ---- text metrics: dialog units on a window, 1/1000 inch on a report ----
+  !  The 4 x 9 and 62 x 130 pairs are what roughly a 9-point font measures, so
+  !  a chart that asked for a size scales them by it. Nothing is measured from
+  !  the real font: every label position on the chart comes off these two.
+  pt = 9
+  IF SELF.FontSize > 0 THEN pt = SELF.FontSize.
   IF SELF.TextW > 0
     SELF.zCW = SELF.TextW
   ELSIF pWindowMode
-    SELF.zCW = 4                                             ! a dialog unit is 1/4 of a char cell
+    SELF.zCW = INT(4 * pt / 9 + 0.5)                         ! a dialog unit is 1/4 of a char cell
   ELSE
-    SELF.zCW = 62                                            ! 9pt on a THOUS report: ~0.062 inch
+    SELF.zCW = INT(62 * pt / 9 + 0.5)                        ! 9pt on a THOUS report: ~0.062 inch
   END
+  IF SELF.zCW < 1 THEN SELF.zCW = 1.
   IF SELF.TextH > 0
     SELF.zCH = SELF.TextH
   ELSIF pWindowMode
-    SELF.zCH = 9
+    SELF.zCH = INT(9 * pt / 9 + 0.5)
   ELSE
-    SELF.zCH = 130
+    SELF.zCH = INT(130 * pt / 9 + 0.5)
   END
+  IF SELF.zCH < 1 THEN SELF.zCH = 1.
   SELF.zPad = INT(SELF.zCH / 4); IF SELF.zPad < 1 THEN SELF.zPad = 1.
   SELF.zSc = INT(SELF.zCH / 9);  IF SELF.zSc < 1 THEN SELF.zSc = 1.
   ! ---- wipe what was here before -----------------------------------------
@@ -418,12 +590,6 @@ txt    STRING(64)
     BLANK(ex, ey, x + w + SELF.zPad - ex, y + h + SELF.zPad - ey)
   END
   SELF.zX = x; SELF.zY = y; SELF.zW = w; SELF.zH = h
-  ! ---- remember the target's own font so text can be re-colored ----
-  SELF.zFont = ''; SELF.zFSize = 0; SELF.zFStyle = 0; SELF.zFChar = 0
-  dummy = 0
-  IF SELF.ColorText = 1
-    GETFONT(0, SELF.zFont, SELF.zFSize, dummy, SELF.zFStyle, SELF.zFChar)
-  END
   SELF.zLastColor = -2                                       ! nothing set yet
   SETPENWIDTH(SELF.zSc)
   SETPENSTYLE()
@@ -505,8 +671,10 @@ txt    STRING(64)
     SELF.PaintCartesian()
   END
   SELF.PaintLegend()
-  IF SELF.ColorText = 1 AND SELF.zFont                       ! hand the target back the font color it came with
-    SETFONT(0, SELF.zFont, SELF.zFSize, dummy, SELF.zFStyle, SELF.zFChar)
+  IF fSwap = 1                                               ! this chart's type off, the target's back on
+    SETFONT(0, oFont, oSize, oColor, oStyle, oChar)
+  ELSIF SELF.ColorText = 1 AND SELF.zFont                    ! only the color was ever changed: put it back
+    SETFONT(0, SELF.zFont, SELF.zFSize, oColor, SELF.zFStyle, SELF.zFChar)
   END
 
 GraficaBarraClass.Draw PROCEDURE(WINDOW pWin,SIGNED pImageFeq)
@@ -540,7 +708,9 @@ txt   STRING(64)
   n = SELF.NBars
   ns = SELF.SeriesCount()
   ! ---- value axis range ----
+  IF SELF.GridDivs < 1 THEN SELF.GridDivs = 1.               ! the scale is derived from it: guard first
   SELF.zLo = SELF.MinVal; SELF.zHi = SELF.MaxVal
+  SELF.zDivs = SELF.GridDivs
   IF SELF.ChartType = Chart:Stacked100
     SELF.zLo = 0; SELF.zHi = 100
   ELSIF SELF.AutoScale = 1
@@ -553,27 +723,41 @@ txt   STRING(64)
     ELSE
       LOOP i = 1 TO n
         LOOP s = 1 TO ns
+          IF SELF.HasValue(s, i) = 0 THEN CYCLE.             ! not drawn, so it cannot size the axis
           v = SELF.GetValue(s, i)
           IF v < dmin THEN dmin = v.
           IF v > dmax THEN dmax = v.
         END
       END
     END
-    IF dmax > 0 THEN SELF.zHi = SELF.NiceMax(dmax) ELSE SELF.zHi = 0.
-    IF dmin < 0 THEN SELF.zLo = -SELF.NiceMax(-dmin) ELSE SELF.zLo = 0.
-  END
-  IF SELF.zHi <= SELF.zLo THEN SELF.zHi = SELF.zLo + 1.
-  IF SELF.GridDivs < 1 THEN SELF.GridDivs = 1.
-  SELF.zDivs = SELF.GridDivs
-  IF SELF.zLo < 0 AND SELF.zHi > 0                           ! both signs: put ZERO on a gridline by
-    stp = SELF.NiceMax((SELF.zHi - SELF.zLo) / SELF.GridDivs) ! stepping in nice units from zero out
+    !  THE STEP FIRST, THE BOUNDS SECOND. Rounding the TOP up to the next
+    !  1/2/5 magnitude throws away most of the plot whenever the data sits
+    !  just above one: a maximum of 113 million against an axis of 200 million
+    !  draws every bar at half height. Sizing the step to the divisions and
+    !  then taking the first multiple of it past the data keeps the round
+    !  numbers on the axis AND the bars at full height - 113 million gets an
+    !  axis of 125 million. It also puts zero on a gridline for free, because
+    !  both ends are whole multiples of the one step, which is what the
+    !  mixed-sign case used to need a second pass to arrange.
+    stp = SELF.NiceStep((dmax - dmin) / SELF.GridDivs)
     IF stp > 0
-      SELF.zHi = stp * INT((SELF.zHi - 0.000001) / stp + 1)
-      SELF.zLo = -stp * INT((-SELF.zLo - 0.000001) / stp + 1)
-      SELF.zDivs = INT((SELF.zHi - SELF.zLo) / stp + 0.5)
-      IF SELF.zDivs < 1 THEN SELF.zDivs = 1.
+      IF dmax > 0
+        SELF.zHi = stp * INT((dmax - stp/1000000) / stp + 1)  ! relative epsilon: a maximum that is
+      ELSE                                                   ! already on a step must not buy another
+        SELF.zHi = 0
+      END
+      IF dmin < 0
+        SELF.zLo = -stp * INT((-dmin - stp/1000000) / stp + 1)
+      ELSE
+        SELF.zLo = 0
+      END
+      IF SELF.zHi > SELF.zLo                                 ! GridDivs is now a CEILING on the
+        SELF.zDivs = INT((SELF.zHi - SELF.zLo) / stp + 0.5)  ! gridlines, not an exact count: every
+        IF SELF.zDivs < 1 THEN SELF.zDivs = 1.               ! line has to land on a whole step
+      END
     END
   END
+  IF SELF.zHi <= SELF.zLo THEN SELF.zHi = SELF.zLo + 1.
   ! ---- room for the axis furniture, inside the content rectangle ----
   lw = 0
   IF SELF.ShowScale = 1
@@ -620,17 +804,24 @@ txt   STRING(64)
   SELF.PaintGrid()
   ! ---- the data ----
   IF n > 0
-    CASE SELF.ChartType
-    OF Chart:StackedCol OROF Chart:StackedBar OROF Chart:Stacked100
-      SELF.PaintStack()
-    OF Chart:Area OROF Chart:StackedArea
-      SELF.PaintArea()
-    OF Chart:Line OROF Chart:Scatter
-      LOOP s = 1 TO ns
-        SELF.PaintLine(s)
+    IF SELF.IsCombo()                                        ! bars first, then the lines OVER them -
+      SELF.PaintBars()                                       ! a trend line under its own columns is
+      LOOP s = 1 TO ns                                       ! a line nobody can see
+        IF SELF.PlotOf(s) = Plot:Line THEN SELF.PaintLine(s).
       END
     ELSE
-      SELF.PaintBars()
+      CASE SELF.ChartType
+      OF Chart:StackedCol OROF Chart:StackedBar OROF Chart:Stacked100
+        SELF.PaintStack()
+      OF Chart:Area OROF Chart:StackedArea
+        SELF.PaintArea()
+      OF Chart:Line OROF Chart:Scatter
+        LOOP s = 1 TO ns
+          SELF.PaintLine(s)
+        END
+      ELSE
+        SELF.PaintBars()
+      END
     END
   END
   ! ---- axis on top of the data ----
@@ -712,8 +903,10 @@ txt  STRING(64)
 GraficaBarraClass.PaintBars PROCEDURE()
 i     LONG
 s     LONG
+k     LONG
 n     LONG
 ns    LONG
+nb    LONG
 bx    LONG
 ry    LONG
 bw    LONG
@@ -732,6 +925,8 @@ txt   STRING(64)
   CODE
   n = SELF.NBars
   ns = SELF.SeriesCount()
+  nb = SELF.BarSeriesCount()                                 ! in a combo the line series take no slot,
+  IF nb < 1 THEN RETURN.                                     ! so the bars share the width between them
   IF SELF.IsHorizontal()
     slot = SELF.zPH / n
   ELSE
@@ -739,13 +934,17 @@ txt   STRING(64)
   END
   gap = slot * SELF.BarGapPct / 200                          ! half the gap each side of a slot
   band = slot - 2 * gap; IF band < 1 THEN band = 1.
-  one = band / ns                                            ! one series' bar inside the slot
+  one = band / nb                                            ! one series' bar inside the slot
   LOOP i = 1 TO n
     LOOP s = 1 TO ns
+      k = SELF.BarSeriesIndex(s)
+      IF k < 1 THEN CYCLE.                                   ! a line: PaintLine draws this one
+      IF SELF.HasValue(s, i) = 0 THEN CYCLE.                 ! nothing to say here: no bar, but the
+                                                             ! slot stays so the categories line up
       v = SELF.GetValue(s, i)
       c = SELF.ColorOf(s, i)
       IF SELF.IsHorizontal()
-        ry = INT(SELF.zPY + slot * (i-1) + gap + one * (s-1))
+        ry = INT(SELF.zPY + slot * (i-1) + gap + one * (k-1))
         bh = INT(one); IF bh < 1 THEN bh = 1.
         gp = SELF.VX(v)
         IF gp >= SELF.zZX
@@ -765,7 +964,7 @@ txt   STRING(64)
           SELF.TextAt(tx, ry + INT(bh/2) - INT(SELF.zCH/2), txt, SELF.TextColor)
         END
       ELSE
-        bx = INT(SELF.zPX + slot * (i-1) + gap + one * (s-1))
+        bx = INT(SELF.zPX + slot * (i-1) + gap + one * (k-1))
         bw = INT(one); IF bw < 1 THEN bw = 1.
         gp = SELF.VY(v)
         IF gp <= SELF.zZY
@@ -879,6 +1078,7 @@ txt   STRING(64)
 GraficaBarraClass.PaintLine PROCEDURE(LONG pSeries)
 i     LONG
 n     LONG
+run   LONG
 i0    LONG
 i3    LONG
 t8    LONG
@@ -913,11 +1113,15 @@ txt   STRING(64)
     SETPENWIDTH(SELF.LineWidth * SELF.zSc)
     SETPENCOLOR(c)
     IF SELF.Smooth = 1 AND n > 2                             ! Catmull-Rom through the points
-      lastx = INT(SELF.zPX + slot * 0.5)
-      lasty = SELF.VY(SELF.GetValue(pSeries, 1))
-      LOOP i = 1 TO n - 1
-        i0 = i - 1; IF i0 < 1 THEN i0 = 1.
-        i3 = i + 2; IF i3 > n THEN i3 = n.
+      LOOP i = 1 TO n - 1                                    ! one curve per segment, primed from its
+        IF SELF.HasValue(pSeries, i) = 0 THEN CYCLE.         ! own left end, so a gap simply skips a
+        IF SELF.HasValue(pSeries, i+1) = 0 THEN CYCLE.       ! segment and the curve breaks there
+        lastx = INT(SELF.zPX + slot * (i - 0.5))
+        lasty = SELF.VY(SELF.GetValue(pSeries, i))
+        i0 = i - 1; IF i0 < 1 THEN i0 = 1.                   ! the two control points fall back to the
+        IF SELF.HasValue(pSeries, i0) = 0 THEN i0 = i.       ! segment's own ends when the neighbour
+        i3 = i + 2; IF i3 > n THEN i3 = n.                   ! next door has nothing in it
+        IF SELF.HasValue(pSeries, i3) = 0 THEN i3 = i + 1.
         x0 = SELF.zPX + slot * (i0 - 0.5); y0 = SELF.VY(SELF.GetValue(pSeries, i0))
         x1 = SELF.zPX + slot * (i - 0.5);  y1 = SELF.VY(SELF.GetValue(pSeries, i))
         x2 = SELF.zPX + slot * (i + 0.5);  y2 = SELF.VY(SELF.GetValue(pSeries, i+1))
@@ -931,17 +1135,23 @@ txt   STRING(64)
         END
       END
     ELSE
+      run = 0                                                ! 0 = the next point starts a fresh run
       LOOP i = 1 TO n
+        IF SELF.HasValue(pSeries, i) = 0
+          run = 0                                            ! a gap: no segment across it, and the
+          CYCLE                                              ! point after it does not join back
+        END
         cx = INT(SELF.zPX + slot * (i - 0.5))
         cy = SELF.VY(SELF.GetValue(pSeries, i))
-        IF i > 1 THEN LINE(lastx, lasty, cx - lastx, cy - lasty).
-        lastx = cx; lasty = cy
+        IF run = 1 THEN LINE(lastx, lasty, cx - lastx, cy - lasty).
+        lastx = cx; lasty = cy; run = 1
       END
     END
     SETPENWIDTH(SELF.zSc)
   END
   ! ---- markers and values ----
   LOOP i = 1 TO n
+    IF SELF.HasValue(pSeries, i) = 0 THEN CYCLE.             ! no point, so no dot and no number
     cx = INT(SELF.zPX + slot * (i - 0.5))
     cy = SELF.VY(SELF.GetValue(pSeries, i))
     IF SELF.ShowMarkers = 1 OR SELF.ChartType = Chart:Scatter
@@ -1279,6 +1489,7 @@ txt   STRING(64)
 !=== legend =================================================================
 GraficaBarraClass.PaintLegend PROCEDURE()
 i      LONG
+k      LONG
 nitem  LONG
 sw     LONG
 lx     LONG
@@ -1303,11 +1514,11 @@ txt    STRING(64)
     LOOP i = 1 TO nitem
       IF ly + SELF.zCH > SELF.zY + SELF.zH THEN BREAK.
       IF SELF.IsPie()
-        txt = SELF.BarLabel[i]; c = SELF.ColorOf(1, i)
+        txt = SELF.BarLabel[i]; c = SELF.ColorOf(1, i); k = 0
       ELSE
-        txt = SELF.SeriesName[i]; c = SELF.ColorOf(i, 1)
+        txt = SELF.SeriesName[i]; c = SELF.ColorOf(i, 1); k = i
       END
-      SELF.FillBox(lx, ly + INT((SELF.zCH-sw)/2), sw, sw, c)
+      SELF.LegendKey(lx, ly + INT((SELF.zCH-sw)/2), sw, k, c)
       SELF.TextAt(lx + sw + SELF.zPad, ly, txt, SELF.TextColor)
       ly += SELF.zCH + SELF.zPad
     END
@@ -1321,9 +1532,9 @@ txt    STRING(64)
     lx = SELF.zX + SELF.zPad
     LOOP i = 1 TO nitem
       IF SELF.IsPie()
-        txt = SELF.BarLabel[i]; c = SELF.ColorOf(1, i)
+        txt = SELF.BarLabel[i]; c = SELF.ColorOf(1, i); k = 0
       ELSE
-        txt = SELF.SeriesName[i]; c = SELF.ColorOf(i, 1)
+        txt = SELF.SeriesName[i]; c = SELF.ColorOf(i, 1); k = i
       END
       itemw = sw + SELF.zPad + LEN(CLIP(txt)) * SELF.zCW + 2 * SELF.zCW
       IF lx + itemw > SELF.zX + SELF.zW - SELF.zPad AND lx > SELF.zX + SELF.zPad
@@ -1331,7 +1542,7 @@ txt    STRING(64)
         ly += SELF.zCH + SELF.zPad
         IF ly + SELF.zCH > SELF.zY + SELF.zH THEN BREAK.
       END
-      SELF.FillBox(lx, ly + INT((SELF.zCH-sw)/2), sw, sw, c)
+      SELF.LegendKey(lx, ly + INT((SELF.zCH-sw)/2), sw, k, c)
       SELF.TextAt(lx + sw + SELF.zPad, ly, txt, SELF.TextColor)
       lx += itemw
     END

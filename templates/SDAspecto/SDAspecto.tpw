@@ -1,0 +1,532 @@
+#EXTENSION(SDAspecto,'SDAspecto - Personalizacion visual de controles'),APPLICATION,DESCRIPTION('[SDAspecto] Aspecto visual - esquema ' & %SDAEsquema)
+#!-----------------------------------------------------------------------------
+#! Extension APPLICATION. Aplica a CADA ventana inyectando en el embed
+#! per-window %WindowManagerMethodCodeSection, igual que stabbwcs.tpw
+#! (SuperBrowse) - no hace falta extension local por procedure.
+#!
+#! Los modulos MEMBER nunca ven el tipo SDAspectoClass: solo llaman a las
+#! funciones globales SDAspectoApply() / SDAspectoReset(). Esqueleto multi-DLL
+#! tomado de cleansdw.tpw.
+#!
+#! NOTA: sin AT() en los prompts - no funcionan en Clarion 11.
+#!-----------------------------------------------------------------------------
+#SHEET
+  #TAB('General')
+    #DISPLAY('SDAspecto - Adrian E. Santarelli - SDigitales')
+    #DISPLAY('Version 3.06')
+    #DISPLAY('')
+    #PROMPT('Nombre del esquema:',@s40),%SDAEsquema,DEFAULT('SDigitales'),REQ
+    #PROMPT('Nombre de la instancia global:',@s40),%SDAObjName,DEFAULT('GLO_SDAspecto'),REQ
+    #DISPLAY('IMPORTANTE en multi-DLL: este nombre tiene que ser IDENTICO en')
+    #DISPLAY('todas las apps del sistema. La app duena de los globales declara')
+    #DISPLAY('la instancia y la exporta; el resto declara ese mismo nombre como')
+    #DISPLAY('EXTERNAL y la importa. Es una sola variable para todo el sistema.')
+    #DISPLAY('Si difiere en alguna app, el linker pide un simbolo inexistente.')
+    #DISPLAY('')
+    #PROMPT('Deshabilitar SDAspecto por completo',CHECK),%SDADisable,DEFAULT(0)
+    #PROMPT('Modo diagnostico',CHECK),%SDADiag,DEFAULT(0)
+    #DISPLAY('Muestra un cartel por ventana con las reglas cargadas, los')
+    #DISPLAY('botones encontrados, el texto con que se los compara y que')
+    #DISPLAY('regla matcheo cada uno. Apagar en produccion.')
+    #DISPLAY('')
+    #DISPLAY('VENTANAS REDIMENSIONABLES O MAXIMIZADAS: si una ventana usa el')
+    #DISPLAY('resizer de ABC, o tiene que arrancar maximizada, agregarle al')
+    #DISPLAY('procedimiento la extension "SDAspecto - Ventana redimensionable')
+    #DISPLAY('o maximizada". Va por procedimiento y no aca porque el resizer')
+    #DISPLAY('es de la ventana, no de la aplicacion.')
+  #ENDTAB
+#!-----------------------------------------------------------------------------
+  #TAB('Tipografia'),WHERE(%SDADisable=0)
+    #!-- Cada parametro puede ser literal o una variable/expresion del
+    #!-- programa. 'None' significa no tocar ese parametro.
+    #PROMPT('Aplicar tipografia',CHECK),%SDAFteActiva,DEFAULT(1)
+    #ENABLE(%SDAFteActiva=1)
+      #BOXED('Nombre de la fuente')
+        #PROMPT('Usar una variable',CHECK),%SDAFteNomVar,DEFAULT(0)
+        #ENABLE(%SDAFteNomVar=0)
+          #PROMPT('Nombre:',@s64),%SDAFteNombre,DEFAULT('Roboto Medium')
+        #ENDENABLE
+        #ENABLE(%SDAFteNomVar=1)
+          #PROMPT('Variable:',EXPR),%SDAFteNombreV
+        #ENDENABLE
+      #ENDBOXED
+      #BOXED('Tamano')
+        #PROMPT('Usar una variable',CHECK),%SDAFteTamVar,DEFAULT(0)
+        #ENABLE(%SDAFteTamVar=0)
+          #PROMPT('Tamano (-1 = no cambiar):',SPIN(@n-3,-1,72,1)),%SDAFteTamano,DEFAULT(9)
+        #ENDENABLE
+        #ENABLE(%SDAFteTamVar=1)
+          #PROMPT('Variable:',EXPR),%SDAFteTamanoV
+        #ENDENABLE
+      #ENDBOXED
+      #BOXED('Color de letra')
+        #PROMPT('Cambiar el color de letra',CHECK),%SDAFteUsaColor,DEFAULT(0)
+        #ENABLE(%SDAFteUsaColor=1)
+          #PROMPT('Usar una variable',CHECK),%SDAFteColVar,DEFAULT(0)
+          #ENABLE(%SDAFteColVar=0)
+            #PROMPT('Color:',COLOR),%SDAFteColor,DEFAULT(0)
+          #ENDENABLE
+          #ENABLE(%SDAFteColVar=1)
+            #PROMPT('Variable:',EXPR),%SDAFteColorV
+          #ENDENABLE
+        #ENDENABLE
+      #ENDBOXED
+      #BOXED('Estilo y juego de caracteres')
+        #PROMPT('Estilo:',DROP('None|Regular|Negrita|Cursiva|Negrita Cursiva')),%SDAFteEstilo,DEFAULT('None')
+        #PROMPT('Juego de caracteres:',DROP('None|Default|ANSI|Europa del Este|Cirilico|Griego|Turco|Baltico|Symbol|OEM')),%SDAFteCharset,DEFAULT('None')
+      #ENDBOXED
+      #BOXED('Alcance')
+        #PROMPT('Aplicar a la ventana',CHECK),%SDAFteAVentana,DEFAULT(1)
+        #PROMPT('Aplicar a los controles',CHECK),%SDAFteAControles,DEFAULT(1)
+      #ENDBOXED
+      #BOXED('Rescalado')
+        #PROMPT('Rescalar controles al cambiar la fuente',CHECK),%SDAResc,DEFAULT(1)
+        #ENABLE(%SDAResc=1)
+          #PROMPT('Rescalar tambien la ventana',CHECK),%SDARescVent,DEFAULT(1)
+          #ENABLE(%SDARescVent=1)
+            #PROMPT('Mantener la ventana centrada',CHECK),%SDARecentrar,DEFAULT(1)
+            #DISPLAY('Al crecer, la ventana se corre hacia abajo y a la')
+            #DISPLAY('derecha porque su esquina queda fija. Esto la mueve')
+            #DISPLAY('la mitad de lo que crecio, asi el centro no se mueve.')
+          #ENDENABLE
+        #ENDENABLE
+        #DISPLAY('Guarda la geometria en dialog units, aplica la fuente con')
+        #DISPLAY('SETFONT, fuerza el recalculo de la unidad y reescribe los')
+        #DISPLAY('mismos valores. Cada control parte de su geometria')
+        #DISPLAY('original, nunca de la actual.')
+        #DISPLAY('')
+        #DISPLAY('Incluye el alto de linea y los anchos de columna de las')
+        #DISPLAY('LIST y los COMBO.')
+      #ENDBOXED
+      #DISPLAY('')
+      #DISPLAY('Si hay otro template manejando la tipografia, conviene dejar')
+      #DISPLAY('esto apagado: dos rescalando la misma ventana se pisan.')
+    #ENDENABLE
+  #ENDTAB
+#!-----------------------------------------------------------------------------
+  #TAB('INI'),WHERE(%SDADisable=0)
+    #PROMPT('Recuperar la configuracion de un archivo INI',CHECK),%SDAUsaIni,DEFAULT(1)
+    #ENABLE(%SDAUsaIni=1)
+      #PROMPT('Archivo:',@s255),%SDAIniFile,DEFAULT('.\SDAspecto.ini')
+      #DISPLAY('Ruta relativa al ejecutable si empieza con .\')
+      #DISPLAY('')
+      #DISPLAY('El INI se lee DESPUES de aplicar lo configurado en este')
+      #DISPLAY('template, asi que lo pisa. Si el archivo no existe, o no')
+      #DISPLAY('trae alguna clave, queda lo de aca. O sea: el template es')
+      #DISPLAY('el valor de fabrica y el INI es la personalizacion.')
+      #DISPLAY('')
+      #DISPLAY('Para la ventana de configuracion hay tres funciones')
+      #DISPLAY('globales, visibles desde cualquier modulo:')
+      #DISPLAY('')
+      #DISPLAY('  SDAspectoCargar()   relee el INI')
+      #DISPLAY('  SDAspectoGuardar()  graba el estado actual al INI')
+      #DISPLAY('  SDAspectoApply()    reaplica a la ventana activa')
+      #DISPLAY('')
+      #DISPLAY('Los parametros se editan sobre la instancia global, por')
+      #DISPLAY('ejemplo:  GLO_SDAspecto.FuenteNombre = ''Segoe UI''')
+    #ENDENABLE
+  #ENDTAB
+#!-----------------------------------------------------------------------------
+  #TAB('Fijos'),WHERE(%SDADisable=0)
+    #!-- Ajustes que NO son reglas: se aplican siempre y por igual, como la
+    #!-- tipografia. Una regla los puede pisar en un control puntual.
+    #DISPLAY('Ajustes que se aplican SIEMPRE, sin condicion, igual que la')
+    #DISPLAY('tipografia. Las reglas corren despues y los pueden pisar.')
+    #DISPLAY('')
+    #BOXED('Alto minimo')
+      #PROMPT('Forzar alto minimo',CHECK),%SDAUsaAlto,DEFAULT(1)
+      #ENABLE(%SDAUsaAlto=1)
+        #PROMPT('Alto:',SPIN(@n3,0,50,1)),%SDAAltoMin,DEFAULT(9)
+        #DISPLAY('Se aplica a ENTRY, SPIN, CHECK, COMBO, LIST y BUTTON.')
+      #ENDENABLE
+    #ENDBOXED
+    #BOXED('Color de fondo por tipo de control')
+      #DISPLAY('Destildado = no se toca el color de ese tipo.')
+      #DISPLAY('')
+      #DISPLAY('GROUP no figura: no es una superficie rellenable. Para')
+      #DISPLAY('colorear el area de un grupo, poner un PANEL o REGION detras.')
+      #DISPLAY('')
+      #PROMPT('LIST',CHECK),%SDAUsaList,DEFAULT(1)
+      #ENABLE(%SDAUsaList=1)
+        #PROMPT('   Color:',COLOR),%SDAColList,DEFAULT(00F8F8F8h)
+      #ENDENABLE
+      #PROMPT('TAB',CHECK),%SDAUsaTab,DEFAULT(1)
+      #ENABLE(%SDAUsaTab=1)
+        #PROMPT('   Color:',COLOR),%SDAColTab,DEFAULT(00D8D8D8h)
+        #DISPLAY('   Requiere desactivar el estilo visual en el manifiesto')
+        #DISPLAY('   de la aplicacion; si no, Windows lo ignora.')
+      #ENDENABLE
+      #PROMPT('SHEET',CHECK),%SDAUsaSheet,DEFAULT(0)
+      #ENABLE(%SDAUsaSheet=1)
+        #PROMPT('   Color:',COLOR),%SDAColSheet,DEFAULT(00F0F0F0h)
+      #ENDENABLE
+      #PROMPT('PANEL',CHECK),%SDAUsaPanel,DEFAULT(0)
+      #ENABLE(%SDAUsaPanel=1)
+        #PROMPT('   Color:',COLOR),%SDAColPanel,DEFAULT(00F0F0F0h)
+      #ENDENABLE
+      #PROMPT('REGION',CHECK),%SDAUsaRegion,DEFAULT(0)
+      #ENABLE(%SDAUsaRegion=1)
+        #PROMPT('   Color:',COLOR),%SDAColRegion,DEFAULT(00F0F0F0h)
+      #ENDENABLE
+      #PROMPT('COMBO, DROPCOMBO y DROPLIST',CHECK),%SDAUsaCombo,DEFAULT(0)
+      #ENABLE(%SDAUsaCombo=1)
+        #PROMPT('   Color:',COLOR),%SDAColCombo,DEFAULT(00FFFFFFh)
+      #ENDENABLE
+      #PROMPT('OPTION',CHECK),%SDAUsaOption,DEFAULT(0)
+      #ENABLE(%SDAUsaOption=1)
+        #PROMPT('   Color:',COLOR),%SDAColOption,DEFAULT(00F4F4F4h)
+      #ENDENABLE
+      #PROMPT('SPIN',CHECK),%SDAUsaSpin,DEFAULT(0)
+      #ENABLE(%SDAUsaSpin=1)
+        #PROMPT('   Color:',COLOR),%SDAColSpin,DEFAULT(00FFFFFFh)
+      #ENDENABLE
+      #PROMPT('TEXT',CHECK),%SDAUsaText,DEFAULT(1)
+      #ENABLE(%SDAUsaText=1)
+        #PROMPT('   Color:',COLOR),%SDAColText,DEFAULT(00FDF1F7h)
+      #ENDENABLE
+    #ENDBOXED
+  #ENDTAB
+#ENDSHEET
+#!-----------------------------------------------------------------------------
+#! Mapa global: prototipos visibles para TODOS los modulos, incluidos los
+#! MEMBER. En DLLs satelite se importan desde la DLL raiz.
+#!-----------------------------------------------------------------------------
+#AT(%GlobalMap),PRIORITY(4000),WHERE(%SDADisable=0)
+  #IF(%DefaultExternal = 'None External')
+SDAspectoApply()
+SDAspectoReset()
+SDAspectoTakeEvent()
+SDAspectoCargar(),BYTE,PROC
+SDAspectoGuardar(),BYTE,PROC
+  #ELSE
+MODULE('')
+SDAspectoApply(),DLL
+SDAspectoReset(),DLL
+SDAspectoTakeEvent(),DLL
+SDAspectoCargar(),BYTE,PROC,DLL
+SDAspectoGuardar(),BYTE,PROC,DLL
+END
+  #ENDIF
+#ENDAT
+#!-----------------------------------------------------------------------------
+#! El INCLUDE va en TODAS las apps: trae las equates (SDAspecto:EventoRefresh
+#! lo usa el embed de Init de cada ventana) y el tipo, que al ser ,TYPE no
+#! genera nada por si solo.
+#!
+#! La INSTANCIA, en cambio, se declara SOLO en la app duena de los globales.
+#! Las satelites no la necesitan: sus ventanas solo llaman a las funciones
+#! globales. Declararla como EXTERNAL,DLL alli obligaria al linker a pedir los
+#! metodos de la clase exportados uno por uno, que es un problema que asi no
+#! existe.
+#!-----------------------------------------------------------------------------
+#AT(%GlobalData),WHERE(%SDADisable=0)
+INCLUDE('SDAspecto.INC'),ONCE
+  #IF(%DefaultExternal = 'None External')
+%SDAObjName     SDAspectoClass
+  #ELSE
+%SDAObjName     SDAspectoClass,EXTERNAL,DLL(dll_mode)
+  #ENDIF
+#ENDAT
+#!-----------------------------------------------------------------------------
+#AT(%DllExportList),WHERE(%SDADisable=0)
+  #IF(%DefaultExternal = 'None External' AND %ProgramExtension = 'DLL' AND %DefaultExport)
+SDAspectoApply@F                                                @?
+SDAspectoReset@F                                                @?
+SDAspectoTakeEvent@F                                            @?
+SDAspectoCargar@F                                               @?
+SDAspectoGuardar@F                                              @?
+$%SDAObjName                                                    @?
+;-- No hace falta exportar la clase: Clarion ya exporta automaticamente el
+;-- TYPE$, el VMT$ y los metodos de una instancia global. Hacerlo a mano
+;-- produce "Duplicate export name" en los 46 simbolos.
+  #ENDIF
+#ENDAT
+#!-----------------------------------------------------------------------------
+#AT(%ProgramProcedures),PRIORITY(5000),WHERE(%SDADisable=0 AND %DefaultExternal = 'None External')
+SDAspectoApply  PROCEDURE()
+  CODE
+  %SDAObjName.ApplyToWindow()
+
+SDAspectoReset  PROCEDURE()
+  CODE
+  %SDAObjName.ResetWindow()
+
+SDAspectoTakeEvent PROCEDURE()
+  CODE
+  %SDAObjName.TakeEvent()
+
+SDAspectoCargar PROCEDURE()
+  CODE
+  RETURN %SDAObjName.CargarIni()
+
+SDAspectoGuardar PROCEDURE()
+  CODE
+  RETURN %SDAObjName.GuardarIni()
+#ENDAT
+#!-----------------------------------------------------------------------------
+#! Carga del esquema. Se hace UNA sola vez al arranque; las ventanas despues
+#! solo recorren sus controles contra la queue en memoria.
+#!-----------------------------------------------------------------------------
+#AT(%ProgramSetup),PRIORITY(1000),WHERE(%SDADisable=0 AND %DefaultExternal = 'None External')
+!-- SDAspecto: carga del esquema '%SDAEsquema'
+%SDAObjName.Init('%SDAEsquema')
+%SDAObjName.Diagnostico = %SDADiag
+#!-- tipografia global -------------------------------------------------------
+#!-- Convencion: -1 / cadena vacia = no tocar ese parametro.
+  #IF(%SDAFteActiva)
+%SDAObjName.FuenteActiva     = 1
+    #IF(%SDAFteNomVar)
+%SDAObjName.FuenteNombre     = %SDAFteNombreV
+    #ELSE
+%SDAObjName.FuenteNombre     = '%SDAFteNombre'
+    #ENDIF
+    #IF(%SDAFteTamVar)
+%SDAObjName.FuenteTamano     = %SDAFteTamanoV
+    #ELSE
+%SDAObjName.FuenteTamano     = %SDAFteTamano
+    #ENDIF
+    #IF(%SDAFteUsaColor)
+      #IF(%SDAFteColVar)
+%SDAObjName.FuenteColor      = %SDAFteColorV
+      #ELSE
+%SDAObjName.FuenteColor      = %SDAFteColor
+      #ENDIF
+    #ELSE
+%SDAObjName.FuenteColor      = -1
+    #ENDIF
+    #CASE(%SDAFteEstilo)
+    #OF('Regular')
+%SDAObjName.FuenteEstilo     = FONT:regular
+    #OF('Negrita')
+%SDAObjName.FuenteEstilo     = FONT:bold
+    #OF('Cursiva')
+%SDAObjName.FuenteEstilo     = FONT:italic
+    #OF('Negrita Cursiva')
+%SDAObjName.FuenteEstilo     = FONT:bold + FONT:italic
+    #ELSE
+%SDAObjName.FuenteEstilo     = -1
+    #ENDCASE
+    #CASE(%SDAFteCharset)
+    #OF('Default')
+%SDAObjName.FuenteCharset    = CHARSET:default
+    #OF('ANSI')
+%SDAObjName.FuenteCharset    = CHARSET:ansi
+    #OF('Europa del Este')
+%SDAObjName.FuenteCharset    = CHARSET:easteurope
+    #OF('Cirilico')
+%SDAObjName.FuenteCharset    = CHARSET:cyrillic
+    #OF('Griego')
+%SDAObjName.FuenteCharset    = CHARSET:greek
+    #OF('Turco')
+%SDAObjName.FuenteCharset    = CHARSET:turkish
+    #OF('Baltico')
+%SDAObjName.FuenteCharset    = CHARSET:baltic
+    #OF('Symbol')
+%SDAObjName.FuenteCharset    = CHARSET:symbol
+    #OF('OEM')
+%SDAObjName.FuenteCharset    = CHARSET:oem
+    #ELSE
+%SDAObjName.FuenteCharset    = -1
+    #ENDCASE
+%SDAObjName.FuenteAVentana   = %SDAFteAVentana
+%SDAObjName.FuenteAControles = %SDAFteAControles
+%SDAObjName.RescalarActivo   = %SDAResc
+%SDAObjName.RescalarVentana  = %SDARescVent
+%SDAObjName.RecentrarVentana = %SDARecentrar
+  #ENDIF
+#!-- El modo de deteccion de obligatorios ya no se configura aca: la clase
+#!-- arranca en sdReq:Ambos y el INI lo puede cambiar. Es lo unico que tiene
+#!-- sentido con la convencion de que LIST y COMBO se marcan por color, ya
+#!-- que esos tipos no tienen atributo REQ.
+#!-- ajustes fijos ------------------------------------------------------------
+#!-- No son reglas: se aplican siempre, como la tipografia. Se setean ANTES de
+#!-- Arrancar(), asi el INI los puede pisar igual que al resto.
+  #IF(%SDAUsaAlto)
+%SDAObjName.AltoMinimo  = %SDAAltoMin
+  #ENDIF
+  #IF(%SDAUsaList)
+%SDAObjName.ColorList   = %SDAColList
+  #ENDIF
+  #IF(%SDAUsaTab)
+%SDAObjName.ColorTab    = %SDAColTab
+  #ENDIF
+  #IF(%SDAUsaSheet)
+%SDAObjName.ColorSheet  = %SDAColSheet
+  #ENDIF
+  #IF(%SDAUsaPanel)
+%SDAObjName.ColorPanel  = %SDAColPanel
+  #ENDIF
+  #IF(%SDAUsaRegion)
+%SDAObjName.ColorRegion = %SDAColRegion
+  #ENDIF
+  #IF(%SDAUsaCombo)
+%SDAObjName.ColorCombo  = %SDAColCombo
+  #ENDIF
+  #IF(%SDAUsaOption)
+%SDAObjName.ColorOption = %SDAColOption
+  #ENDIF
+  #IF(%SDAUsaSpin)
+%SDAObjName.ColorSpin   = %SDAColSpin
+  #ENDIF
+  #IF(%SDAUsaText)
+%SDAObjName.ColorText   = %SDAColText
+  #ENDIF
+#!-- reglas ------------------------------------------------------------------
+#!-- Las reglas son DATOS: viven en el INI y se editan desde la ventana de
+#!-- configuracion. Arrancar() intenta leer el archivo y, si no trajo reglas,
+#!-- arma el esquema de fabrica (CargarDefaults) y lo graba como punto de
+#!-- partida editable.
+  #IF(%SDAUsaIni)
+%SDAObjName.Arrancar('%SDAIniFile')
+  #ELSE
+%SDAObjName.CargarDefaults()
+  #ENDIF
+#ENDAT
+#!-----------------------------------------------------------------------------
+#AT(%ProgramEnd),WHERE(%SDADisable=0 AND %DefaultExternal = 'None External')
+%SDAObjName.Kill()
+#ENDAT
+#!-----------------------------------------------------------------------------
+#! Aplicacion en CADA ventana.
+#!
+#! PRIORITY(8600) es deliberado: corre tarde, despues de cualquier otro
+#! template que reaplique fuentes o mueva controles en el Init de la ventana.
+#! SdTpl.TPL corria en 8030 y por eso sus ajustes de alto se perdian.
+#!-----------------------------------------------------------------------------
+#AT(%WindowManagerMethodCodeSection,'Init','(),BYTE'),PRIORITY(8600),WHERE(%SDADisable=0)
+  #INSERT(%SDAVerExcluido)
+  #IF(NOT %SDAExcluido)
+SDAspectoApply()
+POST(SDAspecto:EventoRefresh)
+  #ENDIF
+#ENDAT
+#!-----------------------------------------------------------------------------
+#! Segunda pasada. En el Init todavia queda codigo de ABC por ejecutar
+#! (restauracion de la posicion de ventana desde el INI, inicializacion de
+#! resizers) que puede pisar la geometria que acabamos de fijar. Ese es el
+#! motivo de que la PRIMERA apertura se viera mal y la segunda bien.
+#! El evento se procesa cuando la ventana ya termino de armarse.
+#! PRIORITY(990) es el que usa stabbwcs.tpw para este mismo embed.
+#!-----------------------------------------------------------------------------
+#AT(%WindowManagerMethodCodeSection,'TakeEvent','(),BYTE'),PRIORITY(990),WHERE(%SDADisable=0)
+  #INSERT(%SDAVerExcluido)
+  #IF(NOT %SDAExcluido)
+SDAspectoTakeEvent()
+  #ENDIF
+#ENDAT
+#!-----------------------------------------------------------------------------
+#AT(%WindowManagerMethodCodeSection,'Kill','(),BYTE'),PRIORITY(8600),WHERE(%SDADisable=0)
+  #INSERT(%SDAVerExcluido)
+  #IF(NOT %SDAExcluido)
+SDAspectoReset()
+  #ENDIF
+#ENDAT
+#!#############################################################################
+#! EXTENSION DE PROCEDIMIENTO: excluir una ventana
+#!
+#! Se agrega a un procedure puntual (Extensions > Add > SDAspecto - Excluir).
+#! No genera codigo propio: su sola presencia hace que la extension global no
+#! emita nada en los embeds de esa ventana, asi que el procedimiento queda
+#! intacto. Es para ventanas especiales que no deben modificarse.
+#!#############################################################################
+#EXTENSION(SDAspectoExcluir,'SDAspecto - Excluir esta ventana'),PROCEDURE,DESCRIPTION('[SDAspecto] Esta ventana queda excluida')
+#DISPLAY('SDAspecto no va a tocar esta ventana.')
+#DISPLAY('')
+#DISPLAY('Ni colores, ni tipografia, ni rescalado, ni alto minimo.')
+#DISPLAY('Los controles quedan exactamente como los dejo el disenador.')
+#DISPLAY('')
+#DISPLAY('No hay nada que configurar: alcanza con que la extension este')
+#DISPLAY('agregada al procedimiento.')
+#!#############################################################################
+#! EXTENSION DE PROCEDIMIENTO: re-sincronizar el resizer de ABC
+#!
+#! Va por procedimiento y no en la extension global a proposito: el resizer es
+#! de la ventana, no de la aplicacion. Una opcion global obligaria a todo o
+#! nada, y en los procedimientos sin resizer el compilador protestaria por un
+#! objeto inexistente.
+#!
+#! Emite su propio codigo en PRIORITY(991), justo despues del
+#! SDAspectoTakeEvent() de la extension global (990), asi corre cuando la
+#! pasada diferida -la ultima que toca geometria- ya termino.
+#!#############################################################################
+#EXTENSION(SDAspectoResizer,'SDAspecto - Ventana redimensionable o maximizada'),PROCEDURE,DESCRIPTION('[SDAspecto] Ajustes de resize y maximizado')
+#DISPLAY('Para ventanas con el resizer de ABC, y/o que tengan que arrancar')
+#DISPLAY('maximizadas.')
+#DISPLAY('')
+#DISPLAY('EL ORDEN ES EL PROBLEMA. En el Init pasan tres cosas, en este orden:')
+#DISPLAY('')
+#DISPLAY('   8125  Resizer.Init toma su linea base: recorre los controles y')
+#DISPLAY('         guarda posicion y tamano de cada uno.')
+#DISPLAY('   8600  SDAspecto rescala por tipografia y los mueve a todos.')
+#DISPLAY('   dif.  Pasada diferida de SDAspecto, ya con la ventana armada.')
+#DISPLAY('')
+#DISPLAY('O sea que el resizer toma la foto ANTES del rescalado y le queda')
+#DISPLAY('una base que no corresponde. Peor todavia si la ventana se')
+#DISPLAY('maximiza en el Init: ahi el resizer guarda el tamano MAXIMIZADO')
+#DISPLAY('junto con las posiciones de diseno, se convence de que ese layout')
+#DISPLAY('chico es el que corresponde a la pantalla completa, y no esparce')
+#DISPLAY('nada nunca.')
+#DISPLAY('')
+#DISPLAY('Esta extension ordena las dos cosas al final de la pasada diferida.')
+#DISPLAY('')
+#PROMPT('Re-sincronizar el resizer de ABC',CHECK),%SDAResSync,DEFAULT(1)
+#ENABLE(%SDAResSync=1)
+  #PROMPT('Nombre del objeto resizer:',@s40),%SDAResObj,DEFAULT('Resizer'),REQ
+  #DISPLAY('   Llama a Reset() para que relea el layout ya rescalado como')
+  #DISPLAY('   nueva linea base. El nombre por defecto de ABC es Resizer;')
+  #DISPLAY('   se verifica en Local Objects del procedimiento.')
+#ENDENABLE
+#DISPLAY('')
+#PROMPT('Maximizar la ventana al terminar',CHECK),%SDAResMax,DEFAULT(0)
+#ENABLE(%SDAResMax=1)
+  #DISPLAY('   QUITAR del Init el PROP:Maximize propio. La ventana abre en')
+  #DISPLAY('   tamano normal, se rescala, el resizer toma su base buena, y')
+  #DISPLAY('   RECIEN AHI se maximiza. El resizer esparce los controles')
+  #DISPLAY('   partiendo de numeros correctos.')
+  #DISPLAY('   Maximizar en el Init es lo que rompe: pasa antes de que')
+  #DISPLAY('   ninguno de los dos haya terminado.')
+#ENDENABLE
+#DISPLAY('')
+#DISPLAY('Requiere que la extension global de SDAspecto este activa: usa el')
+#DISPLAY('equate SDAspecto:EventoRefresh, que llega con el INC.')
+#DISPLAY('')
+#DISPLAY('No tiene sentido junto con la extension de excluir: si la ventana')
+#DISPLAY('esta excluida, SDAspecto no le toca la geometria.')
+#AT(%WindowManagerMethodCodeSection,'TakeEvent','(),BYTE'),PRIORITY(991)
+!-- SDAspecto: la pasada diferida termino recien. Este es el primer momento en
+!-- que la geometria es la definitiva, asi que es donde tienen que ir tanto el
+!-- re-baseline del resizer como el maximizado.
+IF EVENT() = SDAspecto:EventoRefresh
+  #IF(%SDAResSync)
+  !-- Primero la linea base, con la ventana todavia en tamano normal: es la
+  !-- proporcion de diseno ya rescalada, que es contra la que el resizer tiene
+  !-- que calcular.
+  %SDAResObj.Reset()
+  #ENDIF
+  #IF(%SDAResMax)
+  !-- Y recien ahora maximizar. El EVENT:Maximized que dispara esto lo atiende
+  !-- el resizer, que esparce los controles desde la base de arriba.
+  0{PROP:Maximize} = TRUE
+  #ENDIF
+END
+#ENDAT
+#!#############################################################################
+#! GRUPOS
+#!
+#! Van al FINAL del archivo a proposito: un #GROUP no tiene terminador propio,
+#! corre hasta la siguiente declaracion de nivel superior. Si se lo pone en el
+#! medio, se traga todos los #AT que vengan despues.
+#!#############################################################################
+#! Deja en %SDAExcluido si el procedimiento actual tiene la extension
+#! SDAspectoExcluir. #FOR(%ActiveTemplate) recorre, en el contexto de un embed
+#! per-window, los templates activos de ESE procedimiento.
+#!-----------------------------------------------------------------------------
+#GROUP(%SDAVerExcluido)
+  #IF(NOT VAREXISTS(%SDAExcluido))
+    #DECLARE(%SDAExcluido)
+  #ENDIF
+  #SET(%SDAExcluido,0)
+  #FOR(%ActiveTemplate),WHERE(%ActiveTemplate = 'SDAspectoExcluir(SDAspecto)')
+    #SET(%SDAExcluido,1)
+    #BREAK
+  #ENDFOR

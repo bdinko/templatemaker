@@ -52,8 +52,8 @@
 #!  handler at all, so nothing would answer. The Legacy route is to set
 #!  <prefix>::SortOrder, set ForceRefresh = True and DO <prefix>::SelectSort.
 #!
-#!  REQUIRES d2grid.c (from the original repo) somewhere the compiler can find
-#!  it - the application folder, or a directory on the redirection path.
+#!  REQUIRES d2gridleg.c, which ships in this folder, somewhere the compiler
+#!  can find it - the app folder, or a directory on the redirection path.
 #!  Direct2D and DirectWrite are bound at run time with LoadLibrary, so there is
 #!  no import library and nothing to ship.
 #!-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@
       #DISPLAY('Draws a Legacy (CW20) browse with Direct2D instead of the')
       #DISPLAY('runtime LIST, without touching the browse underneath.')
       #DISPLAY('')
-      #DISPLAY('REQUIRES d2grid.c on the redirection path.')
+      #DISPLAY('REQUIRES d2gridleg.c on the redirection path.')
       #DISPLAY('Add this extension ONCE per application.')
     #ENDBOXED
     #BOXED('Options')
@@ -82,7 +82,7 @@
 #ENDSHEET
 #!-----------------------------------------------------------------------------
 #AT(%AfterGlobalIncludes),WHERE(%bglGDisable=0)
-  PRAGMA('compile(d2grid.c)')                                 ! the grid, built by Clarion's own C compiler
+  PRAGMA('compile(d2gridleg.c)')                              ! the grid, built by Clarion's own C compiler
 #IF(%bglGFilter)
 !  The criteria-filter class (Roberto's myFilter, unchanged - it is pure
 !  Clarion: its own WINDOW, its own ACCEPT, no ABC anywhere). The LINK()
@@ -134,8 +134,8 @@ BGL:LastG            LONG                                     ! which grid it ha
 #AT(%GlobalMap),WHERE(%bglGDisable=0)
 #!  cdecl exports from C, so the Clarion name carries a leading underscore.
 #!  Only the subset this proof of concept calls is declared; the rest of
-#!  d2grid.c is still compiled, simply not prototyped here.
-    MODULE('d2grid.c')
+#!  d2gridleg.c is still compiled, simply not prototyped here.
+    MODULE('d2gridleg.c')
 d2g_Available(),LONG,NAME('_d2g_Available')
 d2g_Attach(LONG hwnd,*CSTRING face,LONG pt),LONG,RAW,NAME('_d2g_Attach')
 d2g_Detach(LONG h),NAME('_d2g_Detach')

@@ -115,8 +115,15 @@ templates/                      # ready-to-register Clarion templates
     d2grid.c                    #     the grid: Direct2D + DirectWrite, bound at run time
   BrowseGridLeg/                #   the same grid for the Legacy (CW20) chain (see below)
     BrowseGridLeg.tpl           #     global + procedure extensions, search box, filter bar
-    d2grid.c                    #     the grid, plus filter buttons and drag-reorder
+    d2gridleg.c                 #     the grid, plus filter buttons and drag-reorder
     README.md                   #     what the port adds over the ABC original
+  SDAspecto/                    #   one look for every window: rules, type, rescaling
+                                #     (see below)
+    SDAspecto.inc               #     the class: rule queue, per-window state, prototypes
+    SDAspecto.clw               #     the engine: matching, painting, rescaling, the INI
+    SDAspecto.tpl               #     the chain file
+    SDAspecto.tpw               #     1 app extension + 2 procedure extensions
+    VentanaConfigAspecto.txa    #     a ready-made settings window to IMPORT (optional)
   weatherWidget/                #   a weather card when your program starts (see below)
     MyWeatherClass.inc          #     the widget (settings, the reading, EN/ES strings)
     MyWeatherClass.clw          #     the implementation (curl + JSON + the drawn card)
@@ -131,6 +138,9 @@ templates/                      # ready-to-register Clarion templates
     EmailApiClass.inc/.clw      #     the management API: blocked, stats, campaigns, the window
     emailc.c                    #     Winsock + SCHANNEL + WinHTTP + SHA-256 (Clacpp-compiled)
     emailTo.tpl                 #     3 app extensions + 3 buttons + 4 code templates
+    emailTo10.tpl               #     the same, prompts re-laid out for Clarion 10's
+                                #       480 px AppGen dialog - GENERATED, do not edit
+    Build-NarrowTpl.ps1         #     generates it, and fails if anything stops fitting
     EmailTables.txt             #     the settings-table structure, written out by hand
     emailToTables.dctx          #     the dictionary to IMPORT: 7 tables (Dictionary
                                 #       Editor > File > Import > DCTX/XML)
@@ -139,11 +149,27 @@ templates/                      # ready-to-register Clarion templates
     emailTo.zip                 #     all of the above, zipped for easy distribution
 designer/ClarionTplDesigner/    # WPF visual designer for the prompt UI (see below)
 installer/                      # builds the installer + a portable single-file exe
+  emailTo/                      #   and a stand-alone one for emailTo alone, Clarion 10+
 README.md
 ```
 
 ## Included templates
 
+**Jump to a template.** 29 of them; each links to its own section below.
+
+| | |
+|---|---|
+| **Mail** | [**emailTo**](#t-emailto) &nbsp;<sub>send e-mail, and manage the account: SMTP/TLS, OAuth2 and nine provider APIs</sub> |
+| **Charts & gauges** | [**graficaBarra**](#t-graficabarra) &nbsp;<sub>thirteen chart types on windows and reports (vector on PDF)</sub><br>[**myPie**](#t-mypie) &nbsp;<sub>pie chart on a window</sub><br>[**myGauge**](#t-mygauge) &nbsp;<sub>analog gauges/dials on windows and reports</sub><br>[**myGaugePlus**](#t-mygaugeplus) &nbsp;<sub>antialiased (GDI+) gauges/dials on windows</sub> |
+| **Images & codes** | [**myImage**](#t-myimage) &nbsp;<sub>twelve image formats in, nine out, every colour format</sub><br>[**allImageRead**](#t-allimageread) &nbsp;<sub>any picture, from anywhere, on a window or a report</sub><br>[**myQR**](#t-myqr) &nbsp;<sub>QR code into an image control</sub><br>[**myQRDraw**](#t-myqrdraw) &nbsp;<sub>offline QR code drawn with BOX primitives</sub><br>[**myBarcodeGen**](#t-mybarcodegen) &nbsp;<sub>nine barcode types, offline, drawn with BOX primitives</sub> |
+| **Browses & lists** | [**BrowseGrid**](#t-browsegrid) &nbsp;<sub>take over any ABC browse and draw it with Direct2D</sub><br>[**BrowseGridLeg**](#t-browsegridleg) &nbsp;<sub>the same grid for the Legacy (CW20) chain</sub><br>[**myFilter**](#t-myfilter) &nbsp;<sub>build filters for any browse</sub><br>[**myExport**](#t-myexport) &nbsp;<sub>export any browse or list to seven file formats</sub> |
+| **Beside a field** | [**myCalc**](#t-mycalc) &nbsp;<sub>a pop-up calculator beside any numeric field</sub><br>[**myCalendar**](#t-mycalendar) &nbsp;<sub>a pop-up date picker beside any date field</sub> |
+| **Files & data** | [**myCompress**](#t-mycompress) &nbsp;<sub>pure-Clarion compression (memory + files)</sub><br>[**myPdfSign**](#t-mypdfsign) &nbsp;<sub>read a signed PDF and see who signed it</sub> |
+| **Look & feel** | [**SDAspecto**](#t-sdaspecto) &nbsp;<sub>one look for every window: rules, typography and rescaling</sub><br>[**myFontChanger**](#t-myfontchanger) &nbsp;<sub>global + per-list font picker</sub><br>[**myBackground**](#t-mybackground) &nbsp;<sub>global default + per-window background color / image</sub><br>[**weatherWidget**](#t-weatherwidget) &nbsp;<sub>the weather, on a card at start-up</sub><br>[**my3D**](#t-my3d) &nbsp;<sub>real WebGL2 3D scenes driven from Clarion</sub><br>[**myYuru**](#t-myyuru) &nbsp;<sub>yuruyurau animated flow-field art on a window</sub> |
+| **Plumbing** | [**myFuncs**](#t-myfuncs) &nbsp;<sub>global function library</sub><br>[**myHook**](#t-myhook) &nbsp;<sub>intercept MESSAGE, STOP, HALT and run-time errors</sub> |
+| **Diagnostics** | [**myPixel**](#t-mypixel) &nbsp;<sub>per-window diagnostic pixel</sub><br>[**showLine**](#t-showline) &nbsp;<sub>Ctrl+Shift+P "where am I" hotkey</sub><br>[**identifier**](#t-identifier) &nbsp;<sub>Ctrl+Shift+I shows the procedure name</sub> |
+
+<a id="t-mypixel"></a>
 ### `templates/myPixel.tpl` — per-window diagnostic pixel
 A global (APPLICATION-scope) ABC extension that needs no per-procedure setup. On **every** procedure
 that owns a window it drops a tiny configurable REGION "pixel" in the top-left corner. Hovering it shows
@@ -157,6 +183,7 @@ lives in (app/EXE or DLL). Pressing **Ctrl+Shift+I** pops a message box with the
 - Register it like any template (see below), then add **myPixel - Diagnostic Pixel (Global)** under
   Global → Extensions.
 
+<a id="t-showline"></a>
 ### `templates/showLine.tpl` — Ctrl+Shift+P "where am I" hotkey
 A global (APPLICATION-scope) ABC extension that needs no per-procedure setup. On **every** windowed
 procedure it alerts **Ctrl+Shift+P**; pressing it pops a message telling you where you are: the
@@ -169,6 +196,7 @@ procedure it alerts **Ctrl+Shift+P**; pressing it pops a message telling you whe
   and `feq{PROP:Use}` to report the live focus. Local-only code — no globals, so no multi-DLL handling.
 - Register it, then add **showLine - Where-Am-I Hotkey (Global)** under Global → Extensions.
 
+<a id="t-identifier"></a>
 ### `templates/identifier.tpl` — Ctrl+Shift+I shows the procedure name
 A global (APPLICATION-scope) ABC extension, no per-procedure setup. It alerts **Ctrl+Shift+I** on every
 windowed procedure; pressing it pops a message box with the current **procedure name** (baked in at
@@ -176,6 +204,7 @@ generation time via `%Procedure`). Same proven injection as the other hotkey tem
 `CASE EVENT()` at the top of `WindowManager.TakeWindowEvent`). Register it and add **identifier - Show
 Procedure Name (Ctrl+Shift+I)** under Global → Extensions.
 
+<a id="t-myfuncs"></a>
 ### `templates/myFuncs/` — global function library
 A global (APPLICATION-scope) ABC extension that makes a growing set of utility **functions** callable
 from anywhere in the app, with no per-procedure setup and **no external source files**. The template
@@ -200,6 +229,7 @@ us  = weekNumberUS(myOrder:Date)! US week of the same date (can differ by one)
 Install: register `myFuncs.tpl`, then add **myFuncs - Global Function Library (Global)** under
 Global → Extensions, generate, and build. (No source files to copy — everything is generated.)
 
+<a id="t-mypie"></a>
 ### `templates/myPie/` — pie chart on a window
 Renders a pie chart into an IMAGE control using Clarion's built-in `PIE` graphics primitive (no external
 files). **Easiest path: a control template** — drag **myPie - Pie Chart** straight onto a window and it
@@ -238,6 +268,7 @@ Install: register `myPie.tpl`, then either drop **myPie - Pie Chart** from the c
 note:** the `myPieDraw` helper gained a leading `WINDOW` parameter, so **regenerate** any app built against
 the older one (a stale call shows as "No matching prototype available").
 
+<a id="t-myfontchanger"></a>
 ### `templates/myFontChanger/` — global + per-list font picker
 A single global (APPLICATION-scope) ABC extension, no per-procedure setup:
 - Applies a **default font** (name + size) to every browse/`LIST` control at window open.
@@ -255,6 +286,7 @@ The extension has a **General** tab (default font, size, INI name) and an **Inst
 Register it, add **myFontChanger - global per-list font picker** under Global → Extensions, set the
 default font + INI name, generate and build.
 
+<a id="t-mybackground"></a>
 ### `templates/myBackground/` — global default + per-window background color / image
 A single global (APPLICATION-scope) ABC extension, no per-procedure setup:
 - Gives **every window** a **global default background** — a solid **color** and/or an **image** — applied
@@ -276,6 +308,7 @@ INI name, generate and build. Full programmer's documentation (prompts, generate
 the `myBackApply`/`myBackChoose` helper API, and the runtime properties it uses) is in
 [`docs/myBackground-template.html`](docs/myBackground-template.html).
 
+<a id="t-myqr"></a>
 ### `templates/myQR/` — QR code into an image control
 A self-contained ABC **procedure** extension that renders a **QR code** into an `IMAGE` control on a window.
 The QR **value** can be a design-time **literal** (a quoted string) **or any Clarion variable/expression** you
@@ -296,6 +329,7 @@ pick a sized IMAGE control, set the value, generate and build. Full programmer's
 the literal-vs-code value, generated code, the `myQRLoad`/`myQRUrlEncode`/`myQRRefresh` API, the curl/
 CreateProcess download, and the privacy caveat) is in [`docs/myQR-template.html`](docs/myQR-template.html).
 
+<a id="t-myqrdraw"></a>
 ### `templates/myQRDraw/` — offline QR code drawn with BOX primitives
 The **offline** companion to myQR: instead of downloading a PNG, it carries a complete **QR encoder** and
 draws every module as a filled `BOX` into an `IMAGE` control — exactly the way myPie draws a pie. **No
@@ -326,6 +360,7 @@ field laptops, air-gapped networks, and reports that must render with zero exter
 when an internet round-trip is acceptable. Full programmer's documentation is in
 [`docs/myQRDraw-template.html`](docs/myQRDraw-template.html).
 
+<a id="t-mybarcodegen"></a>
 ### `templates/myBarcodeGen/` — nine barcode types, offline, drawn with BOX primitives
 A generalization of myQRDraw to **nine symbologies**: the **linear (1D)** codes **Code 39, Code 128**
 (auto Code B / Code C), **Interleaved 2 of 5, EAN-13, UPC-A**, and the **2D** codes **QR, Data Matrix,
@@ -343,6 +378,7 @@ the prime field GF(929), and GF(2^n) for Aztec). Full **developer's manual** (in
 symbology rules, drawing model, multi-DLL, troubleshooting) is in
 [`docs/myBarcodeGen-template.html`](docs/myBarcodeGen-template.html).
 
+<a id="t-myimage"></a>
 ### `templates/myImage/` — **twelve image formats in, nine out**, every colour format
 Read **BMP, GIF, JPEG, PNG, TIFF, ICO, EMF, WMF, TGA, PCX, PNM and QOI**; write **BMP, GIF, JPEG, PNG,
 TIFF, TGA, PCX, PNM and QOI**. Convert between **every colour format** — 32-bit ARGB, 24-bit RGB,
@@ -409,6 +445,7 @@ together, and troubleshooting — is in
 palette update, save it back out) and **ImgTest**, a headless harness that round-trips all nine writable
 formats and all eleven colour formats and writes the results to an INI.
 
+<a id="t-allimageread"></a>
 ### `templates/allImageRead/` — **any picture, from anywhere**, on a window or a report
 myImage is the engine; **allImageRead is the piece that puts a picture in front of the user**. One `.tpl`,
 no new class — it sits on top of `ImageClass` and answers the two questions a template cannot: *where does
@@ -472,6 +509,7 @@ the window title), the GPU canvas (it draws the test card into a run-time REGION
 [`docs/allImageRead-d2dcanvas.png`](docs/allImageRead-d2dcanvas.png)), and the 80x figure above. See
 [`examples/allImageRead/`](examples/allImageRead/).
 
+<a id="t-browsegrid"></a>
 ### `templates/BrowseGrid/` — **take over any ABC browse** and draw it with Direct2D
 A browse that does not look like 1995, **without touching the browse**. Drop the extension on a procedure,
 point it at the `LIST`, and the grid draws the rows instead: antialiased text through DirectWrite, banded
@@ -516,6 +554,52 @@ holding up. Mouse wheel scrolls, **Ctrl+wheel resizes the type** (6 to 32 point,
 line height following it), long text **wraps** onto up to four lines, and a diagnostics prompt puts what the
 grid is working from into the window title, because a browse that draws nothing looks identical whether the
 queue was empty, the rows were too tall, or the columns were never read.
+**What v1.24 adds.** A **totals row** that sums *every record the browse shows* &mdash; filter and range
+included, not the page on screen &mdash; with the columns to total proposed by their picture and corrected
+by the user from the Columns dialog. **Find text…**: a string, matched case-insensitively across this
+column or every column, numeric columns compared by value. A **check-box column**, drawn rather than
+loaded, recognised with no prompt at all from an icon column whose set is the standard
+`~BoxOff.ico`/`~BoxOn.ico` pair &mdash; so it scales with the row. **Conditional and fixed colours per
+column**, over the BrowseBox's own. **Double-click opens the record**, and a **tooltip** shows a value that
+does not fit its column. Typeface, size and the eight colours can each **come from a variable** so a global
+theme drives the grid, or from **[SDAspecto](#t-sdaspecto)**, in which case they are read from its global
+instance *at run time* &mdash; its prompts are only the factory default and its INI overrides them at
+start-up. Texts the end user sees are **English or Spanish**, per application or per grid; the AppGen
+prompts stay English either way. The queue and the browse object are now **deduced** rather than typed
+(`?Browse:5` → `Queue:5` → `BRW5`), and a wrong guess is a compile error rather than a grid that quietly
+fails to filter. Internals: static data down from **3.46 MB to 322 KB**, and the ceilings up to **64
+columns** and **16 grids**.
+
+**Auto-fit widths**, on the same menu: it sizes every visible column to the widest of its heading and
+its values. The heading counts — a column sized to its values alone truncates its own title, the one
+string on screen that never scrolls away. It measures in two passes and they are deliberately not the
+same pass: the loaded page is already in memory so **every cell of it is measured exactly**, while past
+the page there is no queue to read, only the view — and walking that means `EVALUATE` by field *name*
+rather than `WHAT` by field number, because what moves is the record buffer. That is the expensive
+call, so out there the longest text is kept **by character count** and only the winner is measured. The
+approximation is worth naming: in a proportional font ten `i`s are narrower than four `W`s. **With the
+look-ahead at 0 no file is touched.** A hidden column stays hidden, and widths are clamped to 16 and
+600 pixels.
+
+The prompts now live on **seven tabs** rather than four — the content had stopped fitting on screen —
+split by what things share rather than by size: *Heading menu* holds filtering and auto-fit together
+because both hang off the same tick.
+
+**What v1.25 fixes.** The page size counted one row too many whenever the horizontal scrollbar was
+showing. `d2g_PageSize` was the only one of the functions that measure the row area which did not take
+the bar off it, and the Clarion side sizes the browse through exactly that call &mdash; `BG:Items` asks how
+many rows fit and sets the `LIST` line height so ABC loads that many. One too many meant the last record
+was loaded, drawn, and then clipped away behind the bar: selectable with the arrow key and impossible to
+see. The **Overlay** style was never affected, because that bar floats over the rows and takes no height
+from anything.
+
+Measured on a real application: a fill costs **under 200 µs** — 1.2 % of a 60 Hz frame — and the generated
+code makes **three file accesses**, none of them on the drawing path. The one to know about is *Filter by
+value*, which scans the file sequentially in the foreground; it can be taken off the menu from the prompts.
+Full programmer's documentation — the four prompt tabs, the heading menu, the hooks your code may need, the
+measured limits and the diagnostics — is in
+[`docs/BrowseGrid-template.html`](docs/BrowseGrid-template.html).
+
 Requires `d2grid.c` on the redirection path. Verified: registers, generates **with every optional path
 switched on** — a generate only covers the prompts that are ticked, which is how a `CODE` without a `DATA`
 once shipped — and the generated source compiles and links against a copy of `School`. Behaviour is proved
@@ -524,6 +608,7 @@ concealment (`novis` — `winvis 1>0 | PROP:Hide 0>0 | recs 20`), group resizing
 (`proptest` — `PROP-PASS was 200,300,160,140 now 200,300,160,140`), and the row-height clamp
 (`GridTest grew=33 shrank=19`). See [`examples/BrowseGrid/`](examples/BrowseGrid/).
 
+<a id="t-browsegridleg"></a>
 ### `templates/BrowseGridLeg/` — the same grid for the **Legacy (CW20)** chain
 BrowseGrid ported to the Legacy template family, and grown up on the way. The browse engine underneath is
 untouched — file access, sort orders, range limits, locators and the update round-trip stay the generated
@@ -546,7 +631,7 @@ Double-click opens the Change form through the browse's own `AlertKey` machinery
 variable-height rows**: each row is measured with `CreateTextLayout` + `GetMetrics` and takes only the lines
 its own text needs, paging works from a conservative page size while fills push the measured optimum, and the last
 screen bottom-anchors at the final record the way a stock browse does.
-Needs `d2grid.c` on the redirection path, and `MyFilterClass.inc`/`.clw` from
+Needs `d2gridleg.c` on the redirection path, and `MyFilterClass.inc`/`.clw` from
 [`templates/myFilter/`](templates/myFilter) if you use the filter bar. Tested against Clarion 12 with the
 TopSpeed and SQLite drivers on browses of 5,000 and 10,000 records; the SQLite conversion notes (padded CHAR
 storage, the optimistic-concurrency WHERE clause, POSITION drift after a Change, error 37 from CLOSE on a
@@ -555,6 +640,7 @@ never-opened view) live as comments at the relevant spots in the template. See
 [the Legacy chain reference](skills/clarion-template/reference/legacy-cw20.md) for the porting rules it
 demonstrates.
 
+<a id="t-mygauge"></a>
 ### `templates/myGauge/` — analog gauges/dials on windows and reports
 A configurable **analog gauge** drawn entirely with native Clarion graphics (`ARC`, `ELLIPSE`, `LINE`,
 `POLYGON`, `SHOW`) into an `IMAGE` control — the same offline, no-dependency approach as myPie and myQRDraw.
@@ -575,6 +661,7 @@ on open/resize, optional animation, a generated `Refresh:<Object>` routine), and
 `GaugeClass.clw` (ANSI) to the redirection path. Full programmer's documentation — shapes, prompts, the class
 API, run-time control, and troubleshooting — is in [`docs/myGauge-template.html`](docs/myGauge-template.html).
 
+<a id="t-graficabarra"></a>
 ### `templates/graficaBarra/` — **thirteen chart types** on windows and reports (vector on PDF)
 **Column, horizontal Bar, Stacked column, Stacked bar, Stacked percent, Line, Area, Stacked area, Scatter,
 Pie, Pie 3D, Donut and Radar** — all drawn with native Clarion primitives (`BOX`, `LINE`, `POLYGON`,
@@ -583,15 +670,61 @@ ANSI class, **`GraficaBarraClass`**, holds the data (up to 48 categories × 8 se
 and the look, and renders itself; every chart is its **own local object**, so several per window or report
 just work. Pick the shape with one property — `Obj.ChartType = Chart:Donut`.
 
-![thirteen chart types](docs/graficaBarra-demo.png)
+![ChartDemo: pick a type from the list and watch it draw](docs/graficaBarra-demo.png)
 
-Highlights: automatic **"nice" scale** (max rounds up to 1/2/5×10ᵏ, and when the data crosses zero the axis
-steps in nice units so **zero lands on a gridline**) or a fixed `SetRange`; **negative values** hang below
+Highlights: automatic **"nice" scale** — the gap between two gridlines is sized to the data (1/2/2.5/5/10×10ᵏ)
+and the axis runs to the first whole step past it, so a maximum of 113,376,143 gets an axis of 125,000,000
+rather than 200,000,000, and **zero always lands on a gridline** — or a fixed `SetRange`; **negative values** hang below
 the baseline; **up to 4 series from the prompts** (8 from code) grouped, stacked or stacked-to-100; a
 **legend** bottom/top/right that wraps; markers (circle/square/diamond); **smooth** Catmull-Rom lines;
 values shown as numbers or **percentages**; category labels that thin themselves out rather than collide;
 a 12-color professional palette or explicit colors; optional painted background, plot area and bar/slice
 outlines. An empty data list draws **sample data suited to the chart type** — a built-in self-test.
+
+**All thirteen, six to a page.** The `ChartShots` demo paints six charts on one window — `ChartShots 1|2|3`
+— which is what the whole family looks like drawn by the same class, from the same data, with nothing but
+Clarion primitives. Every shot below is re-taken under v2.1, so the axes are the ones the current scale
+picks:
+
+![Column, horizontal bar, stacked column, stacked bar, 100% stacked and line](docs/graficaBarra-types1.png)
+
+*Page 1 — the bar family and the line.* **Column** and **Bar (horizontal)** off the same six values;
+**Stacked column** and **Stacked bar** with three series summing into one; **100% stacked**, where the same
+three series are re-cast as percentages and the axis is always 0–100; and **Line** with circle markers and
+its values called out.
+
+![Area, stacked area, scatter, pie, 3D pie and donut](docs/graficaBarra-types2.png)
+
+*Page 2 — areas and the round ones.* **Area** and **Stacked area** filled with `POLYGON`; **Scatter**, the
+line's markers with the line taken away; and **Pie**, **3D pie** and **Donut**, all three on Clarion's own
+`PIE` statement — the donut's hole carrying the total, and the slice name outside the ring with its value or
+percentage inside.
+
+![Radar, grouped columns with the legend at the right, negative values, smooth lines, two decimals and forty bars](docs/graficaBarra-types3.png)
+
+*Page 3 — the awkward cases.* **Radar** on a six-spoke web; **grouped columns** with the legend moved to the
+right; **negative values** hanging below a baseline that stays on a gridline; **smooth** two-series
+Catmull-Rom lines; a picture with **two decimals and no gridlines**; and **forty bars**, where the category
+labels thin themselves out to every third one rather than collide.
+
+**v2.1 adds the combo: bars and a line on the one chart.** A series can be told its own shape, whatever
+the chart type says — `Obj.SetSeriesPlot(2, Plot:Line)`, or the **Draw as** prompt on the Series tab —
+and the line is drawn **over** the bars, off the same value axis. Sales as columns, the trend as a line,
+which is the shape a Clarion `LIST` has never been able to give you. The line series **takes no room in
+the category slot**, so one bar series beside one line still draws full-width bars rather than squeezing
+them into half a slot for a series that is not drawn there, and the legend keys it with a line and its
+marker instead of a block. `Column`, `Line` and `Scatter` only — a stack has nothing to overlay, a
+horizontal bar chart has no vertical line painter, and a pie is not a cartesian chart at all. A chart
+that never sets it takes exactly the code path it took before, so every existing application is
+untouched. The chart also gets **its own type** — `FontName`, `FontSize`, `FontStyle`, or the Typeface /
+Size / Bold / Italic prompts — and a **size scales the layout with it**, so labels keep their spacing and
+thin themselves out instead of colliding. A cell can also be told it has **no value** — `Obj.SetNoValue(2, Obj.NBars)` — and that series
+draws no bar there and **breaks its line** rather than diving to zero: the shape you need for a row of
+periods with an **average** bar on the end, which belongs on the chart but has no place on a trend. The prompts now live on **six tabs** rather than four: *Look* had grown to thirty prompts in
+five groups and had stopped fitting on screen, so it splits into what is **shown**, the **shapes** that
+draw it, and the **colors**.
+
+![bars and a line on one chart](docs/graficaBarra-combo.png)
 
 The report path is still the point: **graficaBarraReport** draws **straight into the band as vector
 primitives** under `SETTARGET(Report)` at `%BeforePrint` — never a bitmap — so a **PDF export stays as
@@ -621,8 +754,9 @@ values). Three registrations:
 **graficaBarraGlobal** (include the class once), **graficaBarra** (window), **graficaBarraReport** (report).
 Copy `GraficaBarraClass.inc` + `.clw` (ANSI) to the redirection path —
 [`graficaBarra.zip`](templates/graficaBarra/graficaBarra.zip) bundles all three files for easy
-distribution. `examples/graficaBarra/` has three runnable demos: **ChartDemo** (pick a type, watch it draw),
-**ChartShots** (six charts per page, `ChartShots 1|2|3`) and **ReportClear** — a headless report that writes
+distribution. `examples/graficaBarra/` has four runnable demos: **ChartDemo** (pick a type, watch it draw),
+**ChartShots** (six charts per page, `ChartShots 1|2|3`), **ComboChart** (the bars-plus-line combo, three
+ways) and **ReportClear** — a headless report that writes
 its pages out as metafiles: `ReportClear` paints, clears and repaints into one placeholder page by page,
 `ReportClear 2` compares the candidate fixes, and `ReportClear 3` walks the report with `PROP:NextField`
 and logs a control census (the count never moves — a chart is ink, not controls). Full docs — prompts, class API, run-time
@@ -640,6 +774,7 @@ examples for windows, reports, multi-chart bands and dashboards, and a table of 
 except that `TextColor` now actually works (`SHOW` takes its color from the target's *font*, not the pen,
 so v1 silently drew all text in black; set `ColorText = 0` for the old behaviour).
 
+<a id="t-mygaugeplus"></a>
 ### `templates/myGaugePlus/` — **antialiased** (GDI+) gauges/dials on windows
 The pretty sibling of myGauge. Native Clarion `ARC`/`ELLIPSE`/`LINE` have **no antialiasing**, so round
 gauges drawn with them look jagged — myGaugePlus draws every pixel with **GDI+** instead: smooth arcs with
@@ -667,6 +802,7 @@ docs — how it works, prompts, the `GaugePlusClass` + `AaCanvasClass` API, and 
 radios, check boxes and colour pickers beside a big live gauge, so you can see exactly what each option does
 before wiring the template.
 
+<a id="t-mycompress"></a>
 ### `templates/myCompress/` — pure-Clarion compression (memory + files)
 A self-contained **compression library** written entirely in **pure Clarion** — no DLL, no external
 library. One self-contained ANSI class, **`CompressClass`**, implements **DEFLATE (RFC 1951)** with the
@@ -695,6 +831,7 @@ a pure-Clarion app needs **no `mc.c` and no subclass** — copy the C files only
 Full programmer's documentation — the API, formats, run-time control, the C fast-path, error codes, and
 troubleshooting — is in [`docs/myCompress-template.html`](docs/myCompress-template.html).
 
+<a id="t-mypdfsign"></a>
 ### `templates/myPdfSign/` — read a signed PDF and see who signed it
 A self-contained **signed-PDF identity reader** written entirely in **pure Clarion** — no DLL, no external
 library, no network. One ANSI class, **`PdfSignClass`**, opens a digitally-signed PDF and surfaces the
@@ -746,6 +883,7 @@ In an AppGen app, add the **myPdfSign - Global signed-PDF reader** extension onc
 `IF PdfSig.ReadFile(...) ... END` body into any embed (e.g. a button's **Accepted** embed). Parsing a PDF
 already in memory? Use `PdfSig.Read(buffer, length)` instead of `ReadFile`.
 
+<a id="t-my3d"></a>
 ### `templates/my3D/` — real WebGL2 3D scenes driven from Clarion
 A **3D scene manager** that lets a Clarion app build and display **hardware-accelerated WebGL2** scenes with
 **no JavaScript**. One ANSI class, **`WebGL2Class`**, exposes a rich object-oriented 3D API — **camera**
@@ -795,6 +933,7 @@ Full programmer's documentation — a guided tour in [`docs/my3D-template.html`]
 the **exhaustive per‑method/per‑property API reference with example code for each** in
 [`docs/my3D-reference.html`](docs/my3D-reference.html).
 
+<a id="t-myyuru"></a>
 ### `templates/myYuru/` — yuruyurau animated flow-field art on a window
 Live **generative "flow-field" animation** — the pure-trigonometry particle sketches of the artist
 [@yuruyurau](https://twitter.com/yuruyurau) — playing on a Clarion **`IMAGE` control**, offline and with **no
@@ -836,6 +975,7 @@ by the class itself:
 
 ![myYuru presets](docs/myYuru-presets.png)
 
+<a id="t-mycalc"></a>
 ### `templates/myCalc/` — a pop-up calculator beside any numeric field
 > **Renamed in this version:** the class's string equates are now `CalcTxt:Cancel`, `CalcTxt:Accept` …
 > rather than `Txt:Cancel`, `Txt:Accept` …. `Txt:Cancel` was declared by **both** CalcClass (12) and
@@ -879,6 +1019,7 @@ programmer's documentation — **bilingual English/Spanish** — is
 
 ![Contable (cinta)](docs/myCalc-accountant-es.png)
 
+<a id="t-mycalendar"></a>
 ### `templates/myCalendar/` — a pop-up date picker beside any date field
 Drag **myCalendar - Calendar button** next to a date entry and point it at that entry. A small calendar icon
 appears; pressing it opens a modal calendar already sitting on whatever the field holds, and **Accept puts the
@@ -930,6 +1071,7 @@ documentation — **bilingual English/Spanish** — is
 
 ![A full year on one canvas](docs/myCalendar-year.png)
 
+<a id="t-myfilter"></a>
 ### `templates/myFilter/` — build filters for any browse
 Drop **myFilter - Filters button** on a browse window and name the browse object. Pressing the button opens a
 window listing **the browse's own fields**: pick one, say how to test it, press Add, repeat. **Apply** hands
@@ -969,6 +1111,7 @@ registrations: **myFilterButton** (the drag-on control template, MULTI), **myFil
 a button or menu you already have) and **myFilterGlobal** (the class, the language and the storage choice).
 Copy `MyFilterClass.inc` and `MyFilterClass.clw` (**ANSI, CRLF** — they are pure ASCII) to the redirection path.
 
+<a id="t-myexport"></a>
 ### `templates/myExport/` — export any browse or list to seven file formats
 Drag **myExport - Export button** onto a browse window and you get a wired-up **Export…** button. Pressing it
 opens a modal dialog that asks for the **format**, the **folder and file name** (through the standard Windows
@@ -1054,6 +1197,7 @@ button plus a "write all seven" self-test. Full programmer's documentation:
 
 ![The myExport dialog, with two columns left out, one renamed and one re-pictured](docs/myExport-dialog.png)
 
+<a id="t-myhook"></a>
 ### `templates/myHook/` — intercept MESSAGE, STOP, HALT and run-time errors
 Add **myHook - Global message/stop/halt interceptor** once to the application and the Clarion run-time
 library's own dialogs stop being the run-time library's business. `MESSAGE`, `STOP`, `HALT`, a failed
@@ -1099,6 +1243,75 @@ quote-doubling, and the roll-over to `.bak`.
 Full programmer's documentation, English and Spanish in one page with a language toggle:
 [`docs/myHook-template.html`](docs/myHook-template.html).
 
+<a id="t-sdaspecto"></a>
+### `templates/SDAspecto/` — **one look for every window**: rules, typography and rescaling
+One APPLICATION extension and two procedure extensions. The global one restyles **every window in the
+program** with no per-window work; the other two are escape hatches for the windows that need one.
+
+- **Typography.** One typeface, size, colour, style and charset for the whole program — applied to the
+  window, to its controls, or to both. Each parameter is a literal or a program variable, and `-1` /
+  empty means *leave this one alone*.
+- **Rescaling.** Changing the font makes every control the wrong size, so the engine puts them back: it
+  saves each control's geometry **in dialog units**, applies the font with `SETFONT`, forces Clarion to
+  recompute the dialog unit, then writes the same numbers back. Every control starts from its
+  **original** geometry, never its current one, so reapplying is idempotent instead of cumulative.
+  `LIST` and `COMBO` line height and column widths come along — read as indexed properties
+  (`PROPLIST:width`, `PROPLIST:group`), so no `PROP:Format` string has to be parsed.
+- **Recentring.** A window that grows keeps its top-left corner fixed and therefore drifts down and to
+  the right. It gets moved back half of what it grew, so the centre stays put.
+- **Fixed settings.** A minimum height for `ENTRY`/`SPIN`/`CHECK`/`COMBO`/`LIST`/`BUTTON`, and a
+  background colour per control type. `GROUP` is deliberately absent — it is not a fillable surface;
+  put a `PANEL` or `REGION` behind it instead.
+- **A rule engine.** A rule is *match criteria + actions*. It can match on the control type, on its text
+  (exact / contains / starts-with), on a wildcard over `PROP:Text`, and on whether the control is
+  required, read-only or disabled. It can then set the background, the font colour and style, flatten a
+  button, set a tip, or set a cursor.
+
+Rules **cascade like CSS**: they are evaluated in order, every rule that matches applies, and the last
+one wins per property — so a broad rule can set the ground and a narrow one can override a single
+property of it. A rule marked *Cortar* stops the cascade for that control, which is the `ELSIF`
+semantics when you want it.
+
+Two details worth knowing, because they are the kind that bite silently:
+
+- **"Required" is a bitmask, not a flag.** The `REQ` attribute is the clean answer, but plenty of
+  applications never used it and instead mark required fields by giving them a background colour in the
+  designer. The engine can test either, or both.
+- **The actions are a bitmask too** — because `COLOR:NONE` is `-1`, which is a *valid* colour and
+  therefore useless as a "not set" sentinel. The bitmask says which fields of the rule are defined.
+  Font colour also accepts `sdColor:Auto`, which derives black or white from the background's
+  luminance; its value (`7FFFFFFFh`) dodges both real colours (`00BBGGRRh`) and system colours
+  (`80000000h`–`8000001Eh`).
+
+**Rules are data, not code.** They live in the INI as one `[Regla:n]` section each; the factory scheme
+(required, read-only, normal, confirm button, cancel button, browse buttons) is built in code and
+written out the first time, when the INI has none. The INI is read **after** the template's own
+settings and overrides them: the template is the factory default, the INI is the customisation. Three
+global functions — `SDAspectoCargar()`, `SDAspectoGuardar()` and `SDAspectoApply()` — let a settings
+window reread, save and reapply at run time, editing the parameters straight on the global instance
+(`GLO_SDAspecto.FuenteNombre = 'Segoe UI'`). `VentanaConfigAspecto.txa` is such a window, ready to
+IMPORT.
+
+Painting is injected into `WindowManager.Init` at **`PRIORITY(8600)`** — deliberately late, so any
+other template that reapplies fonts or moves controls has already finished. The two procedure
+extensions cover the exceptions: **`SDAspecto - Excluir esta ventana`** leaves one window alone, and
+**`SDAspecto - Ventana redimensionable o maximizada`** is needed when a window uses the ABC resizer or
+starts maximised, because the resizer belongs to the window rather than to the application.
+
+Multi-DLL is handled the way `cleansdw.tpw` does it: `MEMBER` modules never see the `SDAspectoClass`
+type at all, they only call the global functions, so the class instance is declared in the app that
+owns the globals and the satellites import five prototypes. The global instance is shared across
+threads, so the rule queue carries a lock and the per-window state queue is declared `,THREAD`.
+
+Copy `SDAspecto.clw` and `SDAspecto.inc` to `libsrc\win`, register `SDAspecto.tpl`, then add
+**SDAspecto - Personalizacion visual de controles** under Global → Extensions. Full programmer's
+documentation — the four prompt tabs, the rule model, the INI format, the class API and the multi-DLL
+skeleton — is in [`docs/SDAspecto-template.html`](docs/SDAspecto-template.html).
+
+> **Note:** this template's prompt UI, its INI keys and its source comments are in **Spanish**, as
+> written. The documentation above and in `docs/` is in English.
+
+<a id="t-weatherwidget"></a>
 ### `templates/weatherWidget/` — the weather, on a card at start-up
 Add **weatherWidget - The weather at start-up** to the application (once, not per procedure), generate, and
 your program opens with the weather: where the user is, the temperature now, what it feels like, humidity,
@@ -1152,6 +1365,7 @@ import and faults in the constructor. A runnable demo is
 [`examples/weatherWidget/WeatherDemo.clw`](examples/weatherWidget/WeatherDemo.clw); its `/shots` switch and
 `shoot.ps1` regenerate every image above.
 
+<a id="t-emailto"></a>
 ### `templates/emailTo/` — send e-mail, and manage the account: SMTP/TLS, OAuth2 and nine provider APIs
 Add **emailTo - Global** to an application and every procedure in it can send mail. Drag **emailTo - E-mail
 button** onto a window for a wired-up button, or drop the **Send an e-mail here** code template into any embed
@@ -1302,6 +1516,142 @@ line of code, or an English one-liner has gained no Spanish twin.
 `emailToButton` (compose, send, or open setup), `emailToApiButton` (opens the management window on whichever
 tab you name, and hides itself when the account has no API) and `emailToSyncButton`; and four code templates —
 `emailToSend`, `emailToCompose`, `emailToSetup` and `emailToApi` — for any embed.
+
+**Installing it, Clarion 10 forward.** [`installer/emailTo/`](installer/emailTo/) builds a stand-alone
+`emailToSetup.exe`: tick the Clarion installations you want, and each one gets the templates, the classes and
+`emailc.c` in its `accessory\` folders and is registered with its own `ClarionCL /tr`. It finds them two ways
+(the IDE's `ClarionProperties.xml`, and `Clarion*` on the fixed drives), reads each version off
+`ClarionCL.exe`, and warns if the IDE is open — the IDE holds the template registry and writes it back on
+close, which can quietly undo a registration made behind it.
+
+**Two builds of the template, because the prompt sheet is not the same width.** AppGen draws prompts in a
+dialog the IDE owns: **480 px up to Clarion 10, 960 px from Clarion 11** (`WideAppgenDialogs` in
+`ClarionProperties.xml`). Nothing in the template language can ask which it is being drawn in — a prompt sheet
+is parsed once, at registration — so [`Build-NarrowTpl.ps1`](templates/emailTo/Build-NarrowTpl.ps1) generates
+`emailTo10.tpl` from `emailTo.tpl`: prose re-flowed to 340 px and eleven captions shortened to fit the 200 px
+label column, every string **measured** in the system font rather than counted in characters. The installer
+deploys whichever fits, always as `emailTo.tpl`. Both declare `#TEMPLATE(emailTo,...)`, and the generator
+proves they are otherwise the same file — it strips both of exactly their `#DISPLAY` text and `#PROMPT`
+captions and requires the remainder to be byte-identical, so no symbol, embed or generated line can drift
+between them, and it exits non-zero (failing the installer build) if a future prompt stops fitting 480 px.
+Tab height is deliberately *not* budgeted: Clarion 10's own `ABBROWSE.TPW` carries 91 prompts inside 35 boxes
+on one tab, six times emailTo's heaviest, so the sheet plainly scrolls.
+
+**v1.13 (2026-08-25).** emailTo compiles on Clarion 10 and 11. It never did: `'{"personalizations":['` and
+619 other string literals hold a brace, and **`{` opens Clarion's repeat-count escape** — `'ab{3}'` is
+`'abbb'`. Clarion 12 lets a `{` that no digits follow pass as text; 10 and 11 reject the literal outright with
+*Invalid string (misused &lt;...&gt; or {...}, or literal is too long)*, and `EmailToClass.clw` alone failed on
+34 lines. The portable spelling is `{{`, which is one `{` in every version — verified by compiling the same
+program under all three and comparing the bytes it wrote, not by reading the manual. `EmailApiClass.clw` (590
+of them, the whole provider matrix), `EmailToClass.clw` and `EmailJsonClass.clw` now say `{{`, and both demos
+build clean under Clarion 10.0.12799, 11.0.13401 and 12.0.13941 — six builds, no errors.
+
+**v1.12 (2026-08-24).** The account row from v1.11, drawn where it was meant to go. A control inside a `TAB`
+is positioned against the **window**, not the sheet - so moving the `SHEET` down 40 units to make room moved
+the frame and left all 49 controls exactly where they were, still drawing over the header that had just been
+put above them. They move with it now.
+
+Checked by walking the window structure and comparing rectangles - header ends at 40, sheet spans 44 to 258,
+tab content 62 to 244, footer 262 to 278, window 284 - because this sandbox has no desktop and that arithmetic
+is the only reviewer available. Two more from the same screenshot: the account drop list showed the bare name,
+since a `LIST` with `FROM(queue)` displays the queue's **first** field whatever the FORMAT is named after; and
+nothing repainted it after filling, so it opened blank. It selects the account actually loaded now, and
+`DISPLAY`s.
+
+**v1.11 (2026-08-24).** Reported as "the setup window saves to the wrong record" - and it never did. Both rows
+were correct in the table; what was wrong is that the program **always reopened the first one**, because the
+generated start-up line named it outright: `LoadAccount('default')`. Create a second account, restart, and you
+are looking at the first one again, which reads exactly like the save went astray.
+
+`RememberAccount` / `PreferredAccount` fix it. Saving an account or loading one from the picker remembers the
+name, and start-up becomes `LoadAccount(PreferredAccount('default'))` - last chosen, falling back to the name
+on the extension for a fresh installation, and falling back again if that account has since been deleted so a
+remembered name can never strand a program on something that is not there. The name is a preference about this
+machine rather than anything secret, so it lives in the INI even when the accounts live in a table.
+
+The account row also moved **above the sheet**, where the report started: the name was on the *Advanced* tab,
+which is the last place anyone looks for "which account am I editing". The window is now headed by
+**Account:** with the drop list, **Load** and **Delete**, and **Save as:** underneath - visible from every tab
+rather than filed under one.
+
+Also a lesson about testing INI code: **Windows keeps written sections in a profile cache**, so `REMOVE()` on
+the file leaves the previous run's values still answering `GETINI`. The account test was reading its own last
+run and failing on the order; it clears the index through `PUTINI` now and passes twice running.
+
+**v1.10 (2026-08-24).** Several providers configured at once. The store always allowed it - accounts are
+named, and `LoadAccount('brevo')` reads INI section `[emailTo_brevo]` or the table row whose Name column says
+`brevo`, each with its own provider, key, region and domain, nothing shared. What was missing was any way to
+*find* them: typing a different name on the Setup window changed where it **saved**, never what it **loaded**,
+so a second account could be created and then never reached again.
+
+`ListAccounts()` and `DeleteAccount()` are both **VIRTUAL**, because the two stores answer the question in
+completely different ways. An INI cannot be asked which sections it has, so the named ones keep an index of
+their own in the base section, maintained by `SaveAccount`. A table just gets walked - and only the generated
+code knows the table, so the template writes that override beside the `LoadAccount`/`SaveAccount` ones it
+already generated. Without it the picker would have come up empty in exactly the applications that have a
+settings table, which is most of them.
+
+On the **Advanced** tab of the Setup window there is now a drop list of everything stored - `brevo - Brevo -
+bulk@acme.com` - with **Load** and **Delete** beside it. Load switches the whole form to that account; the
+name field above still creates one, by typing a new name and saving. The unnamed default is always row 1 and
+cannot be deleted. Fourteen new assertions cover it, the sharpest being that a key belonging to one account is
+not inherited by another.
+
+**v1.09 (2026-08-24).** Amazon SES proved, without an Amazon account. `botocore` - the signing half of the AWS
+SDK, written by Amazon - is not a dependency of anything shipped here; it is the **oracle**. A stand-in SES
+re-signs every request that arrives with it and refuses the request unless our `Authorization` header matches
+byte for byte. A wrong canonical request, signed-header list, payload hash, credential scope or derived key
+all change the signature completely, so anything answered 200 was signed correctly. **Thirteen requests,
+thirteen verified** - GET with a query string, GET with a continuation token, DELETE with `%2B` and `%40` in
+the path (the double-encoded canonical path, the line I had flagged as most likely to be wrong), PUT with a
+JSON body, POST with base64 MIME. 29 assertions, 0 failed.
+
+It found two real defects that no unit test could have. **`DeleteContact` sent the address where the list
+belonged**: most providers delete a contact by one value, so `{id}` and `{email}` were both filled with it,
+and SES is the first provider that needs *both* - the list in one, the address in the other. Deleting a
+contact from the management window would have hit
+`/contact-lists/ann%40example.com/contacts/ann%40example.com` against the real service. It now takes an
+optional list id, and the window passes the list you are looking at.
+
+**And no send path honoured `ApiBase`** - not SES's, not any of the nine. The management half has always been
+testable against a stand-in; the sending half never was, for anybody, which is why the REST transports have
+sat at "unproven end to end" since v1.00. `EmailToClass.ApiUrl` now rewrites scheme and host for every
+provider, and for SES it runs **before** the signature, because the host is signed. That is the change that
+makes the send side testable at all - and the SES send is the first one actually proved.
+
+**v1.08 (2026-08-24).** The management window, run in Spanish, translated everything except the one thing a
+`FORMAT()` string owns. Title, all ten tabs, every button and prompt, the kind names (`Rebote`) and the row
+count (`1207 filas`) came through - and then nine lists went on saying **Address, Kind, Reason, When**. A
+list's headings are fixed at design time, so `NameEverything` had never been able to reach them; the strings
+for all of them had existed since v1.03 and were simply never applied.
+
+`NameColumns` now sets them by column number from the same table as everything else, across all nine lists -
+blocked, statistics, activity, contacts, lists, campaigns, templates, senders and domains, webhooks. Found by
+looking at a screenshot of the real thing: this window had never been *seen* until now, because the sandbox
+that builds it runs on a window station with no desktop.
+
+**v1.07 (2026-08-24).** A generate-time check, from a real report: an application with the **Mail account
+button** on a window but no **Provider API** extension generated happily and then failed to compile with eight
+errors - `Unknown function label`, `Field not found: SUPPORTS` - all of them on lines the developer never
+wrote. The button writes `MailApi.Manage(1)`; only the extension declares `MailApi`; nothing connected the
+two. This is v1.05's fix leaving a hole: moving the API onto its own extension stopped the *generator* error
+for apps built before v1.03, but any app that had used the API **button** in the v1.03 era still generated
+calls to an object that no longer had a declaration.
+
+The check has to be built backwards, because a window generates **before** the global module does. At the
+moment the button writes the call it cannot know whether anything will declare what it is calling - so it does
+not guess. It records what it needs (`#ADD(%ETApiWanted, %Procedure)`), the Provider API extension records
+that it exists, and **emailTo - Global** - the one extension every emailTo application carries - reports at
+`PRIORITY(9000)` on `%AfterGlobalIncludes`, by which time the whole application is known. Now a missing
+extension is one plain line naming the procedure and telling you where the Insert button is. Proved both ways
+against generated applications: the app that has the extension builds its exe with no false alarm, the app
+that lacks it stops with exactly one message. The same guard covers the API code template and the Sync
+extension.
+
+Two template-language facts fell out of it, both general. `#DECLARE` has **no `GLOBAL` attribute** and cannot
+sit at file scope either - a symbol shared across sections belongs in `#SYSTEM`. And `%ProgramProcedures` is
+**not** generated with the global module: like a window, it comes out in the procedure pass, so a check placed
+there sees the global module's symbols still unset.
 
 **v1.06 (2026-08-24).** **Amazon SES**, the ninth provider — and the first that will not answer a request just
 because you attached a key. Every call has to be signed with **AWS Signature Version 4**, so the signing lives
@@ -1732,6 +2082,17 @@ pwsh installer\build-portable.ps1    # -> run\ClarionTemplateDesigner.exe (porta
 
 See `installer/README.md` for what each option installs.
 
+One template can also ship on its own. [`installer/emailTo/`](installer/emailTo/) builds
+**`emailToSetup.exe`**, which finds every Clarion **10 or later** on the machine — from the IDE's own
+`ClarionProperties.xml` and from a sweep of the fixed drives — and installs emailTo into the ones you tick,
+registering each with that installation's own `ClarionCL`:
+
+```powershell
+pwsh installer\emailTo\build-emailTo.ps1     # -> installer\emailTo\Output\emailToSetup.exe
+```
+
+Clarion 10 gets a different build of the template — see below — and uninstalling unregisters it again.
+
 ### QR encoder core (`designer/QrCodeCore/`)
 
 `designer/QrCodeCore/` is a small, dependency-free **.NET 9** QR-code encoder (versions 1–10, all four
@@ -1764,6 +2125,39 @@ a multi-sheet workbook (Read Me, Beta Testers roster, 53 **Test Cases** with Pas
 colour coding, a Bug Log, and an auto-tallying Summary) covering install, the visual designer, every shipped
 template, and the QR self-tests. Hand it to testers as their script. Regenerate or extend it with
 `python testing/build_beta_test_plan.py` (requires `openpyxl`).
+
+## Acknowledgements
+
+A good part of what is here arrived as a pull request from someone else, and several of the sharpest bugs
+were found by people running these templates in real applications rather than in a demo. Named below, with
+the numbers, so the work can be read in full.
+
+| | |
+|---|---|
+| **[Mark Sarson](https://github.com/msarson)** | The **visual designer**, largely rebuilt from the inside: several templates open at once with a tab each, external edits to an open `.tpl` detected and offered for reload, the source editor scrolled to whatever part is selected, and the part/tab, undo/redo and panel view-sync bugs cleared out. Then the layout engine — `#BOXED,SECTION` honoured as the origin for `AT`, `#INSERT(%group)` resolved in the prompt tree *and* in the flow preview, auto-flow reserving the label column and an `#IMAGE`'s real footprint so nothing lands off-canvas or underneath, no reparenting on a plain click, `#ENABLE` membership never silently stripped — and characterization tests to keep it that way.<br><sub>[#2](https://github.com/robertorenz/templatemaker/pull/2) · [#3](https://github.com/robertorenz/templatemaker/pull/3) · [#4](https://github.com/robertorenz/templatemaker/pull/4) · [#6](https://github.com/robertorenz/templatemaker/pull/6) · [#7](https://github.com/robertorenz/templatemaker/pull/7) · [#8](https://github.com/robertorenz/templatemaker/pull/8) · [#9](https://github.com/robertorenz/templatemaker/pull/9) · [#11](https://github.com/robertorenz/templatemaker/pull/11) · [#12](https://github.com/robertorenz/templatemaker/pull/12) · [#13](https://github.com/robertorenz/templatemaker/pull/13) · [#14](https://github.com/robertorenz/templatemaker/pull/14) · [#15](https://github.com/robertorenz/templatemaker/pull/15)</sub> |
+| **[Dinko Bačun](https://github.com/bdinko)** <sub>(Indicio d.o.o.)</sub> | Made the toolkit work on **somebody else's machine**: the Clarion install auto-detected instead of hardcoded to `C:\clarion12`, `<CLARION_ROOT>` placeholders through the skill and agent docs so the corpus paths survive a different version, an installer that ships *every* template together with the classes they need to compile, and the `d2gridleg.c` rename that let the installer stage both grids at once.<br><sub>[#1](https://github.com/robertorenz/templatemaker/pull/1) · [#22](https://github.com/robertorenz/templatemaker/pull/22) · [#28](https://github.com/robertorenz/templatemaker/pull/28) · [#31](https://github.com/robertorenz/templatemaker/pull/31)</sub> |
+| **[Carl T. Barnes](https://github.com/CarlTBarnes)** <sub>([carlbarnes.com](https://www.carlbarnes.com))</sub> | Read the Clarion source the way only long practice lets you: `SetTarget(Window, Image)` in **myQRDraw** so the symbol lands on the control instead of at the window origin — with a test program to prove it — and `STRING` in place of `*CSTRING` through the class and the barcode method parameters. Plus the **myGauge** and **myPie** reports below.<br><sub>[#19](https://github.com/robertorenz/templatemaker/pull/19) · [#20](https://github.com/robertorenz/templatemaker/pull/20) · [#21](https://github.com/robertorenz/templatemaker/pull/21)</sub> |
+| **[John Hickey](https://github.com/ClarionLive)** <sub>(ClarionLive)</sub> | The **Legacy (CW20) chain**: `BrowseGridLeg`, the Direct2D grid carried over to a chain that has no ABC objects to hang it on, with word wrap and rows that grow only as far as their text needs — and the corrections and Legacy/CW20 chapter that the port turned up in the `clarion-template` skill. Also the **myFilter** bug where a filter whose name contained `=` could never be loaded back.<br><sub>[#26](https://github.com/robertorenz/templatemaker/pull/26) · [#27](https://github.com/robertorenz/templatemaker/pull/27) · [#29](https://github.com/robertorenz/templatemaker/pull/29)</sub> |
+| **[Adrian E. Santarelli](https://github.com/asantarelli)** <sub>([SDigitales](https://www.sdigitales.com.ar))</sub> | **SDAspecto** — one look for every window in a program, from a cascading rule engine whose rules live in an INI rather than in code. **BrowseGrid v1.24**: totals, text search, check-box columns, auto-fit widths and the help page the template had been missing — then **v1.25**, where `d2g_PageSize` was the one row-area measurement that did not take the horizontal scrollbar off, so the browse loaded a last record it then drew behind the bar. And **graficaBarra v2.1**, the **combo chart**: a series told to draw as a **line** over the bars off the same value axis, taking no room in the category slot and keyed in the legend with a line rather than a block; a cell that can hold **no value**, so a trend breaks instead of diving to zero next to an average bar; the chart carrying **its own type**, with the layout scaling to the size so labels thin out rather than collide; and the *Look* tab split in three once thirty prompts had run off the screen.<br><sub>[#32](https://github.com/robertorenz/templatemaker/pull/32) · [#33](https://github.com/robertorenz/templatemaker/pull/33) · [#34](https://github.com/robertorenz/templatemaker/pull/34) · [#35](https://github.com/robertorenz/templatemaker/pull/35)</sub> |
+
+**Bugs found and reported.** [Carl T. Barnes](https://github.com/CarlTBarnes) on `myPie` positioning the pie at
+`(0,0)` instead of the image's own X,Y ([#5](https://github.com/robertorenz/templatemaker/issues/5)), and on
+`myGauge` three times over — custom angles refusing a negative under `@n7.1`
+([#16](https://github.com/robertorenz/templatemaker/issues/16)), `.TextColor` doing nothing for `SHOW()` of the
+title or units ([#17](https://github.com/robertorenz/templatemaker/issues/17)), and `Preset` writing bad values
+for 90° ([#18](https://github.com/robertorenz/templatemaker/issues/18)).
+[Mark Sarson](https://github.com/msarson) on the designer destructively rewriting valid templates on save
+([#10](https://github.com/robertorenz/templatemaker/issues/10)), described precisely enough to be fixed from the
+report alone. [Dinko Bačun](https://github.com/bdinko) on the installer failing because two templates each
+shipped a different `d2grid.c` ([#30](https://github.com/robertorenz/templatemaker/issues/30)).
+[antonnagel](https://github.com/antonnagel) on `ExportClass.inc`
+([#23](https://github.com/robertorenz/templatemaker/issues/23)) and on BrowseGrid
+([#25](https://github.com/robertorenz/templatemaker/issues/25)).
+[golmedo](https://github.com/golmedo) proposed the `graficaBarra` per-category legend detail, percent-of-total
+and left-aligned labels ([#24](https://github.com/robertorenz/templatemaker/pull/24)).
+
+Everything above is MIT-licensed along with the rest of the repo; the copyright in each contribution stays with
+whoever wrote it.
 
 ## License
 

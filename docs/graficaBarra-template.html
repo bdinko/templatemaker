@@ -72,7 +72,7 @@
 <body>
 <div class="wrap">
   <nav>
-    <div class="brand"><h1>graficaBarra</h1><span class="en">Programmer's Documentation · v2.0</span><span class="es">Documentación del programador · v2.0</span></div>
+    <div class="brand"><h1>graficaBarra</h1><span class="en">Programmer's Documentation · v2.1</span><span class="es">Documentación del programador · v2.1</span></div>
     <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
     <div class="grp"><span class="en">Using it</span><span class="es">Cómo usarlo</span></div>
     <a href="#install" class="h2"><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span></a>
@@ -379,10 +379,11 @@ SETTARGET()</pre>
     <tr><td>Title text</td><td>empty</td><td>Centered over the chart.</td></tr>
     <tr><td><b>Chart type</b></td><td>Column</td><td>The thirteen types above. Changing it changes nothing else &mdash; the same data draws as bars, a pie or a radar.</td></tr>
     <tr><td><b>Number of series</b></td><td>1</td><td>1 = a color per bar/slice, no legend needed. 2&ndash;4 = a color per series, a legend, and the extra value prompts appear on every data row.</td></tr>
-    <tr><td>Automatic scale</td><td>on</td><td>Nice round maximum (1/2/5 × 10<sup>k</sup>) from the data; untick for fixed Minimum/Maximum. When the data crosses zero the axis steps in nice units so zero lands on a gridline.</td></tr>
+    <tr><td>Automatic scale</td><td>on</td><td>The gap between two gridlines is sized to the data (1/2/2.5/5/10 × 10<sup>k</sup>) and the axis runs to the first whole step past it &mdash; so a maximum of 113,376,143 gets an axis of 125,000,000, not 200,000,000, and zero always lands on a gridline. Untick for a fixed Minimum/Maximum. <b>Scale/grid divisions is a ceiling, not an exact count</b>: every line has to fall on a whole step.</td></tr>
     <tr><td>Character width / height <i>(report only)</i></td><td>0 / 0</td><td>0 means 62 / 130 thousandths of an inch &mdash; a 9pt font on a <code>THOUS</code> report. Nudge them if your labels crowd or straggle.</td></tr>
   </table>
   <h3>Look</h3>
+  <p class="lead">Three tabs since v2.1 &mdash; the old single <b>Look</b> tab had thirty prompts and had stopped fitting on screen.</p>
   <table>
     <tr><th>Prompt</th><th>Default</th><th>Notes</th></tr>
     <tr><td>Show values / decimals</td><td>on / 0</td><td>The number on each bar, point or slice (above a positive bar, below a negative one, inside a stack segment).</td></tr>
@@ -392,17 +393,38 @@ SETTARGET()</pre>
     <tr><td>Show gridlines / divisions</td><td>on / 5</td><td>Lines across the plot; rings on a radar.</td></tr>
     <tr><td>Show the axis and the zero line</td><td>on</td><td>The value axis plus the baseline through zero.</td></tr>
     <tr><td>Show a legend / where</td><td>on / Bottom</td><td>Bottom, Top or Right. Drawn only when it says something: series names when there are 2+ series, slice names on a pie. Wraps onto up to three rows.</td></tr>
+  </table>
+  <h3>Shapes</h3>
+  <table>
+    <tr><th>Prompt</th><th>Default</th><th>Notes</th></tr>
     <tr><td>Gap between bars</td><td>30</td><td>Percent of one category slot. With several series the remainder is split between them.</td></tr>
     <tr><td>Line thickness / Smooth</td><td>2 / off</td><td>Pen width for line, area and radar outlines. Smooth rounds the corners off with a Catmull-Rom curve.</td></tr>
     <tr><td>Markers / shape / size</td><td>on / Circle / 0</td><td>Dots on line and area charts (always drawn for Scatter). Size 0 = three quarters of the text height.</td></tr>
     <tr><td>First slice starts at</td><td>0</td><td>Degrees clockwise from twelve o'clock (pie, 3D pie, donut).</td></tr>
     <tr><td>3D depth</td><td>0</td><td>Edge depth for <code>Pie 3D</code>; 0 = an eighth of the height.</td></tr>
     <tr><td>Donut hole / middle text</td><td>55 / empty</td><td>Hole as a percent of the diameter, and an optional caption in the middle.</td></tr>
+  </table>
+  <h3>Text &amp; colors</h3>
+  <table>
+    <tr><th>Prompt</th><th>Default</th><th>Notes</th></tr>
+    <tr><td>Typeface</td><td>blank</td><td>The font for every label on the chart. Blank = whatever the window (or the report band) is using.</td></tr>
+    <tr><td>Size</td><td>0</td><td>Points; 0 = the target's own size. <b>It also scales the layout</b>, so the spacing follows the type and labels thin themselves out rather than colliding. This is the prompt to reach for to make a chart's text bigger or smaller.</td></tr>
+    <tr><td>Bold / Italic</td><td>off / off</td><td>Style. Left alone, the target's own style is kept.</td></tr>
     <tr><td>Colors</td><td>near-black axis/text, light-gray grid</td><td>Optional painted background and plot area, plus an optional outline around every bar and slice (white looks good on a pie). All colors are Clarion BGR longs.</td></tr>
   </table>
   <h3>Series</h3>
   <p>Only used when <b>Number of series</b> is 2 or more: a <b>name</b> (what the legend shows) and a
   <b>color</b> (automatic palette, or pick one) for each of up to four series.</p>
+  <p><b>Draw as</b> (new in v2.1) is what makes a <b>combo</b>: it says whether that one series is
+  drawn as <b>Bars</b> or as a <b>Line</b>, whatever the chart type says. Leave the sales series on
+  <i>As the chart type</i> and set the trend series to <b>Line</b>, and the line is drawn <b>over</b>
+  the bars &mdash; both read the same value axis, so the trend has to be in the same units as the bars.
+  The line series takes no room in the category slot: with one bar series and one line the bars are
+  full width, exactly as they are on a one-series chart. The legend keys a line series with a line and
+  its marker rather than a block. The prompt appears on <b>Column</b>, <b>Line</b> and <b>Scatter</b>
+  charts only &mdash; a stack has nothing to overlay, a horizontal bar chart has no vertical line
+  painter, and a pie is not a cartesian chart at all. Left alone it emits nothing, so an application
+  generated before v2.1 generates exactly the code it did before.</p>
   <h3>Data</h3>
   <p>An ordered list &mdash; one row per bar, point or slice, left to right. Per row: <b>Label</b>,
   <b>Value</b> for series 1 (a literal number, or tick the box and give a variable / field / expression),
@@ -424,10 +446,11 @@ SETTARGET()</pre>
     <tr><td>Title text</td><td>vacío</td><td>Centrado sobre el gráfico.</td></tr>
     <tr><td><b>Chart type</b></td><td>Column</td><td>Los trece tipos de arriba. Cambiarlo no cambia nada más &mdash; los mismos datos se dibujan como barras, pastel o radar.</td></tr>
     <tr><td><b>Number of series</b></td><td>1</td><td>1 = un color por barra/porción, sin necesidad de leyenda. 2&ndash;4 = un color por serie, una leyenda, y aparecen los prompts de valor extra en cada fila de datos.</td></tr>
-    <tr><td>Automatic scale</td><td>on</td><td>Máximo redondo (1/2/5 × 10<sup>k</sup>) calculado de los datos; desmárcalo para fijar Mínimo/Máximo. Cuando los datos cruzan el cero, el eje avanza en pasos redondos para que el cero caiga en una línea de rejilla.</td></tr>
+    <tr><td>Automatic scale</td><td>on</td><td>El hueco entre dos líneas de rejilla se dimensiona según los datos (1/2/2,5/5/10 × 10<sup>k</sup>) y el eje llega hasta el primer paso entero que los pasa &mdash; así un máximo de 113.376.143 recibe un eje de 125.000.000 y no de 200.000.000, y el cero siempre cae en una línea. Desmárcalo para fijar Mínimo/Máximo. <b>Scale/grid divisions es un techo, no una cantidad exacta</b>: cada línea tiene que caer en un paso entero.</td></tr>
     <tr><td>Character width / height <i>(solo informe)</i></td><td>0 / 0</td><td>0 significa 62 / 130 milésimas de pulgada &mdash; una fuente de 9pt en un informe <code>THOUS</code>. Ajústalos si las etiquetas se aprietan o se separan.</td></tr>
   </table>
   <h3>Look</h3>
+  <p class="lead">Tres solapas desde la v2.1 &mdash; la vieja solapa <b>Look</b> tenía treinta prompts y había dejado de entrar en pantalla.</p>
   <table>
     <tr><th>Prompt</th><th>Por defecto</th><th>Notas</th></tr>
     <tr><td>Show values / decimals</td><td>on / 0</td><td>El número en cada barra, punto o porción (encima de una barra positiva, debajo de una negativa, dentro del tramo de una pila).</td></tr>
@@ -437,17 +460,39 @@ SETTARGET()</pre>
     <tr><td>Show gridlines / divisions</td><td>on / 5</td><td>Líneas a lo ancho del área de dibujo; anillos en un radar.</td></tr>
     <tr><td>Show the axis and the zero line</td><td>on</td><td>El eje de valores más la línea base del cero.</td></tr>
     <tr><td>Show a legend / where</td><td>on / Bottom</td><td>Abajo, arriba o a la derecha. Solo se dibuja cuando aporta algo: los nombres de las series si hay 2 o más, o los de las porciones en un pastel. Se reparte en hasta tres filas.</td></tr>
+  </table>
+  <h3>Shapes</h3>
+  <table>
+    <tr><th>Prompt</th><th>Por defecto</th><th>Notas</th></tr>
     <tr><td>Gap between bars</td><td>30</td><td>Porcentaje del hueco de una categoría. Con varias series, lo que queda se reparte entre ellas.</td></tr>
     <tr><td>Line thickness / Smooth</td><td>2 / off</td><td>Grosor del trazo de líneas, áreas y contornos del radar. Smooth redondea las esquinas con una curva Catmull-Rom.</td></tr>
     <tr><td>Markers / shape / size</td><td>on / Circle / 0</td><td>Puntos en líneas y áreas (siempre se dibujan en Scatter). Tamaño 0 = tres cuartos de la altura del texto.</td></tr>
     <tr><td>First slice starts at</td><td>0</td><td>Grados en sentido horario desde las doce (pastel, pastel 3D, dona).</td></tr>
     <tr><td>3D depth</td><td>0</td><td>Profundidad del canto en <code>Pie 3D</code>; 0 = un octavo de la altura.</td></tr>
     <tr><td>Donut hole / middle text</td><td>55 / vacío</td><td>El agujero como porcentaje del diámetro, y un texto opcional en el centro.</td></tr>
+  </table>
+  <h3>Text &amp; colors</h3>
+  <table>
+    <tr><th>Prompt</th><th>Por defecto</th><th>Notas</th></tr>
+    <tr><td>Typeface</td><td>en blanco</td><td>La fuente de todas las etiquetas del gráfico. En blanco = la que use la ventana (o la banda del informe).</td></tr>
+    <tr><td>Size</td><td>0</td><td>Puntos; 0 = el tamaño del destino. <b>También escala la maquetación</b>, así el espaciado sigue a la tipografía y las etiquetas se ralean solas en vez de pisarse. Es el prompt para agrandar o achicar el texto de un gráfico.</td></tr>
+    <tr><td>Bold / Italic</td><td>off / off</td><td>Estilo. Sin tocar, se conserva el del destino.</td></tr>
     <tr><td>Colors</td><td>eje/texto casi negro, rejilla gris claro</td><td>Fondo y área de dibujo pintados opcionalmente, más un contorno opcional en cada barra y porción (el blanco queda bien en un pastel). Todos los colores son longs BGR de Clarion.</td></tr>
   </table>
   <h3>Series</h3>
   <p>Solo se usa cuando <b>Number of series</b> es 2 o más: un <b>nombre</b> (lo que muestra la leyenda) y un
   <b>color</b> (paleta automática, o el que elijas) para cada una de hasta cuatro series.</p>
+  <p><b>Draw as</b> (nuevo en v2.1) es lo que arma un <b>combo</b>: dice si esa serie se dibuja como
+  <b>Bars</b> o como <b>Line</b>, diga lo que diga el tipo de gráfico. Dejá la serie de ventas en
+  <i>As the chart type</i> y poné la serie de tendencia en <b>Line</b>, y la línea se dibuja
+  <b>encima</b> de las barras &mdash; las dos leen el mismo eje de valores, así que la tendencia tiene
+  que estar en las mismas unidades que las barras. La serie de línea no ocupa lugar en la ranura de la
+  categoría: con una serie de barras y una de línea, las barras salen del ancho completo, igual que en
+  un gráfico de una sola serie. La leyenda marca una serie de línea con una línea y su marcador, no con
+  un bloque. El prompt aparece solo en <b>Column</b>, <b>Line</b> y <b>Scatter</b> &mdash; una pila no
+  tiene nada que superponer, un gráfico de barras horizontales no tiene pintor de líneas verticales, y
+  un pastel no es un gráfico cartesiano. Si no lo tocás no emite nada, así que una aplicación generada
+  antes de la v2.1 genera exactamente el mismo código que antes.</p>
   <h3>Data</h3>
   <p>Una lista ordenada &mdash; una fila por barra, punto o porción, de izquierda a derecha. Por fila:
   <b>Label</b>, <b>Value</b> de la serie 1 (un número literal, o marca la casilla y pon una variable /
@@ -647,8 +692,8 @@ DO Refresh:Graph1                        <span class="c">! recargar los datos de
     </section>
 
     </div>
-    <footer><span class="en">graficaBarra v2.0 · thirteen pure-Clarion chart types · windows + reports (vector PDF) · part of the templatemaker collection</span>
-      <span class="es">graficaBarra v2.0 · trece tipos de gráfico en Clarion puro · ventanas + informes (PDF vectorial) · parte de la colección templatemaker</span></footer>
+    <footer><span class="en">graficaBarra v2.1 · thirteen pure-Clarion chart types · windows + reports (vector PDF) · part of the templatemaker collection</span>
+      <span class="es">graficaBarra v2.1 · trece tipos de gráfico en Clarion puro · ventanas + informes (PDF vectorial) · parte de la colección templatemaker</span></footer>
   </main>
 </div>
 <script>

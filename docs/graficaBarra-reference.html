@@ -67,7 +67,7 @@
 <body>
 <div class="wrap">
   <nav>
-    <div class="brand"><h1>graficaBarra</h1><span class="en">Developer's Reference · v2.0</span><span class="es">Referencia del desarrollador · v2.0</span></div>
+    <div class="brand"><h1>graficaBarra</h1><span class="en">Developer's Reference · v2.1</span><span class="es">Referencia del desarrollador · v2.1</span></div>
     <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
     <div class="grp"><span class="en">Concepts</span><span class="es">Conceptos</span></div>
     <a href="#how" class="h2"><span class="en">How the class works</span><span class="es">Cómo funciona la clase</span></a>
@@ -103,6 +103,52 @@
 
 <section id="over">
   <h2><span class="en">Overview</span><span class="es">Resumen</span></h2>
+  <div class="note">
+    <div class="en"><b>New in v2.1 &mdash; bars and a line on the one chart.</b> A series can now be told
+      its own shape, whatever <code>ChartType</code> says: <code>Obj.SetSeriesPlot(2, Plot:Line)</code>
+      draws series 2 as a line over the bars of the others &mdash; sales as columns, the trend as a line,
+      both off the same value axis. The line series takes no room in the category slot, so one bar series
+      beside one line still draws full-width bars, and the legend keys it with a line rather than a block.
+      <code>Chart:Column</code>, <code>Chart:Line</code> and <code>Chart:Scatter</code> only. A chart that
+      never calls it is untouched.
+      <br><b>And a tighter axis.</b> The auto-scale now sizes the <i>step</i> between two gridlines and
+      runs the axis to the first whole step past the data, instead of rounding the top up to the next
+      1/2/5 magnitude. A maximum of 113,376,143 used to get an axis of 200,000,000 &mdash; every bar at
+      half height; it now gets 125,000,000. <b>Scale divisions became a ceiling rather than an exact
+      count</b>, because every gridline has to land on a whole step.
+      <br><b>And cells with no value.</b> <code>Obj.SetNoValue(series, category)</code> says one series has
+      nothing to say about one category: no bar, no marker, and the line <b>breaks</b> there instead of
+      diving to zero. A row of periods with an average bar on the end is the case — the bar belongs on the
+      chart, the trend does not run out to it.
+      <br><b>And its own type.</b> <code>FontName</code>, <code>FontSize</code> and
+      <code>FontStyle</code> draw the chart's labels in a font of its own — <code>SETFONT</code> on the
+      drawing target is the window's font, so the chart puts its type on, draws, and hands the target's
+      own back before <code>Paint</code> returns. A <code>FontSize</code> <b>also scales the layout</b>,
+      because nothing on the chart is measured from the real font.</div>
+    <div class="es"><b>Nuevo en v2.1 &mdash; barras y una línea en el mismo gráfico.</b> Ahora se le puede
+      decir a una serie su propia forma, diga lo que diga <code>ChartType</code>:
+      <code>Obj.SetSeriesPlot(2, Plot:Line)</code> dibuja la serie 2 como una línea sobre las barras de
+      las demás &mdash; las ventas en columnas, la tendencia en línea, las dos del mismo eje de valores.
+      La serie de línea no ocupa lugar en la ranura de la categoría, así que una serie de barras al lado
+      de una de línea sigue dibujando barras de ancho completo, y la leyenda la marca con una línea y no
+      con un bloque. Solo <code>Chart:Column</code>, <code>Chart:Line</code> y <code>Chart:Scatter</code>.
+      Un gráfico que nunca la llama queda igual.
+      <br><b>Y un eje más ajustado.</b> La escala automática ahora dimensiona el <i>paso</i> entre dos
+      líneas de rejilla y lleva el eje hasta el primer paso entero que pasa los datos, en vez de
+      redondear el techo a la siguiente magnitud 1/2/5. Un máximo de 113.376.143 recibía un eje de
+      200.000.000 &mdash; todas las barras a media altura; ahora recibe 125.000.000. <b>Las divisiones
+      de escala pasaron a ser un techo y no una cantidad exacta</b>, porque cada línea tiene que caer en
+      un paso entero.
+      <br><b>Y celdas sin valor.</b> <code>Obj.SetNoValue(serie, categoría)</code> dice que una serie no
+      tiene nada que decir de una categoría: sin barra, sin marcador, y la línea <b>se corta</b> ahí en vez
+      de caer a cero. Una fila de períodos con una barra de promedio al final es el caso — la barra va en
+      el gráfico, la tendencia no llega hasta ella.
+      <br><b>Y su propia tipografía.</b> <code>FontName</code>, <code>FontSize</code> y
+      <code>FontStyle</code> dibujan las etiquetas del gráfico con una fuente propia — <code>SETFONT</code>
+      sobre el destino es la fuente de la ventana, así que el gráfico pone la suya, dibuja, y devuelve la
+      del destino antes de que <code>Paint</code> termine. Un <code>FontSize</code> <b>además escala la
+      maquetación</b>, porque nada del gráfico se mide de la fuente real.</div>
+  </div>
   <div class="note">
     <div class="en"><b>New in v2.0 &mdash; thirteen chart types.</b> One property, <code>ChartType</code>, switches
       between <code>Chart:Column</code>, <code>Chart:Bar</code>, <code>Chart:StackedCol</code>,
@@ -344,8 +390,11 @@ RptGraph.TextH = <span class="t">185</span></pre>
     <tr><td><code>DonutPct</code> / <code>DonutText</code> / <code>HoleColor</code></td><td>LONG 55 / CSTRING(32) '' / LONG COLOR:None</td><td><span class="en">The hole as a percent of the diameter, an optional caption in it, and its fill (None follows PlotColor, then BackColor, then white).</span><span class="es">El agujero como porcentaje del diámetro, un texto opcional dentro, y su relleno (None sigue a PlotColor, luego BackColor, luego blanco).</span></td></tr>
     <tr><td><code>ColorText</code></td><td>BYTE 1</td><td><span class="en">1 = re-color text with <code>SETFONT(0,&hellip;)</code> so <code>TextColor</code> is actually honoured. <code>SHOW</code> takes its color from the current target's <em>font</em>, not from <code>SETPENCOLOR</code> &mdash; that is why v1 drew all text in black. Set 0 to leave the target's font alone.</span><span class="es">1 = recolorea el texto con <code>SETFONT(0,&hellip;)</code> para que <code>TextColor</code> se respete de verdad. <code>SHOW</code> toma el color de la <em>fuente</em> del destino actual, no de <code>SETPENCOLOR</code> &mdash; por eso v1 dibujaba todo el texto en negro. Ponlo en 0 para no tocar la fuente del destino.</span></td></tr>
     <tr><td><code>NSeries</code> / <code>SeriesName[]</code> / <code>SeriesColor[]</code></td><td>LONG 0 / STRING(32) / LONG</td><td><span class="en">The series table (max 8), if you would rather fill it in directly than call <code>AddSeries</code>. 0 or 1 both mean "one series".</span><span class="es">La tabla de series (máx. 8), si prefiere rellenarla directamente en vez de llamar a <code>AddSeries</code>. Tanto 0 como 1 significan "una serie".</span></td></tr>
+    <tr><td><code>SeriesPlot[]</code></td><td>LONG <code>Plot:Default</code></td><td><span class="en">How one series is drawn, whatever <code>ChartType</code> says: <code>Plot:Bar</code> or <code>Plot:Line</code>. Set it with <code>SetSeriesPlot(series, plot)</code>, or as the third parameter of <code>AddSeries</code>. Bars for sales and a line for the trend, over the one value axis &mdash; <code>Chart:Column</code>, <code>Chart:Line</code> and <code>Chart:Scatter</code> only.</span><span class="es">Cómo se dibuja una serie, diga lo que diga <code>ChartType</code>: <code>Plot:Bar</code> o <code>Plot:Line</code>. Se fija con <code>SetSeriesPlot(serie, forma)</code>, o como tercer parámetro de <code>AddSeries</code>. Barras para las ventas y una línea para la tendencia, sobre el mismo eje &mdash; solo <code>Chart:Column</code>, <code>Chart:Line</code> y <code>Chart:Scatter</code>.</span></td></tr>
+    <tr><td><code>NoVal[]</code></td><td>BYTE 0</td><td><span class="en">1 = that series has <b>no value</b> for that category: no bar, no marker, and the line <b>breaks</b> instead of diving to zero. <code>SetNoValue(series, category)</code> sets it, <code>HasValue</code> reads it. A row of periods with an average bar on the end is the case &mdash; the bar belongs on the chart, the trend does not run out to it.</span><span class="es">1 = esa serie <b>no tiene valor</b> para esa categoría: sin barra, sin marcador, y la línea <b>se corta</b> en vez de caer a cero. <code>SetNoValue(serie, categoría)</code> lo fija y <code>HasValue</code> lo lee. Una fila de períodos con una barra de promedio al final es el caso &mdash; la barra va en el gráfico, la tendencia no llega hasta ella.</span></td></tr>
     <tr><td><code>BarGapPct</code></td><td>LONG 30</td><td><span class="en">Gap between category slots, percent of one slot. With several series the room left over is split between them.</span><span class="es">Separación entre huecos de categoría, porcentaje de un hueco. Con varias series, lo que queda se reparte entre ellas.</span></td></tr>
-    <tr><td><code>TextW</code> / <code>TextH</code></td><td>LONG 0</td><td><span class="en">Char cell override (0 = auto per target).</span><span class="es">Anulación de celda de carácter (0 = automático por destino).</span></td></tr>
+    <tr><td><code>FontName</code> / <code>FontSize</code> / <code>FontStyle</code></td><td>CSTRING('') / LONG 0 / LONG 0</td><td><span class="en">The chart's own type. Blank / 0 = whatever the target is using; each overrides on its own, so a size alone keeps the typeface. <b><code>FontSize</code> also scales the layout</b> while <code>TextW</code>/<code>TextH</code> are 0, so labels keep their spacing and thin themselves out rather than collide &mdash; it is the one property to reach for to make a chart's text bigger or smaller.</span><span class="es">La tipografía propia del gráfico. En blanco / 0 = la que use el destino; cada una pisa por su cuenta, así que un tamaño solo conserva la tipografía. <b><code>FontSize</code> además escala la maquetación</b> mientras <code>TextW</code>/<code>TextH</code> estén en 0, así las etiquetas conservan su espaciado y se ralean solas en vez de pisarse &mdash; es la propiedad para agrandar o achicar el texto de un gráfico.</span></td></tr>
+    <tr><td><code>TextW</code> / <code>TextH</code></td><td>LONG 0</td><td><span class="en">Char cell override. 0 = 4 &times; 9 dialog units on a window, 62 &times; 130 thousandths on a report, both scaled by <code>FontSize</code>/9. Set them by hand only when you gave the <b>window or the band</b> a bigger font instead &mdash; the class cannot see that one.</span><span class="es">Anulación de la celda de carácter. 0 = 4 &times; 9 unidades de diálogo en ventana, 62 &times; 130 milésimas en informe, escaladas por <code>FontSize</code>/9. Fíjelas a mano solo si le cambió la fuente a la <b>ventana o a la banda</b> &mdash; eso la clase no lo ve.</span></td></tr>
     <tr><td><code>EraseFirst</code></td><td>BYTE 1</td><td><span class="en">1 = <code>Paint</code> wipes the placeholder's own rectangle before it draws. This matters on <strong>reports</strong>: a band keeps every primitive ever drawn into it, so painting a second chart over the same placeholder used to land <em>on top</em> of the first. <code>ClearAll()</code> throws the <em>data</em> away and can never un-draw ink, so the erase has to happen at paint time, where the target and the rectangle are both known. It is a real <code>BLANK</code> of that rectangle, not a box painted over the top &mdash; the old primitives leave the band, so the PDF gets smaller rather than bigger. Set 0 when you deliberately want to overlay two charts.</span><span class="es">1 = <code>Paint</code> borra el rectángulo del marcador antes de dibujar. Importa en los <strong>informes</strong>: una banda conserva todas las primitivas que se hayan dibujado en ella, así que pintar un segundo gráfico sobre el mismo marcador caía <em>encima</em> del primero. <code>ClearAll()</code> tira los <em>datos</em> y nunca puede des-dibujar la tinta, por eso el borrado ocurre al pintar, donde se conocen el destino y el rectángulo. Es un <code>BLANK</code> real de ese rectángulo, no una caja pintada encima &mdash; las primitivas antiguas salen de la banda, así que el PDF se hace más pequeño, no más grande. Ponlo en 0 cuando quiera superponer dos gráficos a propósito.</span></td></tr>
     <tr><td><code>BackColor</code></td><td>LONG COLOR:None</td><td><span class="en">Whole-control background fill (None = leave transparent).</span><span class="es">Relleno de fondo de todo el control (None = deja transparente).</span></td></tr>
     <tr><td><code>PlotColor</code></td><td>LONG COLOR:None</td><td><span class="en">Plot-area fill.</span><span class="es">Relleno del área de trazado.</span></td></tr>
@@ -522,8 +571,8 @@ Win WINDOW(<span class="s">'Demo'</span>),AT(,,320,220),SYSTEM,GRAY
 
     </div>
     <footer>
-      <span class="en">graficaBarra v2.0 · developer's reference · thirteen pure-Clarion chart types · part of the templatemaker collection</span>
-      <span class="es">graficaBarra v2.0 · referencia del desarrollador · trece tipos de gráfico en Clarion puro · parte de la colección templatemaker</span>
+      <span class="en">graficaBarra v2.1 · developer's reference · thirteen pure-Clarion chart types · part of the templatemaker collection</span>
+      <span class="es">graficaBarra v2.1 · referencia del desarrollador · trece tipos de gráfico en Clarion puro · parte de la colección templatemaker</span>
     </footer>
   </main>
 </div>

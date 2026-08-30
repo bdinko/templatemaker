@@ -387,7 +387,7 @@ DeleteSuppression    PROCEDURE(STRING pAddress,BYTE pKind),BYTE,PROC
 DeleteAllSuppressions PROCEDURE(BYTE pKind),LONG,PROC
 AddSuppression       PROCEDURE(STRING pAddress,BYTE pKind,<STRING pReason>),BYTE,PROC
 AddContact           PROCEDURE(STRING pAddress,<STRING pName>,<STRING pListId>),BYTE,PROC
-DeleteContact        PROCEDURE(STRING pIdOrAddress),BYTE,PROC
+DeleteContact        PROCEDURE(STRING pIdOrAddress,<STRING pListId>),BYTE,PROC
 AddList              PROCEDURE(STRING pName),BYTE,PROC
 AddCampaign          PROCEDURE(STRING pName,STRING pSubject,STRING pHtml,STRING pListId),BYTE,PROC
 SendCampaign         PROCEDURE(STRING pId),BYTE,PROC

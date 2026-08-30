@@ -485,6 +485,7 @@ EmailToClass.Construct PROCEDURE
   SELF.Enc     &= NEW(EmailMsgClass)
   SELF.OAuth   &= NEW(EmailOAuthClass)
   SELF.Stuffed &= NEW(EmailBufClass)
+  SELF.AccountQ &= NEW(EmailAccountQueue)
   SELF.OAuth.Init(SELF.Net, SELF.Enc)
   SELF.Language      = ETLng:English
   SELF.IniSection    = 'emailTo'
@@ -502,6 +503,10 @@ EmailToClass.Destruct PROCEDURE
   IF NOT SELF.Enc     &= NULL THEN DISPOSE(SELF.Enc).
   IF NOT SELF.OAuth   &= NULL THEN DISPOSE(SELF.OAuth).
   IF NOT SELF.Stuffed &= NULL THEN DISPOSE(SELF.Stuffed).
+  IF NOT SELF.AccountQ &= NULL
+    FREE(SELF.AccountQ)
+    DISPOSE(SELF.AccountQ)
+  END
 
 EmailToClass.Init PROCEDURE(<STRING pIniFile>)
   CODE
@@ -535,6 +540,34 @@ EmailToClass.ShowError PROCEDURE
 ! ============================================================================
 !  The account
 ! ============================================================================
+!  ApiBase replaces the scheme AND the host of whatever address the provider
+!  branch built - which is what makes the API transports testable without an
+!  account at the provider, and what lets a site route them through a relay
+!  of its own. The path, and any query on it, are kept exactly as built.
+!
+!  Amazon SES signs the host, so this has to happen BEFORE the signature is
+!  computed, not after. It is idempotent so the call after the CASE cannot
+!  undo the one the SES branch already made.
+EmailToClass.ApiUrl PROCEDURE(STRING pUrl)
+base   CSTRING(257)
+rest   CSTRING(1025)
+j      LONG
+  CODE
+  base = CLIP(SELF.Acc.ApiBase)
+  IF NOT base THEN RETURN CLIP(pUrl).
+  !  A return value cannot be indexed, so the address lands in a local first.
+  rest = CLIP(pUrl)
+  IF LEN(base) <= LEN(rest)
+    IF rest[1 : LEN(base)] = base THEN RETURN rest.
+  END
+  !  Everything from the third slash on is the path.
+  j = INSTRING('://', rest, 1, 1)
+  IF j THEN j = INSTRING('/', rest, 1, j + 3).
+  IF j
+    RETURN CLIP(base) & rest[j : LEN(rest)]
+  END
+  RETURN CLIP(base)
+
 EmailToClass.ProviderName PROCEDURE(BYTE pProvider)
   CODE
   CASE pProvider
@@ -740,7 +773,8 @@ sec CSTRING(65)
   RETURN CHOOSE(CLIP(SELF.Acc.Host) <> '' OR CLIP(SELF.Acc.ApiKey) <> '', 1, 0)
 
 EmailToClass.SaveAccount PROCEDURE()
-sec CSTRING(65)
+sec   CSTRING(65)
+known CSTRING(2049)
   CODE
   IF NOT CLIP(SELF.IniFile) THEN SELF.Init().
   sec = SELF.IniSection
@@ -770,7 +804,130 @@ sec CSTRING(65)
   PUTINI(sec, 'ApiBase',      CLIP(SELF.Acc.ApiBase),   SELF.IniFile)
   PUTINI(sec, 'Timeout',      SELF.Acc.Timeout,    SELF.IniFile)
   PUTINI(sec, 'VerifyCert',   SELF.Acc.VerifyCert, SELF.IniFile)
+  !  An INI cannot be asked which sections it has, so the named ones keep an
+  !  index of their own in the base section. Without it a second account can
+  !  be written and then never found again.
+  IF CLIP(SELF.Acc.Name)
+    DO IndexThisOne
+  END
   RETURN 1
+
+IndexThisOne ROUTINE
+  known = GETINI(SELF.IniSection, 'Accounts', '', SELF.IniFile)
+  IF NOT INSTRING('|' & CLIP(SELF.Acc.Name) & '|', '|' & CLIP(known) & '|', 1, 1)
+    IF CLIP(known)
+      known = CLIP(known) & '|' & CLIP(SELF.Acc.Name)
+    ELSE
+      known = CLIP(SELF.Acc.Name)
+    END
+    PUTINI(SELF.IniSection, 'Accounts', CLIP(known), SELF.IniFile)
+  END
+
+!  The last account chosen, and the one to open with.
+!
+!  This is a preference, not a credential, so it lives in the INI even when
+!  the accounts themselves live in a table - there is nothing secret in a
+!  name, and it keeps the settings table free of a column that is about this
+!  machine rather than about the account.
+EmailToClass.RememberAccount PROCEDURE(STRING pName)
+  CODE
+  IF NOT CLIP(SELF.IniFile) THEN SELF.Init().
+  PUTINI(SELF.IniSection, 'LastAccount', CLIP(pName), SELF.IniFile)
+  RETURN
+
+EmailToClass.PreferredAccount PROCEDURE(<STRING pFallback>)
+fall CSTRING(65)
+last CSTRING(65)
+  CODE
+  IF NOT OMITTED(pFallback) THEN fall = CLIP(pFallback).
+  IF NOT CLIP(SELF.IniFile) THEN SELF.Init().
+  last = GETINI(SELF.IniSection, 'LastAccount', '', SELF.IniFile)
+  !  A name that was remembered and then deleted must not strand the program
+  !  on an account that is no longer there.
+  IF CLIP(last)
+    SELF.ListAccounts()
+    SELF.AccountQ.Name = CLIP(last)
+    GET(SELF.AccountQ, SELF.AccountQ.Name)
+    IF NOT ERRORCODE() THEN RETURN CLIP(last).
+  END
+  RETURN CLIP(fall)
+
+!  Which sets of settings the store holds.  The unnamed default is always
+!  row 1 - it is what LoadAccount() with no argument reads - and the named
+!  ones follow, in the order they were first saved.
+!
+!  Reading each one costs a handful of GETINIs, and the answer carries the
+!  provider and the address so a picker can show 'brevo - Brevo -
+!  me@acme.com' without the caller loading anything.
+EmailToClass.ListAccounts PROCEDURE()
+known  CSTRING(2049)
+one    CSTRING(65)
+sec    CSTRING(129)
+vStart LONG
+j      LONG
+  CODE
+  IF NOT CLIP(SELF.IniFile) THEN SELF.Init().
+  FREE(SELF.AccountQ)
+  CLEAR(SELF.AccountQ)
+  SELF.AccountQ.Name         = ''
+  SELF.AccountQ.Provider     = GETINI(SELF.IniSection, 'Provider', 0, SELF.IniFile)
+  SELF.AccountQ.ProviderText = SELF.ProviderName(SELF.AccountQ.Provider)
+  SELF.AccountQ.FromAddr     = GETINI(SELF.IniSection, 'FromAddr', '', SELF.IniFile)
+  ADD(SELF.AccountQ)
+  known  = GETINI(SELF.IniSection, 'Accounts', '', SELF.IniFile)
+  vStart = 1
+  LOOP WHILE vStart <= LEN(CLIP(known))
+    j = INSTRING('|', known, 1, vStart)
+    IF NOT j THEN j = LEN(CLIP(known)) + 1.
+    one = SUB(known, vStart, j - vStart)
+    IF CLIP(one)
+      sec = CLIP(SELF.IniSection) & '_' & CLIP(one)
+      CLEAR(SELF.AccountQ)
+      SELF.AccountQ.Name         = CLIP(one)
+      SELF.AccountQ.Provider     = GETINI(sec, 'Provider', 0, SELF.IniFile)
+      SELF.AccountQ.ProviderText = SELF.ProviderName(SELF.AccountQ.Provider)
+      SELF.AccountQ.FromAddr     = GETINI(sec, 'FromAddr', '', SELF.IniFile)
+      ADD(SELF.AccountQ)
+    END
+    vStart = j + 1
+  END
+  RETURN RECORDS(SELF.AccountQ)
+
+!  Forget one.  The section's keys are blanked and the name comes out of the
+!  index; the unnamed default cannot be deleted, only re-typed.
+EmailToClass.DeleteAccount PROCEDURE(STRING pName)
+known  CSTRING(2049)
+rebuilt CSTRING(2049)
+one    CSTRING(65)
+sec    CSTRING(129)
+vStart LONG
+j      LONG
+  CODE
+  IF NOT CLIP(pName) THEN RETURN SELF.SetErr(ETSend:NoAccount, 'The default account cannot be deleted.').
+  IF NOT CLIP(SELF.IniFile) THEN SELF.Init().
+  sec = CLIP(SELF.IniSection) & '_' & CLIP(pName)
+  PUTINI(sec, 'Provider',  '', SELF.IniFile)
+  PUTINI(sec, 'ApiKey',    '', SELF.IniFile)
+  PUTINI(sec, 'ApiKey2',   '', SELF.IniFile)
+  PUTINI(sec, 'Password',  '', SELF.IniFile)
+  PUTINI(sec, 'FromAddr',  '', SELF.IniFile)
+  known   = GETINI(SELF.IniSection, 'Accounts', '', SELF.IniFile)
+  vStart  = 1
+  LOOP WHILE vStart <= LEN(CLIP(known))
+    j = INSTRING('|', known, 1, vStart)
+    IF NOT j THEN j = LEN(CLIP(known)) + 1.
+    one = SUB(known, vStart, j - vStart)
+    IF CLIP(one) AND CLIP(one) <> CLIP(pName)
+      IF CLIP(rebuilt)
+        rebuilt = CLIP(rebuilt) & '|' & CLIP(one)
+      ELSE
+        rebuilt = CLIP(one)
+      END
+    END
+    vStart = j + 1
+  END
+  PUTINI(SELF.IniSection, 'Accounts', CLIP(rebuilt), SELF.IniFile)
+  RETURN SELF.SetErr(ETSend:Ok)
 
 EmailToClass.Authorize PROCEDURE()
   CODE
@@ -1031,7 +1188,7 @@ status LONG
   IF SELF.Acc.Timeout > 0 THEN SELF.Net.Timeout = SELF.Acc.Timeout.
 
   body &= NEW(EmailBufClass)
-  body.Add('{"raw":"')
+  body.Add('{{"raw":"')
   body.Add(pMsg.Base64Url(pMsg.Mime.Value()))
   body.Add('"}')
 
@@ -1097,25 +1254,25 @@ first BYTE
     first = 0
     CASE CLIP(pStyle)
     OF 'sg'                                          ! SendGrid
-      out.Add('{"email":' & pMsg.JsonString(pMsg.AddrQ.Address))
+      out.Add('{{"email":' & pMsg.JsonString(pMsg.AddrQ.Address))
       IF pMsg.AddrQ.DisplayName
         out.Add(',"name":' & pMsg.JsonString(pMsg.AddrQ.DisplayName))
       END
       out.Add('}')
     OF 'brevo'
-      out.Add('{"email":' & pMsg.JsonString(pMsg.AddrQ.Address))
+      out.Add('{{"email":' & pMsg.JsonString(pMsg.AddrQ.Address))
       IF pMsg.AddrQ.DisplayName
         out.Add(',"name":' & pMsg.JsonString(pMsg.AddrQ.DisplayName))
       END
       out.Add('}')
     OF 'sp'                                          ! SparkPost wraps the address one deeper
-      out.Add('{"address":{"email":' & pMsg.JsonString(pMsg.AddrQ.Address))
+      out.Add('{{"address":{{"email":' & pMsg.JsonString(pMsg.AddrQ.Address))
       IF pMsg.AddrQ.DisplayName
         out.Add(',"name":' & pMsg.JsonString(pMsg.AddrQ.DisplayName))
       END
       out.Add('}}')
     OF 'mj'                                          ! Mailjet capitalises its keys
-      out.Add('{"Email":' & pMsg.JsonString(pMsg.AddrQ.Address))
+      out.Add('{{"Email":' & pMsg.JsonString(pMsg.AddrQ.Address))
       IF pMsg.AddrQ.DisplayName
         out.Add(',"Name":' & pMsg.JsonString(pMsg.AddrQ.DisplayName))
       END
@@ -1173,7 +1330,7 @@ okHi   LONG
     url = 'https://api.sendgrid.com/v3/mail/send'
     hdr.Add('Authorization: Bearer ' & CLIP(SELF.Acc.ApiKey) & '<13,10>')
     hdr.Add('Content-Type: application/json')
-    body.Add('{"personalizations":[{"to":' & SELF.JsonRecipients(pMsg, ETAddr:To, 'sg'))
+    body.Add('{{"personalizations":[{{"to":' & SELF.JsonRecipients(pMsg, ETAddr:To, 'sg'))
     IF RECORDS(pMsg.AddrQ)
       IF SELF.JsonRecipients(pMsg, ETAddr:Cc, 'sg') <> '[]'
         body.Add(',"cc":' & SELF.JsonRecipients(pMsg, ETAddr:Cc, 'sg'))
@@ -1182,17 +1339,17 @@ okHi   LONG
         body.Add(',"bcc":' & SELF.JsonRecipients(pMsg, ETAddr:Bcc, 'sg'))
       END
     END
-    body.Add('}],"from":{"email":' & pMsg.JsonString(pMsg.FromAddr))
+    body.Add('}],"from":{{"email":' & pMsg.JsonString(pMsg.FromAddr))
     IF pMsg.FromName
       body.Add(',"name":' & pMsg.JsonString(pMsg.FromName))
     END
     body.Add('},"subject":' & pMsg.JsonString(pMsg.Subject) & ',"content":[')
     IF pMsg.TextBody.Len > 0
-      body.Add('{"type":"text/plain","value":' & pMsg.JsonString(pMsg.TextBody.Value()) & '}')
+      body.Add('{{"type":"text/plain","value":' & pMsg.JsonString(pMsg.TextBody.Value()) & '}')
       IF pMsg.HtmlBody.Len > 0 THEN body.Add(',').
     END
     IF pMsg.HtmlBody.Len > 0
-      body.Add('{"type":"text/html","value":' & pMsg.JsonString(pMsg.HtmlBody.Value()) & '}')
+      body.Add('{{"type":"text/html","value":' & pMsg.JsonString(pMsg.HtmlBody.Value()) & '}')
     END
     body.Add(']')
     DO SendGridAttachments
@@ -1202,7 +1359,7 @@ okHi   LONG
     url = 'https://api.resend.com/emails'
     hdr.Add('Authorization: Bearer ' & CLIP(SELF.Acc.ApiKey) & '<13,10>')
     hdr.Add('Content-Type: application/json')
-    body.Add('{"from":')
+    body.Add('{{"from":')
     IF pMsg.FromName
       body.Add(pMsg.JsonString(CLIP(pMsg.FromName) & ' <' & CLIP(pMsg.FromAddr) & '>'))
     ELSE
@@ -1230,7 +1387,7 @@ okHi   LONG
     hdr.Add('api-key: ' & CLIP(SELF.Acc.ApiKey) & '<13,10>')
     hdr.Add('Content-Type: application/json<13,10>')
     hdr.Add('Accept: application/json')
-    body.Add('{"sender":{"email":' & pMsg.JsonString(pMsg.FromAddr))
+    body.Add('{{"sender":{{"email":' & pMsg.JsonString(pMsg.FromAddr))
     IF pMsg.FromName
       body.Add(',"name":' & pMsg.JsonString(pMsg.FromName))
     END
@@ -1256,7 +1413,7 @@ okHi   LONG
     hdr.Add('X-Postmark-Server-Token: ' & CLIP(SELF.Acc.ApiKey) & '<13,10>')
     hdr.Add('Content-Type: application/json<13,10>')
     hdr.Add('Accept: application/json')
-    body.Add('{"From":')
+    body.Add('{{"From":')
     IF pMsg.FromName
       body.Add(pMsg.JsonString(CLIP(pMsg.FromName) & ' <' & CLIP(pMsg.FromAddr) & '>'))
     ELSE
@@ -1286,7 +1443,7 @@ okHi   LONG
     hdr.Add('Authorization: Basic ' & |
             SELF.Enc.Base64(CLIP(SELF.Acc.UserName) & ':' & CLIP(SELF.Acc.ApiKey)) & '<13,10>')
     hdr.Add('Content-Type: application/json')
-    body.Add('{"Messages":[{"From":{"Email":' & pMsg.JsonString(pMsg.FromAddr))
+    body.Add('{{"Messages":[{{"From":{{"Email":' & pMsg.JsonString(pMsg.FromAddr))
     IF pMsg.FromName
       body.Add(',"Name":' & pMsg.JsonString(pMsg.FromName))
     END
@@ -1315,11 +1472,11 @@ okHi   LONG
     !  SparkPost has no separate cc / bcc: every recipient goes in one list and
     !  the Cc: header is what makes a copy visible.  Bcc recipients are simply
     !  in the list with no header, which is exactly what blind means.
-    body.Add('{"recipients":[')
+    body.Add('{{"recipients":[')
     body.Add(SUB(SELF.JsonRecipients(pMsg, ETAddr:To, 'sp'), 2, |
                  LEN(CLIP(SELF.JsonRecipients(pMsg, ETAddr:To, 'sp'))) - 2))
     DO SparkPostMore
-    body.Add('],"content":{"from":{"email":' & pMsg.JsonString(pMsg.FromAddr))
+    body.Add('],"content":{{"from":{{"email":' & pMsg.JsonString(pMsg.FromAddr))
     IF pMsg.FromName
       body.Add(',"name":' & pMsg.JsonString(pMsg.FromName))
     END
@@ -1331,7 +1488,7 @@ okHi   LONG
       body.Add(',"html":' & pMsg.JsonString(pMsg.HtmlBody.Value()))
     END
     IF SELF.JsonRecipients(pMsg, ETAddr:Cc, 'csv')
-      body.Add(',"headers":{"CC":' & pMsg.JsonString(SELF.JsonRecipients(pMsg, ETAddr:Cc, 'csv')) & '}')
+      body.Add(',"headers":{{"CC":' & pMsg.JsonString(SELF.JsonRecipients(pMsg, ETAddr:Cc, 'csv')) & '}')
     END
     DO SparkPostAttachments
     body.Add('}}')
@@ -1340,7 +1497,7 @@ okHi   LONG
     url = 'https://api.mailersend.com/v1/email'
     hdr.Add('Authorization: Bearer ' & CLIP(SELF.Acc.ApiKey) & '<13,10>')
     hdr.Add('Content-Type: application/json')
-    body.Add('{"from":{"email":' & pMsg.JsonString(pMsg.FromAddr))
+    body.Add('{{"from":{{"email":' & pMsg.JsonString(pMsg.FromAddr))
     IF pMsg.FromName
       body.Add(',"name":' & pMsg.JsonString(pMsg.FromName))
     END
@@ -1368,7 +1525,8 @@ okHi   LONG
     url = 'https://email.' & CHOOSE(CLIP(SELF.Acc.ApiRegion) <> '', |
                                     CLIP(SELF.Acc.ApiRegion), 'us-east-1') & |
           '.amazonaws.com/v2/email/outbound-emails'
-    body.Add('{"Content":{"Raw":{"Data":"')
+    url = SELF.ApiUrl(url)                        ! before the signature: host is signed
+    body.Add('{{"Content":{{"Raw":{{"Data":"')
     body.Add(pMsg.Base64(pMsg.Mime.Value()))
     body.Add('"}}}')
     hdr.Add(SELF.Net.SignAws('POST', url, body.Value(), |
@@ -1408,6 +1566,7 @@ okHi   LONG
       'Brevo, Postmark, Mailjet, SparkPost, MailerSend or Amazon SES.')
   END
 
+  url = SELF.ApiUrl(url)
   status = SELF.Net.Http('POST', url, hdr.Value(), body.Value())
   DISPOSE(body)
   DISPOSE(hdr)
@@ -1426,7 +1585,7 @@ SendGridAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"content":"')
+    body.Add('{{"content":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('","filename":' & pMsg.JsonString(pMsg.AttachQ.ShownAs))
     body.Add(',"type":' & pMsg.JsonString(pMsg.AttachQ.ContentType))
@@ -1447,7 +1606,7 @@ ResendAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"filename":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"content":"')
+    body.Add('{{"filename":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"content":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('"}')
     DISPOSE(raw)
@@ -1461,7 +1620,7 @@ BrevoAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"name":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"content":"')
+    body.Add('{{"name":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"content":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('"}')
     DISPOSE(raw)
@@ -1475,7 +1634,7 @@ PostmarkAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"Name":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"Content":"')
+    body.Add('{{"Name":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"Content":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('","ContentType":' & pMsg.JsonString(pMsg.AttachQ.ContentType))
     IF pMsg.AttachQ.ContentId
@@ -1507,7 +1666,7 @@ SparkPostAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"type":' & pMsg.JsonString(pMsg.AttachQ.ContentType))
+    body.Add('{{"type":' & pMsg.JsonString(pMsg.AttachQ.ContentType))
     body.Add(',"name":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"data":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('"}')
@@ -1522,7 +1681,7 @@ MailerSendAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"filename":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"content":"')
+    body.Add('{{"filename":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"content":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('"')
     IF pMsg.AttachQ.ContentId
@@ -1542,7 +1701,7 @@ MailjetAttachments ROUTINE
     GET(pMsg.AttachQ, i)
     IF i > 1 THEN body.Add(',').
     DO LoadOne
-    body.Add('{"ContentType":' & pMsg.JsonString(pMsg.AttachQ.ContentType))
+    body.Add('{{"ContentType":' & pMsg.JsonString(pMsg.AttachQ.ContentType))
     body.Add(',"Filename":' & pMsg.JsonString(pMsg.AttachQ.ShownAs) & ',"Base64Content":"')
     body.Add(pMsg.Base64(raw.Value()))
     body.Add('"}')
@@ -1767,6 +1926,11 @@ EmailToClass.Txt PROCEDURE(LONG pId)
     OF ETTxt:NeedSubject  ; RETURN '<191>Enviar el mensaje sin asunto?'
     OF ETTxt:TestSubject  ; RETURN 'Mensaje de prueba de emailTo'
     OF ETTxt:TestBody     ; RETURN 'Si est<225> leyendo esto, la cuenta de correo funciona.'
+    OF ETTxt:ConfirmDelete; RETURN '<191>Borrar esta cuenta guardada?'
+    OF ETTxt:StoredAccts  ; RETURN 'Cuentas guardadas:'
+    OF ETTxt:LoadAcct     ; RETURN 'Cargar'
+    OF ETTxt:SaveAs       ; RETURN 'Guardar como:'
+    OF ETTxt:SaveAsNote   ; RETURN 'un nombre nuevo aqu<237> crea una segunda cuenta'
     OF ETTxt:Connecting   ; RETURN 'Conectando...'
     OF ETTxt:Authorising  ; RETURN 'Autorizando...'
     OF ETTxt:Building     ; RETURN 'Preparando el mensaje...'
@@ -1822,6 +1986,11 @@ EmailToClass.Txt PROCEDURE(LONG pId)
   OF ETTxt:NeedSubject  ; RETURN 'Send the message with no subject?'
   OF ETTxt:TestSubject  ; RETURN 'emailTo test message'
   OF ETTxt:TestBody     ; RETURN 'If you are reading this, the mail account works.'
+  OF ETTxt:ConfirmDelete; RETURN 'Delete this stored account?'
+  OF ETTxt:StoredAccts  ; RETURN 'Stored accounts:'
+  OF ETTxt:LoadAcct     ; RETURN 'Load'
+  OF ETTxt:SaveAs       ; RETURN 'Save as:'
+  OF ETTxt:SaveAsNote   ; RETURN 'a new name here makes a second account'
   OF ETTxt:Connecting   ; RETURN 'Connecting...'
   OF ETTxt:Authorising  ; RETURN 'Authorising...'
   OF ETTxt:Building     ; RETURN 'Preparing the message...'
@@ -1840,6 +2009,8 @@ EmailToClass.Txt PROCEDURE(LONG pId)
 ! ============================================================================
 EmailToClass.Setup PROCEDURE()
 LocName      CSTRING(65)
+LocStoredSel CSTRING(129)
+StoredIdx    LONG
 LocHost      CSTRING(129)
 LocPort      LONG
 LocUser      CSTRING(256)
@@ -1882,79 +2053,94 @@ LogQ         QUEUE
 LLine          STRING(512)
              END
 
-Window WINDOW('Mail account setup'),AT(,,352,246),GRAY,SYSTEM,FONT('Segoe UI',9),CENTER,ICON(ICON:Application)
-         SHEET,AT(4,4,344,214),USE(?Sheet)
+!  A LIST cannot be pointed at a queue that lives in the class, so the stored
+!  accounts are copied into one of our own each time they are asked for.
+AccQ  QUEUE
+AText   CSTRING(129)                          ! FIRST - a LIST FROM() shows field 1
+AName   CSTRING(65)
+      END
+
+Window WINDOW('Mail account setup'),AT(,,352,284),GRAY,SYSTEM,FONT('Segoe UI',9),CENTER,ICON(ICON:Application)
+         !  Above the sheet, so which account you are editing is answered from
+         !  every tab and not just the one it happens to be filed under.
+         PROMPT('Account:'),AT(10,10),USE(?PrStored)
+         LIST,AT(58,8,184,10),USE(LocStoredSel),DROP(10),FROM(AccQ),FORMAT('174L(2)@s128@')
+         BUTTON('Load'),AT(248,7,46,13),USE(?LoadAcct)
+         BUTTON('Delete'),AT(298,7,48,13),USE(?DelAcct)
+         PROMPT('Save as:'),AT(10,28),USE(?PrName)
+         ENTRY(@s64),AT(58,26,184,10),USE(LocName)
+         STRING('a new name here makes a second account'),AT(248,28),USE(?NameNote),FONT(,7)
+         LINE,AT(4,40,344,0),USE(?LineTop),COLOR(COLOR:Silver)
+         SHEET,AT(4,44,344,214),USE(?Sheet)
            TAB('Account'),USE(?TabAccount)
-             PROMPT('Provider:'),AT(10,24),USE(?PrProvider)
-             LIST,AT(92,22,150,10),USE(?ListProvider),DROP(16),FROM(ProviderQ),FORMAT('110L(2)@s30@')
-             PROMPT('Send using:'),AT(10,40),USE(?PrTransport)
-             LIST,AT(92,38,150,10),USE(?ListTransport),DROP(6),FROM(TransportQ),FORMAT('110L(2)@s34@')
-             LINE,AT(10,56,332,0),USE(?Line1),COLOR(COLOR:Silver)
-             PROMPT('From address:'),AT(10,64),USE(?PrFrom)
-             ENTRY(@s255),AT(92,62,150,10),USE(LocFrom)
-             PROMPT('From name:'),AT(10,80),USE(?PrFromName)
-             ENTRY(@s128),AT(92,78,150,10),USE(LocFromName)
-             PROMPT('Reply to:'),AT(10,96),USE(?PrReplyTo)
-             ENTRY(@s255),AT(92,94,150,10),USE(LocReplyTo)
-             LINE,AT(10,112,332,0),USE(?Line2),COLOR(COLOR:Silver)
-             PROMPT('Server:'),AT(10,120),USE(?PrServer)
-             ENTRY(@s128),AT(92,118,150,10),USE(LocHost)
-             PROMPT('Port:'),AT(10,136),USE(?PrPort)
-             ENTRY(@n5),AT(92,134,40,10),USE(LocPort)
-             PROMPT('Security:'),AT(148,136),USE(?PrSecurity)
-             LIST,AT(196,134,146,10),USE(?ListSecurity),DROP(5),FROM(SecurityQ),FORMAT('110L(2)@s34@')
-             PROMPT('Sign in with:'),AT(10,152),USE(?PrAuth)
-             LIST,AT(92,150,150,10),USE(?ListAuth),DROP(6),FROM(AuthQ),FORMAT('110L(2)@s34@')
-             PROMPT('User name:'),AT(10,168),USE(?PrUser)
-             ENTRY(@s255),AT(92,166,150,10),USE(LocUser)
-             PROMPT('Password:'),AT(10,184),USE(?PrPass)
-             ENTRY(@s255),AT(92,182,150,10),USE(LocPass),PASSWORD
-             STRING(''),AT(250,184,92,20),USE(?PassNote),FONT(,7),COLOR(COLOR:None)
+             PROMPT('Provider:'),AT(10,64),USE(?PrProvider)
+             LIST,AT(92,62,150,10),USE(?ListProvider),DROP(16),FROM(ProviderQ),FORMAT('110L(2)@s30@')
+             PROMPT('Send using:'),AT(10,80),USE(?PrTransport)
+             LIST,AT(92,78,150,10),USE(?ListTransport),DROP(6),FROM(TransportQ),FORMAT('110L(2)@s34@')
+             LINE,AT(10,96,332,0),USE(?Line1),COLOR(COLOR:Silver)
+             PROMPT('From address:'),AT(10,104),USE(?PrFrom)
+             ENTRY(@s255),AT(92,102,150,10),USE(LocFrom)
+             PROMPT('From name:'),AT(10,120),USE(?PrFromName)
+             ENTRY(@s128),AT(92,118,150,10),USE(LocFromName)
+             PROMPT('Reply to:'),AT(10,136),USE(?PrReplyTo)
+             ENTRY(@s255),AT(92,134,150,10),USE(LocReplyTo)
+             LINE,AT(10,152,332,0),USE(?Line2),COLOR(COLOR:Silver)
+             PROMPT('Server:'),AT(10,160),USE(?PrServer)
+             ENTRY(@s128),AT(92,158,150,10),USE(LocHost)
+             PROMPT('Port:'),AT(10,176),USE(?PrPort)
+             ENTRY(@n5),AT(92,174,40,10),USE(LocPort)
+             PROMPT('Security:'),AT(148,176),USE(?PrSecurity)
+             LIST,AT(196,174,146,10),USE(?ListSecurity),DROP(5),FROM(SecurityQ),FORMAT('110L(2)@s34@')
+             PROMPT('Sign in with:'),AT(10,192),USE(?PrAuth)
+             LIST,AT(92,190,150,10),USE(?ListAuth),DROP(6),FROM(AuthQ),FORMAT('110L(2)@s34@')
+             PROMPT('User name:'),AT(10,208),USE(?PrUser)
+             ENTRY(@s255),AT(92,206,150,10),USE(LocUser)
+             PROMPT('Password:'),AT(10,224),USE(?PrPass)
+             ENTRY(@s255),AT(92,222,150,10),USE(LocPass),PASSWORD
+             STRING(''),AT(250,224,92,20),USE(?PassNote),FONT(,7),COLOR(COLOR:None)
            END
            TAB('Sign-in (OAuth2)'),USE(?TabOAuth)
-             STRING('Register a DESKTOP application with the provider and paste its Client ID'),AT(10,22),USE(?OaNote1),FONT(,8)
-             STRING('here. Nothing secret is compiled into your program.'),AT(10,32),USE(?OaNote2),FONT(,8)
-             PROMPT('Client ID:'),AT(10,52),USE(?PrClientId)
-             ENTRY(@s255),AT(92,50,250,10),USE(LocClientId)
-             PROMPT('Client secret:'),AT(10,68),USE(?PrSecret)
-             ENTRY(@s255),AT(92,66,250,10),USE(LocSecret),PASSWORD
-             STRING('(leave blank for Microsoft, and for Google desktop clients that have none)'),AT(92,79),USE(?SecretNote),FONT(,7)
-             PROMPT('Tenant:'),AT(10,94),USE(?PrTenant)
-             ENTRY(@s128),AT(92,92,150,10),USE(LocTenant)
-             STRING('(Microsoft only: common, organizations, or your tenant GUID)'),AT(92,105),USE(?TenantNote),FONT(,7)
-             BUTTON('Sign in...'),AT(92,122,90,14),USE(?SignIn)
-             STRING(@s128),AT(190,126,152,10),USE(LocTokenInfo),FONT(,8)
-             LINE,AT(10,146,332,0),USE(?Line3),COLOR(COLOR:Silver)
-             PROMPT('API key:'),AT(10,156),USE(?PrApiKey)
-             ENTRY(@s255),AT(92,154,250,10),USE(LocApiKey),PASSWORD
-             PROMPT('API domain:'),AT(10,172),USE(?PrApiDomain)
-             ENTRY(@s128),AT(92,170,150,10),USE(LocApiDomain)
-             STRING('(Mailgun only: the domain you send from)'),AT(92,183),USE(?DomainNote),FONT(,7)
+             STRING('Register a DESKTOP application with the provider and paste its Client ID'),AT(10,62),USE(?OaNote1),FONT(,8)
+             STRING('here. Nothing secret is compiled into your program.'),AT(10,72),USE(?OaNote2),FONT(,8)
+             PROMPT('Client ID:'),AT(10,92),USE(?PrClientId)
+             ENTRY(@s255),AT(92,90,250,10),USE(LocClientId)
+             PROMPT('Client secret:'),AT(10,108),USE(?PrSecret)
+             ENTRY(@s255),AT(92,106,250,10),USE(LocSecret),PASSWORD
+             STRING('(leave blank for Microsoft, and for Google desktop clients that have none)'),AT(92,119),USE(?SecretNote),FONT(,7)
+             PROMPT('Tenant:'),AT(10,134),USE(?PrTenant)
+             ENTRY(@s128),AT(92,132,150,10),USE(LocTenant)
+             STRING('(Microsoft only: common, organizations, or your tenant GUID)'),AT(92,145),USE(?TenantNote),FONT(,7)
+             BUTTON('Sign in...'),AT(92,162,90,14),USE(?SignIn)
+             STRING(@s128),AT(190,166,152,10),USE(LocTokenInfo),FONT(,8)
+             LINE,AT(10,186,332,0),USE(?Line3),COLOR(COLOR:Silver)
+             PROMPT('API key:'),AT(10,196),USE(?PrApiKey)
+             ENTRY(@s255),AT(92,194,250,10),USE(LocApiKey),PASSWORD
+             PROMPT('API domain:'),AT(10,212),USE(?PrApiDomain)
+             ENTRY(@s128),AT(92,210,150,10),USE(LocApiDomain)
+             STRING('(Mailgun only: the domain you send from)'),AT(92,223),USE(?DomainNote),FONT(,7)
            END
            TAB('Advanced'),USE(?TabAdvanced)
-             PROMPT('Account name:'),AT(10,24),USE(?PrName)
-             ENTRY(@s64),AT(92,22,150,10),USE(LocName)
-             STRING('(the label these settings are stored under)'),AT(92,35),USE(?NameNote),FONT(,7)
-             PROMPT('Timeout (ms):'),AT(10,52),USE(?PrTimeout)
-             ENTRY(@n7),AT(92,50,60,10),USE(LocTimeout)
-             CHECK('Check the server certificate'),AT(92,68),USE(LocVerify)
-             STRING('Turn this off ONLY for a server with a self-signed certificate on'),AT(92,80),USE(?VerifyNote1),FONT(,7)
-             STRING('your own network. It disables the protection TLS gives you.'),AT(92,89),USE(?VerifyNote2),FONT(,7)
+             PROMPT('Timeout (ms):'),AT(10,64),USE(?PrTimeout)
+             ENTRY(@n7),AT(92,62,60,10),USE(LocTimeout)
+             CHECK('Check the server certificate'),AT(92,80),USE(LocVerify)
+             STRING('Turn this off ONLY for a server with a self-signed certificate on'),AT(92,92),USE(?VerifyNote1),FONT(,7)
+             STRING('your own network. It disables the protection TLS gives you.'),AT(92,101),USE(?VerifyNote2),FONT(,7)
            END
            TAB('Log'),USE(?TabLog)
-             LIST,AT(10,22,332,182),USE(?ListLog),FROM(LogQ),FORMAT('320L(2)@s255@'),VSCROLL,HSCROLL,FONT('Consolas',8)
+             LIST,AT(10,62,332,182),USE(?ListLog),FROM(LogQ),FORMAT('320L(2)@s255@'),VSCROLL,HSCROLL,FONT('Consolas',8)
            END
          END
-         BUTTON('Test account'),AT(6,224,72,16),USE(?Test)
-         STRING(@s128),AT(84,228,150,10),USE(LocStatus),FONT(,8)
-         BUTTON('Save'),AT(240,224,52,16),USE(?Ok),DEFAULT
-         BUTTON('Cancel'),AT(296,224,52,16),USE(?CancelBtn),STD(STD:Close)
+         BUTTON('Test account'),AT(6,262,72,16),USE(?Test)
+         STRING(@s128),AT(84,266,150,10),USE(LocStatus),FONT(,8)
+         BUTTON('Save'),AT(240,262,52,16),USE(?Ok),DEFAULT
+         BUTTON('Cancel'),AT(296,262,52,16),USE(?CancelBtn),STD(STD:Close)
        END
 
   CODE
   DO FillLists
   DO AccToLocal
   OPEN(Window)
+  DO FillAccounts
   DO Localise
   DO Reflect
   ACCEPT
@@ -2025,13 +2211,82 @@ Window WINDOW('Mail account setup'),AT(,,352,246),GRAY,SYSTEM,FONT('Segoe UI',9)
       IF EVENT() = EVENT:Accepted
         DO LocalToAcc
         SELF.SaveAccount()
+        SELF.RememberAccount(SELF.Acc.Name)
         Saved = 1
         POST(EVENT:CloseWindow)
+      END
+    OF ?LoadAcct
+      IF EVENT() = EVENT:Accepted
+        StoredIdx = CHOICE(?LocStoredSel)
+        GET(AccQ, StoredIdx)
+        IF NOT ERRORCODE()
+          !  Whatever is on the form is abandoned - it was never saved.
+          IF CLIP(AccQ.AName)
+            SELF.LoadAccount(AccQ.AName)
+          ELSE
+            SELF.Acc.Name = ''
+            SELF.LoadAccount()
+          END
+          SELF.RememberAccount(SELF.Acc.Name)
+          DO AccToLocal
+          DO Reflect
+          DISPLAY()
+        END
+      END
+    OF ?DelAcct
+      IF EVENT() = EVENT:Accepted
+        StoredIdx = CHOICE(?LocStoredSel)
+        GET(AccQ, StoredIdx)
+        IF NOT ERRORCODE() AND CLIP(AccQ.AName)
+          IF SELF.Silent OR MESSAGE(SELF.Txt(ETTxt:ConfirmDelete) & '<13,10><13,10>' & |
+                                    CLIP(AccQ.AText), SELF.Txt(ETTxt:Setup), |
+                                    ICON:Question, BUTTON:Yes + BUTTON:No, BUTTON:No) = BUTTON:Yes
+            SELF.DeleteAccount(AccQ.AName)
+            DO FillAccounts
+            DISPLAY()
+          END
+        END
       END
     END
   END
   CLOSE(Window)
   RETURN Saved
+
+!  The store is asked every time, so a name typed on this window and saved
+!  appears here without reopening it.
+FillAccounts ROUTINE
+  FREE(AccQ)
+  SELF.ListAccounts()
+  LOOP StoredIdx = 1 TO RECORDS(SELF.AccountQ)
+    GET(SELF.AccountQ, StoredIdx)
+    AccQ.AName = SELF.AccountQ.Name
+    IF CLIP(AccQ.AName)
+      AccQ.AText = CLIP(AccQ.AName)
+    ELSE
+      AccQ.AText = '(default)'
+    END
+    IF CLIP(SELF.AccountQ.ProviderText)
+      AccQ.AText = CLIP(AccQ.AText) & '  -  ' & CLIP(SELF.AccountQ.ProviderText)
+    END
+    IF CLIP(SELF.AccountQ.FromAddr)
+      AccQ.AText = CLIP(AccQ.AText) & '  -  ' & CLIP(SELF.AccountQ.FromAddr)
+    END
+    ADD(AccQ)
+  END
+  !  Show the one that is loaded, not just the first row.
+  LocStoredSel = ''
+  LOOP StoredIdx = 1 TO RECORDS(AccQ)
+    GET(AccQ, StoredIdx)
+    IF CLIP(AccQ.AName) = CLIP(SELF.Acc.Name)
+      LocStoredSel = AccQ.AText
+      BREAK
+    END
+  END
+  IF NOT CLIP(LocStoredSel) AND RECORDS(AccQ)
+    GET(AccQ, 1)
+    LocStoredSel = AccQ.AText
+  END
+  DISPLAY(?LocStoredSel)
 
 RefreshLog ROUTINE
   DATA
@@ -2075,6 +2330,11 @@ p BYTE
 
 Localise ROUTINE
   Window{PROP:Text}        = SELF.Txt(ETTxt:Setup)
+  ?PrStored{PROP:Text}     = SELF.Txt(ETTxt:Account) & ':'
+  ?PrName{PROP:Text}       = SELF.Txt(ETTxt:SaveAs)
+  ?NameNote{PROP:Text}     = SELF.Txt(ETTxt:SaveAsNote)
+  ?LoadAcct{PROP:Text}     = SELF.Txt(ETTxt:LoadAcct)
+  ?DelAcct{PROP:Text}      = SELF.Txt(ETTxt:Remove)
   ?PrProvider{PROP:Text}   = SELF.Txt(ETTxt:Provider)
   ?PrTransport{PROP:Text}  = SELF.Txt(ETTxt:Transport)
   ?PrServer{PROP:Text}     = SELF.Txt(ETTxt:Server)

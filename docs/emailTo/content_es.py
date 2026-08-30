@@ -17,8 +17,8 @@ from shell import (esc, slug, code, usecode, note, table, h2, h3, p,   # noqa: E
 from lang import PAGE_TITLES                                           # noqa: E402
 from es_docs import MEMBER_DOCS_ES, FIELD_DOCS_ES, EQUATE_NOTES_ES  # noqa: E402
 from content_en import (S_HELLO, S_PROJECT, S_ATTACH, S_OAUTHRUN,      # noqa: E402
-                        S_OWNS, S_OAUTHFLOW, S_TABLE, S_DERIVE, S_INLINE,
-                        S_CLEARTRAP, S_STRINGTRAP, S_RETSTR,
+                        S_OWNS, S_OAUTHFLOW, S_TABLE, S_ACCOUNTS, S_DERIVE, S_INLINE,
+                        S_CLEARTRAP, S_BRACETRAP, S_STRINGTRAP, S_RETSTR,
                         S_GEN_GLOBAL, S_GEN_DERIVED, S_GEN_BUTTON,
                         S_ASK, S_SUPPORTS, S_MATRIX, S_ADDPROVIDER, S_APIEMBED,
                         S_SYNCGEN)
@@ -34,7 +34,7 @@ def build_getting_started():
     add(h2('what', 'Qué es emailTo'))
     add(p('emailTo envía correo desde una aplicación Clarion, y administra la cuenta '
           'por la que lo envía. Son cinco clases, un '
-          'archivo C incluido y siete plantillas, y se despliega dentro de su propio '
+          'archivo C incluido y diez plantillas, y se despliega dentro de su propio '
           '<code>.EXE</code>: no hay DLL que distribuir, ni .NET, ni OpenSSL, ni nada '
           'que registrar en la máquina donde corra.'))
     add(p('Puede poner un mensaje en la red de cuatro maneras, y las cuatro envían el '
@@ -55,7 +55,19 @@ def build_getting_started():
     ]))
 
     add(h2('install', 'Instalación'))
-    add(p('Copie estos siete archivos a una carpeta que esté en la ruta de '
+    add(note('tip', u'O deje que lo haga el instalador',
+             u'<p><b>emailToSetup.exe</b> encuentra cada Clarion <b>10 o posterior</b> de la '
+             u'm&aacute;quina &mdash; por la configuraci&oacute;n del propio IDE y recorriendo '
+             u'los discos fijos &mdash;, copia las plantillas y las clases en los que usted '
+             u'marque, y registra cada uno con el <code>ClarionCL</code> de esa '
+             u'instalaci&oacute;n. Deja adem&aacute;s este manual, el diccionario y las demos '
+             u'en el disco. El resto de esta p&aacute;gina es exactamente lo que hace, para '
+             u'quien prefiera colocar los archivos a mano.</p>'
+             u'<p>Clarion 10 recibe una compilaci&oacute;n de la plantilla con los prompts '
+             u'dispuestos para su di&aacute;logo de AppGen m&aacute;s angosto &mdash; 480 px, '
+             u'frente a 960 desde Clarion 11. Mismo nombre de plantilla y mismo c&oacute;digo '
+             u'generado, as&iacute; que una aplicaci&oacute;n pasa de una a otra.</p>'))
+    add(p('Copie estos once archivos a una carpeta que esté en la ruta de '
           'redirección de Clarion: la carpeta de la aplicación, o '
           '<code>\\clarion12\\accessory\\libsrc\\win</code>.'))
     add(table(['Archivo', 'Qué es'], [
@@ -65,6 +77,10 @@ def build_getting_started():
          'El mensaje y su MIME. Clarion puro.'],
         ['<code>EmailToClass.inc</code> / <code>.clw</code>',
          'Cuentas, los cuatro transportes, OAuth2, las ventanas.'],
+        ['<code>EmailJsonClass.inc</code> / <code>.clw</code>',
+         u'Leer lo que contesta un proveedor. Clarion puro.'],
+        ['<code>EmailApiClass.inc</code> / <code>.clw</code>',
+         u'La API de gesti&oacute;n: bloqueados, estad&iacute;sticas, campa&ntilde;as.'],
         ['<code>emailc.c</code>',
          'Winsock, SCHANNEL, WinHTTP, DPAPI, SHA-256.'],
     ]))
@@ -427,7 +443,7 @@ def build_getting_started():
                 'Volumen 1', 'Primeros pasos',
                 'Instalar las clases, registrar la plantilla y sacar un mensaje de un '
                 'programa Clarion en unas veinte líneas.',
-                ['Sin DLL que distribuir', 'Sin .NET', 'SMTP + OAuth2 + REST', 'Clarion 12'],
+                ['Sin DLL que distribuir', 'Sin .NET', 'SMTP + OAuth2 + REST', 'Clarion 10 &ndash; 12'],
                 groups, body)
 
 
@@ -721,6 +737,43 @@ def build_programmers_guide():
           'llevan cuenta de referencias, así que da igual si la tabla ya estaba abierta '
           'en otra parte del programa.'))
 
+    add(h2('accounts', u'Varias cuentas, un solo programa'))
+    add(p(u'Una cuenta tiene <b>nombre</b>, y el almacén guarda una configuración por '
+          u'nombre. Nada se comparte entre ellas — proveedor, clave, región, dominio, '
+          u'forma de autenticarse, todo pertenece a la cuenta — así que un programa '
+          u'puede quedar configurado para SendGrid y Brevo a la vez, y cambiar de una a '
+          u'otra en una línea:'))
+    add(code(S_ACCOUNTS))
+    add(p(u'Con un INI la cuenta predeterminada es la sección <code>[emailTo]</code> y '
+          u'una con nombre es <code>[emailTo_brevo]</code>. Con una tabla es una fila por '
+          u'nombre, buscada por la clave de la columna del nombre. A un INI no se le '
+          u'puede preguntar qué secciones tiene, así que las que llevan nombre mantienen '
+          u'un índice en la sección base que <code>SaveAccount</code> actualiza; una '
+          u'tabla simplemente se recorre. Por eso <code>ListAccounts</code> y '
+          u'<code>DeleteAccount</code> son <code>VIRTUAL</code> como los otros dos: '
+          u'sólo el código generado sabe leer su tabla.'))
+    add(table([u'Método', u'Qué hace'], [
+        ['<code>LoadAccount(name)</code>', u'Cambia a esa cuenta. Sin argumento, la '
+         u'predeterminada sin nombre.'],
+        ['<code>SaveAccount()</code>', u'Escribe bajo <code>Acc.Name</code>. Un nombre que '
+         u'nadie usó todavía crea una segunda cuenta.'],
+        ['<code>ListAccounts()</code>', u'Llena <code>AccountQ</code> con cada cuenta del '
+         u'almacén — nombre, proveedor, texto del proveedor y dirección — y contesta '
+         u'cuántas hay. La fila 1 es la predeterminada sin nombre.'],
+        ['<code>DeleteAccount(name)</code>', u'Olvida una. La predeterminada sin nombre no '
+         u'se puede borrar.'],
+        ['<code>RememberAccount(name)</code>', u'Con cuál abrir la próxima vez.'],
+        ['<code>PreferredAccount(fallback)</code>', u'Ese nombre, o el de reserva si nunca '
+         u'se fijó, o si la cuenta que nombra ya fue borrada.'],
+    ]))
+    add(note('note', u'La ventana de configuración hace todo esto sin código',
+             u'<p>Encima de las pestañas lleva <b>Cuenta:</b>, una lista desplegable con '
+             u'todo lo guardado, con <b>Cargar</b> y <b>Quitar</b>; y <b>Guardar como:</b> '
+             u'debajo, donde un nombre nuevo crea una segunda cuenta. Cargar o guardar una '
+             u'la recuerda, y la línea de arranque generada es '
+             u'<code>LoadAccount(PreferredAccount(&#39;default&#39;))</code>, así que un '
+             u'programa cambiado a un segundo proveedor vuelve a abrir con él.</p>'))
+
     add(h2('secrets', 'Los secretos guardados'))
     add(p('Cuatro campos nunca se guardan en claro: la contraseña, el secreto de '
           'cliente, el token de refresco y la clave API. Cada uno pasa por '
@@ -778,6 +831,20 @@ def build_programmers_guide():
     add(p('Por eso las clases de buffer y de mensaje tienen <code>ClearAll</code>. '
           '<code>RESET</code>, <code>ADD</code>, <code>LEN</code> y <code>FREE</code> '
           'son los otros nombres de los que hay que alejarse.'))
+
+    add(h3('note-brace', u'Una llave dentro de un literal hay que duplicarla'))
+    add(p(u'<code>{</code> abre el escape de repetici&oacute;n de Clarion: '
+          u'<code>&#39;ab{3}&#39;</code> es <code>&#39;abbb&#39;</code>. Clarion 12 deja pasar '
+          u'como texto una llave que no lleva d&iacute;gitos detr&aacute;s, as&iacute; que un '
+          u'literal JSON escrito a mano compila ah&iacute; y en ninguna otra versi&oacute;n: '
+          u'Clarion 10 y 11 rechazan el literal entero con <code>Invalid string (misused '
+          u'&lt;...&gt; or {...}, or literal is too long)</code>. La forma portable es '
+          u'<code>{{</code>, y es una sola llave en todas las versiones.'))
+    add(code(S_BRACETRAP))
+    add(p(u'Aqu&iacute; importa porque este juego de clases escribe JSON a mano y lleva las '
+          u'plantillas de URL de nueve proveedores. Si deriva <code>BuildMap()</code> para '
+          u'a&ntilde;adir un proveedor propio, duplique las llaves de la URL que pase a '
+          u'<code>Row()</code>: los marcadores se expanden igual que antes.'))
 
     add(h3('note-string', 'Un STRING ligado a una variable necesita una picture'))
     add(p('Escrito con un literal en su lugar, el control sobrevive solo, y luego '
@@ -850,11 +917,13 @@ def build_programmers_guide():
                                   ('api-paging', u'Paginaci\u00f3n, de tres maneras'),
                                   ('api-add', u'A\u00f1adir un proveedor')]),
         ('Conservarlo', [('settings', 'Dónde vive la configuración'),
+                         ('accounts', u'Varias cuentas, un solo programa'),
                          ('secrets', 'Los secretos guardados'),
                          ('errors', 'Los errores, y el registro'),
                          ('deriving', 'Hacer que haga otra cosa')]),
         ('Notas de Clarion', [('notes', 'Notas de Clarion'),
                               ('note-clear', 'Clear rompe CLEAR()'),
+                              ('note-brace', u'Llaves en un literal'),
                               ('note-string', 'STRING necesita picture'),
                               ('note-picture', 'El tope de @s255'),
                               ('note-map', 'MEMBER necesita MAP'),
@@ -937,7 +1006,7 @@ def build_template_guide():
           'configuración escribe los cambios de vuelta; sin tabla, éstos <em>son</em> '
           'la configuración y la ventana guarda en un INI.'))
     add(table(['Campo', 'Notas'], [
-        ['Proveedor', 'Catorce preajustes. Elegir uno llena servidor, puerto, seguridad '
+        ['Proveedor', 'Dieciséis preajustes. Elegir uno llena servidor, puerto, seguridad '
          'y autenticación.'],
         ['Enviar usando', 'SMTP, API de Gmail, Microsoft Graph, o clave API del proveedor.'],
         ['Dirección / nombre del remitente / Responder a',
@@ -1128,6 +1197,18 @@ def build_template_guide():
              u'agrega nunca nombra sus símbolos. Si tenía la pestaña encendida en la '
              u'v1.03, inserte esta extensión y vuelva a poner el nombre del objeto '
              u'&mdash; lo que guardaba la pestaña vieja simplemente se ignora.</p>'))
+    add(note('tip', u'Ahora las plantillas lo dicen solas',
+             u'<p>Una ventana se genera antes que el módulo global, así que el '
+             u'<b>botón de cuenta de correo</b> no puede saber, en el momento en que '
+             u'escribe <code>MailApi.Manage(1)</code>, si algo va a declarar '
+             u'<code>MailApi</code>. Anota lo que necesita; la extensión global lo '
+             u'verifica cuando ya se conoce la aplicación entera.</p>'
+             u'<p>Por eso desde la v1.07, un botón o un embed que llama a la API del '
+             u'proveedor en una aplicación sin la extensión <b>Provider API</b> '
+             u'detiene la generación con una sola línea que nombra el procedimiento '
+             u'&mdash; en vez de un puñado de errores <code>Unknown function label</code> '
+             u'y <code>Field not found: SUPPORTS</code> sobre código generado que '
+             u'usted nunca escribió.</p>'))
     add(p(u'La pestaña que declara el segundo objeto. La misma clave que envía el '
           u'correo puede además contestar por la cuenta, así que aquí no hace falta '
           u'más que un nombre.'))
@@ -1350,7 +1431,7 @@ def build_template_guide():
                 'Volumen 3', 'Guía de plantillas',
                 'Cada plantilla, cada pestaña, cada campo &mdash; y el código que el '
                 'generador realmente escribe en su aplicación.',
-                ['5 plantillas', 'Cada campo', 'Código generado', 'Multi-DLL'],
+                ['10 plantillas', 'Cada campo', 'Código generado', 'Multi-DLL'],
                 groups, body)
 
 

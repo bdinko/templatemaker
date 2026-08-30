@@ -1,0 +1,1229 @@
+[PROCEDURE]
+NAME VentanaConfigAspecto
+[COMMON]
+DESCRIPTION 'SDAspecto - Configuracion'
+FROM ABC Window
+MODIFIED '2026/07/30' '10:27:42'
+[DATA]
+LocIni                   CSTRING(261)
+!!> GUID('b1f1bfae-f6ec-4d91-8487-546cfac94c76')
+LocEsquema               CSTRING(65)
+!!> GUID('e111dc9b-e46c-43a4-b565-de8a0b7c15bf')
+[SCREENCONTROLS]
+! PROMPT('Aux Color:'),USE(?AuxColor:Prompt)
+! ENTRY(@n-14),USE(AuxColor),RIGHT(1)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(AuxColor),RIGHT(1)
+AuxColor                 LONG
+!!> GUID('f4e973e2-2ec0-47a9-a29f-2f263d780c70'),PROMPT('Aux Color:'),HEADER('Aux Color'),PICTURE(@n-14),TYPEMODE(INS),JUSTIFY(RIGHT,1)
+LocDiag                  BYTE
+!!> GUID('c6c13fe5-53ae-4559-a813-47ec11ffa9d9')
+LocModoReq               BYTE
+!!> GUID('bea80e98-8349-4a8d-ab33-ce0e5460fbe1')
+LocFteAct                BYTE
+!!> GUID('c93a739c-5b57-4762-8f3a-4fb03c7b6b40')
+LocFteNom                CSTRING(65)
+!!> GUID('ec4398ae-b7fa-42d5-8e3c-a1956c4f1166')
+LocFteTam                LONG
+!!> GUID('7ba225b1-4acf-4a73-b833-0a8ce9376981')
+LocFteEst                LONG
+!!> GUID('84fc7cd6-d2d6-4be3-9760-246f505faef2')
+LocFteCol                LONG
+!!> GUID('3ad68c5a-5038-48a8-889c-57edc2720e3a')
+LocFteChr                LONG
+!!> GUID('46a68bda-36e7-480f-a0df-f9e8f7c4af9a')
+LocFteVen                BYTE
+!!> GUID('87e0c97c-1d4e-4cb1-b2da-62faade3b5c2')
+LocFteCtl                BYTE
+!!> GUID('9ec5d77a-8b88-45f8-9ef0-b066f6461baa')
+LocResc                  BYTE
+!!> GUID('f5e349dc-d1d3-474e-9fdc-4095bbcbe2da')
+LocRescVen               BYTE
+!!> GUID('05d6c9ef-fbc6-4163-bae6-21208bfe0605')
+LocRecen                 BYTE
+!!> GUID('3e04a250-3b39-4a6d-be35-ef18fd2a5384')
+LocIdx                   LONG
+!!> GUID('148279ae-e3b6-492a-b8b4-d30c6676ced7')
+LocNombre                CSTRING(33)
+!!> GUID('d147619f-dd9e-4e9d-9a8c-aa6da60ba506')
+LocTipos                 CSTRING(161)
+!!> GUID('f0b39690-23d8-43cc-8990-f5249a7c52f6')
+LocTipoSel               CSTRING(21)
+!!> GUID('67638012-682a-4076-8d1d-2dec54632772')
+LocTexto                 CSTRING(256)
+!!> GUID('2d11eac5-c64a-4e17-baff-661c639fe334')
+LocPicture               CSTRING(65)
+!!> GUID('18a943fd-c3c2-4005-94ba-4853371bb0ec')
+LocModoTxt               BYTE
+!!> GUID('6ec1a449-d552-43ab-bc46-8b8ca02a9edc')
+LocTestReq               BYTE
+!!> GUID('1ba7b3c6-ca07-4eac-8555-2753acfb816a')
+LocTestRO                BYTE
+!!> GUID('686196ac-a617-4ade-9cdd-678bae5575aa')
+LocTestDis               BYTE
+!!> GUID('3e5bf89f-f573-4ab0-bc77-d4128751b803')
+LocColor                 LONG
+!!> GUID('7a619eda-fde1-4c73-af1a-0890c5ccf718')
+LocActiva                BYTE
+!!> GUID('c021226b-8ac4-405d-ba8c-5ce0fdd3bb63')
+LocCortar                BYTE
+!!> GUID('e4616392-b6c7-41cd-88b4-a27339aca344')
+[SCREENCONTROLS]
+! PROMPT('Loc Alto Min:'),USE(?LocAltoMin:Prompt)
+! ENTRY(@n-14),USE(LocAltoMin),RIGHT(1)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocAltoMin),RIGHT(1)
+LocAltoMin               LONG
+!!> GUID('81be2488-dd3c-437b-bd25-e18d5eebdf9e'),PROMPT('Loc Alto Min:'),HEADER('Loc Alto Min'),PICTURE(@n-14),TYPEMODE(INS),JUSTIFY(RIGHT,1)
+[SCREENCONTROLS]
+! PROMPT('Loc Fijo Color:'),USE(?LocFijoColor:Prompt)
+! ENTRY(@n-14),USE(LocFijoColor),RIGHT(1)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocFijoColor),RIGHT(1)
+LocFijoColor             LONG
+!!> GUID('b4cc3a32-fff5-4290-a5ed-6e2f365ddd14'),PROMPT('Loc Fijo Color:'),HEADER('Loc Fijo Color'),PICTURE(@n-14),TYPEMODE(INS),JUSTIFY(RIGHT,1)
+[SCREENCONTROLS]
+! PROMPT('Fijo Q:'),USE(?FijoQ:Prompt)
+! ENTRY(@s20),USE(FijoQ)
+[REPORTCONTROLS]
+! STRING(@s20),USE(FijoQ)
+FijoQ                    QUEUE,PRE()
+!!> GUID('78c0f7f5-b37b-4954-bac7-820f2df41eb6'),PROMPT('Fijo Q:'),HEADER('Fijo Q'),PICTURE(@s20),TYPEMODE(INS)
+[SCREENCONTROLS]
+! PROMPT('FQT ipo:'),USE(?FQTipo:Prompt)
+! ENTRY(@s12),USE(FQTipo)
+[REPORTCONTROLS]
+! STRING(@s12),USE(FQTipo)
+FQTipo                     STRING(12)
+!!> GUID('59bf9377-add1-4945-9940-ecf62284b7bb'),PROMPT('FQT ipo:'),HEADER('FQT ipo'),PICTURE(@s12),TYPEMODE(INS)
+[SCREENCONTROLS]
+! PROMPT('FQC olor:'),USE(?FQColor:Prompt)
+! ENTRY(@n-14),USE(FQColor),RIGHT(1)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(FQColor),RIGHT(1)
+FQColor                    LONG
+!!> GUID('8d12e5b9-efee-4d79-8e21-99f6248a100b'),PROMPT('FQC olor:'),HEADER('FQC olor'),PICTURE(@n-14),TYPEMODE(INS),JUSTIFY(RIGHT,1)
+                         END
+!!> GUID('089f5c97-2494-4c06-b754-fadc9fafd01a')
+ReglaQ                   QUEUE,PRE()
+!!> GUID('10f39703-4a86-46ee-834d-4f2a49095986'),PICTURE(@s20)
+RQNro                      LONG
+!!> GUID('72b63cb3-7292-494b-9fd4-b78761610e80')
+RQNombre                   STRING(32)
+!!> GUID('bbf5d459-83fe-4542-9f0d-61b9308a8fb1')
+RQTipos                    STRING(40)
+!!> GUID('c69e018d-7cc0-4945-8af9-03aa3af397e8')
+RQTexto                    STRING(40)
+!!> GUID('3762a20a-3a8d-4934-a3f0-3e73bb12f880')
+RQColor                    LONG
+!!> GUID('8694cd68-2fdd-497f-af4d-af582dc66cb3')
+                         END
+!!> GUID('79e40cc0-3fab-4ed0-b03a-d7b77e254e94')
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('WindowManager')
+WHEN  ('WindowToolbar') ('ToolbarClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Init {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED', 'TakeEvent {14}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'TakeNewSelection       PROCEDURE(),BYTE,PROC,DERIVED', 'TakeWindowEvent        PROCEDURE(),BYTE,PROC,DERIVED')
+
+%ReturnValue FIELD  ()
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('WindowToolbar') ('Toolbar')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('APIPrinterClass')
+WHEN  ('WindowToolbar') ('APIPrinterClass')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ButtonAction DEPEND %Control DEFAULT TIMES 17
+WHEN  ('?ActualizarFijo') ('No Special Action')
+WHEN  ('?ActualizarRegla') ('No Special Action')
+WHEN  ('?AgregarTipo') ('No Special Action')
+WHEN  ('?Aplicar') ('No Special Action')
+WHEN  ('?BajarRegla') ('No Special Action')
+WHEN  ('?BorrarRegla') ('No Special Action')
+WHEN  ('?Button:JSColorLookup') ('No Special Action')
+WHEN  ('?Button:JSColorLookup:2') ('No Special Action')
+WHEN  ('?CancelButton') ('No Special Action')
+WHEN  ('?ElegirFteCol') ('No Special Action')
+WHEN  ('?NuevaRegla') ('No Special Action')
+WHEN  ('?OkButton') ('No Special Action')
+WHEN  ('?Recargar') ('No Special Action')
+WHEN  ('?RestaurarFabrica') ('No Special Action')
+WHEN  ('?Sheet1') ('No Special Action')
+WHEN  ('?SubirRegla') ('No Special Action')
+WHEN  ('?Tab1') ('No Special Action')
+
+%ButtonRunName DEPEND %Control DEFAULT TIMES 3
+WHEN  ('?Button:JSColorLookup') ('')
+WHEN  ('?Button:JSColorLookup:2') ('')
+WHEN  ('?Sheet1') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 3
+WHEN  ('?Button:JSColorLookup') ('')
+WHEN  ('?Button:JSColorLookup:2') ('')
+WHEN  ('?Sheet1') ('')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 3
+WHEN  ('?Button:JSColorLookup') ()
+WHEN  ('?Button:JSColorLookup:2') ()
+WHEN  ('?Sheet1') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 3
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+WHEN  ('?Sheet1') (0)
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 17
+WHEN  ('?ActualizarFijo') ('25000')
+WHEN  ('?ActualizarRegla') ('25000')
+WHEN  ('?AgregarTipo') ('25000')
+WHEN  ('?Aplicar') ('25000')
+WHEN  ('?BajarRegla') ('25000')
+WHEN  ('?BorrarRegla') ('25000')
+WHEN  ('?Button:JSColorLookup') ('25000')
+WHEN  ('?Button:JSColorLookup:2') ('25000')
+WHEN  ('?CancelButton') ('25000')
+WHEN  ('?ElegirFteCol') ('25000')
+WHEN  ('?NuevaRegla') ('25000')
+WHEN  ('?OkButton') ('25000')
+WHEN  ('?Recargar') ('25000')
+WHEN  ('?RestaurarFabrica') ('25000')
+WHEN  ('?Sheet1') ('25000')
+WHEN  ('?SubirRegla') ('25000')
+WHEN  ('?Tab1') ('25000')
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 3
+WHEN  ('?Button:JSColorLookup') ('')
+WHEN  ('?Button:JSColorLookup:2') ('')
+WHEN  ('?Sheet1') ('')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 3
+WHEN  ('?Button:JSColorLookup') ()
+WHEN  ('?Button:JSColorLookup:2') ()
+WHEN  ('?Sheet1') ()
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 3
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+WHEN  ('?Sheet1') (0)
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 17
+WHEN  ('?ActualizarFijo') ('None')
+WHEN  ('?ActualizarRegla') ('None')
+WHEN  ('?AgregarTipo') ('None')
+WHEN  ('?Aplicar') ('None')
+WHEN  ('?BajarRegla') ('None')
+WHEN  ('?BorrarRegla') ('None')
+WHEN  ('?Button:JSColorLookup') ('None')
+WHEN  ('?Button:JSColorLookup:2') ('None')
+WHEN  ('?CancelButton') ('None')
+WHEN  ('?ElegirFteCol') ('None')
+WHEN  ('?NuevaRegla') ('None')
+WHEN  ('?OkButton') ('None')
+WHEN  ('?Recargar') ('None')
+WHEN  ('?RestaurarFabrica') ('None')
+WHEN  ('?Sheet1') ('None')
+WHEN  ('?SubirRegla') ('None')
+WHEN  ('?Tab1') ('None')
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 3
+WHEN  ('?Button:JSColorLookup') ('')
+WHEN  ('?Button:JSColorLookup:2') ('')
+WHEN  ('?Sheet1') ('')
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 3
+WHEN  ('?Button:JSColorLookup') ()
+WHEN  ('?Button:JSColorLookup:2') ()
+WHEN  ('?Sheet1') ()
+
+%PreLookupKey DEPEND %Control KEY TIMES 0
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 0
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 0
+
+%PostLookupKey DEPEND %Control KEY TIMES 0
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 0
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 0
+
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 17
+WHEN  ('?Button:JSColorLookup') (1)
+WHEN  ('?Button:JSColorLookup:2') (1)
+WHEN  ('?LocAltoMin') (1)
+WHEN  ('?LocColor') (1)
+WHEN  ('?LocEsquema') (1)
+WHEN  ('?LocFijoColor') (1)
+WHEN  ('?LocFteChr') (1)
+WHEN  ('?LocFteCol') (1)
+WHEN  ('?LocFteNom') (1)
+WHEN  ('?LocFteTam') (1)
+WHEN  ('?LocIni') (1)
+WHEN  ('?LocNombre') (1)
+WHEN  ('?LocPicture') (1)
+WHEN  ('?LocTexto') (1)
+WHEN  ('?LocTipos') (1)
+WHEN  ('?Sheet1') (1)
+WHEN  ('?Tab1') (1)
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 4
+WHEN  ('?Button:JSColorLookup')TIMES 0
+WHEN  ('?Button:JSColorLookup:2')TIMES 0
+WHEN  ('?Sheet1')TIMES 0
+WHEN  ('?Tab1')TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 4
+WHEN  ('?Button:JSColorLookup')TIMES 0
+WHEN  ('?Button:JSColorLookup:2')TIMES 0
+WHEN  ('?Sheet1')TIMES 0
+WHEN  ('?Tab1')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 4
+WHEN  ('?Button:JSColorLookup')TIMES 0
+WHEN  ('?Button:JSColorLookup:2')TIMES 0
+WHEN  ('?Sheet1')TIMES 0
+WHEN  ('?Tab1')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 4
+WHEN  ('?Button:JSColorLookup')TIMES 0
+WHEN  ('?Button:JSColorLookup:2')TIMES 0
+WHEN  ('?Sheet1')TIMES 0
+WHEN  ('?Tab1')TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ProcedureOneInstance LONG  (0)
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  ()
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%PreserveVarsLoc MULTI LONG  ()
+%PreserveVarLoc DEPEND %PreserveVarsLoc DEFAULT TIMES 0
+
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 3
+WHEN  ('?Button:JSColorLookup') ('Default')
+WHEN  ('?Button:JSColorLookup:2') ('Default')
+WHEN  ('?Sheet1') ('Default')
+
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?BOXFijoColor') ('Off')
+WHEN  ('?BOXTestColor') ('Off')
+WHEN  ('?Button:JSColorLookup') ('Off')
+WHEN  ('?Button:JSColorLookup:2') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?BOXFijoColor') ('')
+WHEN  ('?BOXTestColor') ('')
+WHEN  ('?Button:JSColorLookup') ('')
+WHEN  ('?Button:JSColorLookup:2') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 4
+WHEN  ('?BOXFijoColor') (0)
+WHEN  ('?BOXTestColor') (0)
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 4
+WHEN  ('?BOXFijoColor') (-1)
+WHEN  ('?BOXTestColor') (-1)
+WHEN  ('?Button:JSColorLookup') (-1)
+WHEN  ('?Button:JSColorLookup:2') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 4
+WHEN  ('?BOXFijoColor') (0)
+WHEN  ('?BOXTestColor') (0)
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 4
+WHEN  ('?BOXFijoColor') (-1)
+WHEN  ('?BOXTestColor') (-1)
+WHEN  ('?Button:JSColorLookup') (-1)
+WHEN  ('?Button:JSColorLookup:2') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 4
+WHEN  ('?BOXFijoColor') (0)
+WHEN  ('?BOXTestColor') (0)
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 2
+WHEN  ('?Button:JSColorLookup')TIMES 0
+WHEN  ('?Button:JSColorLookup:2')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 2
+WHEN  ('?Button:JSColorLookup')TIMES 0
+WHEN  ('?Button:JSColorLookup:2')TIMES 0
+
+%ActiveImageEnable DEPEND %Control LONG TIMES 0
+
+%AIObjectName DEPEND %Control DEFAULT TIMES 2
+WHEN  ('?Button:JSColorLookup') ('AIBtn69')
+WHEN  ('?Button:JSColorLookup:2') ('AIBtn42')
+
+%AIEnableMimicControl DEPEND %Control LONG TIMES 2
+WHEN  ('?Button:JSColorLookup') (1)
+WHEN  ('?Button:JSColorLookup:2') (1)
+
+%AIMimicControl DEPEND %Control DEFAULT TIMES 2
+WHEN  ('?Button:JSColorLookup') ('?Sheet1')
+WHEN  ('?Button:JSColorLookup:2') ('?Sheet1')
+
+%AIImgRound DEPEND %Control LONG TIMES 0
+
+%AIOverrideImg DEPEND %Control DEFAULT TIMES 0
+
+%AIOverrideImgVariable DEPEND %Control DEFAULT TIMES 0
+
+%AIOverrideImgIsVariable DEPEND %Control LONG TIMES 2
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+%AIDisableImg DEPEND %Control DEFAULT TIMES 0
+
+%AIDisableImgVariable DEPEND %Control DEFAULT TIMES 0
+
+%AIDisableImgIsVariable DEPEND %Control LONG TIMES 2
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+%AIHotImg DEPEND %Control DEFAULT TIMES 0
+
+%AIHotImgVariable DEPEND %Control DEFAULT TIMES 0
+
+%AIHotImgIsVariable DEPEND %Control LONG TIMES 2
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+%AIPressedImg DEPEND %Control DEFAULT TIMES 0
+
+%AIPressedImgVariable DEPEND %Control DEFAULT TIMES 0
+
+%AIPressedImgIsVariable DEPEND %Control LONG TIMES 2
+WHEN  ('?Button:JSColorLookup') (0)
+WHEN  ('?Button:JSColorLookup:2') (0)
+
+[EMBED]
+EMBED %ProcedureRoutines
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+LeerClase ROUTINE
+  !-- Vuelca el estado del objeto global a las variables de pantalla.
+  LocIni     = GLO_SDAspecto.IniFile
+  LocEsquema = GLO_SDAspecto.Esquema
+  LocDiag    = GLO_SDAspecto.Diagnostico
+  LocModoReq = GLO_SDAspecto.ModoRequerido
+  LocFteAct  = GLO_SDAspecto.FuenteActiva
+  LocFteNom  = GLO_SDAspecto.FuenteNombre
+  LocFteTam  = GLO_SDAspecto.FuenteTamano
+  LocFteEst  = GLO_SDAspecto.FuenteEstilo
+  LocFteCol  = GLO_SDAspecto.FuenteColor
+  LocFteChr  = GLO_SDAspecto.FuenteCharset
+  LocFteVen  = GLO_SDAspecto.FuenteAVentana
+  LocFteCtl  = GLO_SDAspecto.FuenteAControles
+  LocResc    = GLO_SDAspecto.RescalarActivo
+  LocRescVen = GLO_SDAspecto.RescalarVentana
+  LocRecen   = GLO_SDAspecto.RecentrarVentana
+  LocAltoMin = GLO_SDAspecto.AltoMinimo
+  DISPLAY
+
+EscribirClase ROUTINE
+  !-- Camino inverso: de la pantalla al objeto global.
+  GLO_SDAspecto.IniFile          = LocIni
+  GLO_SDAspecto.Esquema          = LocEsquema
+  GLO_SDAspecto.Diagnostico      = LocDiag
+  GLO_SDAspecto.ModoRequerido    = LocModoReq
+  GLO_SDAspecto.FuenteActiva     = LocFteAct
+  GLO_SDAspecto.FuenteNombre     = LocFteNom
+  GLO_SDAspecto.FuenteTamano     = LocFteTam
+  GLO_SDAspecto.FuenteEstilo     = LocFteEst
+  GLO_SDAspecto.FuenteColor      = LocFteCol
+  GLO_SDAspecto.FuenteCharset    = LocFteChr
+  GLO_SDAspecto.FuenteAVentana   = LocFteVen
+  GLO_SDAspecto.FuenteAControles = LocFteCtl
+  GLO_SDAspecto.RescalarActivo   = LocResc
+  GLO_SDAspecto.RescalarVentana  = LocRescVen
+  GLO_SDAspecto.RecentrarVentana = LocRecen
+  GLO_SDAspecto.AltoMinimo = LocAltoMin
+
+LlenarLista ROUTINE
+  !-- Refleja la queue de reglas del motor en la lista de pantalla.
+  FREE(ReglaQ)
+  IF GLO_SDAspecto.Reglas &= NULL THEN EXIT.
+  LOOP LocIdx = 1 TO RECORDS(GLO_SDAspecto.Reglas)
+    GET(GLO_SDAspecto.Reglas, LocIdx)
+    IF ERRORCODE() THEN CYCLE.
+    CLEAR(ReglaQ)
+    RQNro    = LocIdx
+    RQNombre = GLO_SDAspecto.Reglas.Nombre
+    RQTipos  = GLO_SDAspecto.ComaLista(GLO_SDAspecto.Reglas.Tipos)
+    RQTexto  = GLO_SDAspecto.ComaLista(GLO_SDAspecto.Reglas.Texto)
+    RQColor  = GLO_SDAspecto.Reglas.Background
+    ADD(ReglaQ)
+  END
+  DISPLAY(?ListaReglas)
+
+MostrarRegla ROUTINE
+  !-- Dos GET: uno a la queue de pantalla para saber que fila se toco, otro a
+  !-- la del motor por el indice real que guarda RQNro.
+  GET(ReglaQ, CHOICE(?ListaReglas))
+  IF ERRORCODE() THEN EXIT.
+  GET(GLO_SDAspecto.Reglas, RQNro)
+  IF ERRORCODE() THEN EXIT.
+  LocNombre  = GLO_SDAspecto.Reglas.Nombre
+  LocTipos   = GLO_SDAspecto.ComaLista(GLO_SDAspecto.Reglas.Tipos)
+  LocTexto   = GLO_SDAspecto.ComaLista(GLO_SDAspecto.Reglas.Texto)
+  LocPicture = GLO_SDAspecto.Reglas.Picture
+  LocModoTxt = GLO_SDAspecto.Reglas.ModoTexto
+  LocTestReq = GLO_SDAspecto.Reglas.TestReq
+  LocTestRO  = GLO_SDAspecto.Reglas.TestReadOnly
+  LocTestDis = GLO_SDAspecto.Reglas.TestDisable
+  LocColor   = GLO_SDAspecto.Reglas.Background
+  LocActiva  = GLO_SDAspecto.Reglas.Activa
+  LocCortar  = GLO_SDAspecto.Reglas.Cortar
+  ?BOXTestColor{PROP:Color} = LocColor
+  ?BOXTestColor{PROP:Fill} = LocColor
+  DISPLAY
+
+GuardarRegla ROUTINE
+  !-- Tipos y textos se escriben separados por coma y el motor los normaliza.
+  GET(ReglaQ, CHOICE(?ListaReglas))
+  IF ERRORCODE() THEN EXIT.
+  GET(GLO_SDAspecto.Reglas, RQNro)
+  IF ERRORCODE() THEN EXIT.
+  GLO_SDAspecto.Reglas.Nombre       = LocNombre
+  GLO_SDAspecto.Reglas.Tipos        = GLO_SDAspecto.PipeList(LocTipos)
+  GLO_SDAspecto.Reglas.Texto        = GLO_SDAspecto.PipeList(LocTexto)
+  GLO_SDAspecto.Reglas.Picture      = LocPicture
+  GLO_SDAspecto.Reglas.ModoTexto    = LocModoTxt
+  GLO_SDAspecto.Reglas.TestReq      = LocTestReq
+  GLO_SDAspecto.Reglas.TestReadOnly = LocTestRO
+  GLO_SDAspecto.Reglas.TestDisable  = LocTestDis
+  GLO_SDAspecto.Reglas.Background   = LocColor
+  GLO_SDAspecto.Reglas.Activa       = LocActiva
+  GLO_SDAspecto.Reglas.Cortar       = LocCortar
+  GLO_SDAspecto.Reglas.Acciones     = BOR(GLO_SDAspecto.Reglas.Acciones, sdAct:Color)
+  PUT(GLO_SDAspecto.Reglas)
+
+LlenarFijos ROUTINE
+  FREE(FijoQ)
+  FQTipo = 'LIST'   ; FQColor = GLO_SDAspecto.ColorList   ; ADD(FijoQ)
+  FQTipo = 'TAB'    ; FQColor = GLO_SDAspecto.ColorTab    ; ADD(FijoQ)
+  FQTipo = 'SHEET'  ; FQColor = GLO_SDAspecto.ColorSheet  ; ADD(FijoQ)
+  FQTipo = 'PANEL'  ; FQColor = GLO_SDAspecto.ColorPanel  ; ADD(FijoQ)
+  FQTipo = 'REGION' ; FQColor = GLO_SDAspecto.ColorRegion ; ADD(FijoQ)
+  FQTipo = 'COMBO'  ; FQColor = GLO_SDAspecto.ColorCombo  ; ADD(FijoQ)
+  FQTipo = 'OPTION' ; FQColor = GLO_SDAspecto.ColorOption ; ADD(FijoQ)
+  FQTipo = 'SPIN'   ; FQColor = GLO_SDAspecto.ColorSpin   ; ADD(FijoQ)
+  FQTipo = 'TEXT'   ; FQColor = GLO_SDAspecto.ColorText   ; ADD(FijoQ)
+  DISPLAY(?ListaFijos)
+
+MostrarFijo ROUTINE
+  GET(FijoQ, CHOICE(?ListaFijos))
+  IF ERRORCODE() THEN EXIT.
+  LocFijoColor = FQColor
+  ?BOXFijoColor{PROP:Color} = LocFijoColor
+  ?BOXFijoColor{PROP:Fill} = LocFijoColor
+
+  DISPLAY(?LocFijoColor)
+
+GuardarFijo ROUTINE
+  GET(FijoQ, CHOICE(?ListaFijos))
+  IF ERRORCODE() THEN EXIT.
+  CASE FQTipo
+  OF 'LIST'   ; GLO_SDAspecto.ColorList   = LocFijoColor
+  OF 'TAB'    ; GLO_SDAspecto.ColorTab    = LocFijoColor
+  OF 'SHEET'  ; GLO_SDAspecto.ColorSheet  = LocFijoColor
+  OF 'PANEL'  ; GLO_SDAspecto.ColorPanel  = LocFijoColor
+  OF 'REGION' ; GLO_SDAspecto.ColorRegion = LocFijoColor
+  OF 'COMBO'  ; GLO_SDAspecto.ColorCombo  = LocFijoColor
+  OF 'OPTION' ; GLO_SDAspecto.ColorOption = LocFijoColor
+  OF 'SPIN'   ; GLO_SDAspecto.ColorSpin   = LocFijoColor
+  OF 'TEXT'   ; GLO_SDAspecto.ColorText   = LocFijoColor
+  END
+  DO LlenarFijos
+[END]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Init'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8000
+PROPERTY:END
+DO LeerClase
+DO LlenarLista
+DO LlenarFijos
+[END]
+[END]
+[END]
+EMBED %ControlEventHandling
+[INSTANCES]
+WHEN '?ElegirFteCol'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+IF COLORDIALOG('Color de letra', LocFteCol)
+  DISPLAY(?LocFteCol)
+END
+
+[END]
+[END]
+WHEN '?ListaReglas'
+[INSTANCES]
+WHEN 'NewSelection'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+DO MostrarRegla
+[END]
+[END]
+WHEN '?AgregarTipo'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      !-- Agrega el tipo elegido a la lista, si no estaba ya.
+      !-- Las comas de los extremos hacen que la busqueda sea de item completo:
+      !-- sin ellas, LIST daria positivo dentro de DROPLIST.
+      IF LEN(CLIP(LocTipoSel))
+          IF NOT INSTRING(',' & CLIP(LocTipoSel) & ',', ',' & UPPER(CLIP(LocTipos)) & ',', 1, 1)
+              IF LEN(CLIP(LocTipos))
+                  LocTipos = CLIP(LocTipos) & ',' & CLIP(LocTipoSel)
+              ELSE
+                  LocTipos = CLIP(LocTipoSel)
+              END
+              DISPLAY(?LocTipos)
+          END
+      END
+[END]
+[END]
+WHEN '?ActualizarRegla'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+DO GuardarRegla
+DO LlenarLista
+
+[END]
+[END]
+WHEN '?NuevaRegla'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      !-- Se agrega al FINAL, o sea que se evalua ultima y pisa a las anteriores.
+      !-- Si no es lo que se quiere, moverla con Subir.
+      LocIdx = GLO_SDAspecto.AddRule('NuevaRegla','ENTRY')
+      IF LocIdx
+          DO LlenarLista
+          SELECT(?ListaReglas, LocIdx)
+          DO MostrarRegla
+      END
+[END]
+[END]
+WHEN '?BorrarRegla'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+GET(ReglaQ, CHOICE(?ListaReglas))
+IF NOT ERRORCODE()
+  CASE MESSAGE('Borrar la regla ' & CLIP(RQNombre) & '?','SDAspecto', |
+               ICON:Question, BUTTON:Yes+BUTTON:No, BUTTON:No)
+  OF BUTTON:Yes
+    GET(GLO_SDAspecto.Reglas, RQNro)
+    IF NOT ERRORCODE()
+      DELETE(GLO_SDAspecto.Reglas)
+      DO LlenarLista
+    END
+  END
+END
+
+[END]
+[END]
+WHEN '?SubirRegla'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      !-- Reordenar es DELETE + ADD en la posicion nueva: el buffer conserva los
+      !-- valores despues del DELETE, asi que se reinserta el mismo registro.
+      GET(ReglaQ, CHOICE(?ListaReglas))
+      IF NOT ERRORCODE()
+          LocIdx = RQNro
+          IF LocIdx > 1
+              GET(GLO_SDAspecto.Reglas, LocIdx)
+              IF NOT ERRORCODE()
+                  DELETE(GLO_SDAspecto.Reglas)
+                  ADD(GLO_SDAspecto.Reglas, LocIdx - 1)
+                  DO LlenarLista
+                  SELECT(?ListaReglas, LocIdx - 1)
+                  DO MostrarRegla
+              END
+          END
+      END
+[END]
+[END]
+WHEN '?BajarRegla'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+GET(ReglaQ, CHOICE(?ListaReglas))
+IF NOT ERRORCODE()
+  LocIdx = RQNro
+  IF LocIdx < RECORDS(GLO_SDAspecto.Reglas)
+    GET(GLO_SDAspecto.Reglas, LocIdx)
+    IF NOT ERRORCODE()
+      DELETE(GLO_SDAspecto.Reglas)
+      ADD(GLO_SDAspecto.Reglas, LocIdx + 1)
+      DO LlenarLista
+      SELECT(?ListaReglas, LocIdx + 1)
+      DO MostrarRegla
+    END
+  END
+END
+
+[END]
+[END]
+WHEN '?RestaurarFabrica'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      !-- Vuelve al esquema de fabrica que arma la clase en CargarDefaults().
+      !-- Queda en memoria: hay que Grabar para pasarlo al INI.
+      CASE MESSAGE('Se descartan TODAS las reglas actuales|y se vuelve al esquema de fabrica.' & |
+          '||Continuar?','SDAspecto', ICON:Question, BUTTON:Yes+BUTTON:No, BUTTON:No)
+      OF BUTTON:Yes
+          GLO_SDAspecto.CargarDefaults()
+          DO LlenarLista
+          MESSAGE('Esquema de fabrica cargado.||Usar Grabar para pasarlo al INI.', |
+              'SDAspecto',ICON:Asterisk)
+      END
+[END]
+[END]
+WHEN '?OkButton'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      !-- EscribirClase va ANTES: GuardarIni serializa el objeto, no la pantalla.
+      DO EscribirClase
+      IF SDAspectoGuardar()
+          MESSAGE('Configuracion grabada en:||' & CLIP(LocIni),'SDAspecto',ICON:Asterisk)
+      ELSE
+          MESSAGE('No se pudo grabar.||Revisar la ruta del INI.','SDAspecto',ICON:Exclamation)
+      END
+[END]
+[END]
+WHEN '?Recargar'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      CASE MESSAGE('Se descartan los cambios sin grabar.|Continuar?','SDAspecto', |
+          ICON:Question, BUTTON:Yes+BUTTON:No, BUTTON:No)
+      OF BUTTON:Yes
+          IF SDAspectoCargar()
+              DO LeerClase
+              DO LlenarLista
+          ELSE
+              MESSAGE('No se pudo leer el INI.','SDAspecto',ICON:Exclamation)
+          END
+      END
+[END]
+[END]
+WHEN '?Aplicar'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+      !-- Aplica sobre ESTA ventana, solo para ver el efecto.
+      DO EscribirClase
+      SDAspectoApply()
+[END]
+[END]
+WHEN '?CancelButton'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+POST(EVENT:CloseWindow)
+[END]
+[END]
+WHEN '?Button:JSColorLookup'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+      DO GuardarRegla
+      ?BOXTestColor{PROP:Color} = LocColor
+      ?BOXTestColor{PROP:Fill} = LocColor
+      DISPLAY(?LocColor)
+
+[END]
+[END]
+WHEN '?ListaFijos'
+[INSTANCES]
+WHEN 'NewSelection'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+  DO MostrarFijo
+[END]
+[END]
+WHEN '?ActualizarFijo'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+  DO GuardarFijo
+[END]
+[END]
+WHEN '?Button:JSColorLookup:2'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+      DO GuardarFijo
+      ?BOXFijoColor{PROP:Color} = LocFijoColor
+      ?BOXFijoColor{PROP:Fill} = LocFijoColor
+      DISPLAY(?LocFijoColor)
+
+[END]
+[END]
+[END]
+[END]
+[ADDITION]
+NAME JSColorTools JSColorLookupButton
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%JSCLColorVariable FIELD  (LocColor)
+%JSCLLanguage DEFAULT  ('Castellano')
+%JSCLGridQuality DEFAULT  ('Normal')
+%JSCLRefresh LONG  (1)
+%JSCLDisable LONG  (0)
+%JSCLDoPreview LONG  (0)
+%JSCLPreviewControl DEFAULT  ('')
+%JSCLPreviewProp DEFAULT  ('Relleno')
+[INSTANCE]
+INSTANCE 3
+[PROMPTS]
+%JSCLColorVariable FIELD  (LocFijoColor)
+%JSCLLanguage DEFAULT  ('(el global)')
+%JSCLGridQuality DEFAULT  ('(por defecto)')
+%JSCLRefresh LONG  (1)
+%JSCLDisable LONG  (0)
+%JSCLDoPreview LONG  (0)
+%JSCLPreviewControl DEFAULT  ('')
+%JSCLPreviewProp DEFAULT  ('Relleno')
+[WINDOW]
+Window  WINDOW('SDAspecto - Configuracion'),AT(,,400,291),FONT('MS Sans Serif',8,,FONT:regular), |
+          CENTER,GRAY,MDI,SYSTEM
+          SHEET,AT(2,2,396,268),USE(?Sheet1),#ORIG(?Sheet1),#ORDINAL(1)
+            TAB('General'),USE(?Tab1),#ORIG(?Tab1),#ORDINAL(2)
+              PROMPT('Esquema:'),AT(10,24),USE(?PromptEsq),TRN,#ORDINAL(3)
+              ENTRY(@s40),AT(130,24,150,10),USE(LocEsquema),#ORDINAL(4)
+              PROMPT('Archivo INI:'),AT(10,40),USE(?PromptIni),TRN,#ORDINAL(5)
+              ENTRY(@s255),AT(130,40,250,10),USE(LocIni),#ORDINAL(6)
+              PROMPT('Detectar requeridos por:'),AT(10,56),USE(?PromptReq),TRN,#ORDINAL(7)
+              LIST,AT(130,56,180,10),USE(LocModoReq),DROP(5),FROM('Cualquiera de los do' & |
+                's|#3|Solo atributo REQ|#1|Solo fondo del disenador|#2'),#ORDINAL(8)
+              STRING('LIST y COMBO no tienen atributo REQ: se marcan por color.'),AT(130,70, |
+                250,10),USE(?AvisoReq),TRN,#ORDINAL(9)
+              CHECK('Modo diagnostico'),AT(130,88),USE(LocDiag),#ORDINAL(10)
+              STRING('Muestra un cartel por ventana. Apagar en produccion.'),AT(130,100,250, |
+                10),USE(?AvisoDiag),TRN,#ORDINAL(11)
+            END
+            TAB('Tipografia'),USE(?Tab2),#ORDINAL(12)
+              CHECK('Aplicar tipografia'),AT(10,24),USE(LocFteAct),#ORDINAL(13)
+              PROMPT('Fuente:'),AT(10,40),USE(?PromptFte),TRN,#ORDINAL(14)
+              ENTRY(@s64),AT(130,40,150,10),USE(LocFteNom),#ORDINAL(15)
+              PROMPT('Tamano (-1 = no cambiar):'),AT(10,54),USE(?PromptTam),TRN,#ORDINAL(16)
+              SPIN(@n-3),AT(130,54,40,10),USE(LocFteTam),RANGE(-1,72),STEP(1),#ORDINAL(17)
+              PROMPT('Estilo:'),AT(10,68),USE(?PromptEst),TRN,#ORDINAL(18)
+              LIST,AT(130,68,150,10),USE(LocFteEst),DROP(5),FROM('No cambiar|#-1|Regula' & |
+                'r|#400|Negrita|#700|Cursiva|#4096|Negrita Cursiva|#4796'),#ORDINAL(19)
+              PROMPT('Color de letra (-1 = no cambiar):'),AT(10,82),USE(?PromptFteCol),TRN, |
+                #ORDINAL(20)
+              ENTRY(@n-14),AT(130,82,60,10),USE(LocFteCol),#ORDINAL(21)
+              BUTTON('...'),AT(194,82,16,10),USE(?ElegirFteCol),#ORDINAL(22)
+              PROMPT('Charset (-1 = no cambiar):'),AT(10,96),USE(?PromptChr),TRN,#ORDINAL(23)
+              ENTRY(@n-14),AT(130,96,60,10),USE(LocFteChr),#ORDINAL(24)
+              CHECK('Aplicar a la ventana'),AT(130,114),USE(LocFteVen),#ORDINAL(25)
+              CHECK('Aplicar a los controles'),AT(130,126),USE(LocFteCtl),#ORDINAL(26)
+              CHECK('Rescalar controles al cambiar la fuente'),AT(130,144),USE(LocResc),#ORDINAL(27)
+              CHECK('Rescalar tambien la ventana'),AT(130,156),USE(LocRescVen),#ORDINAL(28)
+              CHECK('Mantener la ventana centrada'),AT(130,168),USE(LocRecen),#ORDINAL(29)
+              STRING('El rescalado incluye alto de linea y anchos de columna de las LIST.'), |
+                AT(130,186,250,10),USE(?AvisoFte),TRN,#ORDINAL(30)
+            END
+            TAB('Fijos'),USE(?TabFijos),#ORDINAL(31)
+              PROMPT('Alto minimo (0 = no forzar):'),AT(10,24),USE(?PromptAlto),TRN,#ORDINAL(32)
+              SPIN(@n3),AT(150,24,40,10),USE(LocAltoMin),RANGE(0,50),STEP(1),#ORDINAL(33)
+              STRING('Se aplica a ENTRY, SPIN, CHECK, COMBO, LIST y BUTTON.'),AT(10,38,300, |
+                10),USE(?AvisoAlto),TRN,#ORDINAL(34)
+              STRING('Color de fondo por tipo de control.  -1 o 0 = no aplicar.'),AT(10,58, |
+                300,10),USE(?AvisoFijos),TRN,#ORDINAL(35)
+              LIST,AT(10,72,200,120),USE(?ListaFijos),VSCROLL,FORMAT('60L(2)|M~Tipo~@s1' & |
+                '2@70R(2)|M~Color~C(0)@n-11@'),FROM(FijoQ),#ORDINAL(36)
+              PROMPT('Color:'),AT(220,72),USE(?PromptFijo),TRN,#ORDINAL(37)
+              ENTRY(@n-14),AT(250,72,60,10),USE(LocFijoColor),#ORDINAL(38)
+              BUTTON('Actualizar'),AT(220,105,70,12),USE(?ActualizarFijo),#ORDINAL(39)
+              STRING('GROUP no figura: no es una superficie rellenable.'),AT(10,198,300,10), |
+                USE(?AvisoGroup),TRN,#ORDINAL(40)
+              BOX,AT(220,86,82,11),USE(?BOXFijoColor),COLOR(COLOR:Black),FILL(COLOR:Black), |
+                LINEWIDTH(1),#ORDINAL(41)
+              BUTTON,AT(315,71,12,12),USE(?Button:JSColorLookup:2),ICON('colors.ico'),FLAT, |
+                SKIP,#ORIG(?Button:JSColorLookup),#SEQ(3),#ORDINAL(42)
+            END
+            TAB('Reglas'),USE(?Tab3),#ORDINAL(43)
+              LIST,AT(6,20,388,88),USE(?ListaReglas),VSCROLL,FORMAT('24R(2)|M~#~C(0)@n4' & |
+                '@70L(2)|M~Regla~@s32@100L(2)|M~Tipos~@s40@114L(2)|M~Textos~@s40@60R(2)' & |
+                '|M~Color~C(0)@n-11@'),FROM(ReglaQ),#ORDINAL(44)
+              BUTTON('&Agregar'),AT(281,112,54,14),USE(?NuevaRegla),LEFT,ICON('wizins.ico'), |
+                #ORDINAL(45)
+              BUTTON('&Borrar'),AT(339,112,54,14),USE(?BorrarRegla),LEFT,ICON('wizdel.ico'), |
+                #ORDINAL(46)
+              BUTTON,AT(5,112,17,12),USE(?SubirRegla),ICON('Up.ico'),FLAT,#ORDINAL(47)
+              BUTTON,AT(26,112,17,12),USE(?BajarRegla),ICON('Down.ico'),FLAT,#ORDINAL(48)
+              BUTTON('Restaurar valores por Defecto'),AT(254,249,136,12),USE(?RestaurarFabrica), |
+                #ORDINAL(49)
+              STRING('Tipos y textos separados por coma. El orden de la lista es el ord' & |
+                'en de evaluacion.'),AT(5,238,388,10),USE(?AvisoReglas),TRN,#ORDINAL(50)
+              STRING('Los cambios quedan en memoria: usar Grabar para pasarlos al INI.'),AT(5, |
+                252,220,10),USE(?AvisoReglas2),TRN,#ORDINAL(51)
+              GROUP('Valores de la Regla'),AT(5,128,385,106),USE(?GROUP1),BOXED,TRN,#ORDINAL(52)
+                PROMPT('Nombre:'),AT(10,144),USE(?PromptNom),TRN,#ORDINAL(53)
+                ENTRY(@s32),AT(59,144,110,10),USE(LocNombre),#ORDINAL(54)
+                CHECK('Activa'),AT(183,144),USE(LocActiva),#ORDINAL(55)
+                CHECK('Corta la cascada'),AT(243,144),USE(LocCortar),#ORDINAL(56)
+                PROMPT('Tipos:'),AT(10,158),USE(?PromptTip),TRN,#ORDINAL(57)
+                ENTRY(@s160),AT(59,158,206,10),USE(LocTipos),#ORDINAL(58)
+                LIST,AT(270,158,92,10),USE(LocTipoSel),DROP(15),FROM('ENTRY|SPIN|TEXT|B' & |
+                  'UTTON|CHECK|OPTION|RADIO|COMBO|DROPCOMBO|DROPLIST|LIST|PROMPT|STRING' & |
+                  '|PANEL|REGION'),#ORDINAL(59)
+                BUTTON('+'),AT(366,156,18,10),USE(?AgregarTipo),TIP('Agrega el tipo ele' & |
+                  'gido a la lista'),#ORDINAL(60)
+                PROMPT('Textos:'),AT(10,172),USE(?PromptTxt),TRN,#ORDINAL(61)
+                ENTRY(@s255),AT(59,172,206,10),USE(LocTexto),#ORDINAL(62)
+                PROMPT('Modo:'),AT(270,172),USE(?PromptMT),TRN,#ORDINAL(63)
+                LIST,AT(299,172,84,10),USE(LocModoTxt),DROP(5),FROM('Exacto|#0|Contiene' & |
+                  '|#1|Empieza|#2'),#ORDINAL(64)
+                PROMPT('Picture:'),AT(10,186),USE(?PromptPic),TRN,#ORDINAL(65)
+                ENTRY(@s64),AT(59,186,110,10),USE(LocPicture),#ORDINAL(66)
+                PROMPT('Color:'),AT(183,186),USE(?PromptCol),TRN,#ORDINAL(67)
+                ENTRY(@n-14),AT(215,186,60,10),USE(LocColor),#ORDINAL(68)
+                BUTTON,AT(279,185,12,12),USE(?Button:JSColorLookup),ICON('colors.ico'),FLAT, |
+                  SKIP,#ORIG(?Button:JSColorLookup),#SEQ(1),#ORDINAL(69)
+                BOX,AT(302,186,82,11),USE(?BOXTestColor),COLOR(COLOR:Black),FILL(COLOR:Black), |
+                  LINEWIDTH(1),#ORDINAL(70)
+                PROMPT('Requerido:'),AT(10,202),USE(?PromptTR),TRN,#ORDINAL(71)
+                LIST,AT(59,202,62,10),USE(LocTestReq),DROP(5),FROM('Ignorar|#0|Si|#1|No|#2'), |
+                  #ORDINAL(72)
+                PROMPT('Solo lect.:'),AT(127,202),USE(?PromptTRO),TRN,#ORDINAL(73)
+                LIST,AT(175,202,62,10),USE(LocTestRO),DROP(5),FROM('Ignorar|#0|Si|#1|No|#2'), |
+                  #ORDINAL(74)
+                PROMPT('Deshab.:'),AT(246,202),USE(?PromptTD),TRN,#ORDINAL(75)
+                LIST,AT(290,202,62,10),USE(LocTestDis),DROP(5),FROM('Ignorar|#0|Si|#1|No|#2'), |
+                  #ORDINAL(76)
+                BUTTON('&Actualizar'),AT(166,216,54,14),USE(?ActualizarRegla),LEFT,ICON('WIZEDIT.ICO'), |
+                  #ORDINAL(77)
+              END
+            END
+          END
+          BUTTON('&Grabar'),AT(3,274,64,14),USE(?OkButton),LEFT,ICON('waok.ico'),DEFAULT,#ORDINAL(78)
+          BUTTON('&Recargar'),AT(71,274,54,14),USE(?Recargar),LEFT,ICON('WIZEDIT.ICO'),#ORDINAL(79)
+          BUTTON('&Aplicar'),AT(129,274,54,14),USE(?Aplicar),LEFT,ICON('waok.ico'),#ORDINAL(80)
+          BUTTON('C&errar'),AT(344,274,54,14),USE(?CancelButton),LEFT,ICON('waclose.ico'), |
+            #ORDINAL(81)
+        END
+

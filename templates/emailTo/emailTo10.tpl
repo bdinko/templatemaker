@@ -1,4 +1,4 @@
-#TEMPLATE(emailTo,'emailTo - Send e-mail from Clarion and manage the account: SMTP/TLS, OAuth2 and nine provider APIs - v1.12 (2026-08-24 22:45)'),FAMILY('ABC')
+#TEMPLATE(emailTo,'emailTo - Send e-mail from Clarion and manage the account: SMTP/TLS, OAuth2 and nine provider APIs - v1.12 (2026-08-24 22:45) - Clarion 10 (480) layout'),FAMILY('ABC')
 #!
 #!  Set by emailTo - Provider API when the application carries it, and read by
 #!  every template that writes a call to that object. A control template on a
@@ -93,9 +93,9 @@
 #SHEET
   #TAB('&General')
     #BOXED('emailTo')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
-      #DISPLAY('Global extension - add once per application.')
-      #DISPLAY('Makes the mail object available to every procedure in the app.')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45 Global extension - add  [480]')
+      #DISPLAY('once per application. Makes the mail object available to every')
+      #DISPLAY('procedure in the app.')
       #DISPLAY('')
       #DISPLAY('IMPORTANT: copy these files to the redirection path (the app')
       #DISPLAY('folder, or \clarion12\libsrc\win). All must be ANSI:')
@@ -107,32 +107,32 @@
       #DISPLAY('compiler. There is no DLL to ship and nothing to register.')
     #ENDBOXED
     #BOXED('Upgraded from v1.03? The API moved out of here')
-      #DISPLAY('v1.03 put the Provider API on a tab of THIS extension. It is')
-      #DISPLAY('now an extension of its own - "emailTo - Provider API" - so')
-      #DISPLAY('that adding it never disturbs an application that does not')
-      #DISPLAY('want it, and so that an app built before v1.03 keeps')
-      #DISPLAY('generating without being touched at all.')
+      #DISPLAY('v1.03 put the Provider API on a tab of THIS extension. It is now')
+      #DISPLAY('an extension of its own - "emailTo - Provider API" - so that')
+      #DISPLAY('adding it never disturbs an application that does not want it,')
+      #DISPLAY('and so that an app built before v1.03 keeps generating')
+      #DISPLAY('without being touched at all.')
       #DISPLAY('')
-      #DISPLAY('If you had it switched on here: Global Properties >')
-      #DISPLAY('Extensions > Insert > "emailTo - Provider API", and put the')
-      #DISPLAY('object name back. Anything this tab used to store is ignored.')
+      #DISPLAY('If you had it switched on here: Global Properties > Extensions')
+      #DISPLAY('> Insert > "emailTo - Provider API", and put the object name')
+      #DISPLAY('back. Anything this tab used to store is ignored.')
     #ENDBOXED
     #BOXED('Options')
       #PROMPT('&Disable this template',CHECK),%ETgDisable,DEFAULT(0),AT(10)
       #PROMPT('&Object name:',@s64),%ETgObject,REQ,DEFAULT('Mailer')
       #PROMPT('&Language:',DROP('English[1]|Espa' & CHR(241) & 'ol (Spanish)[2]')),%ETgLanguage,DEFAULT('1')
-      #PROMPT('&Keep a conversation log (for support)',CHECK),%ETgTrace,DEFAULT(1),AT(10)
+      #PROMPT('&Keep a conversation log',CHECK),%ETgTrace,DEFAULT(1),AT(10)
       #DISPLAY('The log is what the Setup window shows on its Log tab.')
       #DISPLAY('Passwords and tokens are masked before they reach it.')
     #ENDBOXED
   #ENDTAB
   #TAB('&Account')
     #BOXED('Where these settings come from')
-      #DISPLAY('These are the DEFAULTS the object starts with. If you nominate')
-      #DISPLAY('a settings table on the Table tab, whatever it holds overrides')
-      #DISPLAY('them at start-up, and the Setup window writes changes back.')
-      #DISPLAY('With no table, they are the defaults and the Setup window')
-      #DISPLAY('saves to an INI file beside the EXE.')
+      #DISPLAY('These are the DEFAULTS the object starts with. If you')
+      #DISPLAY('nominate a settings table on the Table tab, whatever it holds')
+      #DISPLAY('overrides them at start-up, and the Setup window writes')
+      #DISPLAY('changes back. With no table, they are the defaults and the')
+      #DISPLAY('Setup window saves to an INI file beside the EXE.')
     #ENDBOXED
     #BOXED('Account')
       #PROMPT('&Provider:',DROP('Other (SMTP)[0]|Gmail[1]|Outlook.com / Hotmail[2]|Microsoft 365[3]|Yahoo Mail[4]|iCloud Mail[5]|Zoho Mail[6]|Amazon SES[7]|SendGrid[8]|Mailgun[9]|Resend[10]|Brevo[11]|Postmark[12]|Mailjet[13]|SparkPost[14]|MailerSend[15]')),%ETgProvider,DEFAULT('0')
@@ -148,24 +148,26 @@
       #PROMPT('Sign in &with:',DROP('Nothing[0]|Password (AUTH LOGIN)[1]|Password (AUTH PLAIN)[2]|OAuth2 token (XOAUTH2)[3]')),%ETgAuth,DEFAULT('1')
       #PROMPT('&User name:',@s255),%ETgUser,DEFAULT('')
       #PROMPT('Pass&word:',@s255),%ETgPassword,DEFAULT('')
-      #DISPLAY('A password typed here is COMPILED IN. For anything you would')
-      #DISPLAY('not publish, leave it blank and let the Setup window store it -')
-      #DISPLAY('that path encrypts it with DPAPI for the Windows user.')
+      #DISPLAY('A password typed here is COMPILED IN. For anything you')
+      #DISPLAY('would not publish, leave it blank and let the Setup window')
+      #DISPLAY('store it - that path encrypts it with DPAPI for the Windows')
+      #DISPLAY('user.')
     #ENDBOXED
   #ENDTAB
   #TAB('&Sign-in')
     #BOXED('OAuth2 - Gmail, Outlook.com and Microsoft 365')
       #DISPLAY('Register a DESKTOP application with the provider and paste its')
-      #DISPLAY('Client ID here. A desktop client ID is not a secret: emailTo')
-      #DISPLAY('uses the PKCE flow, so nothing confidential is in your EXE.')
+      #DISPLAY('Client ID here. A desktop client ID is not a secret: emailTo uses')
+      #DISPLAY('the PKCE flow, so nothing confidential is in your EXE.')
       #DISPLAY('')
       #DISPLAY('  Google     console.cloud.google.com > Credentials >')
       #DISPLAY('             OAuth client ID > Desktop app')
       #DISPLAY('  Microsoft  portal.azure.com > App registrations > New >')
       #DISPLAY('             Public client, redirect http://localhost')
       #DISPLAY('')
-      #DISPLAY('Both must allow the loopback redirect http://127.0.0.1:<port>/')
-      #DISPLAY('which is what a desktop app registration gives you.')
+      #DISPLAY('Both must allow the loopback redirect')
+      #DISPLAY('http://127.0.0.1:<port>/ which is what a desktop app')
+      #DISPLAY('registration gives you.')
       #PROMPT('Client &ID:',@s255),%ETgClientId,DEFAULT('')
       #PROMPT('Client &secret:',@s255),%ETgClientSecret,DEFAULT('')
       #DISPLAY('(leave the secret blank for Microsoft, and for Google desktop')
@@ -176,9 +178,9 @@
     #BOXED('API key services')
       #PROMPT('API &key:',@s255),%ETgApiKey,DEFAULT('')
       #PROMPT('API &domain:',@s128),%ETgApiDomain,DEFAULT('')
-      #DISPLAY('The domain is Mailgun only - the domain you send from.')
-      #DISPLAY('For Mailjet, put the PUBLIC key in User name (Account tab)')
-      #DISPLAY('and the PRIVATE key here.')
+      #DISPLAY('The domain is Mailgun only - the domain you send from. For')
+      #DISPLAY('Mailjet, put the PUBLIC key in User name (Account tab) and')
+      #DISPLAY('the PRIVATE key here.')
     #ENDBOXED
   #ENDTAB
   #TAB('&Table')
@@ -187,8 +189,9 @@
       #DISPLAY('at start-up and writes it back when the Setup window saves.')
       #DISPLAY('Leave the table blank to use an INI file beside the EXE.')
       #DISPLAY('')
-      #DISPLAY('EmailTables.txt (shipped beside this template) has a ready-made')
-      #DISPLAY('structure you can paste straight into your dictionary.')
+      #DISPLAY('EmailTables.txt (shipped beside this template) has a')
+      #DISPLAY('ready-made structure you can paste straight into your')
+      #DISPLAY('dictionary.')
       #PROMPT('Settings &table:',FILE),%ETgFile
       #ENABLE(%ETgFile)
         #PROMPT('&Key to find the account by:',KEY(%ETgFile)),%ETgKey,REQ
@@ -236,12 +239,13 @@
         #DISPLAY('through Seal(): DPAPI encrypts them for the current Windows')
         #DISPLAY('user, then base64 makes the result safe for a text column.')
         #DISPLAY('Make those columns at least 400 characters, and the refresh')
-        #DISPLAY('token column 2000. A row copied to another machine is useless.')
+        #DISPLAY('token column 2000. A row copied to another machine is')
+        #DISPLAY('useless.')
       #ENDBOXED
     #ENDENABLE
     #BOXED('')
-      #DISPLAY('Every column is optional except the account name. A column you')
-      #DISPLAY('leave blank simply keeps whatever the Account tab set.')
+      #DISPLAY('Every column is optional except the account name. A column')
+      #DISPLAY('you leave blank simply keeps whatever the Account tab set.')
     #ENDBOXED
   #ENDTAB
   #TAB('&Multi-DLL')
@@ -254,8 +258,8 @@
       #DISPLAY('  the mail object; every app set to External: DLL imports')
       #DISPLAY('  them instead of compiling its own copy.')
       #DISPLAY('')
-      #DISPLAY('Add this extension to EVERY app in the suite and leave the')
-      #DISPLAY('box below alone.')
+      #DISPLAY('Add this extension to EVERY app in the suite and leave the box')
+      #DISPLAY('below alone.')
       #DISPLAY('')
       #DISPLAY('emailc.c is compiled only into the app that owns the classes,')
       #DISPLAY('because the PRAGMA lives in EmailNetClass.clw.')
@@ -271,9 +275,9 @@
     #ENDBOXED
     #BOXED('If the classes are missing from the generated .EXP')
       #DISPLAY('The export list is built from the IDE''s class registry. If')
-      #DISPLAY('EmailToClass is not in it yet, press "Refresh Application')
-      #DISPLAY('Builder Class Information" on the Global Properties Classes')
-      #DISPLAY('tab (or close and re-open the application) and generate again.')
+      #DISPLAY('EmailToClass is not in it yet, press "Refresh Application Builder')
+      #DISPLAY('Class Information" on the Global Properties Classes tab (or')
+      #DISPLAY('close and re-open the application) and generate again.')
     #ENDBOXED
   #ENDTAB
 #ENDSHEET
@@ -677,8 +681,8 @@ ETFound  BYTE
 #SHEET
   #TAB('&General')
     #BOXED('Asking the provider questions')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
-      #DISPLAY('Add this ONCE per application, alongside emailTo - Global.')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45 Add this ONCE per  [480]')
+      #DISPLAY('application, alongside emailTo - Global.')
       #DISPLAY('')
       #DISPLAY('The same key that sends the mail can also answer for the')
       #DISPLAY('account: who is blocked and why, statistics, contacts,')
@@ -692,16 +696,16 @@ ETFound  BYTE
       #PROMPT('&Object name:',@s64),%ETqObject,REQ,DEFAULT('MailApi')
       #PROMPT('&Mail object name:',@s64),%ETqMailObject,REQ,DEFAULT('Mailer')
       #DISPLAY('The object emailTo - Global declared. This one borrows its')
-      #DISPLAY('account and its HTTPS layer, so there is no second copy of')
-      #DISPLAY('a credential anywhere in the program.')
+      #DISPLAY('account and its HTTPS layer, so there is no second copy of a')
+      #DISPLAY('credential anywhere in the program.')
     #ENDBOXED
     #BOXED('How much to ask for')
       #PROMPT('&Rows per request:',@n5),%ETqPageSize,DEFAULT(100)
       #DISPLAY('How many rows to ask for at a time. The class keeps asking')
       #DISPLAY('until the provider runs out, so this is only the page size.')
       #PROMPT('&Stop after this many rows:',@n7),%ETqMaxRows,DEFAULT(5000)
-      #DISPLAY('A guard against a block list with a hundred thousand rows')
-      #DISPLAY('in it. Zero means no limit.')
+      #DISPLAY('A guard against a block list with a hundred thousand rows in')
+      #DISPLAY('it. Zero means no limit.')
     #ENDBOXED
   #ENDTAB
   #TAB('&Endpoint')
@@ -710,23 +714,22 @@ ETFound  BYTE
       #DISPLAY('settings table instead - name a column ApiKey2, ApiRegion or')
       #DISPLAY('ApiBase and emailTo - Global fills it, by name.')
       #PROMPT('Second &key:',@s255),%ETqKey2,DEFAULT('')
-      #DISPLAY('Postmark: its senders and domains endpoints want the ACCOUNT')
-      #DISPLAY('token, not the server token.')
-      #DISPLAY('Amazon SES: the AWS ACCESS KEY ID goes here and the secret in')
-      #DISPLAY('the API key, which leaves User name and Password free for the')
-      #DISPLAY('quite separate SMTP credentials SES also issues.')
-      #DISPLAY('Blank for everybody else.')
+      #DISPLAY('Postmark: its senders and domains endpoints want the')
+      #DISPLAY('ACCOUNT token, not the server token. Amazon SES: the AWS')
+      #DISPLAY('ACCESS KEY ID goes here and the secret in the API key, which')
+      #DISPLAY('leaves User name and Password free for the quite separate')
+      #DISPLAY('SMTP credentials SES also issues. Blank for everybody else.')
       #PROMPT('Re&gion:',@s32),%ETqRegion,DEFAULT('')
       #DISPLAY('Put eu here for a Mailgun or SparkPost account created in')
       #DISPLAY('Europe. Those are separate services with their own data - at')
       #DISPLAY('the default endpoint a European account looks empty, not')
       #DISPLAY('wrong. For Amazon SES this is the AWS REGION and it is part')
-      #DISPLAY('of the signature: eu-west-1, us-east-2, and so on. Blank')
-      #DISPLAY('means us-east-1 for SES, the default endpoint for the rest.')
+      #DISPLAY('of the signature: eu-west-1, us-east-2, and so on. Blank means')
+      #DISPLAY('us-east-1 for SES, the default endpoint for the rest.')
       #PROMPT('&Base address:',@s128),%ETqBase,DEFAULT('')
       #DISPLAY('Replaces the host - and the scheme, if you give one. For a')
-      #DISPLAY('private relay, or for pointing a test build at a stand-in.')
-      #DISPLAY('Blank is what you want in production.')
+      #DISPLAY('private relay, or for pointing a test build at a stand-in. Blank is')
+      #DISPLAY('what you want in production.')
     #ENDBOXED
   #ENDTAB
 #ENDSHEET
@@ -797,11 +800,11 @@ INCLUDE('EmailApiClass.INC'),ONCE                          #! pulls in all four 
 #SHEET
   #TAB('&General')
     #BOXED('emailTo - Sync')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
-      #DISPLAY('Add this ONCE per application, alongside emailTo - Global.')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45 Add this ONCE per  [480]')
+      #DISPLAY('application, alongside emailTo - Global.')
       #DISPLAY('')
-      #DISPLAY('It needs the Global extension''s "Provider API" tab switched')
-      #DISPLAY('on - that is where the object it reads through is declared.')
+      #DISPLAY('It needs the Global extension''s "Provider API" tab switched on')
+      #DISPLAY('- that is where the object it reads through is declared.')
       #PROMPT('&Disable this template',CHECK),%ETyDisable,DEFAULT(0),AT(10)
       #PROMPT('&Sync object name:',@s64),%ETyObject,REQ,DEFAULT('MailSync')
       #PROMPT('&API object name:',@s64),%ETyApiObject,REQ,DEFAULT('MailApi')
@@ -822,15 +825,15 @@ INCLUDE('EmailApiClass.INC'),ONCE                          #! pulls in all four 
       #DISPLAY('    entry - NOT the TXD one, which is Report Writer''s format')
       #DISPLAY('    and is refused with "This TXD file is a Report Writer')
       #DISPLAY('    only format".')
-      #PROMPT('&Keep the provider''s data in tables',CHECK),%ETyOn,DEFAULT(0),AT(10)
+      #PROMPT('&Keep the data in tables',CHECK),%ETyOn,DEFAULT(0),AT(10)
       #ENABLE(%ETyOn)
         #DISPLAY('')
-        #DISPLAY('Columns are matched BY NAME against the shipped dictionary,')
-        #DISPLAY('so a table imported from it needs nothing else. A column')
-        #DISPLAY('with any other name is simply left alone.')
-        #PROMPT('Stamp each row with the &provider and the date',CHECK),%ETyStamp,DEFAULT(1),AT(10)
-        #DISPLAY('Fills Provider and SyncedOn, if the table has them. Leave')
-        #DISPLAY('this on unless one table serves exactly one account.')
+        #DISPLAY('Columns are matched BY NAME against the shipped')
+        #DISPLAY('dictionary, so a table imported from it needs nothing else. A')
+        #DISPLAY('column with any other name is simply left alone.')
+        #PROMPT('Stamp &provider and date',CHECK),%ETyStamp,DEFAULT(1),AT(10)
+        #DISPLAY('Fills Provider and SyncedOn, if the table has them. Leave this')
+        #DISPLAY('on unless one table serves exactly one account.')
       #ENDENABLE
     #ENDBOXED
     #ENABLE(%ETyOn)
@@ -838,11 +841,11 @@ INCLUDE('EmailApiClass.INC'),ONCE                          #! pulls in all four 
         #PROMPT('&Table:',FILE),%ETyBlockedFile
         #ENABLE(%ETyBlockedFile)
           #PROMPT('&Key:',KEY(%ETyBlockedFile)),%ETyBlockedKey,REQ
-          #DISPLAY('The key that identifies one row. In the shipped dictionary')
-          #DISPLAY('that is MailBlocked.ByAddress (provider + address + kind).')
+          #DISPLAY('The key that identifies one row. In the shipped dictionary that')
+          #DISPLAY('is MailBlocked.ByAddress (provider + address + kind).')
         #ENDENABLE
-        #DISPLAY('Columns: Address, Kind, KindName, Reason, Code, BlockedOn,')
-        #DISPLAY('BlockedAt, Ref, Sender.')
+        #DISPLAY('Columns: Address, Kind, KindName, Reason, Code,')
+        #DISPLAY('BlockedOn, BlockedAt, Ref, Sender.')
       #ENDBOXED
       #BOXED('Statistics - one row per day')
         #PROMPT('T&able:',FILE),%ETyStatFile
@@ -864,9 +867,9 @@ INCLUDE('EmailApiClass.INC'),ONCE                          #! pulls in all four 
           #PROMPT('&Key:',KEY(%ETyEventFile)),%ETyEventKey,REQ
           #PROMPT('How many &days back:',@n5),%ETyEventDays,DEFAULT(7)
         #ENDENABLE
-        #DISPLAY('Columns: EventDate, EventTime, Address, EventName, Reason,')
-        #DISPLAY('Subject, MessageId, Link. This is much the biggest table -')
-        #DISPLAY('a busy sender makes thousands of rows a day.')
+        #DISPLAY('Columns: EventDate, EventTime, Address, EventName,')
+        #DISPLAY('Reason, Subject, MessageId, Link. This is much the biggest')
+        #DISPLAY('table - a busy sender makes thousands of rows a day.')
       #ENDBOXED
       #BOXED('Contacts')
         #PROMPT('Ta&ble:',FILE),%ETyContactFile
@@ -1264,7 +1267,7 @@ ETyMap%pWhat ROUTINE
 #SHEET
   #TAB('&General')
     #BOXED('Button')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('&Disable this button',CHECK),%ETbDisable,DEFAULT(0),AT(10)
       #PROMPT('Mail &object name:',@s64),%ETbObject,REQ,DEFAULT('Mailer')
       #DISPLAY('The object the emailToGlobal extension declared. Add that')
@@ -1273,12 +1276,12 @@ ETyMap%pWhat ROUTINE
     #BOXED('What this button does')
       #PROMPT('&Action:',DROP('Open the compose window[1]|Send straight away, no window[2]|Open the account setup window[3]')),%ETbAction,DEFAULT('1')
       #DISPLAY('')
-      #DISPLAY('Compose window     - the Message tab only PRE-FILLS what opens.')
-      #DISPLAY('Send straight away - the Message tab IS the message.')
-      #DISPLAY('Account setup      - the Message tab does not apply (greyed).')
+      #DISPLAY('Compose window - the Message tab only PRE-FILLS what')
+      #DISPLAY('opens. Send straight away - the Message tab IS the message.')
+      #DISPLAY('Account setup - the Message tab does not apply (greyed).')
       #DISPLAY('')
-      #DISPLAY('All three start life labelled "E-mail..." - rename the button')
-      #DISPLAY('in the window designer so two of them tell each other apart.')
+      #DISPLAY('All three start life labelled "E-mail..." - rename the button in')
+      #DISPLAY('the window designer so two of them tell each other apart.')
     #ENDBOXED
     #ENABLE(%ETbAction='2')
       #BOXED('After it runs (send straight away only)')
@@ -1289,10 +1292,10 @@ ETyMap%pWhat ROUTINE
   #ENDTAB
   #TAB('&Account')
     #BOXED('The sender address and password are NOT set here')
-      #DISPLAY('This button only says WHAT to do. Who the mail comes FROM -')
-      #DISPLAY('the server, the sender address, the user name, the password,')
-      #DISPLAY('the OAuth2 client - belongs to the whole application, not to')
-      #DISPLAY('one button, so it is set in ONE place:')
+      #DISPLAY('This button only says WHAT to do. Who the mail comes')
+      #DISPLAY('FROM - the server, the sender address, the user name, the')
+      #DISPLAY('password, the OAuth2 client - belongs to the whole')
+      #DISPLAY('application, not to one button, so it is set in ONE place:')
       #DISPLAY('')
       #DISPLAY('   Application - Global Properties - Extensions')
       #DISPLAY('      - "emailTo - Global" - Account tab')
@@ -1309,28 +1312,28 @@ ETyMap%pWhat ROUTINE
   #ENDTAB
   #TAB('&Message')
     #BOXED('')
-      #DISPLAY('This tab is only who the mail goes TO and what it says.')
-      #DISPLAY('Who it comes FROM is on the Account tab, not here.')
-      #DISPLAY('Greyed out below means this button''s Action sends nothing.')
+      #DISPLAY('This tab is only who the mail goes TO and what it says. Who it')
+      #DISPLAY('comes FROM is on the Account tab, not here. Greyed out')
+      #DISPLAY('below means this button''s Action sends nothing.')
     #ENDBOXED
     #ENABLE(%ETbAction<>'3')
     #BOXED('Who it goes to')
       #PROMPT('&To:',@s255),%ETbTo,DEFAULT('')
       #PROMPT('&Cc:',@s255),%ETbCc,DEFAULT('')
-      #DISPLAY('Type addresses, separated by ; or , - or name a variable or')
-      #DISPLAY('a field to take them from at run time (see below).')
-      #PROMPT('Take To from a &variable instead:',FIELD),%ETbToVar
+      #DISPLAY('Type addresses, separated by ; or , - or name a variable or a')
+      #DISPLAY('field to take them from at run time (see below).')
+      #PROMPT('To from a &variable:',FIELD),%ETbToVar
     #ENDBOXED
     #BOXED('What it says')
       #PROMPT('&Subject:',@s255),%ETbSubject,DEFAULT('')
-      #PROMPT('Take the subject from a v&ariable:',FIELD),%ETbSubjectVar
+      #PROMPT('Subject from a v&ariable:',FIELD),%ETbSubjectVar
       #PROMPT('&Body:',@s255),%ETbBody,DEFAULT('')
-      #PROMPT('Take the body from a va&riable:',FIELD),%ETbBodyVar
+      #PROMPT('Body from a va&riable:',FIELD),%ETbBodyVar
       #PROMPT('Body is &HTML',CHECK),%ETbHtml,DEFAULT(0),AT(10)
     #ENDBOXED
     #BOXED('Attachment')
       #PROMPT('&File name:',@s255),%ETbAttach,DEFAULT('')
-      #PROMPT('Take the file name from a variab&le:',FIELD),%ETbAttachVar
+      #PROMPT('File name from a variab&le:',FIELD),%ETbAttachVar
     #ENDBOXED
     #ENDENABLE
   #ENDTAB
@@ -1455,17 +1458,17 @@ INCLUDE('EmailToClass.INC'),ONCE
 #SHEET
   #TAB('&Message')
     #BOXED('Object')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('Mail &object name:',@s64),%ETcObject,REQ,DEFAULT('Mailer')
       #DISPLAY('')
       #DISPLAY('The sender address, server and password are NOT set here.')
       #DISPLAY('They are on the "emailTo - Global" extension, Account tab')
-      #DISPLAY('(Application - Global Properties - Extensions), set once')
-      #DISPLAY('for the whole application.')
+      #DISPLAY('(Application - Global Properties - Extensions), set once for the')
+      #DISPLAY('whole application.')
     #ENDBOXED
     #BOXED('Who it goes to')
       #PROMPT('&To:',@s255),%ETcTo,DEFAULT('')
-      #PROMPT('...or take To from this &variable:',FIELD),%ETcToVar
+      #PROMPT('...or from this &variable:',FIELD),%ETcToVar
       #PROMPT('&Cc:',@s255),%ETcCc,DEFAULT('')
       #PROMPT('&Bcc:',@s255),%ETcBcc,DEFAULT('')
     #ENDBOXED
@@ -1566,13 +1569,13 @@ INCLUDE('EmailToClass.INC'),ONCE
 #SHEET
   #TAB('&General')
     #BOXED('Object')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('Mail &object name:',@s64),%ETmObject,REQ,DEFAULT('Mailer')
       #DISPLAY('')
       #DISPLAY('The sender address, server and password are NOT set here.')
       #DISPLAY('They are on the "emailTo - Global" extension, Account tab')
-      #DISPLAY('(Application - Global Properties - Extensions), set once')
-      #DISPLAY('for the whole application.')
+      #DISPLAY('(Application - Global Properties - Extensions), set once for the')
+      #DISPLAY('whole application.')
     #ENDBOXED
     #BOXED('Pre-fill the window (all optional)')
       #PROMPT('&To:',@s255),%ETmTo,DEFAULT('')
@@ -1620,7 +1623,7 @@ INCLUDE('EmailToClass.INC'),ONCE
 #SHEET
   #TAB('&General')
     #BOXED('Object')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('Mail &object name:',@s64),%ETsObject,REQ,DEFAULT('Mailer')
       #DISPLAY('')
       #DISPLAY('This is where the END USER sets the account. The values it')
@@ -1662,7 +1665,7 @@ INCLUDE('EmailToClass.INC'),ONCE
 #SHEET
   #TAB('&General')
     #BOXED('Button')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('&Disable this button',CHECK),%ETaDisable,DEFAULT(0),AT(10)
       #PROMPT('&API object name:',@s64),%ETaObject,REQ,DEFAULT('MailApi')
       #DISPLAY('The object the emailToGlobal extension declared on its')
@@ -1675,11 +1678,12 @@ INCLUDE('EmailToClass.INC'),ONCE
       #DISPLAY('the first tab it CAN answer instead of showing an empty list.')
     #ENDBOXED
     #BOXED('Only show the button when it will work')
-      #PROMPT('&Hide the button if the provider has no API',CHECK),%ETaHide,DEFAULT(1),AT(10)
-      #DISPLAY('An account sending over plain SMTP - a company Exchange server,')
-      #DISPLAY('Gmail with an app password - has no management API at all. With')
-      #DISPLAY('this ticked the button disappears for those accounts instead of')
-      #DISPLAY('opening a window with every tab greyed out.')
+      #PROMPT('&Hide it if there is no API',CHECK),%ETaHide,DEFAULT(1),AT(10)
+      #DISPLAY('An account sending over plain SMTP - a company Exchange')
+      #DISPLAY('server, Gmail with an app password - has no management API')
+      #DISPLAY('at all. With this ticked the button disappears for those')
+      #DISPLAY('accounts instead of opening a window with every tab greyed')
+      #DISPLAY('out.')
     #ENDBOXED
   #ENDTAB
 #ENDSHEET
@@ -1727,7 +1731,7 @@ INCLUDE('EmailApiClass.INC'),ONCE
 #SHEET
   #TAB('&General')
     #BOXED('Button')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('&Disable this button',CHECK),%ETzDisable,DEFAULT(0),AT(10)
       #PROMPT('&Sync object name:',@s64),%ETzObject,REQ,DEFAULT('MailSync')
       #DISPLAY('The object the "emailTo - Sync provider data into your tables"')
@@ -1737,7 +1741,7 @@ INCLUDE('EmailApiClass.INC'),ONCE
     #BOXED('What it does')
       #DISPLAY('Calls <object>.Run(), which the emailTo - Sync extension')
       #DISPLAY('generated from the tables nominated there.')
-      #PROMPT('&Quietly - no message when it finishes',CHECK),%ETzSilent,DEFAULT(0),AT(10)
+      #PROMPT('&Quietly - no message',CHECK),%ETzSilent,DEFAULT(0),AT(10)
       #DISPLAY('Left off, it reports how many rows came down and how many')
       #DISPLAY('were new. Turn it on for a button that runs on a timer.')
       #PROMPT('Put the &row count in:',FIELD),%ETzResult
@@ -1786,29 +1790,28 @@ INCLUDE('EmailApiClass.INC'),ONCE
 #SHEET
   #TAB('&What to do')
     #BOXED('Object')
-      #DISPLAY('emailTo v1.12  -  built 2026-08-24 22:45')
+      #DISPLAY('emailTo v1.12 - built 2026-08-24 22:45  [480]')
       #PROMPT('&API object name:',@s64),%ETpObject,REQ,DEFAULT('MailApi')
     #ENDBOXED
     #BOXED('Operation')
       #PROMPT('&Do this:',DROP('Load the blocked addresses[1]|Unblock ONE address[2]|Unblock EVERY address[3]|Block an address[4]|Is this address blocked?[5]|Load the statistics[6]|Load the activity[7]|Load the contacts[8]|Load the lists[9]|Load the campaigns[10]|Send a campaign[11]|Export the blocked list to CSV[12]|Open the management window[13]|Sync it all into my tables[14]')),%ETpOp,DEFAULT('1')
       #ENABLE(%ETpOp='1' OR %ETpOp='2' OR %ETpOp='3' OR %ETpOp='4' OR %ETpOp='12')
         #PROMPT('W&hich list:',DROP('Everything[0]|Bounces[1]|Blocked[2]|Spam reports[3]|Unsubscribed[4]|Invalid[5]')),%ETpKind,DEFAULT('0')
-        #DISPLAY('A provider that keeps one list for all of them answers the')
-        #DISPLAY('same rows whichever you pick, labelled with what they are.')
+        #DISPLAY('A provider that keeps one list for all of them answers the same')
+        #DISPLAY('rows whichever you pick, labelled with what they are.')
       #ENDENABLE
     #ENDBOXED
     #BOXED('The address, id or file name it works on')
       #PROMPT('&Value:',@s255),%ETpArg,DEFAULT('')
-      #PROMPT('...or take it from this &variable:',FIELD),%ETpArgVar
+      #PROMPT('...or from this &variable:',FIELD),%ETpArgVar
       #DISPLAY('')
-      #DISPLAY('Unblock / Block / Is blocked  - an e-mail address.')
-      #DISPLAY('Send a campaign               - the campaign id.')
-      #DISPLAY('Export                        - the file to write.')
-      #DISPLAY('Everything else               - not used.')
+      #DISPLAY('Unblock / Block / Is blocked - an e-mail address. Send a')
+      #DISPLAY('campaign - the campaign id. Export - the file to write.')
+      #DISPLAY('Everything else - not used.')
       #DISPLAY('')
-      #DISPLAY('"Sync it all into my tables" calls MailSync.Run(), so it')
-      #DISPLAY('needs the "emailTo - Sync provider data into your tables"')
-      #DISPLAY('extension on this application, with its tables nominated.')
+      #DISPLAY('"Sync it all into my tables" calls MailSync.Run(), so it needs')
+      #DISPLAY('the "emailTo - Sync provider data into your tables" extension')
+      #DISPLAY('on this application, with its tables nominated.')
     #ENDBOXED
   #ENDTAB
   #TAB('&Result')
@@ -1829,8 +1832,8 @@ INCLUDE('EmailApiClass.INC'),ONCE
     #ENDBOXED
     #BOXED('If it fails')
       #PROMPT('&Show the error',CHECK),%ETpSayError,DEFAULT(1),AT(10)
-      #DISPLAY('Either way the reason is left in <object>.LastErrorText, and')
-      #DISPLAY('the address it called in <object>.LastUrl.')
+      #DISPLAY('Either way the reason is left in <object>.LastErrorText, and the')
+      #DISPLAY('address it called in <object>.LastUrl.')
     #ENDBOXED
     #BOXED('Before you call it')
       #DISPLAY('<object>.Supports(ETOp:Suppressions) is 0 when this provider')

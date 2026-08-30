@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BrowseGrid — Programmer's Documentation</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-d:#084d93; --navy:#0E1A2B; --navy-2:#16263c;
+    --ink:#22303f; --muted:#6b7785; --line:#e3e8ef; --bg:#f5f7fa;
+    --card:#ffffff; --green:#1e7c5a; --amber:#9a6a12; --amber-bg:#fff7e8;
+    --green-bg:#eef8f3; --blue-bg:#eef4fc; --red-bg:#fcecec; --red:#b23a2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  nav{width:280px;flex:0 0 280px;background:linear-gradient(180deg,var(--navy),var(--navy-2));
+    color:#cdd8e6;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  nav .brand{padding:0 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  nav .brand h1{font-size:16px;margin:0;color:#fff} nav .brand span{font-size:12px;color:#8aa0bb}
+  nav a{display:block;color:#b9c7d8;padding:6px 22px;font-size:13.5px;border-left:3px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+  nav a.h2{padding-left:34px;font-size:13px;color:#9fb2c8}
+  nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#6e85a1;
+    padding:14px 22px 4px;font-weight:700}
+  main{flex:1;min-width:0}
+  header.hero{background:linear-gradient(120deg,#0c2a4d,var(--blue));color:#fff;padding:46px 52px 38px}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.3px}
+  header.hero p{margin:0;font-size:15.5px;color:#dbe8f8;max-width:780px}
+  header.hero .pill{display:inline-block;margin-top:16px;background:rgba(255,255,255,.16);
+    padding:4px 12px;border-radius:20px;font-size:12.5px}
+  .body{padding:14px 52px 80px;max-width:940px}
+  section{padding:22px 0;border-bottom:1px solid var(--line);scroll-margin-top:50px} section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:14px 0 10px;color:var(--navy);scroll-margin-top:50px}
+  h3{font-size:16px;margin:20px 0 6px;color:var(--blue-d)}
+  p{margin:9px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  code,kbd,pre{font-family:"Cascadia Code",Consolas,monospace}
+  code{background:#eef1f5;padding:1px 6px;border-radius:4px;font-size:13px;color:#1d3b5e}
+  kbd{background:#1d2a3a;color:#e7eef7;padding:2px 7px;border-radius:5px;font-size:12px;
+    border:1px solid #324558;box-shadow:0 1px 0 #0b1420}
+  pre{background:#0f1d2e;color:#dbe6f2;padding:16px 18px;border-radius:10px;overflow:auto;
+    font-size:13px;line-height:1.55;margin:12px 0}
+  pre .c{color:#7fa6c9} pre .k{color:#79c0ff} pre .s{color:#7ee0b8} pre .t{color:#ffd591}
+  .callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid}
+  .tip{background:var(--green-bg);border-color:#bfe3d3;color:#155}
+  .note{background:var(--blue-bg);border-color:#c5dcf6;color:#13456f}
+  .warn{background:var(--amber-bg);border-color:#ecd9a6;color:#6f5210}
+  .danger{background:var(--red-bg);border-color:#e6b8b2;color:#7c241b}
+  .callout b{display:block;margin-bottom:2px}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f0f4f9;color:var(--navy);font-weight:600}
+  tr:hover td{background:#fafcff}
+  .lead{font-size:16px;color:#3a4756}
+  footer{padding:24px 52px;color:var(--muted);font-size:13px}
+  .top{font-size:12px;color:var(--muted);float:right}
+  .filetree{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:14px 18px;line-height:1.7;color:#37485a}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+  .gcard{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff}
+  .gcard h4{margin:0 0 4px;font-size:14px;color:var(--blue-d)}
+  .gcard p{margin:0;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><h1>BrowseGrid</h1><span>Programmer's Documentation &middot; v1.25</span></div>
+    <a href="#over">Overview</a>
+    <div class="grp">Using it</div>
+    <a href="#install" class="h2">Install &amp; register</a>
+    <a href="#exts" class="h2">The two extensions</a>
+    <a href="#browse" class="h2">Browse tab</a>
+    <a href="#columns" class="h2">Columns &amp; Heading menu</a>
+    <a href="#look" class="h2">Look, Colours, Variables</a>
+    <a href="#mouse" class="h2">Mouse tab</a>
+    <div class="grp">At run time</div>
+    <a href="#user" class="h2">What the end user gets</a>
+    <a href="#hooks" class="h2">Hooks for your code</a>
+    <div class="grp">Reference</div>
+    <a href="#limits" class="h2">Limits &amp; costs</a>
+    <a href="#diag" class="h2">Diagnostics</a>
+    <a href="#trouble" class="h2">Troubleshooting</a>
+  </nav>
+  <main>
+    <header class="hero">
+      <h1>BrowseGrid</h1>
+      <p>Draws any ABC browse with <b>Direct2D and DirectWrite</b> instead of the run-time
+         <code>LIST</code> &mdash; banding, frozen columns, its own heading, crisp text, totals and
+         per-cell colour &mdash; <b>without touching the browse underneath</b>.</p>
+      <span class="pill">ABC &middot; bound at run time, nothing to redistribute &middot; &lt;200&nbsp;&micro;s a fill &middot; EN/ES</span>
+    </header>
+    <div class="body">
+
+    <section id="over">
+      <h2>Overview <a href="#over" class="top">#</a></h2>
+      <p class="lead">The whole idea of this template is in the second half of that sentence.</p>
+      <p>BrowseGrid creates a <code>REGION</code> exactly on top of the browse's <code>LIST</code> and
+        draws the rows there itself. The <code>LIST</code> goes on filling its queue, counting visible
+        rows and holding the selection &mdash; it simply stops being the thing you look at.</p>
+      <div class="callout tip"><b>It is hidden from Windows, not from Clarion</b>
+        <code>WS_VISIBLE</code> is stripped off the <code>LIST</code>'s HWND, so Windows never paints
+        it. <code>HIDE()</code> would not do: that makes ABC decide it has no rows to load. Clearing the
+        style bit leaves <code>PROP:Hide</code>, the queue and the visible-row count untouched. The
+        <code>LIST</code> also keeps the <b>focus</b>, which is why every key an ABC browse has always
+        answered goes on working without a line being written &mdash; arrows, PageUp/PageDown, the
+        incremental locator, Insert, Delete, Enter. The region only ever needed the mouse, and a
+        <code>REGION</code> with <code>PROP:IMM</code> gets that with or without focus.</div>
+      <p>That is why <code>BrowseClass</code> keeps its file, order, filter, range and locator intact.
+        This replaces <i>how the rows look</i>, not how they are obtained &mdash; and it is what lets an
+        existing browse carry on working the moment you switch the extension off.</p>
+
+      <h3>Where what it draws comes from</h3>
+      <ul>
+        <li><b>The columns, from the <code>LIST</code> itself at run time</b>, through
+          <code>PROPLIST</code>: widths, headings, pictures and alignment. Whatever you set in the
+          formatter travels across on its own &mdash; including a column the user has just moved or
+          resized.</li>
+        <li><b>The values, from the browse queue</b>, read generically with
+          <code>WHAT(queue, field)</code>. Nothing here knows or cares which file is underneath.</li>
+        <li><b>The conditional colours, from the queue as well.</b> ABC has already evaluated your
+          conditions and left the four colours there; the grid honours them with nothing to
+          configure.</li>
+      </ul>
+      <div class="callout note"><b>Direct2D and DirectWrite are bound at run time</b>
+        with <code>LoadLibrary</code>, so there is no import library and nothing to redistribute. Both
+        have shipped with Windows since 7. If they were missing, the grid does not start and leaves you
+        the ordinary <code>LIST</code>.</div>
+    </section>
+
+    <section id="install">
+      <h2>Install &amp; register <a href="#install" class="top">#</a></h2>
+      <div class="filetree">
+        BrowseGrid.tpl&nbsp;&nbsp;&rarr; <b>template\win</b><br>
+        d2grid.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; <b>libsrc\win</b> &mdash; the engine, compiled by Clacpp with your app
+      </div>
+      <p><b>Setup &rarr; Template Registry &rarr; Add</b> &rarr; <code>BrowseGrid.tpl</code>, then add the
+        extension to a browse procedure and name the <code>LIST</code> it takes over.</p>
+      <div class="callout warn"><b>d2grid.c has to be where the redirection file can find it</b>
+        The template adds it to the project. If it is only in the template folder, the compile fails on
+        a source file it cannot find rather than on anything to do with the grid.</div>
+    </section>
+
+    <section id="exts">
+      <h2>The two extensions <a href="#exts" class="top">#</a></h2>
+      <h3><code>BrowseGridGlobal</code> &mdash; once per application</h3>
+      <p>Optional. It carries the application-wide defaults, of which the one that matters is the
+        <b>language of the texts the end user sees</b>. Without it, each grid falls back to English.</p>
+      <h3><code>BrowseGrid</code> &mdash; one per browse</h3>
+      <p>The working extension, <code>MULTI</code>, so a window with two browses gets two of them. Each
+        needs its own <b>Object name</b>.</p>
+      <div class="callout note"><b>The AppGen prompts stay in English whichever language you pick</b>
+        A programmer reads them; an end user never does.</div>
+    </section>
+
+    <section id="browse">
+      <h2>Browse tab <a href="#browse" class="top">#</a></h2>
+      <p>Identity of the grid, and what it attaches to.</p>
+      <table>
+        <tr><th>Prompt</th><th>Default</th><th>What it does</th></tr>
+        <tr><td>Disable this grid</td><td>off</td><td>Generates nothing for this browse. The <code>LIST</code> is left as it was &mdash; the way to back out without removing the extension.</td></tr>
+        <tr><td>Show grid diagnostics in the window title</td><td>off</td><td>Puts what the grid is using into the window title, and writes <code>BrowseGrid.log</code> beside the executable. See <a href="#diag">Diagnostics</a>.</td></tr>
+        <tr><td>Object name</td><td><code>Grid1</code>&hellip;</td><td>Prefix for everything the template declares for this grid. Two grids on one window each need their own.</td></tr>
+        <tr><td>Language</td><td>as the application</td><td>Lets this one grid speak differently from the rest.</td></tr>
+        <tr><td><b>LIST control to take over</b></td><td><i>required</i></td><td>The only prompt you always have to fill in.</td></tr>
+        <tr><td>Browse queue</td><td>blank</td><td>Blank reads the <code>LIST</code>'s own <code>FROM()</code> attribute at generate time, so an ABC browse needs nothing here whatever its queue is called. Fill it in only for a <code>LIST</code> bound with <code>PROP:From</code> at run time, where there is no <code>FROM()</code> to read.</td></tr>
+        <tr><td>File the browse reads</td><td>blank</td><td>Blank is the procedure's primary file. Used to size the scrollbar thumb and to feed <i>Filter by value</i>. It is a label, not a file prompt: naming it does not change what AppGen thinks the procedure uses.</td></tr>
+        <tr><td>Re-read the columns once the window has opened</td><td>off</td><td>Costs a second pass &mdash; see the note.</td></tr>
+      </table>
+      <div class="callout note"><b>The grid reads the LIST in <code>Init</code>, at priority 8800</b>
+        Anything your application does to the columns <i>after</i> that &mdash; a picture assigned from a
+        global, a heading built in code &mdash; the grid does not see. Tick the re-read only if you
+        configure columns at run time.</div>
+    </section>
+
+    <section id="columns">
+      <h2>Columns &amp; Heading menu tabs <a href="#columns" class="top">#</a></h2>
+      <p>The columns come from the <code>LIST</code>. These two tabs decide what the user may do
+        with them.</p>
+      <div class="callout note"><b>The prompts are spread over seven tabs</b>
+        <b>Browse</b>, <b>Columns</b>, <b>Heading menu</b>, <b>Look</b>, <b>Colours</b>,
+        <b>Variables</b> and <b>Mouse</b>. The split is by what things share rather than by size:
+        <i>Heading menu</i> holds filtering and auto-fit together because both hang off the same
+        tick &mdash; without the drop-down button there is no menu to put them on &mdash; and
+        <i>Colours</i> and <i>Variables</i> come out of <i>Look</i> because they are long flat
+        lists, not typography.</div>
+      <table>
+        <tr><th>Prompt</th><th>Default</th><th>What it does</th></tr>
+        <tr><td>Frozen columns</td><td>0</td><td>How many stay put when scrolling horizontally. In a grouped format this counts <b>groups</b>, not fields.</td></tr>
+        <tr><td>Let the user resize columns by dragging</td><td>on</td><td>The resulting width is written back to the <code>LIST</code>, so what is remembered between runs is the same number Clarion sees.</td></tr>
+        <tr><td>Sort when a heading is clicked</td><td>on</td><td>The click is handed to the browse, which sorts by the rule it already had. A browse without sort headers simply ignores it.</td></tr>
+        <tr><td>Columns&hellip; on the heading menu</td><td>on</td><td>Enables the dialog where the user shows and hides columns.</td></tr>
+        <tr><td>Remember this grid's layout between runs</td><td>on</td><td>Widths, filters and which columns total, through the application's own <code>INIMgr</code>, under a section named for the procedure and the grid.</td></tr>
+        <tr><td>Flatten a grouped or multi-line format</td><td>on</td><td>Every field becomes its own column on a single line, so resizing, sorting and freezing work field by field. Unticked, the record is drawn as the formatter builds it &mdash; and then widths cannot be dragged, because the fields inside the group would have to move too.</td></tr>
+        <tr><td>Excel-style drop-down button on every heading</td><td>off</td><td>Adds the filter button to each heading, and with it the whole column menu.</td></tr>
+        <tr><td>Offer <i>Filter by value&hellip;</i> on that menu</td><td>on</td><td>See the warning below.</td></tr>
+        <tr><td>Browse object</td><td>blank</td><td>Blank is deduced from the queue name: a browse's control, queue and object carry the same number (<code>?Browse:5</code>, <code>Queue:5</code>, <code>BRW5</code>), and no number means the first. Only write it if you renamed the object.</td></tr>
+        <tr><td>A row of totals along the bottom</td><td>off</td><td>Sums <b>every record the browse shows</b>, filter and range included &mdash; not the page on screen.</td></tr>
+        <tr><td>Auto-fit column widths on the heading menu</td><td>on</td><td>Adds <i>Auto-fit widths</i> to the menu, which sizes every visible column to the widest of its heading and its values.</td></tr>
+        <tr><td>Records to look ahead</td><td>1000</td><td>How far past the loaded page to read. <b>At 0 no file is touched</b> &mdash; only what is already in memory is measured.</td></tr>
+      </table>
+      <div class="callout warn"><b><i>Filter by value</i> is the one sequential scan in the template</b>
+        It walks the <b>whole file</b> collecting the distinct values of that column. It is sequential,
+        in the foreground, with no progress bar and no way to cancel &mdash; the only real network risk
+        here. Untick it if the browse looks at a large table over a slow link.</div>
+      <div class="callout tip"><b>A wrong guess at the browse object does not pass quietly</b>
+        A <code>BRW7</code> that does not exist is a compile error, not a grid that silently fails to
+        filter.</div>
+      <div class="callout note"><b>Check boxes need no prompt</b>
+        If a column is an icon column (<code>|I</code> in the format) and its icon set is the standard
+        <code>~BoxOff.ico</code> / <code>~BoxOn.ico</code> pair, the grid draws it as a check box. It
+        draws the box and the tick rather than loading the files, so they scale with the row. A
+        different icon set is not drawn badly &mdash; it is not drawn.</div>
+      <div class="callout note"><b>Auto-fit measures in two passes, and they are not the same pass</b>
+        The loaded page is already in memory, so <b>every cell of it is measured exactly</b> &mdash; a
+        few dozen rows, and it is what the user is looking at. Past the page there is no queue, only the
+        view, and walking it means <code>EVALUATE</code> by field <i>name</i> instead of
+        <code>WHAT</code> by field number, because what moves is the record buffer. That is the
+        expensive call &mdash; the totals cost ~14&nbsp;&micro;s a record for the same reason &mdash; so
+        out there the longest text is kept <b>by character count</b> and only the winner is measured.
+        <br><br>
+        Which is an approximation, and worth naming: in a proportional font ten <code>i</code>s are
+        narrower than four <code>W</code>s. It costs one measurement a column instead of one a cell, the
+        page &mdash; where being wrong would show &mdash; is exact, and a column that comes out a few
+        pixels shy is fixed by dragging it or pressing the option again.</div>
+      <div class="callout tip"><b>A hidden column stays hidden</b>
+        Its width is zero because somebody said so, and sizing it to its content would be un-hiding it
+        behind their back. Widths are clamped to 16 and 600 pixels, so a 4,000-character memo cannot
+        make a 4,000-pixel column.</div>
+
+      <div class="callout note"><b>Which columns total is a suggestion, not a verdict</b>
+        The picture proposes it (<code>@n</code> and <code>@e</code> yes; <code>@s</code> and
+        <code>@d</code> no; a check box never) and the user corrects it from the Columns dialog. It will
+        happily offer to total a column of document numbers, because a document number is a number.</div>
+    </section>
+
+    <section id="look">
+      <h2>Look tab <a href="#look" class="top">#</a></h2>
+      <p>Typeface, heights and colours.</p>
+      <table>
+        <tr><th>Prompt</th><th>Default</th><th>What it does</th></tr>
+        <tr><td>Font &middot; Size</td><td>Segoe UI &middot; 9</td><td>The size is in <b>points</b> and is converted to pixels internally.</td></tr>
+        <tr><td>Wrap text&hellip; &middot; Lines a cell may use</td><td>off &middot; 2</td><td>Every row becomes that tall, whether it needs the space or not. Rows of differing heights would drag the page size, the hit testing and the scrolling along with them.</td></tr>
+        <tr><td>Row height &middot; Header height</td><td>0 &middot; 0</td><td>At 0 the row follows the <code>LIST</code>'s line height, so the browse loads exactly as many records as there is room to draw. If you fix it, the <code>LIST</code> is given the same height so the two stay in agreement.</td></tr>
+        <tr><td>Colours</td><td>eight</td><td>Background, banding, lines, text, heading background and text, and the selected row. A system colour (<code>COLOR:Window</code> and family) is resolved with <code>GetSysColor</code>, so the grid follows the machine's theme.</td></tr>
+        <tr><td>Take any of these from a variable instead</td><td>off</td><td>Enables eleven fields: typeface, size and the eight colours. One left blank keeps the fixed value above; one carrying a name is <b>emitted as code</b>, so a global theme can drive the grid. Read once, at start-up.</td></tr>
+        <tr><td>Take the typeface from SD Aspecto</td><td>off</td><td>Typeface and size come from <b>SDAspecto</b>, and the two fields above are disabled. Colours are not affected.</td></tr>
+      </table>
+      <div class="callout note"><b>SDAspecto's typography is resolved at run time, not at generate time</b>
+        The grid asks the global instance &mdash; <code>GLO_SDAspecto.FuenteNombre</code> and
+        <code>.FuenteTamano</code> &mdash; rather than copying its prompts. It has to: SDAspecto's
+        prompts are the factory value, and its INI is read <i>afterwards</i> and overrides them. Reading
+        the prompt gave a grid configured at 11 while the rest of the window ran at 9 because the INI
+        said 9 &mdash; never failing, just uneven.
+        <br><br>
+        <code>FuenteAControles</code> is honoured, because the grid <b>is</b> a control: if SDAspecto has
+        been told not to touch controls, the grid keeps its own typeface just like the <code>LIST</code>
+        beside it. Empty and <code>-1</code> mean &ldquo;leave this alone&rdquo;, so they fall back to
+        this tab's value &mdash; worth keeping sensible even while it looks disabled.</div>
+      <div class="callout tip"><b>A cell's colour beats the column's, and the column's beats the row's</b>
+        The BrowseBox's conditional colours and the formatter's fixed ones are honoured with nothing to
+        configure; these eight are the ground they are applied over.</div>
+    </section>
+
+    <section id="mouse">
+      <h2>Mouse tab <a href="#mouse" class="top">#</a></h2>
+      <table>
+        <tr><th>Prompt</th><th>Default</th><th>What it does</th></tr>
+        <tr><td>Scrollbars &middot; Style</td><td>on &middot; Windows</td><td><b>Windows</b> &mdash; the horizontal one is Windows', the vertical one drawn. <b>Slim</b> &mdash; both drawn, thin and flat, in the grid's colours. <b>Overlay</b> &mdash; both over the rows and only while the pointer is on them, so the data keeps the full width.</td></tr>
+        <tr><td>Hand a right-click back to the browse popup</td><td>on</td><td>The browse's own menu still appears on right-click, with its Insert / Change / Delete.</td></tr>
+        <tr><td>A double click opens the record</td><td>on</td><td>Posts the browse's Change action.</td></tr>
+        <tr><td>LIST columns that also get the click</td><td>blank</td><td>See <a href="#hooks">Hooks</a> &mdash; this one has a sharp edge.</td></tr>
+      </table>
+    </section>
+
+    <section id="user">
+      <h2>What the end user gets <a href="#user" class="top">#</a></h2>
+      <p>None of this needs code from you.</p>
+      <h3>The heading menu</h3>
+      <p>With the drop-down button switched on, every heading opens up to ten options &mdash;
+        <i>Filter by value&hellip;</i> can be left out from the prompts:</p>
+      <table>
+        <tr><th>Option</th><th>What it does</th></tr>
+        <tr><td>Sort Ascending / Descending</td><td>Hands the request to the browse, which sorts by its own rule.</td></tr>
+        <tr><td>Filter on {value}</td><td>Filters by the selected row's value in that column.</td></tr>
+        <tr><td>Filter by value&hellip;</td><td>Opens the list of distinct values in the column, to tick the ones that matter.</td></tr>
+        <tr><td>Find text&hellip;</td><td>Asks for a string and keeps the rows that contain it. Case is ignored; in a numeric column it looks for an equal value. A tick in the dialog searches <b>every</b> column instead of just this one.</td></tr>
+        <tr><td>Clear this filter</td><td>Only that column's.</td></tr>
+        <tr><td>Clear all filters</td><td>Every column's.</td></tr>
+        <tr><td>Columns&hellip;</td><td>Show, hide, and choose which columns carry a total.</td></tr>
+        <tr><td>Auto-fit widths</td><td>Sizes every visible column to the widest of its heading and its values, in one go.</td></tr>
+        <tr><td>Reset layout</td><td>Back to the design widths, and forget what was remembered.</td></tr>
+      </table>
+      <p>Filters are <b>per column and they accumulate</b>: filtering a second column does not replace
+        the first. They are applied through the browse object's <code>SetFilter</code> with an
+        identifier of their own per column, so whatever filter you put on the BrowseBox stays intact and
+        ABC joins them for you.</p>
+      <h3>The dialogs</h3>
+      <p>In <i>Columns</i> and <i>Filter by value</i> the <b>space bar</b> toggles the highlighted row,
+        and there are buttons for whoever prefers to press one. Columns will not let you accept with
+        everything hidden: a grid with no columns has nowhere to click to undo it. <i>Find text</i> is a
+        single line plus the tick that widens the search to every column.</p>
+    </section>
+
+    <section id="hooks">
+      <h2>Hooks for your code <a href="#hooks" class="top">#</a></h2>
+      <p>Two situations where the grid needs to be told.</p>
+      <h3>If you touch the queue directly</h3>
+      <p>The grid learns the queue changed when ABC calls <code>Reset</code> or
+        <code>TakeNewSelection</code>. A hand-written <code>PUT(Queue:N)</code> &mdash; which is how
+        tagging templates tick a row &mdash; fires neither, so the cell goes on showing the old value.
+        Tell it:</p>
+      <pre><code>POST(BG:Refill:Grid1)      <span class="c">! the equate carries the object name</span></code></pre>
+      <p>That pours the queue into the grid and repaints, in memory. It is preferable to
+        <code>ThisWindow.Reset(1)</code>, which rereads the file.</p>
+      <div class="callout note"><b>If another template issues the refresh</b>
+        DAS_Tagging emits <code>ThisWindow.Reset(1)</code> of its own accord &mdash; there is nothing to
+        change and nothing worth editing: the template already hooks <code>Reset</code> and refills the
+        grid by itself.</div>
+      <h3>If you tick or toggle by clicking a column</h3>
+      <p>Those templates read <code>PROPLIST:MouseDownRow</code> and <code>MouseDownField</code> from the
+        <code>LIST</code> &mdash; that is, where the user clicked <i>on it</i>. The grid covers the
+        <code>LIST</code>, so that click never arrives and the column stops responding. Name the column
+        number in <b>LIST columns that also get the click</b> and the grid sets those two properties up
+        and posts the event.</p>
+      <div class="callout danger"><b>Only the columns you name &mdash; and not out of decorative caution</b>
+        <code>EVENT:Accepted</code> on a browse <code>LIST</code> is also how ABC is told a record was
+        <i>chosen</i>. Posting it on every click would open the edit form every time somebody touched a
+        row.</div>
+    </section>
+
+    <section id="limits">
+      <h2>Limits &amp; costs <a href="#limits" class="top">#</a></h2>
+      <p>Measured on a real application, not estimated.</p>
+      <h3>What drawing costs</h3>
+      <p>A complete fill &mdash; reading the queue and handing the engine every visible cell &mdash;
+        costs <b>under 200&nbsp;&micro;s</b>. A frame at 60&nbsp;Hz is 16,666&nbsp;&micro;s, so that is
+        1.2&nbsp;% of a frame. With the arrow key held down at 30 repeats a second, the grid uses
+        0.6&nbsp;% of one core.</p>
+      <h3>What it costs on disk</h3>
+      <p>There are <b>three file accesses</b> in all the generated code, and none of them is on the
+        drawing path. Everything else works against the in-memory queue ABC has already filled:
+        <code>BrowseClass</code> does exactly the I/O it did before.</p>
+      <table>
+        <tr><th>Where</th><th>What</th><th>When</th></tr>
+        <tr><td>Filter by value</td><td>Sequential scan, up to 50,000 records</td><td>Only if the user asks for it</td></tr>
+        <tr><td>Scrollbar</td><td><code>RECORDS()</code>, a header read</td><td>Every fill</td></tr>
+        <tr><td>Totals row</td><td>A walk of the view, ~14&nbsp;&micro;s a record</td><td>On open and when the filter changes</td></tr>
+      </table>
+      <h3>Ceilings</h3>
+      <table>
+        <tr><th>Thing</th><th>Ceiling</th><th>On reaching it</th></tr>
+        <tr><td>Columns per grid</td><td>64</td><td>The rest are not drawn</td></tr>
+        <tr><td>Simultaneous grids</td><td>16</td><td>The next one leaves the ordinary <code>LIST</code></td></tr>
+        <tr><td>Visible rows</td><td>512</td><td>A ceiling, not an allocation</td></tr>
+        <tr><td>Records totalled</td><td>200,000</td><td>The total is shown with a leading <code>&gt;</code></td></tr>
+      </table>
+      <h3>What the grid does not see</h3>
+      <ul>
+        <li><b>Column setup after <code>Init</code></b>, unless you turn the re-read on.</li>
+        <li><b>The total is not recomputed</b> when a range limit changes from another control. Sorting
+          does not recompute it either, and that is correct: sorting does not change the set.</li>
+      </ul>
+    </section>
+
+    <section id="diag">
+      <h2>Diagnostics <a href="#diag" class="top">#</a></h2>
+      <p>With one tick, the grid says what it is doing. The window title shows the column map:</p>
+      <pre><code>BG 1&gt;f1[@s20]w102S- 2&gt;f2[@n3]w22i3S- 3&gt;f4[@s60]w442S=CUE:SALDO
+   | q=16 fill=30 cols=3 rowh=21 page=15 us=126 avg=143</code></pre>
+      <p>Per column: which <code>LIST</code> column it came from, which queue field it reads, its
+        picture, its width in pixels, and whether it carries an icon (<code>i</code>), colours
+        (<code>c</code>) or a total (<code>S=</code>). Then how many records the queue holds, how many
+        fills have happened, and what the last fill took in microseconds.</p>
+      <p><code>BrowseGrid.log</code> is written beside the executable <b>only when the column map
+        changes</b>, so the transition that matters is not buried under hundreds of identical lines. On
+        opening, it also records what typeface each thing ended up with:</p>
+      <pre><code>Grid4 tipografia: lista=Roboto Medium/9 ventana=Roboto Medium/9
+                  grid=Roboto Medium/11 dpi=96</code></pre>
+      <p>All three on one line because the useful question is not what size the grid is, but whether it
+        is the same size as everything else. <code>dpi</code> is there because the engine builds its
+        surface pinned at 96: at <code>dpi=96</code> the numbers mean the same thing and a difference is
+        a real difference; on a scaled display the grid comes out smaller even when both say the same
+        size.</p>
+      <div class="callout tip"><b>When a browse draws nothing</b>
+        that map says immediately whether the problem was the queue, the columns, or rows that did not
+        fit &mdash; which are three different fixes.</div>
+      <p>With diagnostics off, none of this is generated.</p>
+    </section>
+
+    <section id="trouble">
+      <h2>Troubleshooting <a href="#trouble" class="top">#</a></h2>
+      <table>
+        <tr><th>Symptom</th><th>Cause</th></tr>
+        <tr><td>The compile fails on a missing source file</td><td><code>d2grid.c</code> is not where the redirection file looks.</td></tr>
+        <tr><td>The grid never appears; the ordinary <code>LIST</code> shows</td><td>Direct2D did not start, or this is the 17th grid. Turn diagnostics on.</td></tr>
+        <tr><td>A column shows nothing after a picture was assigned in code</td><td>The assignment ran after <code>Init</code>. Tick <i>Re-read the columns once the window has opened</i>.</td></tr>
+        <tr><td>A tag column stopped responding to clicks</td><td>Name its column number in <i>LIST columns that also get the click</i>.</td></tr>
+        <tr><td>A tagged row keeps showing the old value</td><td>The queue was changed with <code>PUT</code>. <code>POST(BG:Refill:<i>Object</i>)</code>.</td></tr>
+        <tr><td>The grid's text is bigger than the rest of the window</td><td>Check the <code>tipografia</code> line in the log. Compare <code>grid=</code> against <code>lista=</code>, and check <code>dpi</code>.</td></tr>
+        <tr><td>Widths cannot be dragged</td><td>The format is grouped and <i>Flatten</i> is off.</td></tr>
+        <tr><td>A column of document numbers is being totalled</td><td>The picture is numeric, so it was offered. Untick it in the Columns dialog.</td></tr>
+        <tr><td>Opening the column menu is slow over the network</td><td><i>Filter by value</i> scans the file. Untick <i>Offer Filter by value&hellip;</i>.</td></tr>
+      </table>
+    </section>
+
+    </div>
+    <footer>BrowseGrid v1.25 &mdash; the change history, with the reasoning behind each decision, is in <code>CHANGELOG.md</code>.</footer>
+  </main>
+</div>
+</body>
+</html>

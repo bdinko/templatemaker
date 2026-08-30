@@ -42,7 +42,7 @@ Beyond the port, this version adds features the ABC original does not have:
 | File | What it is |
 |---|---|
 | `BrowseGridLeg.tpl` | The template set: global extension, procedure extension, search box and filter bar control templates |
-| `d2grid.c` | The Direct2D grid, extended from the original with `d2g_FilterBtns` / `d2g_FilterOn` / `d2g_HitBtn` wiring and a `d2g_Carry` drag-reorder overlay (ghost chip + insertion line) |
+| `d2gridleg.c` | The Direct2D grid, extended from the original with `d2g_FilterBtns` / `d2g_FilterOn` / `d2g_HitBtn` wiring and a `d2g_Carry` drag-reorder overlay (ghost chip + insertion line) |
 
 The filter bar also needs `MyFilterClass.inc` / `MyFilterClass.clw` from
 [templates/myFilter](../myFilter) on the redirection path (with the INI-key fix

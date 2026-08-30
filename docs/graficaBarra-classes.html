@@ -73,7 +73,7 @@
 <body>
 <div class="wrap">
   <nav>
-    <div class="brand"><h1>graficaBarra</h1><span class="en">Class Guide · GraficaBarraClass · v2.0</span><span class="es">Guía de la clase · GraficaBarraClass · v2.0</span></div>
+    <div class="brand"><h1>graficaBarra</h1><span class="en">Class Guide · GraficaBarraClass · v2.1</span><span class="es">Guía de la clase · GraficaBarraClass · v2.1</span></div>
     <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
     <div class="grp"><span class="en">The object</span><span class="es">El objeto</span></div>
     <a href="#model" class="h2"><span class="en">Object model</span><span class="es">Modelo del objeto</span></a>
@@ -208,7 +208,7 @@
 
     <h3>Fixed storage, no allocation</h3>
     <p>All storage is <code>DIM</code>'d in the class, so one instance is a fixed block of about
-    <b>6.5&nbsp;KB</b>. That is the number to keep in mind if you <code>NEW</code> a dashboard's worth of
+    <b>7&nbsp;KB</b>. That is the number to keep in mind if you <code>NEW</code> a dashboard's worth of
     them.</p>
     <table>
       <tr><th>Equate</th><th>Value</th><th>What it caps</th></tr>
@@ -222,7 +222,7 @@
       band: it walks the categories forward along its own top edge and back along the one below, so
       2 × 48 = 96 corners — four to spare. Raise <code>MaxBars</code> and you must raise
       <code>MaxPoly</code> to at least <code>4 × MaxBars + 8</code> with it, or
-      <code>PolyAdd</code> starts dropping corners silently (<span class="src">GraficaBarraClass.clw:334</span>).</div>
+      <code>PolyAdd</code> starts dropping corners silently (<span class="src">GraficaBarraClass.clw:468</span>).</div>
 
     <h3>Non-virtual by design</h3>
     <p>No method carries the <code>VIRTUAL</code> attribute. A derived class can add methods and can
@@ -262,7 +262,7 @@
 
     <h3>Almacenamiento fijo, sin reservas</h3>
     <p>Todo el almacenamiento está <code>DIM</code>ensionado en la clase, así que una instancia es un
-    bloque fijo de unos <b>6,5&nbsp;KB</b>. Es la cifra a tener presente si hace <code>NEW</code> de
+    bloque fijo de unos <b>7&nbsp;KB</b>. Es la cifra a tener presente si hace <code>NEW</code> de
     varios para un tablero.</p>
     <table>
       <tr><th>Equate</th><th>Valor</th><th>Qué limita</th></tr>
@@ -276,7 +276,7 @@
       apilada: recorre las categorías de ida por su borde superior y de vuelta por el de abajo, o sea
       2 × 48 = 96 esquinas — sobran cuatro. Si sube <code>MaxBars</code>, suba también
       <code>MaxPoly</code> a por lo menos <code>4 × MaxBars + 8</code>, o <code>PolyAdd</code> empezará a
-      descartar esquinas en silencio (<span class="src">GraficaBarraClass.clw:334</span>).</div>
+      descartar esquinas en silencio (<span class="src">GraficaBarraClass.clw:468</span>).</div>
 
     <h3>No virtual, a propósito</h3>
     <p>Ningún método lleva el atributo <code>VIRTUAL</code>. Una clase derivada puede agregar métodos y
@@ -408,8 +408,16 @@ i        <span class="k">LONG</span>
         multi-series chart.</td></tr>
       <tr><td><code>SeriesColor[s]</code></td><td><code>LONG</code> ×8</td><td>Per-series colour override,
         <code>COLOR:None</code> = palette.</td></tr>
+      <tr><td><code>SeriesPlot[s]</code></td><td><code>LONG</code> ×8</td><td>How that series is drawn:
+        <code>Plot:Default</code> (0, whatever <code>ChartType</code> says), <code>Plot:Bar</code> or
+        <code>Plot:Line</code>. Set it through <code>SetSeriesPlot</code>. One series on
+        <code>Plot:Line</code> over the rest is a <b>combo</b>.</td></tr>
       <tr><td><code>SeriesValue[s−1,c]</code></td><td><code>REAL</code> ×7×48</td><td>Series <b>2…8</b>. Note
         the index shift.</td></tr>
+      <tr><td><code>NoVal[s,c]</code></td><td><code>BYTE</code> ×8×48</td><td>1 = that cell has <b>no value</b>:
+        the category is on the chart, this series has nothing to say about it. No bar is drawn and the line
+        <b>breaks</b> rather than diving to zero. Set it with <code>SetNoValue</code>, read it with
+        <code>HasValue</code>. No index shift here — series 1 is <code>NoVal[1,c]</code>.</td></tr>
     </table>
     <div class="warn"><b>The one index trap: series 1 does not live in <code>SeriesValue</code>.</b>
       Series 1 is <code>BarValue[c]</code>; series <i>s</i> for <i>s</i>&nbsp;≥&nbsp;2 is
@@ -417,7 +425,7 @@ i        <span class="k">LONG</span>
       exists so that v1 code — which only ever knew <code>BarValue</code> — keeps working untouched.
       <b>Never index the arrays yourself:</b> <code>GetValue(s,c)</code> and <code>SetValue(s,c,v)</code>
       hide the shift and range-check both subscripts
-      (<span class="src">GraficaBarraClass.clw:111,123</span>).</div>
+      (<span class="src">GraficaBarraClass.clw:132,163</span>).</div>
 
     <h3>How each chart type reads it</h3>
     <table>
@@ -459,12 +467,12 @@ i        <span class="k">LONG</span>
     <p>Nothing raises an error — the class simply stops accepting data. Guard your loop if that matters:</p>
     <ul>
       <li><code>AddBar</code> / <code>AddCat</code> past 48 categories: the call returns having done
-        nothing (<span class="src">clw:80, clw:97</span>).</li>
+        nothing (<span class="src">clw:90, clw:118</span>).</li>
       <li><code>AddSeries</code> past 8: returns the <i>current</i> count — so the number you get back is
         8 again, and two of your series will write to the same row
-        (<span class="src">clw:88</span>).</li>
+        (<span class="src">clw:98</span>).</li>
       <li><code>SetValue</code> with a subscript outside 1…48 / 1…8: returns without storing
-        (<span class="src">clw:113</span>).</li>
+        (<span class="src">clw:134</span>).</li>
     </ul>
 <pre>  <span class="k">LOOP</span> <span class="k">UNTIL</span> Access:Sales.Next()
     <span class="k">IF</span> Ventas.NBars &gt;= GraficaBarra:MaxBars <span class="k">THEN</span> <span class="k">BREAK</span>.   <span class="c">! stop before the class does</span>
@@ -494,8 +502,16 @@ i        <span class="k">LONG</span>
         en un gráfico multiserie.</td></tr>
       <tr><td><code>SeriesColor[s]</code></td><td><code>LONG</code> ×8</td><td>Color por serie,
         <code>COLOR:None</code> = paleta.</td></tr>
+      <tr><td><code>SeriesPlot[s]</code></td><td><code>LONG</code> ×8</td><td>Cómo se dibuja esa serie:
+        <code>Plot:Default</code> (0, lo que diga <code>ChartType</code>), <code>Plot:Bar</code> o
+        <code>Plot:Line</code>. Se fija con <code>SetSeriesPlot</code>. Una serie en
+        <code>Plot:Line</code> sobre el resto es un <b>combo</b>.</td></tr>
       <tr><td><code>SeriesValue[s−1,c]</code></td><td><code>REAL</code> ×7×48</td><td>Series <b>2…8</b>.
         Note el desplazamiento del índice.</td></tr>
+      <tr><td><code>NoVal[s,c]</code></td><td><code>BYTE</code> ×8×48</td><td>1 = esa celda <b>no tiene
+        valor</b>: la categoría está en el gráfico, esta serie no tiene nada que decir de ella. No se dibuja
+        barra y la línea <b>se corta</b> en vez de caer a cero. Se fija con <code>SetNoValue</code> y se lee
+        con <code>HasValue</code>. Acá no hay desplazamiento: la serie 1 es <code>NoVal[1,c]</code>.</td></tr>
     </table>
     <div class="warn"><b>La trampa de índice: la serie 1 no vive en <code>SeriesValue</code>.</b>
       La serie 1 es <code>BarValue[c]</code>; la serie <i>s</i> para <i>s</i>&nbsp;≥&nbsp;2 es
@@ -503,7 +519,7 @@ i        <span class="k">LONG</span>
       8, y existe para que el código v1 — que solo conocía <code>BarValue</code> — siga funcionando intacto.
       <b>Nunca indexe los arreglos usted mismo:</b> <code>GetValue(s,c)</code> y
       <code>SetValue(s,c,v)</code> ocultan el desplazamiento y validan ambos subíndices
-      (<span class="src">GraficaBarraClass.clw:111,123</span>).</div>
+      (<span class="src">GraficaBarraClass.clw:132,163</span>).</div>
 
     <h3>Cómo lo lee cada tipo</h3>
     <table>
@@ -547,12 +563,12 @@ i        <span class="k">LONG</span>
     <p>Nada genera un error — la clase simplemente deja de aceptar datos. Proteja su bucle si eso importa:</p>
     <ul>
       <li><code>AddBar</code> / <code>AddCat</code> pasadas las 48 categorías: la llamada vuelve sin hacer
-        nada (<span class="src">clw:80, clw:97</span>).</li>
+        nada (<span class="src">clw:90, clw:118</span>).</li>
       <li><code>AddSeries</code> pasadas las 8: devuelve el conteo <i>actual</i> — así que el número que
         recibe es 8 otra vez, y dos de sus series escribirán en la misma fila
-        (<span class="src">clw:88</span>).</li>
+        (<span class="src">clw:98</span>).</li>
       <li><code>SetValue</code> con un subíndice fuera de 1…48 / 1…8: vuelve sin guardar
-        (<span class="src">clw:113</span>).</li>
+        (<span class="src">clw:134</span>).</li>
     </ul>
 <pre>  <span class="k">LOOP</span> <span class="k">UNTIL</span> Access:Sales.Next()
     <span class="k">IF</span> Ventas.NBars &gt;= GraficaBarra:MaxBars <span class="k">THEN</span> <span class="k">BREAK</span>.   <span class="c">! pare antes que la clase</span>
@@ -597,11 +613,11 @@ i        <span class="k">LONG</span>
         by category instead of by series, so one bar in the group has the wrong colour.</td></tr>
       <tr><td><b><code>SetRange</code> after, not before, <code>AutoScale</code>.</b>
         <code>SetRange</code> sets <code>AutoScale = 0</code> as its last act
-        (<span class="src">clw:133</span>).</td>
+        (<span class="src">clw:173</span>).</td>
         <td>Setting <code>AutoScale = 1</code> <i>after</i> <code>SetRange</code> throws the fixed scale
         away and the axis is derived from the data again.</td></tr>
       <tr><td><b><code>ChartType</code> before <code>Demo()</code>.</b> <code>Demo</code> loads data
-        <i>suited to the current type</i> (<span class="src">clw:138</span>).</td>
+        <i>suited to the current type</i> (<span class="src">clw:178</span>).</td>
         <td><code>Demo()</code> then <code>ChartType = Chart:Pie</code> gives a pie of six monthly columns
         instead of the five regions it would have loaded.</td></tr>
       <tr><td><b>On a report, <code>SETTARGET</code> the band — not just the report.</b></td>
@@ -616,7 +632,7 @@ i        <span class="k">LONG</span>
       <li><code>ClearAll()</code> throws away the <b>data</b>. It cannot un-draw a chart that is already on
         the page.</li>
       <li><code>EraseFirst</code> (default 1) is what actually removes the old picture: <code>Paint</code>
-        wipes its own rectangle before drawing (<span class="src">clw:412-419</span>). A window
+        wipes its own rectangle before drawing (<span class="src">clw:584-591</span>). A window
         <code>IMAGE</code> gets a full <code>BLANK</code>; a report band gets
         <code>BLANK(x,y,w,h)</code> over the placeholder's rectangle plus a pad of bleed.</li>
     </ul>
@@ -670,11 +686,11 @@ i        <span class="k">LONG</span>
         colorea por categoría en vez de por serie, y una barra del grupo sale con el color equivocado.</td></tr>
       <tr><td><b><code>SetRange</code> después, no antes, de <code>AutoScale</code>.</b>
         <code>SetRange</code> pone <code>AutoScale = 0</code> como último acto
-        (<span class="src">clw:133</span>).</td>
+        (<span class="src">clw:173</span>).</td>
         <td>Poner <code>AutoScale = 1</code> <i>después</i> de <code>SetRange</code> descarta la escala fija
         y el eje vuelve a derivarse de los datos.</td></tr>
       <tr><td><b><code>ChartType</code> antes de <code>Demo()</code>.</b> <code>Demo</code> carga datos
-        <i>adecuados al tipo actual</i> (<span class="src">clw:138</span>).</td>
+        <i>adecuados al tipo actual</i> (<span class="src">clw:178</span>).</td>
         <td><code>Demo()</code> y luego <code>ChartType = Chart:Pie</code> da un pastel de seis columnas
         mensuales en vez de las cinco regiones que habría cargado.</td></tr>
       <tr><td><b>En un informe, <code>SETTARGET</code> a la banda — no solo al informe.</b></td>
@@ -690,7 +706,7 @@ i        <span class="k">LONG</span>
         la página.</li>
       <li><code>EraseFirst</code> (1 por defecto) es lo que realmente quita el dibujo anterior:
         <code>Paint</code> limpia su propio rectángulo antes de dibujar
-        (<span class="src">clw:412-419</span>). Un <code>IMAGE</code> de ventana recibe un
+        (<span class="src">clw:584-591</span>). Un <code>IMAGE</code> de ventana recibe un
         <code>BLANK</code> completo; una banda de informe recibe <code>BLANK(x,y,w,h)</code> sobre el
         rectángulo del marcador más un margen de sangrado.</li>
     </ul>
@@ -732,7 +748,7 @@ i        <span class="k">LONG</span>
       <code>ClearBars</code> for that.</div>
 
     <div class="sig">ClearBars PROCEDURE</div>
-    <p class="src">clw:52</p>
+    <p class="src">clw:56</p>
     <p>Sets <code>NBars = 0</code> and blanks all 48 labels, values and colours, plus every cell of
     <code>SeriesValue</code>. <b>Keeps</b> the series names and colours, so this is the method for
     reloading the same shape of chart with new numbers.</p>
@@ -740,7 +756,7 @@ i        <span class="k">LONG</span>
     back out would inherit a label and a colour from the chart that used to be in there.</p>
 
     <div class="sig">ClearAll PROCEDURE</div>
-    <p class="src">clw:68</p>
+    <p class="src">clw:77</p>
     <p><code>ClearBars</code> plus <code>NSeries = 0</code> and the series names and colours blanked.
     This is the one to use whenever the chart changes shape — a different type, a different number of
     series, a different query.</p>
@@ -749,7 +765,7 @@ i        <span class="k">LONG</span>
       rectangle at the next <code>Paint</code>.</div>
 
     <div class="sig">AddBar PROCEDURE(STRING pLabel, REAL pValue, LONG pColor = -1)</div>
-    <p class="src">clw:78</p>
+    <p class="src">clw:88</p>
     <table>
       <tr><th>Parameter</th><th>Meaning</th></tr>
       <tr><td><code>pLabel</code></td><td>Category label, truncated to 32 characters.</td></tr>
@@ -760,11 +776,14 @@ i        <span class="k">LONG</span>
     </table>
     <p>Appends one category. Past 48 the call does nothing at all.</p>
 
-    <div class="sig">AddSeries PROCEDURE(STRING pName, LONG pColor = -1), LONG, PROC</div>
-    <p class="src">clw:86</p>
+    <div class="sig">AddSeries PROCEDURE(STRING pName, LONG pColor = -1, LONG pPlot = 0), LONG, PROC</div>
+    <p class="src">clw:96</p>
     <p>Names a series and returns its number, so you can keep the number for <code>SetValue</code>.
     Declared <code>PROC</code>, so you may call it as a statement and ignore the result. Call it once per
     series, <b>before</b> loading categories.</p>
+    <p><code>pPlot</code> (new in v2.1) is the series' shape — <code>Plot:Bar</code> or
+    <code>Plot:Line</code>. It defaults to <code>Plot:Default</code>, which is what every call written
+    before v2.1 passes without knowing it, so nothing about those calls changed.</p>
     <p>Naming two or more series changes three things at once: colours go per series instead of per
     category, the legend has something to show (and so gets space reserved), and stacked types have
     something to stack.</p>
@@ -775,15 +794,42 @@ SSur    <span class="k">LONG</span>
   SSur   = Ventas.AddSeries(<span class="s">'Sur'</span>, 0A4A62Ch)  <span class="c">! returns 2, teal</span>
   Ventas.SetValue(SSur, 3, 61)</pre>
 
+    <div class="sig">SetSeriesPlot PROCEDURE(LONG pSeries, LONG pPlot)</div>
+    <p class="src">clw:105</p>
+    <p>Sets one series' shape after the fact — the readable half of <code>AddSeries</code>' third
+    parameter, and the call the template generates. <code>Plot:Bar</code>, <code>Plot:Line</code>, or
+    <code>Plot:Default</code> to hand the decision back to <code>ChartType</code>.</p>
+    <p>Once any series carries a shape of its own the chart is a <b>combo</b>, and the bars and the line
+    are drawn one after the other over the same plot: bars first, lines on top, because a trend line
+    under its own columns is a line nobody can see. Both read the <b>one</b> value axis, which is the
+    limit worth knowing — the scale is computed from every series together, so a trend in different
+    units (a percentage against millions in sales) flattens itself against the bars. Keep them in the
+    same units.</p>
+    <p>A line series <b>takes no room in the category slot</b>: with one bar series and one line series
+    the bars are full width, exactly as they are on a one-series chart, rather than squeezed into half a
+    slot by a series that is not drawn there. The legend keys it with a line and its marker instead of a
+    block.</p>
+    <p>Only the upright cartesian types can hold a combo — <code>Chart:Column</code>,
+    <code>Chart:Line</code> and <code>Chart:Scatter</code>. A stack has nothing to overlay, a horizontal
+    bar chart has no vertical line painter, and a pie is not a cartesian chart at all; on those the
+    property is simply not read. <code>ClearAll</code> resets it, so a reused object cannot inherit the
+    last chart's shapes.</p>
+<pre>  Ventas.ChartType = Chart:Column
+  Ventas.AddSeries(<span class="s">'Ventas'</span>)             <span class="c">! bars, because the type says so</span>
+  Ventas.AddSeries(<span class="s">'Tendencia'</span>)
+  Ventas.SetSeriesPlot(2, Plot:Line)      <span class="c">! ...but this one is a line</span>
+  Ventas.AddCat(<span class="s">'Ene'</span>, 120, 118)         <span class="c">! both off the same axis</span>
+  Ventas.AddCat(<span class="s">'Feb'</span>,  95, 112)</pre>
+
     <div class="sig">AddCat PROCEDURE(STRING pLabel, REAL v1, REAL v2=0 … REAL v8=0)</div>
-    <p class="src">clw:94</p>
+    <p class="src">clw:115</p>
     <p>Appends one category with a value for each series — the multi-series counterpart of
     <code>AddBar</code>. Omitted values are zero. Sets the category's colour to <code>COLOR:None</code>,
     so there is no per-category colour override through this route (there is nothing sensible for it to
     mean once several series share the slot).</p>
 
     <div class="sig">SetValue PROCEDURE(LONG pSeries, LONG pCat, REAL pValue)</div>
-    <p class="src">clw:111</p>
+    <p class="src">clw:132</p>
     <p>Writes one cell of the grid, hiding the series-1 index shift. Handy when the data does not arrive
     in category order — a crosstab query, or a monthly grid you fill as records land in any month.</p>
     <p><b>It grows the grid.</b> If <code>pSeries</code> exceeds <code>NSeries</code> or <code>pCat</code>
@@ -800,24 +846,49 @@ SSur    <span class="k">LONG</span>
     Ventas.SetValue(SAL:Year - 2024, <span class="k">MONTH</span>(SAL:Date), SAL:Amount)
   <span class="k">END</span></pre>
 
+    <div class="sig">SetNoValue PROCEDURE(LONG pSeries, LONG pCat)</div>
+    <p class="src">clw:150</p>
+    <p>Says that one series has <b>nothing to say</b> about one category. The category stays on the chart
+    and every other series keeps drawing it; this one draws no bar, no marker and no value label there, and
+    its line <b>breaks</b> at that point instead of diving to zero.</p>
+    <p>The case that asks for it: a row of periods with an <b>average</b> bar on the end. The average
+    belongs on the chart, but a trend line has no business running out to it — and a plain zero would drag
+    the line off the bottom of the plot. Mark the cell and the line stops at the last real period while the
+    bar is drawn as normal.</p>
+<pre>  Ventas.AddCat(<span class="s">'Prm.'</span>, 90600000, 0)        <span class="c">! the average: a bar…</span>
+  Ventas.SetNoValue(2, Ventas.NBars)      <span class="c">! …but no point on the trend</span></pre>
+    <p>A gap in the <b>middle</b> works the same way and breaks the line into two runs; a smooth line breaks
+    with it, and the two Catmull-Rom control points fall back to the segment's own ends when the neighbour
+    next door is empty.</p>
+    <p>It does not count towards the auto-scale, so an empty cell cannot stretch the axis. It is honoured by
+    the <b>bar and line</b> painters: a stack, an area, a pie and a radar all read the cell as a plain zero,
+    because a hole in a stack or a slice is not a thing. <code>SetValue</code> clears the flag — giving a
+    cell a value gives it one back — and <code>ClearAll</code> resets every flag.</p>
+
+    <div class="sig">HasValue PROCEDURE(LONG pSeries, LONG pCat), BYTE</div>
+    <p class="src">clw:156</p>
+    <p>0 when that cell was marked with <code>SetNoValue</code> or is out of range, 1 otherwise. Every
+    painter asks this before it draws a point. <code>GetValue</code> still answers 0 for such a cell, so
+    read them together if the difference matters.</p>
+
     <div class="sig">GetValue PROCEDURE(LONG pSeries, LONG pCat), REAL</div>
-    <p class="src">clw:123</p>
+    <p class="src">clw:163</p>
     <p>Reads one cell. Returns 0 for any subscript outside the arrays — it never raises an error, so it is
     safe to call in a loop that runs past the data. Every painter reads the grid through this one method,
     which is why the index shift is invisible everywhere else.</p>
 
     <div class="sig">SetRange PROCEDURE(REAL pMin, REAL pMax)</div>
-    <p class="src">clw:130</p>
+    <p class="src">clw:170</p>
     <p>Fixes the value axis and turns <code>AutoScale</code> off in the same call. Use it when several
     charts must be comparable, or when the auto scale's "nice" rounding gives you more headroom than you
     want.</p>
 <pre>  Ventas.SetRange(0, 100)      <span class="c">! same axis on every chart of the dashboard</span></pre>
     <p>Three types overrule it: <code>Chart:Stacked100</code> always uses 0…100
-    (<span class="src">clw:544</span>), and <code>Chart:Radar</code> always starts at zero — it reads
-    <code>MaxVal</code> but ignores <code>MinVal</code> (<span class="src">clw:1180</span>).</p>
+    (<span class="src">clw:714</span>), and <code>Chart:Radar</code> always starts at zero — it reads
+    <code>MaxVal</code> but ignores <code>MinVal</code> (<span class="src">clw:1390</span>).</p>
 
     <div class="sig">Demo PROCEDURE</div>
-    <p class="src">clw:135</p>
+    <p class="src">clw:175</p>
     <p>A self-test. Calls <code>ClearAll()</code> and loads sample data chosen for the <i>current</i>
     <code>ChartType</code>: five regions for the pie family, three series over five months for the stacked
     family, six months of single-series data for everything else. Set <code>ChartType</code> first.</p>
@@ -842,7 +913,7 @@ SSur    <span class="k">LONG</span>
       para eso use <code>ClearBars</code>.</div>
 
     <div class="sig">ClearBars PROCEDURE</div>
-    <p class="src">clw:52</p>
+    <p class="src">clw:56</p>
     <p>Pone <code>NBars = 0</code> y blanquea las 48 etiquetas, valores y colores, más todas las celdas de
     <code>SeriesValue</code>. <b>Conserva</b> los nombres y colores de las series, así que es el método
     para recargar el mismo tipo de gráfico con números nuevos.</p>
@@ -850,7 +921,7 @@ SSur    <span class="k">LONG</span>
     <code>NBars</code> heredaría una etiqueta y un color del gráfico anterior.</p>
 
     <div class="sig">ClearAll PROCEDURE</div>
-    <p class="src">clw:68</p>
+    <p class="src">clw:77</p>
     <p><code>ClearBars</code> más <code>NSeries = 0</code> y los nombres y colores de series en blanco.
     Es el que conviene siempre que el gráfico cambie de forma — otro tipo, otro número de series, otra
     consulta.</p>
@@ -859,7 +930,7 @@ SSur    <span class="k">LONG</span>
       <code>EraseFirst</code> limpie el rectángulo en el siguiente <code>Paint</code>.</div>
 
     <div class="sig">AddBar PROCEDURE(STRING pLabel, REAL pValue, LONG pColor = -1)</div>
-    <p class="src">clw:78</p>
+    <p class="src">clw:88</p>
     <table>
       <tr><th>Parámetro</th><th>Significado</th></tr>
       <tr><td><code>pLabel</code></td><td>Etiqueta de la categoría, truncada a 32 caracteres.</td></tr>
@@ -872,11 +943,14 @@ SSur    <span class="k">LONG</span>
     </table>
     <p>Agrega una categoría. Pasadas las 48, la llamada no hace absolutamente nada.</p>
 
-    <div class="sig">AddSeries PROCEDURE(STRING pName, LONG pColor = -1), LONG, PROC</div>
-    <p class="src">clw:86</p>
+    <div class="sig">AddSeries PROCEDURE(STRING pName, LONG pColor = -1, LONG pPlot = 0), LONG, PROC</div>
+    <p class="src">clw:96</p>
     <p>Nombra una serie y devuelve su número, para que pueda guardarlo y usarlo con <code>SetValue</code>.
     Declarado <code>PROC</code>, así que puede llamarlo como sentencia e ignorar el resultado. Llámelo una
     vez por serie, <b>antes</b> de cargar categorías.</p>
+    <p><code>pPlot</code> (nuevo en v2.1) es la forma de la serie — <code>Plot:Bar</code> o
+    <code>Plot:Line</code>. Por defecto vale <code>Plot:Default</code>, que es lo que pasa sin saberlo
+    toda llamada escrita antes de la v2.1, así que nada de esas llamadas cambió.</p>
     <p>Nombrar dos o más series cambia tres cosas a la vez: los colores van por serie en vez de por
     categoría, la leyenda tiene algo que mostrar (y por eso se le reserva espacio) y los tipos apilados
     tienen algo que apilar.</p>
@@ -887,15 +961,43 @@ SSur    <span class="k">LONG</span>
   SSur   = Ventas.AddSeries(<span class="s">'Sur'</span>, 0A4A62Ch)  <span class="c">! devuelve 2, verde azulado</span>
   Ventas.SetValue(SSur, 3, 61)</pre>
 
+    <div class="sig">SetSeriesPlot PROCEDURE(LONG pSeries, LONG pPlot)</div>
+    <p class="src">clw:105</p>
+    <p>Fija la forma de una serie después del hecho — la mitad legible del tercer parámetro de
+    <code>AddSeries</code>, y la llamada que genera el template. <code>Plot:Bar</code>,
+    <code>Plot:Line</code>, o <code>Plot:Default</code> para devolverle la decisión a
+    <code>ChartType</code>.</p>
+    <p>En cuanto una serie lleva forma propia el gráfico es un <b>combo</b>, y las barras y la línea se
+    dibujan una después de la otra sobre el mismo plano: primero las barras, las líneas encima, porque
+    una línea de tendencia debajo de sus propias columnas es una línea que nadie ve. Las dos leen el
+    <b>mismo</b> eje de valores, que es el límite que conviene saber — la escala se calcula con todas
+    las series juntas, así que una tendencia en otras unidades (un porcentaje contra millones de ventas)
+    se aplasta contra las barras. Manténgalas en las mismas unidades.</p>
+    <p>Una serie de línea <b>no ocupa lugar en la ranura de la categoría</b>: con una serie de barras y
+    una de línea, las barras salen del ancho completo, igual que en un gráfico de una sola serie, en vez
+    de quedar apretadas en media ranura por una serie que no se dibuja ahí. La leyenda la marca con una
+    línea y su marcador en vez de con un bloque.</p>
+    <p>Solo los tipos cartesianos verticales admiten un combo — <code>Chart:Column</code>,
+    <code>Chart:Line</code> y <code>Chart:Scatter</code>. Una pila no tiene nada que superponer, un
+    gráfico de barras horizontales no tiene pintor de líneas verticales, y un pastel no es un gráfico
+    cartesiano; en esos la propiedad sencillamente no se lee. <code>ClearAll</code> la reinicia, así que
+    un objeto reutilizado no puede heredar las formas del gráfico anterior.</p>
+<pre>  Ventas.ChartType = Chart:Column
+  Ventas.AddSeries(<span class="s">'Ventas'</span>)             <span class="c">! barras, porque lo dice el tipo</span>
+  Ventas.AddSeries(<span class="s">'Tendencia'</span>)
+  Ventas.SetSeriesPlot(2, Plot:Line)      <span class="c">! ...pero esta es una línea</span>
+  Ventas.AddCat(<span class="s">'Ene'</span>, 120, 118)         <span class="c">! las dos, del mismo eje</span>
+  Ventas.AddCat(<span class="s">'Feb'</span>,  95, 112)</pre>
+
     <div class="sig">AddCat PROCEDURE(STRING pLabel, REAL v1, REAL v2=0 … REAL v8=0)</div>
-    <p class="src">clw:94</p>
+    <p class="src">clw:115</p>
     <p>Agrega una categoría con un valor por serie — el equivalente multiserie de <code>AddBar</code>. Los
     valores omitidos son cero. Pone el color de la categoría en <code>COLOR:None</code>, así que por esta
     vía no hay color por categoría (no habría nada sensato que significara una vez que varias series
     comparten la ranura).</p>
 
     <div class="sig">SetValue PROCEDURE(LONG pSeries, LONG pCat, REAL pValue)</div>
-    <p class="src">clw:111</p>
+    <p class="src">clw:132</p>
     <p>Escribe una celda de la rejilla ocultando el desplazamiento de la serie 1. Útil cuando los datos no
     llegan en orden de categoría — una consulta cruzada, o una rejilla mensual que llena a medida que
     aparecen registros de cualquier mes.</p>
@@ -913,24 +1015,49 @@ SSur    <span class="k">LONG</span>
     Ventas.SetValue(SAL:Year - 2024, <span class="k">MONTH</span>(SAL:Date), SAL:Amount)
   <span class="k">END</span></pre>
 
+    <div class="sig">SetNoValue PROCEDURE(LONG pSeries, LONG pCat)</div>
+    <p class="src">clw:150</p>
+    <p>Dice que una serie <b>no tiene nada que decir</b> de una categoría. La categoría sigue en el gráfico
+    y las demás series la siguen dibujando; esta no dibuja ahí barra, ni marcador, ni etiqueta de valor, y
+    su línea <b>se corta</b> en ese punto en vez de caer a cero.</p>
+    <p>El caso que lo pide: una fila de períodos con una barra de <b>promedio</b> al final. El promedio va
+    en el gráfico, pero una línea de tendencia no tiene por qué llegar hasta él — y un cero pelado le
+    arrastraría la línea al piso. Marque la celda y la línea termina en el último período real mientras la
+    barra se dibuja normalmente.</p>
+<pre>  Ventas.AddCat(<span class="s">'Prm.'</span>, 90600000, 0)        <span class="c">! el promedio: una barra…</span>
+  Ventas.SetNoValue(2, Ventas.NBars)      <span class="c">! …pero sin punto de tendencia</span></pre>
+    <p>Un hueco en el <b>medio</b> funciona igual y parte la línea en dos tramos; una línea suavizada se
+    corta con ella, y los dos puntos de control de Catmull-Rom caen sobre los extremos del propio tramo
+    cuando el vecino de al lado está vacío.</p>
+    <p>No cuenta para la escala automática, así que una celda vacía no puede estirar el eje. Lo respetan los
+    pintores de <b>barras y líneas</b>: una pila, un área, un pastel y un radar leen la celda como un cero
+    común, porque un agujero en una pila o en una porción no es nada. <code>SetValue</code> limpia la marca
+    — darle un valor a una celda se lo devuelve — y <code>ClearAll</code> reinicia todas.</p>
+
+    <div class="sig">HasValue PROCEDURE(LONG pSeries, LONG pCat), BYTE</div>
+    <p class="src">clw:156</p>
+    <p>0 cuando esa celda se marcó con <code>SetNoValue</code> o está fuera de rango, 1 en cualquier otro
+    caso. Todos los pintores preguntan esto antes de dibujar un punto. <code>GetValue</code> sigue
+    respondiendo 0 para esa celda, así que léalos juntos si la diferencia importa.</p>
+
     <div class="sig">GetValue PROCEDURE(LONG pSeries, LONG pCat), REAL</div>
-    <p class="src">clw:123</p>
+    <p class="src">clw:163</p>
     <p>Lee una celda. Devuelve 0 para cualquier subíndice fuera de los arreglos — nunca genera un error,
     así que es seguro llamarlo en un bucle que pase de los datos. Todos los pintores leen la rejilla por
     este único método, y por eso el desplazamiento de índice es invisible en todo lo demás.</p>
 
     <div class="sig">SetRange PROCEDURE(REAL pMin, REAL pMax)</div>
-    <p class="src">clw:130</p>
+    <p class="src">clw:170</p>
     <p>Fija el eje de valores y desactiva <code>AutoScale</code> en la misma llamada. Úselo cuando varios
     gráficos deban ser comparables, o cuando el redondeo «redondo» de la escala automática deje más aire
     del que quiere.</p>
 <pre>  Ventas.SetRange(0, 100)      <span class="c">! el mismo eje en cada gráfico del tablero</span></pre>
     <p>Tres tipos lo pasan por alto: <code>Chart:Stacked100</code> siempre usa 0…100
-    (<span class="src">clw:544</span>) y <code>Chart:Radar</code> siempre arranca en cero — lee
-    <code>MaxVal</code> pero ignora <code>MinVal</code> (<span class="src">clw:1180</span>).</p>
+    (<span class="src">clw:714</span>) y <code>Chart:Radar</code> siempre arranca en cero — lee
+    <code>MaxVal</code> pero ignora <code>MinVal</code> (<span class="src">clw:1390</span>).</p>
 
     <div class="sig">Demo PROCEDURE</div>
-    <p class="src">clw:135</p>
+    <p class="src">clw:175</p>
     <p>Una autoprueba. Llama a <code>ClearAll()</code> y carga datos de ejemplo elegidos para el
     <code>ChartType</code> <i>actual</i>: cinco regiones para la familia del pastel, tres series sobre
     cinco meses para la familia apilada, seis meses de una serie para todo lo demás. Fije
@@ -948,7 +1075,7 @@ SSur    <span class="k">LONG</span>
     <code>Paint</code> is the engine, and the only one a report uses.</p>
 
     <div class="sig">Draw PROCEDURE(WINDOW pWin, SIGNED pImageFeq)</div>
-    <p class="src">clw:512 — three lines long</p>
+    <p class="src">clw:680 — three lines long</p>
 <pre>GraficaBarraClass.Draw <span class="k">PROCEDURE</span>(<span class="k">WINDOW</span> pWin, <span class="k">SIGNED</span> pImageFeq)
   <span class="k">CODE</span>
   <span class="k">SETTARGET</span>(pWin, pImageFeq)
@@ -973,7 +1100,7 @@ SSur    <span class="k">LONG</span>
     is no allocation and no file access in the whole path.</p>
 
     <div class="sig">Paint PROCEDURE(SIGNED pFeq, BYTE pWindowMode = 0)</div>
-    <p class="src">clw:367 — the engine, 145 lines</p>
+    <p class="src">clw:501 — the engine, 145 lines</p>
     <table>
       <tr><th>Parameter</th><th>Meaning</th></tr>
       <tr><td><code>pFeq</code></td><td>The control whose rectangle the chart fills, read with
@@ -1001,24 +1128,24 @@ SSur    <span class="k">LONG</span>
     <table>
       <tr><th>Restored</th><th>Not restored</th></tr>
       <tr><td>The target's font, re-applied with the original colour at the end
-        (<span class="src">clw:508</span>), when <code>ColorText = 1</code>.</td>
+        (<span class="src">clw:674</span>), when <code>ColorText = 1</code>.</td>
         <td>The pen. Colour, width and style are all left wherever the last primitive put them — set your
         own before drawing anything else into that target.</td></tr>
     </table>
     <p>It also writes to its own <code>z…</code> fields, and — in one case — back to a public property:
-    an out-of-range <code>GridDivs</code> is repaired to 1 in place (<span class="src">clw:566</span>).</p>
+    an out-of-range <code>GridDivs</code> is repaired to 1 in place (<span class="src">clw:761</span>).</p>
 
     <h3>When it draws nothing</h3>
     <p><code>Paint</code> returns early, silently, in three situations. If a chart is mysteriously absent,
     it is almost always one of these:</p>
     <ul>
       <li>The rectangle left for the plot is under 8 units wide or tall after the title, the legend and
-        the padding have taken their share (<span class="src">clw:491</span>). A
+        the padding have taken their share (<span class="src">clw:657</span>). A
         <code>Legend:Right</code> can claim up to two fifths of the width.</li>
       <li>The same test again after the axis furniture — scale numbers, labels, value room — has been
-        subtracted (<span class="src">clw:603</span>).</li>
-      <li>A pie whose computed diameter comes out under 8 units (<span class="src">clw:1089</span>), or a
-        radar whose radius does (<span class="src">clw:1199</span>).</li>
+        subtracted (<span class="src">clw:787</span>).</li>
+      <li>A pie whose computed diameter comes out under 8 units (<span class="src">clw:1299</span>), or a
+        radar whose radius does (<span class="src">clw:1409</span>).</li>
     </ul>
     <div class="tip"><b>Diagnosing a blank chart:</b> set <code>ShowLegend = 0</code>,
       <code>Title = ''</code> and <code>ShowScale = 0</code>, then call <code>Demo()</code>. If the chart
@@ -1029,7 +1156,7 @@ SSur    <span class="k">LONG</span>
     <code>Paint</code> es el motor, y el único que usa un informe.</p>
 
     <div class="sig">Draw PROCEDURE(WINDOW pWin, SIGNED pImageFeq)</div>
-    <p class="src">clw:512 — tres líneas</p>
+    <p class="src">clw:680 — tres líneas</p>
 <pre>GraficaBarraClass.Draw <span class="k">PROCEDURE</span>(<span class="k">WINDOW</span> pWin, <span class="k">SIGNED</span> pImageFeq)
   <span class="k">CODE</span>
   <span class="k">SETTARGET</span>(pWin, pImageFeq)
@@ -1054,7 +1181,7 @@ SSur    <span class="k">LONG</span>
     reservas de memoria ni acceso a archivos en todo el camino.</p>
 
     <div class="sig">Paint PROCEDURE(SIGNED pFeq, BYTE pWindowMode = 0)</div>
-    <p class="src">clw:367 — el motor, 145 líneas</p>
+    <p class="src">clw:501 — el motor, 145 líneas</p>
     <table>
       <tr><th>Parámetro</th><th>Significado</th></tr>
       <tr><td><code>pFeq</code></td><td>El control cuyo rectángulo llena el gráfico, leído con
@@ -1082,25 +1209,25 @@ SSur    <span class="k">LONG</span>
     <table>
       <tr><th>Restaura</th><th>No restaura</th></tr>
       <tr><td>La fuente del destino, reaplicada con su color original al final
-        (<span class="src">clw:508</span>), cuando <code>ColorText = 1</code>.</td>
+        (<span class="src">clw:674</span>), cuando <code>ColorText = 1</code>.</td>
         <td>La pluma. Color, grosor y estilo quedan donde los dejó la última primitiva — fije la suya antes
         de dibujar cualquier otra cosa en ese destino.</td></tr>
     </table>
     <p>También escribe en sus propios campos <code>z…</code> y — en un caso — de vuelta en una propiedad
     pública: un <code>GridDivs</code> fuera de rango se repara a 1 en el sitio
-    (<span class="src">clw:566</span>).</p>
+    (<span class="src">clw:761</span>).</p>
 
     <h3>Cuándo no dibuja nada</h3>
     <p><code>Paint</code> retorna temprano, en silencio, en tres situaciones. Si un gráfico falta
     misteriosamente, casi siempre es una de estas:</p>
     <ul>
       <li>El rectángulo que queda para el trazado mide menos de 8 unidades de ancho o alto después de que
-        el título, la leyenda y el relleno se llevaron su parte (<span class="src">clw:491</span>). Una
+        el título, la leyenda y el relleno se llevaron su parte (<span class="src">clw:657</span>). Una
         <code>Legend:Right</code> puede reclamar hasta dos quintos del ancho.</li>
       <li>La misma prueba otra vez, tras restar el mobiliario del eje — números de escala, etiquetas,
-        espacio para valores (<span class="src">clw:603</span>).</li>
-      <li>Un pastel cuyo diámetro calculado queda bajo 8 unidades (<span class="src">clw:1089</span>), o un
-        radar cuyo radio queda bajo 8 (<span class="src">clw:1199</span>).</li>
+        espacio para valores (<span class="src">clw:787</span>).</li>
+      <li>Un pastel cuyo diámetro calculado queda bajo 8 unidades (<span class="src">clw:1299</span>), o un
+        radar cuyo radio queda bajo 8 (<span class="src">clw:1409</span>).</li>
     </ul>
     <div class="tip"><b>Para diagnosticar un gráfico en blanco:</b> ponga <code>ShowLegend = 0</code>,
       <code>Title = ''</code> y <code>ShowScale = 0</code>, y llame a <code>Demo()</code>. Si el gráfico
@@ -1116,33 +1243,51 @@ SSur    <span class="k">LONG</span>
     formats numbers the way the bars do.</p>
     <table>
       <tr><th>Method</th><th>Returns</th><th>What it does</th></tr>
-      <tr><td><code>NiceMax(REAL v)</code><br><span class="src">clw:164</span></td><td><code>REAL</code></td>
+      <tr><td><code>NiceMax(REAL v)</code><br><span class="src">clw:204</span></td><td><code>REAL</code></td>
         <td>Rounds <i>v</i> up to the next 1, 2, 5 × 10<sup>k</sup>. 71 → 100, 42 → 50, 0.31 → 0.5. Returns
           1 for anything ≤ 0. This is the whole of the auto-scale's "nice number" rule.</td></tr>
-      <tr><td><code>Palette(LONG i)</code><br><span class="src">clw:177</span></td><td><code>LONG</code></td>
+      <tr><td><code>NiceStep(REAL v)</code><br><span class="src">clw:221</span></td><td><code>REAL</code></td>
+        <td>The gap BETWEEN two gridlines, rounded up to 1, 2, 2.5, 5 or 10 times a power of ten. This is
+          what the auto-scale actually calls; <code>NiceMax</code> no longer sizes the axis.</td></tr>
+      <tr><td><code>Palette(LONG i)</code><br><span class="src">clw:235</span></td><td><code>LONG</code></td>
         <td>The <i>i</i>-th automatic colour, cycling every 12. Written without a modulus operator
           (<code>i - INT((i-1)/12)*12</code>) because Clarion has none.</td></tr>
-      <tr><td><code>FmtNum(REAL v, LONG dp)</code><br><span class="src">clw:196</span></td><td><code>STRING</code></td>
+      <tr><td><code>FmtNum(REAL v, LONG dp)</code><br><span class="src">clw:254</span></td><td><code>STRING</code></td>
         <td>Formats a value for a label: picture <code>@n-13</code>, or <code>@n-13.dp</code> when
           <code>dp</code> &gt; 0, then <code>CLIP(LEFT(…))</code>.</td></tr>
-      <tr><td><code>SeriesCount()</code><br><span class="src">clw:206</span></td><td><code>LONG</code></td>
+      <tr><td><code>SeriesCount()</code><br><span class="src">clw:264</span></td><td><code>LONG</code></td>
         <td>The effective series count: never 0 (returns 1), never above 8. Every painter loops on this,
           not on <code>NSeries</code>.</td></tr>
-      <tr><td><code>ColorOf(LONG pSeries, LONG pCat)</code><br><span class="src">clw:233</span></td><td><code>LONG</code></td>
+      <tr><td><code>ColorOf(LONG pSeries, LONG pCat)</code><br><span class="src">clw:353</span></td><td><code>LONG</code></td>
         <td>The resolved fill colour for one cell, applying the override-then-palette rule described under
           <a href="#colors">colour rules</a>.</td></tr>
-      <tr><td><code>IsStacked()</code><br><span class="src">clw:212</span></td><td><code>BYTE</code></td>
+      <tr><td><code>PlotOf(LONG pSeries)</code><br><span class="src">clw:277</span></td><td><code>LONG</code></td>
+        <td>The resolved shape of one series: its own <code>SeriesPlot</code> if it has one, otherwise
+          what <code>ChartType</code> says. Always <code>Plot:Bar</code> or <code>Plot:Line</code>, never
+          <code>Plot:Default</code>.</td></tr>
+      <tr><td><code>IsCombo()</code><br><span class="src">clw:291</span></td><td><code>BYTE</code></td>
+        <td>1 when the series are not all one shape <b>and</b> the type can hold a combo
+          (<code>Column</code>, <code>Line</code>, <code>Scatter</code>). Everything the combo touches is
+          gated on this, which is why a chart that has never seen <code>SetSeriesPlot</code> takes exactly
+          the code path it took before v2.1.</td></tr>
+      <tr><td><code>BarSeriesCount()</code><br><span class="src">clw:308</span></td><td><code>LONG</code></td>
+        <td>How many series are drawn as bars — the divisor for the category slot. Outside a combo it is
+          <code>SeriesCount()</code>.</td></tr>
+      <tr><td><code>BarSeriesIndex(LONG pSeries)</code><br><span class="src">clw:319</span></td><td><code>LONG</code></td>
+        <td>That series' place among the bar series, or 0 if it is a line. This is what keeps a line
+          series from reserving a slot it never draws in. Outside a combo it is <code>pSeries</code>.</td></tr>
+      <tr><td><code>IsStacked()</code><br><span class="src">clw:332</span></td><td><code>BYTE</code></td>
         <td>1 for <code>StackedCol</code>, <code>StackedBar</code>, <code>Stacked100</code>,
           <code>StackedArea</code>.</td></tr>
-      <tr><td><code>IsHorizontal()</code><br><span class="src">clw:220</span></td><td><code>BYTE</code></td>
+      <tr><td><code>IsHorizontal()</code><br><span class="src">clw:340</span></td><td><code>BYTE</code></td>
         <td>1 for <code>Chart:Bar</code> and <code>Chart:StackedBar</code> — the two types whose value axis
           runs left to right.</td></tr>
-      <tr><td><code>IsPie()</code><br><span class="src">clw:225</span></td><td><code>BYTE</code></td>
+      <tr><td><code>IsPie()</code><br><span class="src">clw:345</span></td><td><code>BYTE</code></td>
         <td>1 for <code>Pie</code>, <code>Pie3D</code>, <code>Donut</code>.</td></tr>
-      <tr><td><code>StackSum(LONG pCat, BYTE pPositive)</code><br><span class="src">clw:249</span></td><td><code>REAL</code></td>
+      <tr><td><code>StackSum(LONG pCat, BYTE pPositive)</code><br><span class="src">clw:369</span></td><td><code>REAL</code></td>
         <td>Sum of one category's positive values (<code>pPositive = 1</code>) or of its negative ones
           (0). The auto-scale uses both to size a stacked axis.</td></tr>
-      <tr><td><code>CatTotal(LONG pCat)</code><br><span class="src">clw:265</span></td><td><code>REAL</code></td>
+      <tr><td><code>CatTotal(LONG pCat)</code><br><span class="src">clw:385</span></td><td><code>REAL</code></td>
         <td>Sum of the <b>absolute</b> values of one category, across the series. This is the denominator
           <code>Chart:Stacked100</code> divides by.</td></tr>
     </table>
@@ -1161,34 +1306,54 @@ SSur    <span class="k">LONG</span>
     rótulo que formatee los números igual que las barras.</p>
     <table>
       <tr><th>Método</th><th>Devuelve</th><th>Qué hace</th></tr>
-      <tr><td><code>NiceMax(REAL v)</code><br><span class="src">clw:164</span></td><td><code>REAL</code></td>
+      <tr><td><code>NiceMax(REAL v)</code><br><span class="src">clw:204</span></td><td><code>REAL</code></td>
         <td>Redondea <i>v</i> hacia arriba al siguiente 1, 2, 5 × 10<sup>k</sup>. 71 → 100, 42 → 50,
           0,31 → 0,5. Devuelve 1 para cualquier valor ≤ 0. Es toda la regla del «número redondo» de la
           escala automática.</td></tr>
-      <tr><td><code>Palette(LONG i)</code><br><span class="src">clw:177</span></td><td><code>LONG</code></td>
+      <tr><td><code>NiceStep(REAL v)</code><br><span class="src">clw:221</span></td><td><code>REAL</code></td>
+        <td>El hueco ENTRE dos líneas de cuadrícula, redondeado hacia arriba a 1, 2, 2,5, 5 o 10 por una
+          potencia de diez. Es lo que llama la escala automática; <code>NiceMax</code> ya no dimensiona
+          el eje.</td></tr>
+      <tr><td><code>Palette(LONG i)</code><br><span class="src">clw:235</span></td><td><code>LONG</code></td>
         <td>El <i>i</i>-ésimo color automático, con ciclo de 12. Escrito sin operador de módulo
           (<code>i - INT((i-1)/12)*12</code>) porque Clarion no tiene ninguno.</td></tr>
-      <tr><td><code>FmtNum(REAL v, LONG dp)</code><br><span class="src">clw:196</span></td><td><code>STRING</code></td>
+      <tr><td><code>FmtNum(REAL v, LONG dp)</code><br><span class="src">clw:254</span></td><td><code>STRING</code></td>
         <td>Formatea un valor para una etiqueta: imagen <code>@n-13</code>, o <code>@n-13.dp</code> cuando
           <code>dp</code> &gt; 0, y luego <code>CLIP(LEFT(…))</code>.</td></tr>
-      <tr><td><code>SeriesCount()</code><br><span class="src">clw:206</span></td><td><code>LONG</code></td>
+      <tr><td><code>SeriesCount()</code><br><span class="src">clw:264</span></td><td><code>LONG</code></td>
         <td>El conteo efectivo de series: nunca 0 (devuelve 1), nunca más de 8. Todos los pintores
           recorren sobre esto, no sobre <code>NSeries</code>.</td></tr>
-      <tr><td><code>ColorOf(LONG pSeries, LONG pCat)</code><br><span class="src">clw:233</span></td><td><code>LONG</code></td>
+      <tr><td><code>ColorOf(LONG pSeries, LONG pCat)</code><br><span class="src">clw:353</span></td><td><code>LONG</code></td>
         <td>El color de relleno resuelto de una celda, aplicando la regla de anulación-luego-paleta que se
           describe en <a href="#colors">reglas de color</a>.</td></tr>
-      <tr><td><code>IsStacked()</code><br><span class="src">clw:212</span></td><td><code>BYTE</code></td>
+      <tr><td><code>PlotOf(LONG pSeries)</code><br><span class="src">clw:277</span></td><td><code>LONG</code></td>
+        <td>La forma resuelta de una serie: su propio <code>SeriesPlot</code> si lo tiene, si no lo que
+          diga <code>ChartType</code>. Siempre <code>Plot:Bar</code> o <code>Plot:Line</code>, nunca
+          <code>Plot:Default</code>.</td></tr>
+      <tr><td><code>IsCombo()</code><br><span class="src">clw:291</span></td><td><code>BYTE</code></td>
+        <td>1 cuando las series no tienen todas la misma forma <b>y</b> el tipo admite un combo
+          (<code>Column</code>, <code>Line</code>, <code>Scatter</code>). Todo lo que toca el combo está
+          condicionado a esto, y por eso un gráfico que nunca vio <code>SetSeriesPlot</code> recorre
+          exactamente el mismo camino que antes de la v2.1.</td></tr>
+      <tr><td><code>BarSeriesCount()</code><br><span class="src">clw:308</span></td><td><code>LONG</code></td>
+        <td>Cuántas series se dibujan como barras — el divisor de la ranura de la categoría. Fuera de un
+          combo es <code>SeriesCount()</code>.</td></tr>
+      <tr><td><code>BarSeriesIndex(LONG pSeries)</code><br><span class="src">clw:319</span></td><td><code>LONG</code></td>
+        <td>El lugar de esa serie entre las de barras, o 0 si es una línea. Esto es lo que evita que una
+          serie de línea reserve una ranura donde nunca dibuja. Fuera de un combo es
+          <code>pSeries</code>.</td></tr>
+      <tr><td><code>IsStacked()</code><br><span class="src">clw:332</span></td><td><code>BYTE</code></td>
         <td>1 para <code>StackedCol</code>, <code>StackedBar</code>, <code>Stacked100</code>,
           <code>StackedArea</code>.</td></tr>
-      <tr><td><code>IsHorizontal()</code><br><span class="src">clw:220</span></td><td><code>BYTE</code></td>
+      <tr><td><code>IsHorizontal()</code><br><span class="src">clw:340</span></td><td><code>BYTE</code></td>
         <td>1 para <code>Chart:Bar</code> y <code>Chart:StackedBar</code> — los dos tipos cuyo eje de
           valores va de izquierda a derecha.</td></tr>
-      <tr><td><code>IsPie()</code><br><span class="src">clw:225</span></td><td><code>BYTE</code></td>
+      <tr><td><code>IsPie()</code><br><span class="src">clw:345</span></td><td><code>BYTE</code></td>
         <td>1 para <code>Pie</code>, <code>Pie3D</code>, <code>Donut</code>.</td></tr>
-      <tr><td><code>StackSum(LONG pCat, BYTE pPositive)</code><br><span class="src">clw:249</span></td><td><code>REAL</code></td>
+      <tr><td><code>StackSum(LONG pCat, BYTE pPositive)</code><br><span class="src">clw:369</span></td><td><code>REAL</code></td>
         <td>Suma de los valores positivos de una categoría (<code>pPositive = 1</code>) o de los negativos
           (0). La escala automática usa ambas para dimensionar un eje apilado.</td></tr>
-      <tr><td><code>CatTotal(LONG pCat)</code><br><span class="src">clw:265</span></td><td><code>REAL</code></td>
+      <tr><td><code>CatTotal(LONG pCat)</code><br><span class="src">clw:385</span></td><td><code>REAL</code></td>
         <td>Suma de los valores <b>absolutos</b> de una categoría, sobre las series. Es el denominador
           entre el que divide <code>Chart:Stacked100</code>.</td></tr>
     </table>
@@ -1212,39 +1377,44 @@ SSur    <span class="k">LONG</span>
     <h3>Painters</h3>
     <table>
       <tr><th>Method</th><th>Serves</th><th>Notes</th></tr>
-      <tr><td><code>PaintCartesian</code><br><span class="src">clw:519</span></td>
+      <tr><td><code>PaintCartesian</code><br><span class="src">clw:687</span></td>
         <td>Everything with a value axis — 9 of the 13 types</td>
         <td>Works out the range, reserves room for the axis furniture, paints the plot background, finds
           zero, calls <code>PaintGrid</code>, dispatches to the right data painter, then draws the axis
-          <b>on top of</b> the data and the category labels last.</td></tr>
-      <tr><td><code>PaintBars</code><br><span class="src">clw:712</span></td><td><code>Column</code>, <code>Bar</code></td>
-        <td>Divides each slot by the series count so bars sit side by side. A value label is drawn only if
-          it fits — over the bar when positive, under it when negative.</td></tr>
-      <tr><td><code>PaintStack</code><br><span class="src">clw:793</span></td><td>The three stacked bar types</td>
+          <b>on top of</b> the data and the category labels last. On a combo the dispatch is two calls
+          rather than one: <code>PaintBars</code>, then <code>PaintLine</code> for every series that is a
+          line — in that order, because a trend line under its own columns is a line nobody can
+          see.</td></tr>
+      <tr><td><code>PaintBars</code><br><span class="src">clw:903</span></td><td><code>Column</code>, <code>Bar</code></td>
+        <td>Divides each slot by the <b>bar</b> series count so bars sit side by side — a combo's line
+          series is skipped and takes no room, so one bar series next to one line still draws full-width
+          bars. A value label is drawn only if it fits — over the bar when positive, under it when
+          negative.</td></tr>
+      <tr><td><code>PaintStack</code><br><span class="src">clw:992</span></td><td>The three stacked bar types</td>
         <td>Accumulates positives upward and negatives downward from zero, so a mixed-sign category
           stacks in both directions. <code>Stacked100</code> rescales each value to
           <code>100 × ABS(v) / CatTotal</code> first and skips a category whose total is 0.</td></tr>
-      <tr><td><code>PaintLine(LONG pSeries)</code><br><span class="src">clw:879</span></td>
+      <tr><td><code>PaintLine(LONG pSeries)</code><br><span class="src">clw:1078</span></td>
         <td><code>Line</code>, <code>Scatter</code>, and the overlay on <code>Area</code></td>
         <td>One call per series. Draws the polyline (skipped entirely for <code>Scatter</code>), then the
           markers and the value labels. <code>Smooth = 1</code> switches to a Catmull-Rom curve at 8
           segments per span.</td></tr>
-      <tr><td><code>PaintArea</code><br><span class="src">clw:956</span></td><td><code>Area</code>, <code>StackedArea</code></td>
+      <tr><td><code>PaintArea</code><br><span class="src">clw:1166</span></td><td><code>Area</code>, <code>StackedArea</code></td>
         <td>Plain areas are drawn <b>back to front</b> (series <i>n</i> first) so series 1 stays visible,
           then <code>PaintLine</code> runs over the top of them. Stacked areas accumulate into a running
           baseline and get a crisp <code>AxisColor</code> edge along each band's top.</td></tr>
-      <tr><td><code>PaintPie</code><br><span class="src">clw:1022</span></td><td><code>Pie</code>, <code>Pie3D</code>, <code>Donut</code></td>
+      <tr><td><code>PaintPie</code><br><span class="src">clw:1232</span></td><td><code>Pie</code>, <code>Pie3D</code>, <code>Donut</code></td>
         <td>Quantises the slices to a 100 000-unit whole and hands the two arrays to Clarion's
           <code>PIE</code> statement — one call draws the entire pie, and it is legal on a report. The
           donut hole is an <code>ELLIPSE</code> painted over the middle afterwards.</td></tr>
-      <tr><td><code>PaintRadar</code><br><span class="src">clw:1157</span></td><td><code>Radar</code></td>
+      <tr><td><code>PaintRadar</code><br><span class="src">clw:1367</span></td><td><code>Radar</code></td>
         <td>Rings and spokes first, then one closed <code>POLYGON</code> per series — filled when there is
           one series, outlines only when there are several so they stay readable. Scale numbers go up the
           twelve o'clock spoke, on top of the fill.</td></tr>
-      <tr><td><code>PaintGrid</code><br><span class="src">clw:678</span></td><td>All cartesian types</td>
+      <tr><td><code>PaintGrid</code><br><span class="src">clw:869</span></td><td>All cartesian types</td>
         <td>Walks 0…<code>zDivs</code>, drawing a gridline (never at <i>i</i> = 0, which is the axis) and
           a scale number at each division.</td></tr>
-      <tr><td><code>PaintLegend</code><br><span class="src">clw:1280</span></td><td>All types</td>
+      <tr><td><code>PaintLegend</code><br><span class="src">clw:1490</span></td><td>All types</td>
         <td>Swatch plus text per item — the categories on a pie, the series otherwise. Returns immediately
           for a non-pie with fewer than 2 series, which is why a single-series column chart shows no
           legend even with <code>ShowLegend = 1</code>.</td></tr>
@@ -1253,32 +1423,32 @@ SSur    <span class="k">LONG</span>
     <h3>Primitives</h3>
     <table>
       <tr><th>Method</th><th>What it does</th></tr>
-      <tr><td><code>TextAt(x, y, txt, color)</code><br><span class="src">clw:276</span></td>
+      <tr><td><code>TextAt(x, y, txt, color)</code><br><span class="src">clw:396</span></td>
         <td>Draws text at a top-left. When <code>ColorText = 1</code> it re-colours by calling
           <code>SETFONT(0, …)</code> on the current target, because <b><code>SHOW</code> takes its colour
           from the target's font</b> — neither <code>SETPENCOLOR</code> nor
           <code>SETFONT(controlfeq, …)</code> has any effect on it.</td></tr>
-      <tr><td><code>TextMid(x, y, txt, color)</code><br><span class="src">clw:286</span></td>
+      <tr><td><code>TextMid(x, y, txt, color)</code><br><span class="src">clw:406</span></td>
         <td>The same, with <i>x</i> as the <b>centre</b>. Centring is arithmetic —
           <code>LEN(CLIP(txt)) × zCW / 2</code> — so it assumes a monospaced cell width. With a
           proportional font the centring is approximate, which is why <code>zCW</code> is tunable through
           <code>TextW</code>.</td></tr>
-      <tr><td><code>FillBox(x, y, w, h, color)</code><br><span class="src">clw:290</span></td>
+      <tr><td><code>FillBox(x, y, w, h, color)</code><br><span class="src">clw:410</span></td>
         <td>A filled rectangle. Always sets the pen first, because <b><code>BOX</code> outlines in
           whatever <code>SETPENCOLOR</code> last set</b> — leave it stale and every bar inherits the
           previous bar's border. Uses <code>BarBorderColor</code> when it is not
           <code>COLOR:None</code>, otherwise the fill colour itself, so the border disappears.</td></tr>
-      <tr><td><code>Marker(x, y, color)</code><br><span class="src">clw:301</span></td>
+      <tr><td><code>Marker(x, y, color)</code><br><span class="src">clw:421</span></td>
         <td>Circle (<code>ELLIPSE</code>), square (<code>BOX</code>) or diamond (a 4-corner
           <code>POLYGON</code>) centred on the point. Size is <code>MarkerSize</code>, or three quarters
           of the text cell height when that is 0.</td></tr>
       <tr><td><code>PolyStart</code> / <code>PolyAdd(x, y)</code> / <code>PolyDraw(fill)</code><br>
-        <span class="src">clw:328, 332, 338</span></td>
+        <span class="src">clw:462, 466, 472</span></td>
         <td>Builds a polygon in the <code>zPoly</code> scratch array. <code>PolyDraw</code> refuses fewer
           than three corners, then <b>pads the unused tail with the last corner</b> — Clarion's
           <code>POLYGON</code> reads the whole array, so the padding becomes zero-length, invisible edges.
           Pass <code>COLOR:None</code> as the fill for an outline.</td></tr>
-      <tr><td><code>VY(REAL v)</code> / <code>VX(REAL v)</code><br><span class="src">clw:352, 359</span></td>
+      <tr><td><code>VY(REAL v)</code> / <code>VX(REAL v)</code><br><span class="src">clw:486, 493</span></td>
         <td>Value → pixel on the value axis, clamped to <code>zLo</code>…<code>zHi</code>. <code>VY</code>
           for vertical charts (y grows downward, so the formula subtracts), <code>VX</code> for horizontal
           ones. Every data point on every cartesian chart goes through one of these two.</td></tr>
@@ -1291,41 +1461,45 @@ SSur    <span class="k">LONG</span>
     <h3>Pintores</h3>
     <table>
       <tr><th>Método</th><th>Sirve a</th><th>Notas</th></tr>
-      <tr><td><code>PaintCartesian</code><br><span class="src">clw:519</span></td>
+      <tr><td><code>PaintCartesian</code><br><span class="src">clw:687</span></td>
         <td>Todo lo que tiene eje de valores — 9 de los 13 tipos</td>
         <td>Calcula el rango, reserva sitio para el mobiliario del eje, pinta el fondo del trazado, ubica
           el cero, llama a <code>PaintGrid</code>, despacha al pintor de datos correcto y luego dibuja el
-          eje <b>encima de</b> los datos, y las etiquetas de categoría al final.</td></tr>
-      <tr><td><code>PaintBars</code><br><span class="src">clw:712</span></td><td><code>Column</code>, <code>Bar</code></td>
-        <td>Divide cada ranura entre el número de series para que las barras queden lado a lado. La
-          etiqueta de valor se dibuja solo si cabe — sobre la barra si es positiva, bajo ella si es
-          negativa.</td></tr>
-      <tr><td><code>PaintStack</code><br><span class="src">clw:793</span></td><td>Los tres tipos de barra apilada</td>
+          eje <b>encima de</b> los datos, y las etiquetas de categoría al final. En un combo el despacho
+          son dos llamadas y no una: <code>PaintBars</code>, y después <code>PaintLine</code> por cada
+          serie que sea línea — en ese orden, porque una línea de tendencia debajo de sus propias
+          columnas es una línea que nadie ve.</td></tr>
+      <tr><td><code>PaintBars</code><br><span class="src">clw:903</span></td><td><code>Column</code>, <code>Bar</code></td>
+        <td>Divide cada ranura entre el número de series <b>de barras</b> para que queden lado a lado —
+          la serie de línea de un combo se saltea y no ocupa lugar, así que una serie de barras junto a
+          una de línea sigue dibujando barras de ancho completo. La etiqueta de valor se dibuja solo si
+          cabe — sobre la barra si es positiva, bajo ella si es negativa.</td></tr>
+      <tr><td><code>PaintStack</code><br><span class="src">clw:992</span></td><td>Los tres tipos de barra apilada</td>
         <td>Acumula los positivos hacia arriba y los negativos hacia abajo desde cero, así que una
           categoría con signos mezclados se apila en ambos sentidos. <code>Stacked100</code> reescala
           antes cada valor a <code>100 × ABS(v) / CatTotal</code> y omite la categoría cuyo total sea 0.</td></tr>
-      <tr><td><code>PaintLine(LONG pSeries)</code><br><span class="src">clw:879</span></td>
+      <tr><td><code>PaintLine(LONG pSeries)</code><br><span class="src">clw:1078</span></td>
         <td><code>Line</code>, <code>Scatter</code> y la capa sobre <code>Area</code></td>
         <td>Una llamada por serie. Dibuja la polilínea (omitida por completo en <code>Scatter</code>) y
           luego los marcadores y las etiquetas. <code>Smooth = 1</code> cambia a una curva Catmull-Rom con
           8 segmentos por tramo.</td></tr>
-      <tr><td><code>PaintArea</code><br><span class="src">clw:956</span></td><td><code>Area</code>, <code>StackedArea</code></td>
+      <tr><td><code>PaintArea</code><br><span class="src">clw:1166</span></td><td><code>Area</code>, <code>StackedArea</code></td>
         <td>Las áreas simples se dibujan <b>de atrás hacia adelante</b> (primero la serie <i>n</i>) para
           que la serie 1 quede visible, y después <code>PaintLine</code> pasa por encima. Las áreas
           apiladas acumulan sobre una línea base móvil y reciben un borde nítido en
           <code>AxisColor</code> en la parte alta de cada banda.</td></tr>
-      <tr><td><code>PaintPie</code><br><span class="src">clw:1022</span></td><td><code>Pie</code>, <code>Pie3D</code>, <code>Donut</code></td>
+      <tr><td><code>PaintPie</code><br><span class="src">clw:1232</span></td><td><code>Pie</code>, <code>Pie3D</code>, <code>Donut</code></td>
         <td>Cuantiza las porciones sobre un total de 100 000 unidades y entrega los dos arreglos a la
           sentencia <code>PIE</code> de Clarion — una llamada dibuja el pastel entero, y es válida en un
           informe. El agujero de la dona es una <code>ELLIPSE</code> pintada encima al final.</td></tr>
-      <tr><td><code>PaintRadar</code><br><span class="src">clw:1157</span></td><td><code>Radar</code></td>
+      <tr><td><code>PaintRadar</code><br><span class="src">clw:1367</span></td><td><code>Radar</code></td>
         <td>Primero anillos y radios, luego un <code>POLYGON</code> cerrado por serie — relleno si hay una
           serie, solo contorno si hay varias para que sigan legibles. Los números de escala suben por el
           radio de las doce, encima del relleno.</td></tr>
-      <tr><td><code>PaintGrid</code><br><span class="src">clw:678</span></td><td>Todos los cartesianos</td>
+      <tr><td><code>PaintGrid</code><br><span class="src">clw:869</span></td><td>Todos los cartesianos</td>
         <td>Recorre 0…<code>zDivs</code> dibujando una línea de cuadrícula (nunca en <i>i</i> = 0, que es
           el eje) y un número de escala en cada división.</td></tr>
-      <tr><td><code>PaintLegend</code><br><span class="src">clw:1280</span></td><td>Todos los tipos</td>
+      <tr><td><code>PaintLegend</code><br><span class="src">clw:1490</span></td><td>Todos los tipos</td>
         <td>Muestra y texto por elemento — las categorías en un pastel, las series en el resto. Retorna de
           inmediato para un no-pastel con menos de 2 series, y por eso un gráfico de columnas de una serie
           no muestra leyenda ni con <code>ShowLegend = 1</code>.</td></tr>
@@ -1334,32 +1508,32 @@ SSur    <span class="k">LONG</span>
     <h3>Primitivas</h3>
     <table>
       <tr><th>Método</th><th>Qué hace</th></tr>
-      <tr><td><code>TextAt(x, y, txt, color)</code><br><span class="src">clw:276</span></td>
+      <tr><td><code>TextAt(x, y, txt, color)</code><br><span class="src">clw:396</span></td>
         <td>Dibuja texto en una esquina superior izquierda. Con <code>ColorText = 1</code> lo recolorea
           llamando a <code>SETFONT(0, …)</code> sobre el destino actual, porque <b><code>SHOW</code> toma
           su color de la fuente del destino</b> — ni <code>SETPENCOLOR</code> ni
           <code>SETFONT(feq, …)</code> le hacen efecto.</td></tr>
-      <tr><td><code>TextMid(x, y, txt, color)</code><br><span class="src">clw:286</span></td>
+      <tr><td><code>TextMid(x, y, txt, color)</code><br><span class="src">clw:406</span></td>
         <td>Lo mismo, con <i>x</i> como <b>centro</b>. El centrado es aritmético —
           <code>LEN(CLIP(txt)) × zCW / 2</code> — así que supone un ancho de celda fijo. Con fuente
           proporcional el centrado es aproximado, y por eso <code>zCW</code> se puede ajustar con
           <code>TextW</code>.</td></tr>
-      <tr><td><code>FillBox(x, y, w, h, color)</code><br><span class="src">clw:290</span></td>
+      <tr><td><code>FillBox(x, y, w, h, color)</code><br><span class="src">clw:410</span></td>
         <td>Un rectángulo relleno. Siempre fija la pluma primero, porque <b><code>BOX</code> contornea con
           lo último que fijó <code>SETPENCOLOR</code></b> — si la deja vieja, cada barra hereda el borde de
           la anterior. Usa <code>BarBorderColor</code> cuando no es <code>COLOR:None</code>; si no, el
           propio color de relleno, con lo que el borde desaparece.</td></tr>
-      <tr><td><code>Marker(x, y, color)</code><br><span class="src">clw:301</span></td>
+      <tr><td><code>Marker(x, y, color)</code><br><span class="src">clw:421</span></td>
         <td>Círculo (<code>ELLIPSE</code>), cuadrado (<code>BOX</code>) o rombo (un <code>POLYGON</code> de
           4 esquinas) centrado en el punto. El tamaño es <code>MarkerSize</code>, o tres cuartos de la
           altura de la celda de texto cuando vale 0.</td></tr>
       <tr><td><code>PolyStart</code> / <code>PolyAdd(x, y)</code> / <code>PolyDraw(fill)</code><br>
-        <span class="src">clw:328, 332, 338</span></td>
+        <span class="src">clw:462, 466, 472</span></td>
         <td>Construye un polígono en el arreglo de trabajo <code>zPoly</code>. <code>PolyDraw</code>
           rechaza menos de tres esquinas y luego <b>rellena la cola no usada con la última esquina</b> —
           el <code>POLYGON</code> de Clarion lee todo el arreglo, así que el relleno se vuelve aristas de
           longitud cero, invisibles. Pase <code>COLOR:None</code> como relleno para obtener contorno.</td></tr>
-      <tr><td><code>VY(REAL v)</code> / <code>VX(REAL v)</code><br><span class="src">clw:352, 359</span></td>
+      <tr><td><code>VY(REAL v)</code> / <code>VX(REAL v)</code><br><span class="src">clw:486, 493</span></td>
         <td>Valor → píxel sobre el eje de valores, acotado a <code>zLo</code>…<code>zHi</code>.
           <code>VY</code> para gráficos verticales (la y crece hacia abajo, por eso la fórmula resta),
           <code>VX</code> para los horizontales. Cada punto de cada gráfico cartesiano pasa por uno de los
@@ -1373,13 +1547,18 @@ SSur    <span class="k">LONG</span>
   <div class="en">
     <p class="lead">Every property is public and every one can be changed between two <code>Draw</code>
     calls — there is no "apply" step. Defaults are what <code>Construct</code> sets
-    (<span class="src">clw:17-50</span>).</p>
+    (<span class="src">clw:17-52</span>).</p>
 
     <h3>What to draw</h3>
     <table>
       <tr><th>Property</th><th>Type / default</th><th>Meaning</th></tr>
       <tr><td><code>ChartType</code></td><td><code>LONG</code> / <code>Chart:Column</code></td>
         <td>The shape, 0…12. Change it at any time and redraw.</td></tr>
+      <tr><td><code>SeriesPlot[s]</code></td><td><code>LONG</code> ×8 / <code>Plot:Default</code></td>
+        <td>The shape of <b>one series</b>, overriding <code>ChartType</code> for it alone:
+          <code>Plot:Bar</code> or <code>Plot:Line</code>. Bars for sales and a line for the trend, over
+          the one value axis. Read only on <code>Chart:Column</code>, <code>Chart:Line</code> and
+          <code>Chart:Scatter</code>. Set it with <code>SetSeriesPlot</code>.</td></tr>
       <tr><td><code>Title</code></td><td><code>CSTRING(64)</code> / <code>''</code></td>
         <td>Centred above the plot. A non-empty title costs one text line plus padding out of the plot
           height, and pushes a <code>Legend:Right</code> or <code>Legend:Top</code> down by the same.</td></tr>
@@ -1438,6 +1617,17 @@ SSur    <span class="k">LONG</span>
       <tr><td><code>ColorText</code></td><td><code>BYTE</code> / 1</td>
         <td>1 = re-colour text with <code>SETFONT(0,…)</code>; 0 = let all text take the target's own font
           colour. Set it to 0 if your target's font must not be touched at all.</td></tr>
+      <tr><td><code>FontName</code></td><td><code>CSTRING(32)</code> / <code>''</code></td>
+        <td>The typeface for every label on this chart. Blank = whatever the target is already using.</td></tr>
+      <tr><td><code>FontSize</code></td><td><code>LONG</code> / 0</td>
+        <td>Points. 0 = the target's own size. <b>It also scales the layout</b>: with
+          <code>TextW</code>/<code>TextH</code> at 0 the 4 × 9 (window) and 62 × 130 (report) cells are
+          multiplied by <code>FontSize / 9</code>, so the spacing follows the type and labels thin
+          themselves out instead of colliding. This is the one property to reach for to make a chart's
+          text bigger or smaller.</td></tr>
+      <tr><td><code>FontStyle</code></td><td><code>LONG</code> / 0</td>
+        <td><code>FONT:bold</code>, <code>FONT:regular + FONT:italic</code>, and so on. 0 = the target's
+          own style. Each of the three overrides on its own, so a size alone keeps the typeface.</td></tr>
     </table>
 
     <h3>Pie, donut and radar</h3>
@@ -1485,14 +1675,17 @@ SSur    <span class="k">LONG</span>
         <td>1 = <code>Paint</code> clears its own rectangle before drawing, so repainting replaces.
           0 = draw on top of what is there, for deliberate overlays.</td></tr>
     </table>
-    <div class="warn"><b><code>TextW</code> / <code>TextH</code> are the fix for a big font.</b> Every
-      piece of layout — how much width the scale numbers claim, whether a value fits over its bar, how
-      many category labels can be shown without overlapping, where centred text starts — is computed from
-      these two numbers, not measured from the real font. Give the window or the report band a 12-point
-      font and the class still lays out for 9-point: labels collide and values sit too close to the bars.
-      Scale both by the same ratio you scaled the font
-      (<code>TextW = 5</code>, <code>TextH = 12</code> for 12-point on a window; multiply the 62/130 pair
-      by 12/9 on a report).</div>
+    <div class="warn"><b>Nothing here is measured from the real font.</b> Every piece of layout — how
+      much width the scale numbers claim, whether a value fits over its bar, how many category labels can
+      be shown without overlapping, where centred text starts — is computed from <code>zCW</code> and
+      <code>zCH</code>, and those come from these properties.
+      <br>Set <b><code>FontSize</code></b> and the pair is scaled for you (<code>FontSize / 9</code>
+      against the 4 × 9 and 62 × 130 cells), which is why it is the one property to reach for.
+      <br><code>TextW</code>/<code>TextH</code> stay as the manual override, and you still need them in one
+      case: when you leave <code>FontSize</code> at 0 and give the <b>window or the band</b> a bigger font
+      instead. The class cannot see that and still lays out for 9 point — labels collide and values sit
+      too close to the bars. Scale both by the same ratio (<code>TextW = 5</code>, <code>TextH = 12</code>
+      for 12-point on a window; multiply the 62/130 pair by 12/9 on a report).</div>
 
     <h3>Colours</h3>
     <p>All Clarion BGR longs. <code>COLOR:None</code> (−1) always means "don't", never "black".</p>
@@ -1520,13 +1713,19 @@ SSur    <span class="k">LONG</span>
   <div class="es">
     <p class="lead">Todas las propiedades son públicas y todas pueden cambiarse entre dos llamadas a
     <code>Draw</code> — no hay paso de «aplicar». Los valores por defecto son los que fija
-    <code>Construct</code> (<span class="src">clw:17-50</span>).</p>
+    <code>Construct</code> (<span class="src">clw:17-52</span>).</p>
 
     <h3>Qué dibujar</h3>
     <table>
       <tr><th>Propiedad</th><th>Tipo / defecto</th><th>Significado</th></tr>
       <tr><td><code>ChartType</code></td><td><code>LONG</code> / <code>Chart:Column</code></td>
         <td>La forma, 0…12. Cámbielo cuando quiera y redibuje.</td></tr>
+      <tr><td><code>SeriesPlot[s]</code></td><td><code>LONG</code> ×8 / <code>Plot:Default</code></td>
+        <td>La forma de <b>una serie</b>, que pisa a <code>ChartType</code> solo para ella:
+          <code>Plot:Bar</code> o <code>Plot:Line</code>. Barras para las ventas y una línea para la
+          tendencia, sobre el mismo eje de valores. Solo se lee en <code>Chart:Column</code>,
+          <code>Chart:Line</code> y <code>Chart:Scatter</code>. Se fija con
+          <code>SetSeriesPlot</code>.</td></tr>
       <tr><td><code>Title</code></td><td><code>CSTRING(64)</code> / <code>''</code></td>
         <td>Centrado sobre el trazado. Un título no vacío cuesta una línea de texto más relleno de la
           altura del trazado, y baja otro tanto una <code>Legend:Right</code> o
@@ -1589,6 +1788,19 @@ SSur    <span class="k">LONG</span>
       <tr><td><code>ColorText</code></td><td><code>BYTE</code> / 1</td>
         <td>1 = recolorear el texto con <code>SETFONT(0,…)</code>; 0 = dejar que todo el texto tome el
           color de la fuente del destino. Póngalo en 0 si la fuente de su destino no debe tocarse.</td></tr>
+      <tr><td><code>FontName</code></td><td><code>CSTRING(32)</code> / <code>''</code></td>
+        <td>La tipografía de todas las etiquetas de este gráfico. En blanco = la que ya esté usando el
+          destino.</td></tr>
+      <tr><td><code>FontSize</code></td><td><code>LONG</code> / 0</td>
+        <td>Puntos. 0 = el tamaño del destino. <b>También escala la maquetación</b>: con
+          <code>TextW</code>/<code>TextH</code> en 0, las celdas de 4 × 9 (ventana) y 62 × 130 (informe) se
+          multiplican por <code>FontSize / 9</code>, así el espaciado sigue a la tipografía y las etiquetas
+          se ralean solas en vez de pisarse. Es la propiedad a la que hay que ir para agrandar o achicar el
+          texto de un gráfico.</td></tr>
+      <tr><td><code>FontStyle</code></td><td><code>LONG</code> / 0</td>
+        <td><code>FONT:bold</code>, <code>FONT:regular + FONT:italic</code>, etcétera. 0 = el estilo del
+          destino. Cada una de las tres pisa por su cuenta, así que un tamaño solo conserva la
+          tipografía.</td></tr>
     </table>
 
     <h3>Pastel, dona y radar</h3>
@@ -1782,31 +1994,31 @@ SSur    <span class="k">LONG</span>
     by a bar.</p>
     <ol>
       <li><b>Measure.</b> <code>GETPOSITION(pFeq, x, y, w, h)</code> — the placeholder's rectangle, in the
-        target's own units. <span class="src">clw:385</span></li>
+        target's own units. <span class="src">clw:525</span></li>
       <li><b>Text metrics.</b> <code>zCW</code>, <code>zCH</code> from <code>TextW</code>/<code>TextH</code>
         or the per-target defaults; then <code>zPad</code> and the pen scale <code>zSc</code> derived from
-        <code>zCH</code>. <span class="src">clw:389-404</span></li>
+        <code>zCH</code>. <span class="src">clw:559-576</span></li>
       <li><b>Erase.</b> Window mode: <code>BLANK</code> (the whole image) and the origin forced to 0,0.
         Report mode: <code>BLANK(x−pad, y−pad, …)</code> clamped so it can never reach outside the band.
-        Skipped entirely when <code>EraseFirst = 0</code>. <span class="src">clw:412-419</span></li>
+        Skipped entirely when <code>EraseFirst = 0</code>. <span class="src">clw:584-591</span></li>
       <li><b>Capture the font.</b> <code>GETFONT(0,…)</code> into the <code>zF…</code> fields, so text can
-        be re-coloured and the font restored. <span class="src">clw:424</span></li>
-      <li><b>Background.</b> <code>BackColor</code> fills the whole rectangle, if set. <span class="src">clw:431</span></li>
+        be re-coloured and the font restored. <span class="src">clw:593</span></li>
+      <li><b>Background.</b> <code>BackColor</code> fills the whole rectangle, if set. <span class="src">clw:597</span></li>
       <li><b>Title.</b> Drawn centred at the top — before the layout maths, because it only needs the
-        outer rectangle. <span class="src">clw:436</span></li>
+        outer rectangle. <span class="src">clw:602</span></li>
       <li><b>Measure the legend.</b> Count the items (categories on a pie, series otherwise, none for a
         single-series non-pie), measure the longest, and reserve either a right-hand column (capped at 2/5
-        of the width) or one to three bottom/top rows. <span class="src">clw:440-472</span></li>
+        of the width) or one to three bottom/top rows. <span class="src">clw:606-638</span></li>
       <li><b>Carve out the plot rectangle.</b> Start from the padded control rectangle, subtract the title
         line, subtract the legend on its side. <b>Bail out</b> if under 8 units either way.
-        <span class="src">clw:474-491</span></li>
+        <span class="src">clw:640-657</span></li>
       <li><b>Dispatch.</b> Pie family → <code>PaintPie</code>. Radar → <code>PaintRadar</code>, unless
         there are fewer than three categories, in which case the type is <i>temporarily</i> swapped to
         <code>Chart:Line</code>, drawn, and swapped back — your <code>ChartType</code> property is left
         exactly as you set it. Everything else → <code>PaintCartesian</code>.
-        <span class="src">clw:493-506</span></li>
-      <li><b>Legend.</b> Drawn last, into the space step 7 reserved. <span class="src">clw:507</span></li>
-      <li><b>Hand the font back</b> with its original colour. <span class="src">clw:508</span></li>
+        <span class="src">clw:659-672</span></li>
+      <li><b>Legend.</b> Drawn last, into the space step 7 reserved. <span class="src">clw:673</span></li>
+      <li><b>Hand the font back</b> with its original colour. <span class="src">clw:674</span></li>
     </ol>
     <h3>Inside <code>PaintCartesian</code></h3>
     <ol>
@@ -1840,32 +2052,32 @@ SSur    <span class="k">LONG</span>
     por qué el eje nunca queda tapado por una barra.</p>
     <ol>
       <li><b>Medir.</b> <code>GETPOSITION(pFeq, x, y, w, h)</code> — el rectángulo del marcador, en las
-        unidades del destino. <span class="src">clw:385</span></li>
+        unidades del destino. <span class="src">clw:525</span></li>
       <li><b>Métricas de texto.</b> <code>zCW</code>, <code>zCH</code> desde <code>TextW</code>/
         <code>TextH</code> o los valores por destino; luego <code>zPad</code> y la escala de pluma
-        <code>zSc</code> derivadas de <code>zCH</code>. <span class="src">clw:389-404</span></li>
+        <code>zSc</code> derivadas de <code>zCH</code>. <span class="src">clw:559-576</span></li>
       <li><b>Borrar.</b> Modo ventana: <code>BLANK</code> (toda la imagen) y el origen forzado a 0,0.
         Modo informe: <code>BLANK(x−pad, y−pad, …)</code> acotado para que nunca salga de la banda. Se
-        omite del todo con <code>EraseFirst = 0</code>. <span class="src">clw:412-419</span></li>
+        omite del todo con <code>EraseFirst = 0</code>. <span class="src">clw:584-591</span></li>
       <li><b>Capturar la fuente.</b> <code>GETFONT(0,…)</code> a los campos <code>zF…</code>, para poder
-        recolorear el texto y restaurar la fuente. <span class="src">clw:424</span></li>
+        recolorear el texto y restaurar la fuente. <span class="src">clw:593</span></li>
       <li><b>Fondo.</b> <code>BackColor</code> rellena todo el rectángulo, si está fijado.
-        <span class="src">clw:431</span></li>
+        <span class="src">clw:597</span></li>
       <li><b>Título.</b> Se dibuja centrado arriba — antes de las cuentas de disposición, porque solo
-        necesita el rectángulo exterior. <span class="src">clw:436</span></li>
+        necesita el rectángulo exterior. <span class="src">clw:602</span></li>
       <li><b>Medir la leyenda.</b> Contar los elementos (categorías en un pastel, series en el resto,
         ninguno en un no-pastel de una serie), medir el más largo y reservar una columna a la derecha
-        (limitada a 2/5 del ancho) o de una a tres filas abajo/arriba. <span class="src">clw:440-472</span></li>
+        (limitada a 2/5 del ancho) o de una a tres filas abajo/arriba. <span class="src">clw:606-638</span></li>
       <li><b>Recortar el rectángulo del trazado.</b> Partir del rectángulo con relleno, restar la línea del
         título y restar la leyenda por su lado. <b>Abandonar</b> si queda bajo 8 unidades en cualquier
-        sentido. <span class="src">clw:474-491</span></li>
+        sentido. <span class="src">clw:640-657</span></li>
       <li><b>Despachar.</b> Familia del pastel → <code>PaintPie</code>. Radar → <code>PaintRadar</code>,
         salvo que haya menos de tres categorías, en cuyo caso el tipo se cambia <i>temporalmente</i> a
         <code>Chart:Line</code>, se dibuja y se restaura — su propiedad <code>ChartType</code> queda tal
         como usted la puso. Todo lo demás → <code>PaintCartesian</code>.
-        <span class="src">clw:493-506</span></li>
-      <li><b>Leyenda.</b> Se dibuja al final, en el espacio que reservó el paso 7. <span class="src">clw:507</span></li>
-      <li><b>Devolver la fuente</b> con su color original. <span class="src">clw:508</span></li>
+        <span class="src">clw:659-672</span></li>
+      <li><b>Leyenda.</b> Se dibuja al final, en el espacio que reservó el paso 7. <span class="src">clw:673</span></li>
+      <li><b>Devolver la fuente</b> con su color original. <span class="src">clw:674</span></li>
     </ol>
     <h3>Dentro de <code>PaintCartesian</code></h3>
     <ol>
@@ -1902,29 +2114,40 @@ SSur    <span class="k">LONG</span>
 <section id="algo">
   <h2><span class="en">Algorithms</span><span class="es">Algoritmos</span></h2>
   <div class="en">
-    <h3>The nice scale</h3>
-    <p><code>NiceMax</code> takes the largest value and rounds it up to the next 1, 2 or 5 times a power
-    of ten. The guard on line 170 matters: <code>10 ^ INT(LOG10(v))</code> can land <i>above</i> v on an
-    exact power of ten because of floating-point rounding, so it is stepped back down one decade.</p>
-<pre>  dmax = 71   -&gt;  m = 10,  f = 7.1  -&gt;  <span class="k">RETURN</span> 100
-  dmax = 42   -&gt;  m = 10,  f = 4.2  -&gt;  <span class="k">RETURN</span> 50
-  dmax = 0.31 -&gt;  m = 0.1, f = 3.1  -&gt;  <span class="k">RETURN</span> 0.5</pre>
-
-    <h3>Putting zero on a gridline</h3>
-    <p>When the data spans zero, a plain min…max split into 5 leaves the baseline floating between two
-    gridlines, which reads badly. So the class picks a nice <i>step</i> instead and counts outward from
-    zero in both directions (<span class="src">clw:568-576</span>):</p>
-<pre>  stp   = NiceMax((zHi - zLo) / GridDivs)          <span class="c">! a nice step, not a nice max</span>
-  zHi   =  stp * <span class="k">INT</span>(( zHi - 0.000001) / stp + 1)  <span class="c">! whole steps up</span>
-  zLo   = -stp * <span class="k">INT</span>((-zLo - 0.000001) / stp + 1)  <span class="c">! whole steps down</span>
-  zDivs = <span class="k">INT</span>((zHi - zLo) / stp + 0.5)             <span class="c">! so zDivs &gt; GridDivs is normal</span></pre>
-    <p>The epsilon stops a value that is already exactly on a step from being pushed a whole step further
-    out. This is why <code>zDivs</code> exists separately from <code>GridDivs</code>: the property is what
-    you asked for, the field is what the geometry needed.</p>
+    <h3>The nice scale: the step first, the bounds second</h3>
+    <p>The class sizes the gap between two gridlines to the data and the division count, then takes the
+    first whole multiple of that step past the data at each end (<span class="src">clw:742-757</span>):</p>
+<pre>  stp   = NiceStep((dmax - dmin) / GridDivs)            <span class="c">! the gap between two gridlines</span>
+  zHi   =  stp * <span class="k">INT</span>(( dmax - stp/1000000) / stp + 1) <span class="c">! whole steps up</span>
+  zLo   = -stp * <span class="k">INT</span>((-dmin - stp/1000000) / stp + 1) <span class="c">! whole steps down</span>
+  zDivs = <span class="k">INT</span>((zHi - zLo) / stp + 0.5)                <span class="c">! the lines that actually fit</span></pre>
+    <p>Rounding the <i>top</i> up to the next nice magnitude instead throws away most of the plot
+    whenever the data sits just above one: a maximum of 113,376,143 gets an axis of 200,000,000 and every
+    bar draws at half height. Stepping gives it an axis of 125,000,000 and keeps the round numbers on the
+    labels. It also puts <b>zero on a gridline</b> for nothing — both ends are whole multiples of the one
+    step, so the baseline cannot float between two lines the way a plain min…max split into five does.</p>
+    <p><code>GridDivs</code> is therefore a <b>ceiling</b> on the gridlines rather than an exact count:
+    every line has to land on a whole step, so a maximum of 60 asked for in five divisions draws
+    0/20/40/60 — three lines with round numbers instead of five with 12s and 24s. That is why
+    <code>zDivs</code> exists separately: the property is what you asked for, the field is what the
+    geometry needed.</p>
+    <p><code>NiceStep</code> (<span class="src">clw:221</span>) rounds up to 1, 2, 2.5, 5 or 10 times a
+    power of ten. 2.5 earns its rung here where <code>NiceMax</code> does not have it: a step is divided
+    into the axis, so it buys a tighter fit without ever printing an awkward number.</p>
+<pre>  113,376,143 / 5 = 22,675,228  -&gt;  m = 10,000,000  f = 2.27  -&gt;  step 25,000,000  -&gt;  0…125,000,000
+  89 / 5          = 17.8        -&gt;  m = 10          f = 1.78  -&gt;  step 20          -&gt;  0…100
+  60 / 5          = 12          -&gt;  m = 10          f = 1.2   -&gt;  step 20          -&gt;  0…60
+  0.47 / 5        = 0.094       -&gt;  m = 0.01        f = 9.4   -&gt;  step 0.1         -&gt;  0…0.5</pre>
+    <p>The guard matters in both helpers: <code>10 ^ INT(LOG10(v))</code> can land <i>above</i> v on an
+    exact power of ten through floating-point rounding, so it is stepped back down one decade. The
+    epsilon is relative to the step, so a maximum already sitting exactly on one is not pushed a whole
+    step further out.</p>
+    <p><code>NiceMax</code> (<span class="src">clw:204</span>) is still public and still rounds a single
+    value up to 1, 2 or 5 times a power of ten — the axis simply no longer goes through it.</p>
 
     <h3>Thinning the category labels</h3>
     <p>Labels are never drawn on top of each other. The class widens the step until they fit
-    (<span class="src">clw:648-675</span>): on a vertical chart it compares the longest label's width
+    (<span class="src">clw:839-866</span>): on a vertical chart it compares the longest label's width
     against the slot width and shows every <i>n</i>-th label, then truncates what is left to the
     characters that fit; on a horizontal chart it steps on the text height instead. So a 48-category
     column chart shows perhaps every fourth month, not 48 overlapping smudges.</p>
@@ -1932,18 +2155,18 @@ SSur    <span class="k">LONG</span>
     <h3>100% stacks</h3>
     <p>Each value becomes <code>100 × ABS(v) / CatTotal(cat)</code> — absolute, so a negative contributes
     its magnitude rather than eating into the stack, and the column always fills exactly 100. A category
-    whose total is zero is skipped entirely (<span class="src">clw:827</span>), leaving a gap rather than
+    whose total is zero is skipped entirely (<span class="src">clw:1026</span>), leaving a gap rather than
     a divide-by-zero.</p>
 
     <h3>Smooth lines</h3>
     <p><code>Smooth = 1</code> runs a Catmull-Rom spline through the points, eight straight segments per
-    span (<span class="src">clw:915-932</span>). The end points are duplicated so the curve starts and
+    span (<span class="src">clw:1115-1136</span>). The end points are duplicated so the curve starts and
     ends at real data. It is still <code>LINE</code> underneath, so it stays vector on a report — at eight
     times the primitive count per span, which is worth knowing if you are printing many charts.</p>
 
     <h3>Quantising a pie</h3>
     <p>Clarion's <code>PIE</code> takes an array of integer slice sizes, so the class scales the values to
-    a 100 000-unit whole (<span class="src">clw:1054-1072</span>):</p>
+    a 100 000-unit whole (<span class="src">clw:1264-1282</span>):</p>
     <ul>
       <li><code>fac = 100000 / sum-of-absolute-values</code>; each slice becomes
         <code>INT(ABS(value) × fac + 0.5)</code>.</li>
@@ -1962,9 +2185,9 @@ SSur    <span class="k">LONG</span>
     the part you filled. Two different paddings deal with that:</p>
     <ul>
       <li><code>PolyDraw</code> repeats the last corner through the tail, creating zero-length invisible
-        edges (<span class="src">clw:344-349</span>).</li>
+        edges (<span class="src">clw:478-483</span>).</li>
       <li><code>PaintPie</code> zeroes both arrays before filling them, so unused slices have size 0
-        (<span class="src">clw:1050-1053</span>).</li>
+        (<span class="src">clw:1260-1263</span>).</li>
     </ul>
     <div class="warn"><b>If you copy this pattern into your own code:</b> forgetting the padding does not
       produce an error. It produces a polygon with a spike back to whatever was left in the array from the
@@ -1978,30 +2201,43 @@ SSur    <span class="k">LONG</span>
     plus a swatch, capped at two fifths of the width, and stacks down one column.</p>
   </div>
   <div class="es">
-    <h3>La escala redonda</h3>
-    <p><code>NiceMax</code> toma el mayor valor y lo redondea hacia arriba al siguiente 1, 2 o 5 por una
-    potencia de diez. La protección de la línea 170 importa: <code>10 ^ INT(LOG10(v))</code> puede quedar
-    <i>por encima</i> de v en una potencia exacta de diez por redondeo de coma flotante, así que se baja
-    una década.</p>
-<pre>  dmax = 71   -&gt;  m = 10,  f = 7,1  -&gt;  <span class="k">RETURN</span> 100
-  dmax = 42   -&gt;  m = 10,  f = 4,2  -&gt;  <span class="k">RETURN</span> 50
-  dmax = 0,31 -&gt;  m = 0,1, f = 3,1  -&gt;  <span class="k">RETURN</span> 0,5</pre>
-
-    <h3>Poner el cero en una línea de cuadrícula</h3>
-    <p>Cuando los datos cruzan el cero, dividir min…max entre 5 deja la línea base flotando entre dos
-    líneas, y se lee mal. Así que la clase elige un <i>paso</i> redondo y cuenta hacia afuera desde el cero
-    en ambos sentidos (<span class="src">clw:568-576</span>):</p>
-<pre>  stp   = NiceMax((zHi - zLo) / GridDivs)          <span class="c">! un paso redondo, no un máximo redondo</span>
-  zHi   =  stp * <span class="k">INT</span>(( zHi - 0.000001) / stp + 1)  <span class="c">! pasos enteros hacia arriba</span>
-  zLo   = -stp * <span class="k">INT</span>((-zLo - 0.000001) / stp + 1)  <span class="c">! pasos enteros hacia abajo</span>
-  zDivs = <span class="k">INT</span>((zHi - zLo) / stp + 0.5)             <span class="c">! por eso zDivs &gt; GridDivs es normal</span></pre>
-    <p>El épsilon evita que un valor que ya cae justo en un paso se empuje un paso entero más afuera. Por
-    esto <code>zDivs</code> existe aparte de <code>GridDivs</code>: la propiedad es lo que usted pidió, el
-    campo es lo que la geometría necesitó.</p>
+    <h3>La escala redonda: primero el paso, después los extremos</h3>
+    <p>La clase dimensiona el hueco entre dos líneas de cuadrícula según los datos y la cantidad de
+    divisiones, y después toma el primer múltiplo entero de ese paso que pasa los datos, en cada extremo
+    (<span class="src">clw:742-757</span>):</p>
+<pre>  stp   = NiceStep((dmax - dmin) / GridDivs)            <span class="c">! el hueco entre dos líneas</span>
+  zHi   =  stp * <span class="k">INT</span>(( dmax - stp/1000000) / stp + 1) <span class="c">! pasos enteros hacia arriba</span>
+  zLo   = -stp * <span class="k">INT</span>((-dmin - stp/1000000) / stp + 1) <span class="c">! pasos enteros hacia abajo</span>
+  zDivs = <span class="k">INT</span>((zHi - zLo) / stp + 0.5)                <span class="c">! las líneas que realmente entran</span></pre>
+    <p>Redondear el <i>techo</i> a la siguiente magnitud redonda tira a la basura casi todo el área de
+    dibujo cuando los datos quedan apenas por encima de una: un máximo de 113.376.143 recibe un eje de
+    200.000.000 y todas las barras se dibujan a media altura. Con el paso, ese mismo máximo recibe un eje
+    de 125.000.000 y conserva los números redondos en las etiquetas. Además pone el <b>cero en una línea
+    de cuadrícula</b> de arriba: los dos extremos son múltiplos enteros del mismo paso, así que la línea
+    base no puede quedar flotando entre dos líneas como pasa al dividir min…max entre cinco.</p>
+    <p><code>GridDivs</code> es entonces un <b>techo</b> de líneas, no una cantidad exacta: cada línea
+    tiene que caer en un paso entero, así que un máximo de 60 pedido en cinco divisiones dibuja
+    0/20/40/60 — tres líneas con números redondos en vez de cinco con 12 y 24. Por eso
+    <code>zDivs</code> existe aparte: la propiedad es lo que usted pidió, el campo es lo que la geometría
+    necesitó.</p>
+    <p><code>NiceStep</code> (<span class="src">clw:221</span>) redondea hacia arriba a 1, 2, 2,5, 5 o 10
+    por una potencia de diez. El 2,5 se gana su escalón acá, donde <code>NiceMax</code> no lo tiene: un
+    paso se divide dentro del eje, así que compra un ajuste más fino sin llegar a imprimir nunca un
+    número incómodo.</p>
+<pre>  113.376.143 / 5 = 22.675.228  -&gt;  m = 10.000.000  f = 2,27  -&gt;  paso 25.000.000  -&gt;  0…125.000.000
+  89 / 5          = 17,8        -&gt;  m = 10          f = 1,78  -&gt;  paso 20          -&gt;  0…100
+  60 / 5          = 12          -&gt;  m = 10          f = 1,2   -&gt;  paso 20          -&gt;  0…60
+  0,47 / 5        = 0,094       -&gt;  m = 0,01        f = 9,4   -&gt;  paso 0,1         -&gt;  0…0,5</pre>
+    <p>La protección importa en las dos: <code>10 ^ INT(LOG10(v))</code> puede quedar <i>por encima</i>
+    de v en una potencia exacta de diez por redondeo de coma flotante, así que se baja una década. El
+    épsilon es relativo al paso, así que un máximo que ya cae justo en uno no se empuja un paso entero
+    más afuera.</p>
+    <p><code>NiceMax</code> (<span class="src">clw:204</span>) sigue siendo público y sigue redondeando
+    un valor suelto a 1, 2 o 5 por una potencia de diez — simplemente el eje ya no pasa por ahí.</p>
 
     <h3>Ralear las etiquetas de categoría</h3>
     <p>Las etiquetas nunca se dibujan unas sobre otras. La clase amplía el paso hasta que quepan
-    (<span class="src">clw:648-675</span>): en un gráfico vertical compara el ancho de la etiqueta más
+    (<span class="src">clw:839-866</span>): en un gráfico vertical compara el ancho de la etiqueta más
     larga con el ancho de ranura y muestra cada <i>n</i>-ésima, y luego trunca lo que queda a los
     caracteres que caben; en uno horizontal usa la altura del texto. Así, un gráfico de 48 categorías
     muestra quizá cada cuarto mes, no 48 borrones superpuestos.</p>
@@ -2009,19 +2245,19 @@ SSur    <span class="k">LONG</span>
     <h3>Pilas al 100%</h3>
     <p>Cada valor pasa a ser <code>100 × ABS(v) / CatTotal(cat)</code> — absoluto, de modo que un negativo
     aporta su magnitud en vez de comerse la pila, y la columna siempre llena exactamente 100. Una
-    categoría con total cero se omite por completo (<span class="src">clw:827</span>), dejando un hueco en
+    categoría con total cero se omite por completo (<span class="src">clw:1026</span>), dejando un hueco en
     vez de una división por cero.</p>
 
     <h3>Líneas suaves</h3>
     <p><code>Smooth = 1</code> pasa una spline Catmull-Rom por los puntos, con ocho segmentos rectos por
-    tramo (<span class="src">clw:915-932</span>). Los puntos extremos se duplican para que la curva empiece
+    tramo (<span class="src">clw:1115-1136</span>). Los puntos extremos se duplican para que la curva empiece
     y termine en datos reales. Por debajo sigue siendo <code>LINE</code>, así que sigue siendo vectorial en
     un informe — con ocho veces más primitivas por tramo, lo que conviene saber si imprime muchos
     gráficos.</p>
 
     <h3>Cuantizar un pastel</h3>
     <p>El <code>PIE</code> de Clarion recibe un arreglo de tamaños enteros de porción, así que la clase
-    escala los valores a un total de 100 000 unidades (<span class="src">clw:1054-1072</span>):</p>
+    escala los valores a un total de 100 000 unidades (<span class="src">clw:1264-1282</span>):</p>
     <ul>
       <li><code>fac = 100000 / suma-de-valores-absolutos</code>; cada porción pasa a ser
         <code>INT(ABS(valor) × fac + 0,5)</code>.</li>
@@ -2041,9 +2277,9 @@ SSur    <span class="k">LONG</span>
     la parte que usted llenó. Dos rellenos distintos lo resuelven:</p>
     <ul>
       <li><code>PolyDraw</code> repite la última esquina por toda la cola, creando aristas invisibles de
-        longitud cero (<span class="src">clw:344-349</span>).</li>
+        longitud cero (<span class="src">clw:478-483</span>).</li>
       <li><code>PaintPie</code> pone en cero ambos arreglos antes de llenarlos, así las porciones sin usar
-        miden 0 (<span class="src">clw:1050-1053</span>).</li>
+        miden 0 (<span class="src">clw:1260-1263</span>).</li>
     </ul>
     <div class="warn"><b>Si copia este patrón a su propio código:</b> olvidar el relleno no produce un
       error. Produce un polígono con un pico que vuelve a lo que quedara en el arreglo del gráfico
@@ -2063,7 +2299,7 @@ SSur    <span class="k">LONG</span>
   <h2><span class="en">Colour rules</span><span class="es">Reglas de color</span></h2>
   <div class="en">
     <p class="lead">One method decides every fill colour in the chart: <code>ColorOf(pSeries, pCat)</code>
-    (<span class="src">clw:233</span>). It has exactly two modes, and which one applies is decided by the
+    (<span class="src">clw:353</span>). It has exactly two modes, and which one applies is decided by the
     data, not by a property.</p>
     <table>
       <tr><th>When</th><th>Colour comes from</th></tr>
@@ -2082,7 +2318,7 @@ SSur    <span class="k">LONG</span>
     Ventas.AddBar(SAL:Month, SAL:Amount, 0B6752Eh)   <span class="c">! every bar steel blue</span>
   <span class="k">END</span></pre>
     <p>Lines, areas and radar webs behave differently on purpose: with one series they take
-    <code>ColorOf(1,1)</code> for the whole shape (<span class="src">clw:910, 1006, 1226</span>), because
+    <code>ColorOf(1,1)</code> for the whole shape (<span class="src">clw:1110, 1216, 1436</span>), because
     a multi-coloured polyline would be meaningless.</p>
 
     <h3>The palette</h3>
@@ -2109,7 +2345,7 @@ SSur    <span class="k">LONG</span>
   </div>
   <div class="es">
     <p class="lead">Un solo método decide cada color de relleno del gráfico:
-    <code>ColorOf(pSeries, pCat)</code> (<span class="src">clw:233</span>). Tiene exactamente dos modos, y
+    <code>ColorOf(pSeries, pCat)</code> (<span class="src">clw:353</span>). Tiene exactamente dos modos, y
     cuál se aplica lo decide el dato, no una propiedad.</p>
     <table>
       <tr><th>Cuándo</th><th>El color sale de</th></tr>
@@ -2128,7 +2364,7 @@ SSur    <span class="k">LONG</span>
     Ventas.AddBar(SAL:Month, SAL:Amount, 0B6752Eh)   <span class="c">! todas azul acero</span>
   <span class="k">END</span></pre>
     <p>Líneas, áreas y telarañas se comportan distinto a propósito: con una serie toman
-    <code>ColorOf(1,1)</code> para toda la figura (<span class="src">clw:910, 1006, 1226</span>), porque
+    <code>ColorOf(1,1)</code> para toda la figura (<span class="src">clw:1110, 1216, 1436</span>), porque
     una polilínea multicolor no significaría nada.</p>
 
     <h3>La paleta</h3>
@@ -2713,7 +2949,7 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
     </ul>
     <p>The natural place to add a fourteenth chart type is a new <code>Chart:</code> equate, a
     <code>PaintWhatever</code> method beside the others, and one more branch in <code>Paint</code>'s
-    dispatch at <span class="src">clw:493</span>.</p>
+    dispatch at <span class="src">clw:659</span>.</p>
   </div>
   <div class="es">
     <p class="lead">Ningún método es <code>VIRTUAL</code>, así que el derivar-y-sobrescribir habitual de
@@ -2775,7 +3011,7 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
     </ul>
     <p>El sitio natural para agregar un decimocuarto tipo de gráfico es un nuevo equate
     <code>Chart:</code>, un método <code>PaintLoQueSea</code> junto a los otros y una rama más en el
-    despacho de <code>Paint</code>, en <span class="src">clw:493</span>.</p>
+    despacho de <code>Paint</code>, en <span class="src">clw:659</span>.</p>
   </div>
 </section>
 
@@ -2789,38 +3025,38 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
       <tr><th>What you see</th><th>Why</th><th>Workaround</th></tr>
       <tr><td>A single-series column chart draws every bar a different colour.</td>
         <td><code>ColorOf</code> switches to per-category colouring whenever
-          <code>SeriesCount() = 1</code>. <span class="src">clw:236</span></td>
+          <code>SeriesCount() = 1</code>. <span class="src">clw:356</span></td>
         <td>Pass an explicit colour to every <code>AddBar</code>, or add a second (zero) series.</td></tr>
       <tr><td><code>ShowLegend = 1</code> and no legend appears.</td>
         <td>A non-pie chart with fewer than two series returns immediately — the legend would just repeat
-          the title. <span class="src">clw:1295</span></td>
+          the title. <span class="src">clw:1506</span></td>
         <td>None needed; use <code>Title</code>. On a pie the legend lists the categories and does
           appear.</td></tr>
       <tr><td>Some legend entries are missing.</td>
         <td>Bottom/top legends reserve at most three rows and the drawing loop <code>BREAK</code>s at the
-          bottom edge. <span class="src">clw:468, 1332</span></td>
+          bottom edge. <span class="src">clw:634, 1543</span></td>
         <td>Shorten the series names, or move the legend to <code>Legend:Right</code>.</td></tr>
       <tr><td>Value labels overlap on a multi-series line chart.</td>
         <td><code>PaintLine</code> puts every label directly above its point with no collision test —
-          unlike bars, which are checked for fit. <span class="src">clw:950</span></td>
+          unlike bars, which are checked for fit. <span class="src">clw:1160</span></td>
         <td><code>ShowValues = 0</code> for line charts with more than one series; the markers and the
           scale carry the information.</td></tr>
       <tr><td>A zero-value slice has a legend entry but no label on the pie.</td>
         <td>A slice that quantises to 0 is skipped by the labelling loop.
-          <span class="src">clw:1124</span></td>
+          <span class="src">clw:1334</span></td>
         <td>Filter zero categories out before adding them.</td></tr>
       <tr><td>Labels collide when the window or band uses a large font.</td>
         <td>Layout is computed from an assumed 9-point cell (4×9 window, 62×130 report), never measured
-          from the real font. <span class="src">clw:389-402</span></td>
+          from the real font. <span class="src">clw:559-573</span></td>
         <td>Set <code>TextW</code>/<code>TextH</code> to the same ratio as the font — the properties exist
           for exactly this.</td></tr>
       <tr><td><code>GridDivs = 5</code> but six or seven gridlines are drawn.</td>
         <td>Data spanning zero is re-stepped so the baseline lands on a gridline, which raises
-          <code>zDivs</code>. <span class="src">clw:568-574</span></td>
+          <code>zDivs</code>. <span class="src">clw:761-761</span></td>
         <td>By design. Read <code>zDivs</code> if you need the real count.</td></tr>
       <tr><td>An out-of-range <code>GridDivs</code> stays changed after a draw.</td>
         <td><code>PaintCartesian</code> repairs it to 1 <i>in the property itself</i>, not in a local.
-          <span class="src">clw:566</span></td>
+          <span class="src">clw:761</span></td>
         <td>Harmless, but do not use <code>GridDivs</code> as a store for a user setting you also want to
           read back.</td></tr>
       <tr><td>Labels are too big to read on a report, or too small.</td>
@@ -2828,32 +3064,32 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
         <td>Set the font on the report band or the placeholder in the formatter.</td></tr>
       <tr><td>A radar with two categories draws as a line.</td>
         <td>A web needs three axes, so <code>Paint</code> temporarily swaps the type. Your
-          <code>ChartType</code> property is restored. <span class="src">clw:496-500</span></td>
+          <code>ChartType</code> property is restored. <span class="src">clw:662-666</span></td>
         <td>By design — the fallback is more useful than an empty rectangle.</td></tr>
       <tr><td><code>SetRange(-50, 50)</code> on a radar starts the scale at 0 anyway.</td>
         <td><code>PaintRadar</code> forces <code>zLo = 0</code> and reads only <code>MaxVal</code>.
-          <span class="src">clw:1180</span></td>
+          <span class="src">clw:1390</span></td>
         <td>Offset the data yourself if you need a non-zero floor. Negative values are clamped to 0 on a
-          radar too. <span class="src">clw:1230</span></td></tr>
+          radar too. <span class="src">clw:1440</span></td></tr>
       <tr><td>Something else in the band disappears when the chart repaints.</td>
         <td><code>EraseFirst</code> blanks a rectangle, and a rectangle has no idea who drew what is
-          inside it. <span class="src">clw:415-418</span></td>
+          inside it. <span class="src">clw:587-590</span></td>
         <td>Move the other content out of the placeholder's rectangle (plus a <code>zPad</code> of bleed),
           or set <code>EraseFirst = 0</code> and manage the clearing yourself.</td></tr>
       <tr><td>Values over 999 are labelled with a thousands separator and there is no way to turn it
         off.</td>
         <td><code>FmtNum</code> uses an <code>@n</code> picture, which always groups.
-          <span class="src">clw:200</span></td>
+          <span class="src">clw:258</span></td>
         <td>Scale the data and say so in the title, or change the picture to <code>@n-13_</code> in your
           copy of the class.</td></tr>
       <tr><td>Text comes out in the target's colour, not <code>TextColor</code>.</td>
         <td><code>ColorText = 0</code>, or <code>GETFONT</code> returned no font name — then
           <code>TextAt</code> falls back to <code>SETPENCOLOR</code>, which does not colour
-          <code>SHOW</code>. <span class="src">clw:278-282</span></td>
+          <code>SHOW</code>. <span class="src">clw:398-402</span></td>
         <td>Leave <code>ColorText = 1</code> and give the target control an explicit
           <code>FONT(…)</code>.</td></tr>
       <tr><td>Drawing after a chart comes out in the wrong colour or weight.</td>
-        <td><code>Paint</code> restores the font but not the pen. <span class="src">clw:508</span></td>
+        <td><code>Paint</code> restores the font but not the pen. <span class="src">clw:674</span></td>
         <td>Set <code>SETPENCOLOR</code>/<code>SETPENWIDTH</code>/<code>SETPENSTYLE</code> before your own
           primitives.</td></tr>
     </table>
@@ -2870,38 +3106,38 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
       <tr><th>Lo que ve</th><th>Por qué</th><th>Solución</th></tr>
       <tr><td>Un gráfico de columnas de una serie dibuja cada barra de un color distinto.</td>
         <td><code>ColorOf</code> pasa a colorear por categoría siempre que
-          <code>SeriesCount() = 1</code>. <span class="src">clw:236</span></td>
+          <code>SeriesCount() = 1</code>. <span class="src">clw:356</span></td>
         <td>Pase un color explícito a cada <code>AddBar</code>, o agregue una segunda serie (en cero).</td></tr>
       <tr><td><code>ShowLegend = 1</code> y no aparece leyenda.</td>
         <td>Un gráfico no-pastel con menos de dos series retorna de inmediato — la leyenda solo repetiría
-          el título. <span class="src">clw:1295</span></td>
+          el título. <span class="src">clw:1506</span></td>
         <td>No hace falta ninguna; use <code>Title</code>. En un pastel la leyenda lista las categorías y
           sí aparece.</td></tr>
       <tr><td>Faltan entradas de la leyenda.</td>
         <td>Las leyendas de abajo/arriba reservan tres filas como máximo y el bucle de dibujo hace
-          <code>BREAK</code> en el borde inferior. <span class="src">clw:468, 1332</span></td>
+          <code>BREAK</code> en el borde inferior. <span class="src">clw:634, 1543</span></td>
         <td>Acorte los nombres de serie, o mueva la leyenda a <code>Legend:Right</code>.</td></tr>
       <tr><td>Las etiquetas de valor se solapan en un gráfico de líneas multiserie.</td>
         <td><code>PaintLine</code> pone cada etiqueta justo encima de su punto sin comprobar colisiones —
-          a diferencia de las barras, donde sí se comprueba que quepa. <span class="src">clw:950</span></td>
+          a diferencia de las barras, donde sí se comprueba que quepa. <span class="src">clw:1160</span></td>
         <td><code>ShowValues = 0</code> en gráficos de líneas con más de una serie; los marcadores y la
           escala ya dan la información.</td></tr>
       <tr><td>Una porción de valor cero tiene entrada en la leyenda pero no etiqueta en el pastel.</td>
         <td>Una porción que se cuantiza a 0 la omite el bucle de etiquetado.
-          <span class="src">clw:1124</span></td>
+          <span class="src">clw:1334</span></td>
         <td>Filtre las categorías en cero antes de agregarlas.</td></tr>
       <tr><td>Las etiquetas chocan cuando la ventana o la banda usa una fuente grande.</td>
         <td>La disposición se calcula con una celda supuesta de 9 puntos (4×9 ventana, 62×130 informe),
-          nunca se mide de la fuente real. <span class="src">clw:389-402</span></td>
+          nunca se mide de la fuente real. <span class="src">clw:559-573</span></td>
         <td>Fije <code>TextW</code>/<code>TextH</code> en la misma proporción que la fuente — las
           propiedades existen exactamente para esto.</td></tr>
       <tr><td><code>GridDivs = 5</code> pero se dibujan seis o siete líneas.</td>
         <td>Los datos que cruzan el cero se re-escalonan para que la línea base caiga en una línea, y eso
-          sube <code>zDivs</code>. <span class="src">clw:568-574</span></td>
+          sube <code>zDivs</code>. <span class="src">clw:761-761</span></td>
         <td>Es por diseño. Lea <code>zDivs</code> si necesita el conteo real.</td></tr>
       <tr><td>Un <code>GridDivs</code> fuera de rango queda cambiado después de dibujar.</td>
         <td><code>PaintCartesian</code> lo repara a 1 <i>en la propia propiedad</i>, no en una variable
-          local. <span class="src">clw:566</span></td>
+          local. <span class="src">clw:761</span></td>
         <td>Es inocuo, pero no use <code>GridDivs</code> como almacén de un ajuste de usuario que además
           quiera releer.</td></tr>
       <tr><td>Las etiquetas salen demasiado grandes o pequeñas en un informe.</td>
@@ -2909,31 +3145,31 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
         <td>Fije la fuente en la banda o en el marcador desde el formateador.</td></tr>
       <tr><td>Un radar con dos categorías se dibuja como línea.</td>
         <td>Una telaraña necesita tres ejes, así que <code>Paint</code> cambia el tipo temporalmente. Su
-          propiedad <code>ChartType</code> se restaura. <span class="src">clw:496-500</span></td>
+          propiedad <code>ChartType</code> se restaura. <span class="src">clw:662-666</span></td>
         <td>Es por diseño — el recurso es más útil que un rectángulo vacío.</td></tr>
       <tr><td><code>SetRange(-50, 50)</code> en un radar arranca igual en 0.</td>
         <td><code>PaintRadar</code> fuerza <code>zLo = 0</code> y solo lee <code>MaxVal</code>.
-          <span class="src">clw:1180</span></td>
+          <span class="src">clw:1390</span></td>
         <td>Desplace los datos usted mismo si necesita un piso distinto de cero. En un radar los negativos
-          también se acotan a 0. <span class="src">clw:1230</span></td></tr>
+          también se acotan a 0. <span class="src">clw:1440</span></td></tr>
       <tr><td>Algo más de la banda desaparece cuando el gráfico se repinta.</td>
         <td><code>EraseFirst</code> blanquea un rectángulo, y un rectángulo no sabe quién dibujó lo que hay
-          dentro. <span class="src">clw:415-418</span></td>
+          dentro. <span class="src">clw:587-590</span></td>
         <td>Saque el otro contenido del rectángulo del marcador (más un <code>zPad</code> de sangrado), o
           ponga <code>EraseFirst = 0</code> y gestione el borrado usted.</td></tr>
       <tr><td>Los valores sobre 999 salen con separador de miles y no hay forma de quitarlo.</td>
         <td><code>FmtNum</code> usa una imagen <code>@n</code>, que siempre agrupa.
-          <span class="src">clw:200</span></td>
+          <span class="src">clw:258</span></td>
         <td>Escale los datos y dígalo en el título, o cambie la imagen a <code>@n-13_</code> en su copia de
           la clase.</td></tr>
       <tr><td>El texto sale en el color del destino, no en <code>TextColor</code>.</td>
         <td><code>ColorText = 0</code>, o <code>GETFONT</code> no devolvió nombre de fuente — entonces
           <code>TextAt</code> recurre a <code>SETPENCOLOR</code>, que no colorea <code>SHOW</code>.
-          <span class="src">clw:278-282</span></td>
+          <span class="src">clw:398-402</span></td>
         <td>Deje <code>ColorText = 1</code> y dele al control destino un <code>FONT(…)</code>
           explícito.</td></tr>
       <tr><td>Lo que dibuja después del gráfico sale con color o grosor equivocado.</td>
-        <td><code>Paint</code> restaura la fuente pero no la pluma. <span class="src">clw:508</span></td>
+        <td><code>Paint</code> restaura la fuente pero no la pluma. <span class="src">clw:674</span></td>
         <td>Fije <code>SETPENCOLOR</code>/<code>SETPENWIDTH</code>/<code>SETPENSTYLE</code> antes de sus
           propias primitivas.</td></tr>
     </table>
@@ -2963,6 +3199,7 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
           scaffolding.</td></tr>
       <tr><td><code>%ProcedureRoutines</code></td>
         <td><code>Refresh:Obj ROUTINE</code> — the <code>ClearAll</code> / <code>AddSeries</code> /
+          <code>SetSeriesPlot</code> (only for a series whose <b>Draw as</b> was set) /
           <code>AddBar</code>&nbsp;·&nbsp;<code>AddCat</code> / <code>Draw</code> sequence. Call it
           yourself (<code>DO Refresh:Obj</code>) after your data changes.</td></tr>
     </table>
@@ -3011,7 +3248,7 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
           propio de ABC.</td></tr>
       <tr><td><code>%ProcedureRoutines</code></td>
         <td><code>Refresh:Obj ROUTINE</code> — la secuencia <code>ClearAll</code> /
-          <code>AddSeries</code> / <code>AddBar</code>&nbsp;·&nbsp;<code>AddCat</code> /
+          <code>AddSeries</code> / <code>SetSeriesPlot</code> (solo si se puso <b>Draw as</b>) / <code>AddBar</code>&nbsp;·&nbsp;<code>AddCat</code> /
           <code>Draw</code>. Llámela usted (<code>DO Refresh:Obj</code>) cuando cambien sus datos.</td></tr>
     </table>
     <h3>Extensión de informe</h3>
@@ -3048,8 +3285,8 @@ MiGrafica.Standard <span class="k">PROCEDURE</span>(<span class="k">STRING</span
 
     </div>
     <footer>
-      <span class="en">graficaBarra v2.0 · class guide · GraficaBarraClass · part of the templatemaker collection</span>
-      <span class="es">graficaBarra v2.0 · guía de la clase · GraficaBarraClass · parte de la colección templatemaker</span>
+      <span class="en">graficaBarra v2.1 · class guide · GraficaBarraClass · part of the templatemaker collection</span>
+      <span class="es">graficaBarra v2.1 · guía de la clase · GraficaBarraClass · parte de la colección templatemaker</span>
     </footer>
   </main>
 </div>

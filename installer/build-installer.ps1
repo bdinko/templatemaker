@@ -53,10 +53,16 @@ $templates = Join-Path $repo 'templates'
 
 # TestQRWnd_Renz.clw is myQRDraw's demo PROGRAM, not a class. Putting a PROGRAM on the
 # redirection path would offer it to every app that compiles, so it stays out.
-$notAClass = @('TestQRWnd_Renz.clw')
+#
+# emailTo10.tpl is the Clarion 10 (480 px prompt sheet) build of emailTo.tpl, generated
+# by templates\emailTo\Build-NarrowTpl.ps1. It declares the SAME template chain, so both
+# on one redirection path is one chain registered twice under two names. This installer
+# targets a single Clarion 12 install; the stand-alone installer\emailTo one picks the
+# right build per version and is what a Clarion 10 machine should run.
+$notAClass = @('TestQRWnd_Renz.clw', 'emailTo10.tpl')
 
 $stage = @(
-    @{ Include = @('*.tpl', '*.png');          Dest = $tplOut; What = 'template' }
+    @{ Include = @('*.tpl', '*.tpw', '*.png'); Dest = $tplOut; What = 'template' }
     @{ Include = @('*.inc', '*.clw', '*.c');   Dest = $libOut; What = 'class'    }
 )
 

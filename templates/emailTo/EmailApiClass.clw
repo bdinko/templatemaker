@@ -169,369 +169,369 @@ body CSTRING(513)
 EmailApiClass.BuildMap PROCEDURE()
   CODE
 !===== SendGrid ==============================================================
-  SELF.Row(ETPrv:SendGrid, ETOp:Account, 0, 'GET', '{scheme}{host}/v3/user/account', '*', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Account, 0, 'GET', '{{scheme}{{host}/v3/user/account', '*', |
            'Plan=type;Reputation=reputation')
-  SELF.Row(ETPrv:SendGrid, ETOp:Account, 1, 'GET', '{scheme}{host}/v3/user/profile', '*', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Account, 1, 'GET', '{{scheme}{{host}/v3/user/profile', '*', |
            'Name=first_name;Company=company')
-  SELF.Row(ETPrv:SendGrid, ETOp:Account, 2, 'GET', '{scheme}{host}/v3/user/email', '*', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Account, 2, 'GET', '{{scheme}{{host}/v3/user/email', '*', |
            'Address=email')
   SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Bounce, 'GET', |
-           '{scheme}{host}/v3/suppression/bounces?limit={limit}&offset={offset}', '', |
+           '{{scheme}{{host}/v3/suppression/bounces?limit={{limit}&offset={{offset}', '', |
            'Address=email;Reason=reason;Id=status;When=#created')
   SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Block, 'GET', |
-           '{scheme}{host}/v3/suppression/blocks?limit={limit}&offset={offset}', '', |
+           '{{scheme}{{host}/v3/suppression/blocks?limit={{limit}&offset={{offset}', '', |
            'Address=email;Reason=reason;Id=status;When=#created')
   SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Spam, 'GET', |
-           '{scheme}{host}/v3/suppression/spam_reports?limit={limit}&offset={offset}', '', |
+           '{{scheme}{{host}/v3/suppression/spam_reports?limit={{limit}&offset={{offset}', '', |
            'Address=email;Reason=!spam report;When=#created')
   SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Unsub, 'GET', |
-           '{scheme}{host}/v3/suppression/unsubscribes?limit={limit}&offset={offset}', '', |
+           '{{scheme}{{host}/v3/suppression/unsubscribes?limit={{limit}&offset={{offset}', '', |
            'Address=email;Reason=!unsubscribed;When=#created')
   SELF.Row(ETPrv:SendGrid, ETOp:Suppressions, ETSup:Invalid, 'GET', |
-           '{scheme}{host}/v3/suppression/invalid_emails?limit={limit}&offset={offset}', '', |
+           '{{scheme}{{host}/v3/suppression/invalid_emails?limit={{limit}&offset={{offset}', '', |
            'Address=email;Reason=reason;When=#created')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Bounce,  'DELETE', '{scheme}{host}/v3/suppression/bounces/{email}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Block,   'DELETE', '{scheme}{host}/v3/suppression/blocks/{email}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Spam,    'DELETE', '{scheme}{host}/v3/suppression/spam_reports/{email}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Unsub,   'DELETE', '{scheme}{host}/v3/asm/suppressions/global/{email}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Invalid, 'DELETE', '{scheme}{host}/v3/suppression/invalid_emails/{email}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Bounce,  'DELETE', '{scheme}{host}/v3/suppression/bounces',        '', '', '{"delete_all":true}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Block,   'DELETE', '{scheme}{host}/v3/suppression/blocks',         '', '', '{"delete_all":true}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Spam,    'DELETE', '{scheme}{host}/v3/suppression/spam_reports',   '', '', '{"delete_all":true}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Invalid, 'DELETE', '{scheme}{host}/v3/suppression/invalid_emails', '', '', '{"delete_all":true}')
-  SELF.Row(ETPrv:SendGrid, ETOp:SuppAdd, ETSup:All, 'POST', '{scheme}{host}/v3/asm/suppressions/global', '', '', |
-           '{"recipient_emails":["{email}"]}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Bounce,  'DELETE', '{{scheme}{{host}/v3/suppression/bounces/{{email}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Block,   'DELETE', '{{scheme}{{host}/v3/suppression/blocks/{{email}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Spam,    'DELETE', '{{scheme}{{host}/v3/suppression/spam_reports/{{email}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Unsub,   'DELETE', '{{scheme}{{host}/v3/asm/suppressions/global/{{email}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDelete, ETSup:Invalid, 'DELETE', '{{scheme}{{host}/v3/suppression/invalid_emails/{{email}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Bounce,  'DELETE', '{{scheme}{{host}/v3/suppression/bounces',        '', '', '{{"delete_all":true}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Block,   'DELETE', '{{scheme}{{host}/v3/suppression/blocks',         '', '', '{{"delete_all":true}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Spam,    'DELETE', '{{scheme}{{host}/v3/suppression/spam_reports',   '', '', '{{"delete_all":true}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppDeleteAll, ETSup:Invalid, 'DELETE', '{{scheme}{{host}/v3/suppression/invalid_emails', '', '', '{{"delete_all":true}')
+  SELF.Row(ETPrv:SendGrid, ETOp:SuppAdd, ETSup:All, 'POST', '{{scheme}{{host}/v3/asm/suppressions/global', '', '', |
+           '{{"recipient_emails":["{{email}"]}')
   SELF.Row(ETPrv:SendGrid, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/v3/stats?start_date={ymdfrom}&end_date={ymdto}&aggregated_by=day', '', |
+           '{{scheme}{{host}/v3/stats?start_date={{ymdfrom}&end_date={{ymdto}&aggregated_by=day', '', |
            'When=$date;Requests=stats.0.metrics.requests;Delivered=stats.0.metrics.delivered;' & |
            'Opens=stats.0.metrics.opens;UniqueOpens=stats.0.metrics.unique_opens;' & |
            'Clicks=stats.0.metrics.clicks;UniqueClicks=stats.0.metrics.unique_clicks;' & |
            'HardBounces=stats.0.metrics.bounces;Blocks=stats.0.metrics.blocks;' & |
            'SpamReports=stats.0.metrics.spam_reports;Unsubscribed=stats.0.metrics.unsubscribes;' & |
            'Invalid=stats.0.metrics.invalid_emails')
-  SELF.Row(ETPrv:SendGrid, ETOp:Events, 0, 'GET', '{scheme}{host}/v3/messages?limit={limit}', 'messages', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Events, 0, 'GET', '{{scheme}{{host}/v3/messages?limit={{limit}', 'messages', |
            'When=@last_event_time;Address=to_email;EventName=status;Subject=subject;MessageId=msg_id')
-  SELF.Row(ETPrv:SendGrid, ETOp:Contacts, 0, 'GET', '{scheme}{host}/v3/marketing/contacts', 'result', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Contacts, 0, 'GET', '{{scheme}{{host}/v3/marketing/contacts', 'result', |
            'Id=id;Address=email;Name=first_name;When=@created_at;ListIds=list_ids.0')
-  SELF.Row(ETPrv:SendGrid, ETOp:Lists, 0, 'GET', '{scheme}{host}/v3/marketing/lists?page_size={limit}', 'result', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Lists, 0, 'GET', '{{scheme}{{host}/v3/marketing/lists?page_size={{limit}', 'result', |
            'Id=id;Name=name;Members=contact_count')
-  SELF.Row(ETPrv:SendGrid, ETOp:ContactAdd, 0, 'PUT', '{scheme}{host}/v3/marketing/contacts', '', '', |
-           '{"contacts":[{"email":"{email}","first_name":"{text}"}]}')
-  SELF.Row(ETPrv:SendGrid, ETOp:ContactAdd, 1, 'PUT', '{scheme}{host}/v3/marketing/contacts', '', '', |
-           '{"list_ids":["{id}"],"contacts":[{"email":"{email}","first_name":"{text}"}]}')
-  SELF.Row(ETPrv:SendGrid, ETOp:ContactDelete, 0, 'DELETE', '{scheme}{host}/v3/marketing/contacts?ids={id}')
-  SELF.Row(ETPrv:SendGrid, ETOp:ListAdd, 0, 'POST', '{scheme}{host}/v3/marketing/lists', '', '', '{"name":"{text}"}')
-  SELF.Row(ETPrv:SendGrid, ETOp:Campaigns, 0, 'GET', '{scheme}{host}/v3/marketing/singlesends', 'result', |
+  SELF.Row(ETPrv:SendGrid, ETOp:ContactAdd, 0, 'PUT', '{{scheme}{{host}/v3/marketing/contacts', '', '', |
+           '{{"contacts":[{{"email":"{{email}","first_name":"{{text}"}]}')
+  SELF.Row(ETPrv:SendGrid, ETOp:ContactAdd, 1, 'PUT', '{{scheme}{{host}/v3/marketing/contacts', '', '', |
+           '{{"list_ids":["{{id}"],"contacts":[{{"email":"{{email}","first_name":"{{text}"}]}')
+  SELF.Row(ETPrv:SendGrid, ETOp:ContactDelete, 0, 'DELETE', '{{scheme}{{host}/v3/marketing/contacts?ids={{id}')
+  SELF.Row(ETPrv:SendGrid, ETOp:ListAdd, 0, 'POST', '{{scheme}{{host}/v3/marketing/lists', '', '', '{{"name":"{{text}"}')
+  SELF.Row(ETPrv:SendGrid, ETOp:Campaigns, 0, 'GET', '{{scheme}{{host}/v3/marketing/singlesends', 'result', |
            'Id=id;Name=name;Status=status;When=@send_at')
-  SELF.Row(ETPrv:SendGrid, ETOp:CampaignAdd, 0, 'POST', '{scheme}{host}/v3/marketing/singlesends', '', '', |
-           '{"name":"{text}","send_to":{"list_ids":["{id}"]},' & |
-           '"email_config":{"subject":"{subject}","html_content":"{html}"}}')
-  SELF.Row(ETPrv:SendGrid, ETOp:CampaignSend, 0, 'PUT', '{scheme}{host}/v3/marketing/singlesends/{id}/schedule', |
-           '', '', '{"send_at":"now"}')
+  SELF.Row(ETPrv:SendGrid, ETOp:CampaignAdd, 0, 'POST', '{{scheme}{{host}/v3/marketing/singlesends', '', '', |
+           '{{"name":"{{text}","send_to":{{"list_ids":["{{id}"]},' & |
+           '"email_config":{{"subject":"{{subject}","html_content":"{{html}"}}')
+  SELF.Row(ETPrv:SendGrid, ETOp:CampaignSend, 0, 'PUT', '{{scheme}{{host}/v3/marketing/singlesends/{{id}/schedule', |
+           '', '', '{{"send_at":"now"}')
   SELF.Row(ETPrv:SendGrid, ETOp:Templates, 0, 'GET', |
-           '{scheme}{host}/v3/templates?generations=dynamic&page_size={limit}', 'result', |
+           '{{scheme}{{host}/v3/templates?generations=dynamic&page_size={{limit}', 'result', |
            'Id=id;Name=name;When=@updated_at')
-  SELF.Row(ETPrv:SendGrid, ETOp:Senders, 0, 'GET', '{scheme}{host}/v3/verified_senders', 'results', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Senders, 0, 'GET', '{{scheme}{{host}/v3/verified_senders', 'results', |
            'Id=id;Address=from_email;Name=from_name;Verified=verified')
-  SELF.Row(ETPrv:SendGrid, ETOp:Domains, 0, 'GET', '{scheme}{host}/v3/whitelabel/domains', '', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Domains, 0, 'GET', '{{scheme}{{host}/v3/whitelabel/domains', '', |
            'Id=id;Name=domain;Verified=valid')
-  SELF.Row(ETPrv:SendGrid, ETOp:Webhooks, 0, 'GET', '{scheme}{host}/v3/user/webhooks/event/settings', '*', |
+  SELF.Row(ETPrv:SendGrid, ETOp:Webhooks, 0, 'GET', '{{scheme}{{host}/v3/user/webhooks/event/settings', '*', |
            'Url=url;Active=enabled;Events=!all')
 
 !===== Brevo =================================================================
 !  Brevo keeps ONE blocked list, with a reason code that says which kind of
 !  block it really is - so the row is registered for ETSup:All and the engine
 !  reads the kind off each row.
-  SELF.Row(ETPrv:Brevo, ETOp:Account, 0, 'GET', '{scheme}{host}/v3/account', '*', |
+  SELF.Row(ETPrv:Brevo, ETOp:Account, 0, 'GET', '{{scheme}{{host}/v3/account', '*', |
            'Name=firstName;Company=companyName;Address=email;Plan=plan.0.type;Credits=plan.0.credits')
   SELF.Row(ETPrv:Brevo, ETOp:Suppressions, ETSup:All, 'GET', |
-           '{scheme}{host}/v3/smtp/blockedContacts?limit={limit}&offset={offset}', 'contacts', |
+           '{{scheme}{{host}/v3/smtp/blockedContacts?limit={{limit}&offset={{offset}', 'contacts', |
            'Address=email;Reason=reason.message;KindText=reason.code;When=@blockedAt;Sender=senderEmail')
-  SELF.Row(ETPrv:Brevo, ETOp:SuppDelete, ETSup:All, 'DELETE', '{scheme}{host}/v3/smtp/blockedContacts/{email}')
-  SELF.Row(ETPrv:Brevo, ETOp:SuppAdd, ETSup:All, 'PUT', '{scheme}{host}/v3/contacts/{email}', '', '', |
-           '{"emailBlacklisted":true}')
+  SELF.Row(ETPrv:Brevo, ETOp:SuppDelete, ETSup:All, 'DELETE', '{{scheme}{{host}/v3/smtp/blockedContacts/{{email}')
+  SELF.Row(ETPrv:Brevo, ETOp:SuppAdd, ETSup:All, 'PUT', '{{scheme}{{host}/v3/contacts/{{email}', '', '', |
+           '{{"emailBlacklisted":true}')
   SELF.Row(ETPrv:Brevo, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/v3/smtp/statistics/reports?startDate={ymdfrom}&endDate={ymdto}&limit={limit}', |
+           '{{scheme}{{host}/v3/smtp/statistics/reports?startDate={{ymdfrom}&endDate={{ymdto}&limit={{limit}', |
            'reports', |
            'When=$date;Requests=requests;Delivered=delivered;Opens=opens;UniqueOpens=uniqueOpens;' & |
            'Clicks=clicks;UniqueClicks=uniqueClicks;HardBounces=hardBounces;SoftBounces=softBounces;' & |
            'Blocks=blocked;SpamReports=spamReports;Unsubscribed=unsubscribed;Invalid=invalid')
   SELF.Row(ETPrv:Brevo, ETOp:Events, 0, 'GET', |
-           '{scheme}{host}/v3/smtp/statistics/events?limit={limit}&offset={offset}' & |
-           '&startDate={ymdfrom}&endDate={ymdto}', 'events', |
+           '{{scheme}{{host}/v3/smtp/statistics/events?limit={{limit}&offset={{offset}' & |
+           '&startDate={{ymdfrom}&endDate={{ymdto}', 'events', |
            'When=@date;Address=email;EventName=event;Reason=reason;Subject=subject;' & |
            'MessageId=messageId;Link=link')
   SELF.Row(ETPrv:Brevo, ETOp:Contacts, 0, 'GET', |
-           '{scheme}{host}/v3/contacts?limit={limit}&offset={offset}', 'contacts', |
+           '{{scheme}{{host}/v3/contacts?limit={{limit}&offset={{offset}', 'contacts', |
            'Id=id;Address=email;Blocked=emailBlacklisted;When=@createdAt;ListIds=listIds.0')
   SELF.Row(ETPrv:Brevo, ETOp:ListMembers, 0, 'GET', |
-           '{scheme}{host}/v3/contacts/lists/{id}/contacts?limit={limit}&offset={offset}', 'contacts', |
+           '{{scheme}{{host}/v3/contacts/lists/{{id}/contacts?limit={{limit}&offset={{offset}', 'contacts', |
            'Id=id;Address=email;Blocked=emailBlacklisted;When=@createdAt')
   SELF.Row(ETPrv:Brevo, ETOp:Lists, 0, 'GET', |
-           '{scheme}{host}/v3/contacts/lists?limit={limit}&offset={offset}', 'lists', |
+           '{{scheme}{{host}/v3/contacts/lists?limit={{limit}&offset={{offset}', 'lists', |
            'Id=id;Name=name;Members=totalSubscribers;Blocked=totalBlacklisted;FolderId=folderId')
-  SELF.Row(ETPrv:Brevo, ETOp:ContactAdd, 0, 'POST', '{scheme}{host}/v3/contacts', '', '', |
-           '{"email":"{email}","attributes":{"FIRSTNAME":"{text}"},"updateEnabled":true}')
-  SELF.Row(ETPrv:Brevo, ETOp:ContactAdd, 1, 'POST', '{scheme}{host}/v3/contacts', '', '', |
-           '{"email":"{email}","attributes":{"FIRSTNAME":"{text}"},"listIds":[{id}],"updateEnabled":true}')
-  SELF.Row(ETPrv:Brevo, ETOp:ContactDelete, 0, 'DELETE', '{scheme}{host}/v3/contacts/{email}')
-  SELF.Row(ETPrv:Brevo, ETOp:ListAdd, 0, 'POST', '{scheme}{host}/v3/contacts/lists', '', '', |
-           '{"name":"{text}","folderId":1}')
+  SELF.Row(ETPrv:Brevo, ETOp:ContactAdd, 0, 'POST', '{{scheme}{{host}/v3/contacts', '', '', |
+           '{{"email":"{{email}","attributes":{{"FIRSTNAME":"{{text}"},"updateEnabled":true}')
+  SELF.Row(ETPrv:Brevo, ETOp:ContactAdd, 1, 'POST', '{{scheme}{{host}/v3/contacts', '', '', |
+           '{{"email":"{{email}","attributes":{{"FIRSTNAME":"{{text}"},"listIds":[{{id}],"updateEnabled":true}')
+  SELF.Row(ETPrv:Brevo, ETOp:ContactDelete, 0, 'DELETE', '{{scheme}{{host}/v3/contacts/{{email}')
+  SELF.Row(ETPrv:Brevo, ETOp:ListAdd, 0, 'POST', '{{scheme}{{host}/v3/contacts/lists', '', '', |
+           '{{"name":"{{text}","folderId":1}')
   SELF.Row(ETPrv:Brevo, ETOp:Campaigns, 0, 'GET', |
-           '{scheme}{host}/v3/emailCampaigns?limit={limit}&offset={offset}', 'campaigns', |
+           '{{scheme}{{host}/v3/emailCampaigns?limit={{limit}&offset={{offset}', 'campaigns', |
            'Id=id;Name=name;Subject=subject;Status=status;When=@scheduledAt')
-  SELF.Row(ETPrv:Brevo, ETOp:CampaignAdd, 0, 'POST', '{scheme}{host}/v3/emailCampaigns', '', '', |
-           '{"name":"{text}","subject":"{subject}","sender":{"email":"{from}","name":"{fromname}"},' & |
-           '"type":"classic","htmlContent":"{html}","recipients":{"listIds":[{id}]}}')
-  SELF.Row(ETPrv:Brevo, ETOp:CampaignSend, 0, 'POST', '{scheme}{host}/v3/emailCampaigns/{id}/sendNow')
+  SELF.Row(ETPrv:Brevo, ETOp:CampaignAdd, 0, 'POST', '{{scheme}{{host}/v3/emailCampaigns', '', '', |
+           '{{"name":"{{text}","subject":"{{subject}","sender":{{"email":"{{from}","name":"{{fromname}"},' & |
+           '"type":"classic","htmlContent":"{{html}","recipients":{{"listIds":[{{id}]}}')
+  SELF.Row(ETPrv:Brevo, ETOp:CampaignSend, 0, 'POST', '{{scheme}{{host}/v3/emailCampaigns/{{id}/sendNow')
   SELF.Row(ETPrv:Brevo, ETOp:Templates, 0, 'GET', |
-           '{scheme}{host}/v3/smtp/templates?limit={limit}&offset={offset}', 'templates', |
+           '{{scheme}{{host}/v3/smtp/templates?limit={{limit}&offset={{offset}', 'templates', |
            'Id=id;Name=name;Subject=subject;Active=isActive;When=@createdAt')
-  SELF.Row(ETPrv:Brevo, ETOp:Senders, 0, 'GET', '{scheme}{host}/v3/senders', 'senders', |
+  SELF.Row(ETPrv:Brevo, ETOp:Senders, 0, 'GET', '{{scheme}{{host}/v3/senders', 'senders', |
            'Id=id;Address=email;Name=name;Verified=active')
-  SELF.Row(ETPrv:Brevo, ETOp:Domains, 0, 'GET', '{scheme}{host}/v3/senders/domains', 'domains', |
+  SELF.Row(ETPrv:Brevo, ETOp:Domains, 0, 'GET', '{{scheme}{{host}/v3/senders/domains', 'domains', |
            'Name=domain;Verified=authenticated')
-  SELF.Row(ETPrv:Brevo, ETOp:Webhooks, 0, 'GET', '{scheme}{host}/v3/webhooks', 'webhooks', |
+  SELF.Row(ETPrv:Brevo, ETOp:Webhooks, 0, 'GET', '{{scheme}{{host}/v3/webhooks', 'webhooks', |
            'Id=id;Url=url;Events=events.0;Active=!1')
-  SELF.Row(ETPrv:Brevo, ETOp:WebhookAdd, 0, 'POST', '{scheme}{host}/v3/webhooks', '', '', |
-           '{"url":"{text}","events":["hardBounce","spam","unsubscribed","delivered"],' & |
+  SELF.Row(ETPrv:Brevo, ETOp:WebhookAdd, 0, 'POST', '{{scheme}{{host}/v3/webhooks', '', '', |
+           '{{"url":"{{text}","events":["hardBounce","spam","unsubscribed","delivered"],' & |
            '"type":"transactional"}')
-  SELF.Row(ETPrv:Brevo, ETOp:WebhookDelete, 0, 'DELETE', '{scheme}{host}/v3/webhooks/{id}')
+  SELF.Row(ETPrv:Brevo, ETOp:WebhookDelete, 0, 'DELETE', '{{scheme}{{host}/v3/webhooks/{{id}')
 
 !===== Mailgun ===============================================================
 !  Mailgun is per-DOMAIN, and pages with a cursor rather than an offset - the
 !  reply carries the address of the next page in paging.next.
   SELF.Row(ETPrv:Mailgun, ETOp:Suppressions, ETSup:Bounce, 'GET', |
-           '{scheme}{host}/v3/{domain}/bounces?limit={limit}', 'items', |
+           '{{scheme}{{host}/v3/{{domain}/bounces?limit={{limit}', 'items', |
            'Address=address;Reason=error;Code=code;When=%created_at', '', 'paging.next')
   SELF.Row(ETPrv:Mailgun, ETOp:Suppressions, ETSup:Spam, 'GET', |
-           '{scheme}{host}/v3/{domain}/complaints?limit={limit}', 'items', |
+           '{{scheme}{{host}/v3/{{domain}/complaints?limit={{limit}', 'items', |
            'Address=address;Reason=!spam complaint;When=%created_at', '', 'paging.next')
   SELF.Row(ETPrv:Mailgun, ETOp:Suppressions, ETSup:Unsub, 'GET', |
-           '{scheme}{host}/v3/{domain}/unsubscribes?limit={limit}', 'items', |
+           '{{scheme}{{host}/v3/{{domain}/unsubscribes?limit={{limit}', 'items', |
            'Address=address;Reason=!unsubscribed;When=%created_at', '', 'paging.next')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppDelete, ETSup:Bounce, 'DELETE', '{scheme}{host}/v3/{domain}/bounces/{email}')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppDelete, ETSup:Spam,   'DELETE', '{scheme}{host}/v3/{domain}/complaints/{email}')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppDelete, ETSup:Unsub,  'DELETE', '{scheme}{host}/v3/{domain}/unsubscribes/{email}')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppDeleteAll, ETSup:Bounce, 'DELETE', '{scheme}{host}/v3/{domain}/bounces')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppDeleteAll, ETSup:Spam,   'DELETE', '{scheme}{host}/v3/{domain}/complaints')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppDeleteAll, ETSup:Unsub,  'DELETE', '{scheme}{host}/v3/{domain}/unsubscribes')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppAdd, ETSup:Bounce, 'POST', '{scheme}{host}/v3/{domain}/bounces', '', '', |
-           'form:address={email}&error={text}')
-  SELF.Row(ETPrv:Mailgun, ETOp:SuppAdd, ETSup:Unsub, 'POST', '{scheme}{host}/v3/{domain}/unsubscribes', '', '', |
-           'form:address={email}&tag=*')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppDelete, ETSup:Bounce, 'DELETE', '{{scheme}{{host}/v3/{{domain}/bounces/{{email}')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppDelete, ETSup:Spam,   'DELETE', '{{scheme}{{host}/v3/{{domain}/complaints/{{email}')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppDelete, ETSup:Unsub,  'DELETE', '{{scheme}{{host}/v3/{{domain}/unsubscribes/{{email}')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppDeleteAll, ETSup:Bounce, 'DELETE', '{{scheme}{{host}/v3/{{domain}/bounces')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppDeleteAll, ETSup:Spam,   'DELETE', '{{scheme}{{host}/v3/{{domain}/complaints')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppDeleteAll, ETSup:Unsub,  'DELETE', '{{scheme}{{host}/v3/{{domain}/unsubscribes')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppAdd, ETSup:Bounce, 'POST', '{{scheme}{{host}/v3/{{domain}/bounces', '', '', |
+           'form:address={{email}&error={{text}')
+  SELF.Row(ETPrv:Mailgun, ETOp:SuppAdd, ETSup:Unsub, 'POST', '{{scheme}{{host}/v3/{{domain}/unsubscribes', '', '', |
+           'form:address={{email}&tag=*')
   SELF.Row(ETPrv:Mailgun, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/v3/{domain}/stats/total?event=accepted&event=delivered&event=failed' & |
+           '{{scheme}{{host}/v3/{{domain}/stats/total?event=accepted&event=delivered&event=failed' & |
            '&event=opened&event=clicked&event=unsubscribed&event=complained' & |
-           '&start={rfcfrom}&end={rfcto}&resolution=day', 'stats', |
+           '&start={{rfcfrom}&end={{rfcto}&resolution=day', 'stats', |
            'When=%time;Requests=accepted.total;Delivered=delivered.total;Opens=opened.total;' & |
            'Clicks=clicked.total;HardBounces=failed.permanent.total;' & |
            'SoftBounces=failed.temporary.total;SpamReports=complained.total;' & |
            'Unsubscribed=unsubscribed.total')
   SELF.Row(ETPrv:Mailgun, ETOp:Events, 0, 'GET', |
-           '{scheme}{host}/v3/{domain}/events?limit={limit}', 'items', |
+           '{{scheme}{{host}/v3/{{domain}/events?limit={{limit}', 'items', |
            'When=#timestamp;Address=recipient;EventName=event;Reason=reason;' & |
            'Subject=message.headers.subject;MessageId=message.headers.message-id', '', 'paging.next')
-  SELF.Row(ETPrv:Mailgun, ETOp:Lists, 0, 'GET', '{scheme}{host}/v3/lists/pages?limit={limit}', 'items', |
+  SELF.Row(ETPrv:Mailgun, ETOp:Lists, 0, 'GET', '{{scheme}{{host}/v3/lists/pages?limit={{limit}', 'items', |
            'Id=address;Name=name;Members=members_count')
   SELF.Row(ETPrv:Mailgun, ETOp:ListMembers, 0, 'GET', |
-           '{scheme}{host}/v3/lists/{id}/members?limit={limit}', 'items', |
+           '{{scheme}{{host}/v3/lists/{{id}/members?limit={{limit}', 'items', |
            'Address=address;Name=name')
-  SELF.Row(ETPrv:Mailgun, ETOp:ContactAdd, 1, 'POST', '{scheme}{host}/v3/lists/{id}/members', '', '', |
-           'form:address={email}&name={text}&upsert=yes')
-  SELF.Row(ETPrv:Mailgun, ETOp:ContactDelete, 0, 'DELETE', '{scheme}{host}/v3/lists/{id}/members/{email}')
-  SELF.Row(ETPrv:Mailgun, ETOp:ListAdd, 0, 'POST', '{scheme}{host}/v3/lists', '', '', |
-           'form:address={text}&name={text}')
+  SELF.Row(ETPrv:Mailgun, ETOp:ContactAdd, 1, 'POST', '{{scheme}{{host}/v3/lists/{{id}/members', '', '', |
+           'form:address={{email}&name={{text}&upsert=yes')
+  SELF.Row(ETPrv:Mailgun, ETOp:ContactDelete, 0, 'DELETE', '{{scheme}{{host}/v3/lists/{{id}/members/{{email}')
+  SELF.Row(ETPrv:Mailgun, ETOp:ListAdd, 0, 'POST', '{{scheme}{{host}/v3/lists', '', '', |
+           'form:address={{text}&name={{text}')
   SELF.Row(ETPrv:Mailgun, ETOp:Templates, 0, 'GET', |
-           '{scheme}{host}/v3/{domain}/templates?limit={limit}', 'items', |
+           '{{scheme}{{host}/v3/{{domain}/templates?limit={{limit}', 'items', |
            'Id=name;Name=name;When=%createdAt')
-  SELF.Row(ETPrv:Mailgun, ETOp:Domains, 0, 'GET', '{scheme}{host}/v4/domains?limit={limit}', 'items', |
+  SELF.Row(ETPrv:Mailgun, ETOp:Domains, 0, 'GET', '{{scheme}{{host}/v4/domains?limit={{limit}', 'items', |
            'Id=id;Name=name;Status=state')
 
 !===== Postmark ==============================================================
 !  Two suppression views: the stream dump (everything, with the reason) and
 !  /bounces (bounces only, with far more detail).  Both are registered, so
 !  "show me everything" and "show me the bounces" each use the better one.
-  SELF.Row(ETPrv:Postmark, ETOp:Account, 0, 'GET', '{scheme}{host}/server', '*', 'Name=Name')
+  SELF.Row(ETPrv:Postmark, ETOp:Account, 0, 'GET', '{{scheme}{{host}/server', '*', 'Name=Name')
   SELF.Row(ETPrv:Postmark, ETOp:Suppressions, ETSup:All, 'GET', |
-           '{scheme}{host}/message-streams/outbound/suppressions/dump', 'Suppressions', |
+           '{{scheme}{{host}/message-streams/outbound/suppressions/dump', 'Suppressions', |
            'Address=EmailAddress;KindText=SuppressionReason;Reason=SuppressionReason;' & |
            'Id=Origin;When=@CreatedAt')
   SELF.Row(ETPrv:Postmark, ETOp:Suppressions, ETSup:Bounce, 'GET', |
-           '{scheme}{host}/bounces?count={limit}&offset={offset}', 'Bounces', |
+           '{{scheme}{{host}/bounces?count={{limit}&offset={{offset}', 'Bounces', |
            'Address=Email;Reason=Description;Code=TypeCode;Id=ID;When=@BouncedAt;Sender=From')
   SELF.Row(ETPrv:Postmark, ETOp:SuppDelete, ETSup:All, 'POST', |
-           '{scheme}{host}/message-streams/outbound/suppressions/delete', '', '', |
-           '{"Suppressions":[{"EmailAddress":"{email}"}]}')
-  SELF.Row(ETPrv:Postmark, ETOp:SuppDelete, ETSup:Bounce, 'PUT', '{scheme}{host}/bounces/{id}/activate')
+           '{{scheme}{{host}/message-streams/outbound/suppressions/delete', '', '', |
+           '{{"Suppressions":[{{"EmailAddress":"{{email}"}]}')
+  SELF.Row(ETPrv:Postmark, ETOp:SuppDelete, ETSup:Bounce, 'PUT', '{{scheme}{{host}/bounces/{{id}/activate')
   SELF.Row(ETPrv:Postmark, ETOp:SuppAdd, ETSup:All, 'POST', |
-           '{scheme}{host}/message-streams/outbound/suppressions', '', '', |
-           '{"Suppressions":[{"EmailAddress":"{email}"}]}')
+           '{{scheme}{{host}/message-streams/outbound/suppressions', '', '', |
+           '{{"Suppressions":[{{"EmailAddress":"{{email}"}]}')
   SELF.Row(ETPrv:Postmark, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/stats/outbound?fromdate={ymdfrom}&todate={ymdto}', '*', |
+           '{{scheme}{{host}/stats/outbound?fromdate={{ymdfrom}&todate={{ymdto}', '*', |
            'Requests=Sent;Opens=Opens;UniqueOpens=UniqueOpens;Clicks=TotalClicks;' & |
            'HardBounces=Bounced;SpamReports=SpamComplaints')
   SELF.Row(ETPrv:Postmark, ETOp:Events, 0, 'GET', |
-           '{scheme}{host}/messages/outbound?count={limit}&offset={offset}', 'Messages', |
+           '{{scheme}{{host}/messages/outbound?count={{limit}&offset={{offset}', 'Messages', |
            'When=@ReceivedAt;Address=Recipients.0;EventName=Status;Subject=Subject;MessageId=MessageID')
   SELF.Row(ETPrv:Postmark, ETOp:Templates, 0, 'GET', |
-           '{scheme}{host}/templates?count={limit}&offset={offset}', 'Templates', |
+           '{{scheme}{{host}/templates?count={{limit}&offset={{offset}', 'Templates', |
            'Id=TemplateId;Name=Name;Subject=Alias;Active=Active')
   SELF.Row(ETPrv:Postmark, ETOp:Senders, 0, 'GET', |
-           '{scheme}{host}/senders?count={limit}&offset={offset}', 'SenderSignatures', |
+           '{{scheme}{{host}/senders?count={{limit}&offset={{offset}', 'SenderSignatures', |
            'Id=ID;Address=EmailAddress;Name=Name;Verified=Confirmed')
   SELF.Row(ETPrv:Postmark, ETOp:Domains, 0, 'GET', |
-           '{scheme}{host}/domains?count={limit}&offset={offset}', 'Domains', |
+           '{{scheme}{{host}/domains?count={{limit}&offset={{offset}', 'Domains', |
            'Id=ID;Name=Name;Spf=SPFVerified;Dkim=DKIMVerified')
-  SELF.Row(ETPrv:Postmark, ETOp:Webhooks, 0, 'GET', '{scheme}{host}/webhooks', 'Webhooks', |
+  SELF.Row(ETPrv:Postmark, ETOp:Webhooks, 0, 'GET', '{{scheme}{{host}/webhooks', 'Webhooks', |
            'Id=ID;Url=Url;Active=!1')
-  SELF.Row(ETPrv:Postmark, ETOp:WebhookAdd, 0, 'POST', '{scheme}{host}/webhooks', '', '', |
-           '{"Url":"{text}","MessageStream":"outbound"}')
-  SELF.Row(ETPrv:Postmark, ETOp:WebhookDelete, 0, 'DELETE', '{scheme}{host}/webhooks/{id}')
+  SELF.Row(ETPrv:Postmark, ETOp:WebhookAdd, 0, 'POST', '{{scheme}{{host}/webhooks', '', '', |
+           '{{"Url":"{{text}","MessageStream":"outbound"}')
+  SELF.Row(ETPrv:Postmark, ETOp:WebhookDelete, 0, 'DELETE', '{{scheme}{{host}/webhooks/{{id}')
 
 !===== Mailjet ===============================================================
 !  Everything Mailjet answers is wrapped in "Data", and every column starts
 !  with a capital.  One provider, one shape - the easiest rows in the table.
-  SELF.Row(ETPrv:Mailjet, ETOp:Account, 0, 'GET', '{scheme}{host}/v3/REST/user', '*', |
+  SELF.Row(ETPrv:Mailjet, ETOp:Account, 0, 'GET', '{{scheme}{{host}/v3/REST/user', '*', |
            'Name=Data.0.Username;Address=Data.0.Email;Company=Data.0.LastName')
   SELF.Row(ETPrv:Mailjet, ETOp:Suppressions, ETSup:Bounce, 'GET', |
-           '{scheme}{host}/v3/REST/bouncestatistics?Limit={limit}&Offset={offset}', 'Data', |
+           '{{scheme}{{host}/v3/REST/bouncestatistics?Limit={{limit}&Offset={{offset}', 'Data', |
            'Address=ContactAlt;Reason=ErrorRelatedTo;Code=ErrorCode;When=@BouncedAt')
   SELF.Row(ETPrv:Mailjet, ETOp:Suppressions, ETSup:Unsub, 'GET', |
-           '{scheme}{host}/v3/REST/contact?IsExcludedFromCampaigns=true&Limit={limit}&Offset={offset}', |
+           '{{scheme}{{host}/v3/REST/contact?IsExcludedFromCampaigns=true&Limit={{limit}&Offset={{offset}', |
            'Data', 'Id=ID;Address=Email;Reason=!excluded from campaigns;When=@CreatedAt')
-  SELF.Row(ETPrv:Mailjet, ETOp:SuppDelete, ETSup:Unsub, 'PUT', '{scheme}{host}/v3/REST/contact/{email}', |
-           '', '', '{"IsExcludedFromCampaigns":false}')
-  SELF.Row(ETPrv:Mailjet, ETOp:SuppAdd, ETSup:All, 'PUT', '{scheme}{host}/v3/REST/contact/{email}', |
-           '', '', '{"IsExcludedFromCampaigns":true}')
+  SELF.Row(ETPrv:Mailjet, ETOp:SuppDelete, ETSup:Unsub, 'PUT', '{{scheme}{{host}/v3/REST/contact/{{email}', |
+           '', '', '{{"IsExcludedFromCampaigns":false}')
+  SELF.Row(ETPrv:Mailjet, ETOp:SuppAdd, ETSup:All, 'PUT', '{{scheme}{{host}/v3/REST/contact/{{email}', |
+           '', '', '{{"IsExcludedFromCampaigns":true}')
   SELF.Row(ETPrv:Mailjet, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/v3/REST/statcounters?CounterSource=APIKey&CounterTiming=Message' & |
-           '&CounterResolution=Day&FromTS={ymdfrom}&ToTS={ymdto}&Limit={limit}', 'Data', |
+           '{{scheme}{{host}/v3/REST/statcounters?CounterSource=APIKey&CounterTiming=Message' & |
+           '&CounterResolution=Day&FromTS={{ymdfrom}&ToTS={{ymdto}&Limit={{limit}', 'Data', |
            'When=@Timeslice;Requests=MessageSentCount;Delivered=MessageDeliveredCount;' & |
            'Opens=MessageOpenedCount;Clicks=MessageClickedCount;' & |
            'HardBounces=MessageHardBouncedCount;SoftBounces=MessageSoftBouncedCount;' & |
            'SpamReports=MessageSpamCount;Unsubscribed=MessageUnsubscribedCount;' & |
            'Blocks=MessageBlockedCount')
   SELF.Row(ETPrv:Mailjet, ETOp:Events, 0, 'GET', |
-           '{scheme}{host}/v3/REST/message?Limit={limit}&Offset={offset}', 'Data', |
+           '{{scheme}{{host}/v3/REST/message?Limit={{limit}&Offset={{offset}', 'Data', |
            'MessageId=ID;When=@ArrivedAt;EventName=Status;Address=ContactAlt')
   SELF.Row(ETPrv:Mailjet, ETOp:Contacts, 0, 'GET', |
-           '{scheme}{host}/v3/REST/contact?Limit={limit}&Offset={offset}', 'Data', |
+           '{{scheme}{{host}/v3/REST/contact?Limit={{limit}&Offset={{offset}', 'Data', |
            'Id=ID;Address=Email;Name=Name;When=@CreatedAt;Unsubscribed=IsExcludedFromCampaigns')
   SELF.Row(ETPrv:Mailjet, ETOp:Lists, 0, 'GET', |
-           '{scheme}{host}/v3/REST/contactslist?Limit={limit}&Offset={offset}', 'Data', |
+           '{{scheme}{{host}/v3/REST/contactslist?Limit={{limit}&Offset={{offset}', 'Data', |
            'Id=ID;Name=Name;Members=SubscriberCount')
-  SELF.Row(ETPrv:Mailjet, ETOp:ContactAdd, 0, 'POST', '{scheme}{host}/v3/REST/contact', '', '', |
-           '{"Email":"{email}","Name":"{text}"}')
-  SELF.Row(ETPrv:Mailjet, ETOp:ListAdd, 0, 'POST', '{scheme}{host}/v3/REST/contactslist', '', '', |
-           '{"Name":"{text}"}')
+  SELF.Row(ETPrv:Mailjet, ETOp:ContactAdd, 0, 'POST', '{{scheme}{{host}/v3/REST/contact', '', '', |
+           '{{"Email":"{{email}","Name":"{{text}"}')
+  SELF.Row(ETPrv:Mailjet, ETOp:ListAdd, 0, 'POST', '{{scheme}{{host}/v3/REST/contactslist', '', '', |
+           '{{"Name":"{{text}"}')
   SELF.Row(ETPrv:Mailjet, ETOp:Campaigns, 0, 'GET', |
-           '{scheme}{host}/v3/REST/campaigndraft?Limit={limit}&Offset={offset}', 'Data', |
+           '{{scheme}{{host}/v3/REST/campaigndraft?Limit={{limit}&Offset={{offset}', 'Data', |
            'Id=ID;Name=Title;Subject=Subject;Status=Status;When=@CreatedAt')
-  SELF.Row(ETPrv:Mailjet, ETOp:CampaignSend, 0, 'POST', '{scheme}{host}/v3/REST/campaigndraft/{id}/send')
+  SELF.Row(ETPrv:Mailjet, ETOp:CampaignSend, 0, 'POST', '{{scheme}{{host}/v3/REST/campaigndraft/{{id}/send')
   SELF.Row(ETPrv:Mailjet, ETOp:Templates, 0, 'GET', |
-           '{scheme}{host}/v3/REST/template?Limit={limit}&Offset={offset}', 'Data', |
+           '{{scheme}{{host}/v3/REST/template?Limit={{limit}&Offset={{offset}', 'Data', |
            'Id=ID;Name=Name')
-  SELF.Row(ETPrv:Mailjet, ETOp:Senders, 0, 'GET', '{scheme}{host}/v3/REST/sender?Limit={limit}', 'Data', |
+  SELF.Row(ETPrv:Mailjet, ETOp:Senders, 0, 'GET', '{{scheme}{{host}/v3/REST/sender?Limit={{limit}', 'Data', |
            'Id=ID;Address=Email;Name=Name;Status=Status')
-  SELF.Row(ETPrv:Mailjet, ETOp:Domains, 0, 'GET', '{scheme}{host}/v3/REST/dns?Limit={limit}', 'Data', |
+  SELF.Row(ETPrv:Mailjet, ETOp:Domains, 0, 'GET', '{{scheme}{{host}/v3/REST/dns?Limit={{limit}', 'Data', |
            'Id=ID;Name=Domain;Spf=SPFStatus;Dkim=DKIMStatus')
-  SELF.Row(ETPrv:Mailjet, ETOp:Webhooks, 0, 'GET', '{scheme}{host}/v3/REST/eventcallbackurl', 'Data', |
+  SELF.Row(ETPrv:Mailjet, ETOp:Webhooks, 0, 'GET', '{{scheme}{{host}/v3/REST/eventcallbackurl', 'Data', |
            'Id=ID;Url=Url;Events=EventType;Active=Status')
 
 !===== Resend ================================================================
 !  Resend has no suppression API at all: bounces are reported per message and
 !  through webhooks.  Supports(ETOp:Suppressions) is therefore 0, and the
 !  Manage window greys the tab out rather than showing an empty list.
-  SELF.Row(ETPrv:Resend, ETOp:Lists, 0, 'GET', '{scheme}{host}/audiences', 'data', |
+  SELF.Row(ETPrv:Resend, ETOp:Lists, 0, 'GET', '{{scheme}{{host}/audiences', 'data', |
            'Id=id;Name=name')
-  SELF.Row(ETPrv:Resend, ETOp:ListAdd, 0, 'POST', '{scheme}{host}/audiences', '', '', '{"name":"{text}"}')
-  SELF.Row(ETPrv:Resend, ETOp:ListMembers, 0, 'GET', '{scheme}{host}/audiences/{id}/contacts', 'data', |
+  SELF.Row(ETPrv:Resend, ETOp:ListAdd, 0, 'POST', '{{scheme}{{host}/audiences', '', '', '{{"name":"{{text}"}')
+  SELF.Row(ETPrv:Resend, ETOp:ListMembers, 0, 'GET', '{{scheme}{{host}/audiences/{{id}/contacts', 'data', |
            'Id=id;Address=email;Name=first_name;Unsubscribed=unsubscribed;When=@created_at')
-  SELF.Row(ETPrv:Resend, ETOp:ContactAdd, 1, 'POST', '{scheme}{host}/audiences/{id}/contacts', '', '', |
-           '{"email":"{email}","first_name":"{text}"}')
-  SELF.Row(ETPrv:Resend, ETOp:ContactDelete, 0, 'DELETE', '{scheme}{host}/audiences/{id}/contacts/{email}')
-  SELF.Row(ETPrv:Resend, ETOp:Campaigns, 0, 'GET', '{scheme}{host}/broadcasts', 'data', |
+  SELF.Row(ETPrv:Resend, ETOp:ContactAdd, 1, 'POST', '{{scheme}{{host}/audiences/{{id}/contacts', '', '', |
+           '{{"email":"{{email}","first_name":"{{text}"}')
+  SELF.Row(ETPrv:Resend, ETOp:ContactDelete, 0, 'DELETE', '{{scheme}{{host}/audiences/{{id}/contacts/{{email}')
+  SELF.Row(ETPrv:Resend, ETOp:Campaigns, 0, 'GET', '{{scheme}{{host}/broadcasts', 'data', |
            'Id=id;Name=name;Status=status;When=@created_at')
-  SELF.Row(ETPrv:Resend, ETOp:CampaignAdd, 0, 'POST', '{scheme}{host}/broadcasts', '', '', |
-           '{"audience_id":"{id}","from":"{from}","subject":"{subject}","html":"{html}","name":"{text}"}')
-  SELF.Row(ETPrv:Resend, ETOp:CampaignSend, 0, 'POST', '{scheme}{host}/broadcasts/{id}/send')
-  SELF.Row(ETPrv:Resend, ETOp:Domains, 0, 'GET', '{scheme}{host}/domains', 'data', |
+  SELF.Row(ETPrv:Resend, ETOp:CampaignAdd, 0, 'POST', '{{scheme}{{host}/broadcasts', '', '', |
+           '{{"audience_id":"{{id}","from":"{{from}","subject":"{{subject}","html":"{{html}","name":"{{text}"}')
+  SELF.Row(ETPrv:Resend, ETOp:CampaignSend, 0, 'POST', '{{scheme}{{host}/broadcasts/{{id}/send')
+  SELF.Row(ETPrv:Resend, ETOp:Domains, 0, 'GET', '{{scheme}{{host}/domains', 'data', |
            'Id=id;Name=name;Status=status')
 
 !===== SparkPost =============================================================
-  SELF.Row(ETPrv:SparkPost, ETOp:Account, 0, 'GET', '{scheme}{host}/api/v1/account', '*', |
+  SELF.Row(ETPrv:SparkPost, ETOp:Account, 0, 'GET', '{{scheme}{{host}/api/v1/account', '*', |
            'Company=results.company_name;Status=results.status;Plan=results.subscription.plan_id')
   SELF.Row(ETPrv:SparkPost, ETOp:Suppressions, ETSup:All, 'GET', |
-           '{scheme}{host}/api/v1/suppression-list?per_page={limit}&page={page}', 'results', |
+           '{{scheme}{{host}/api/v1/suppression-list?per_page={{limit}&page={{page}', 'results', |
            'Address=recipient;Reason=description;KindText=type;Id=source;When=@created')
   SELF.Row(ETPrv:SparkPost, ETOp:SuppDelete, ETSup:All, 'DELETE', |
-           '{scheme}{host}/api/v1/suppression-list/{email}')
+           '{{scheme}{{host}/api/v1/suppression-list/{{email}')
   SELF.Row(ETPrv:SparkPost, ETOp:SuppAdd, ETSup:All, 'PUT', |
-           '{scheme}{host}/api/v1/suppression-list/{email}', '', '', |
-           '{"type":"non_transactional","description":"{text}"}')
+           '{{scheme}{{host}/api/v1/suppression-list/{{email}', '', '', |
+           '{{"type":"non_transactional","description":"{{text}"}')
   SELF.Row(ETPrv:SparkPost, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/api/v1/metrics/deliverability/time-series?from={isofrom}&to={isoto}' & |
+           '{{scheme}{{host}/api/v1/metrics/deliverability/time-series?from={{isofrom}&to={{isoto}' & |
            '&precision=day&metrics=count_sent,count_accepted,count_bounce,count_spam_complaint,' & |
            'count_unique_confirmed_opened,count_clicked,count_unsubscribe', 'results', |
            'When=@ts;Requests=count_sent;Delivered=count_accepted;HardBounces=count_bounce;' & |
            'SpamReports=count_spam_complaint;UniqueOpens=count_unique_confirmed_opened;' & |
            'Clicks=count_clicked;Unsubscribed=count_unsubscribe')
   SELF.Row(ETPrv:SparkPost, ETOp:Events, 0, 'GET', |
-           '{scheme}{host}/api/v1/events/message?from={isofrom}&to={isoto}&per_page={limit}', 'results', |
+           '{{scheme}{{host}/api/v1/events/message?from={{isofrom}&to={{isoto}&per_page={{limit}', 'results', |
            'When=@timestamp;Address=rcpt_to;EventName=type;Reason=reason;Subject=subject;' & |
            'MessageId=message_id')
-  SELF.Row(ETPrv:SparkPost, ETOp:Lists, 0, 'GET', '{scheme}{host}/api/v1/recipient-lists', 'results', |
+  SELF.Row(ETPrv:SparkPost, ETOp:Lists, 0, 'GET', '{{scheme}{{host}/api/v1/recipient-lists', 'results', |
            'Id=id;Name=name;Members=total_accepted_recipients')
-  SELF.Row(ETPrv:SparkPost, ETOp:Templates, 0, 'GET', '{scheme}{host}/api/v1/templates', 'results', |
+  SELF.Row(ETPrv:SparkPost, ETOp:Templates, 0, 'GET', '{{scheme}{{host}/api/v1/templates', 'results', |
            'Id=id;Name=name;When=@last_update_time')
-  SELF.Row(ETPrv:SparkPost, ETOp:Domains, 0, 'GET', '{scheme}{host}/api/v1/sending-domains', 'results', |
+  SELF.Row(ETPrv:SparkPost, ETOp:Domains, 0, 'GET', '{{scheme}{{host}/api/v1/sending-domains', 'results', |
            'Name=domain;Verified=status.ownership_verified;Dkim=status.dkim_status;Spf=status.spf_status')
-  SELF.Row(ETPrv:SparkPost, ETOp:Webhooks, 0, 'GET', '{scheme}{host}/api/v1/webhooks', 'results', |
+  SELF.Row(ETPrv:SparkPost, ETOp:Webhooks, 0, 'GET', '{{scheme}{{host}/api/v1/webhooks', 'results', |
            'Id=id;Url=target;Events=events.0;Active=!1')
-  SELF.Row(ETPrv:SparkPost, ETOp:WebhookAdd, 0, 'POST', '{scheme}{host}/api/v1/webhooks', '', '', |
-           '{"name":"emailTo","target":"{text}","events":["delivery","bounce","spam_complaint"]}')
-  SELF.Row(ETPrv:SparkPost, ETOp:WebhookDelete, 0, 'DELETE', '{scheme}{host}/api/v1/webhooks/{id}')
+  SELF.Row(ETPrv:SparkPost, ETOp:WebhookAdd, 0, 'POST', '{{scheme}{{host}/api/v1/webhooks', '', '', |
+           '{{"name":"emailTo","target":"{{text}","events":["delivery","bounce","spam_complaint"]}')
+  SELF.Row(ETPrv:SparkPost, ETOp:WebhookDelete, 0, 'DELETE', '{{scheme}{{host}/api/v1/webhooks/{{id}')
 
 !===== MailerSend ============================================================
 !  MailerSend keeps four separate lists and deletes by ID, not by address -
 !  so DeleteSuppression looks the address up in whatever GetSuppressions
 !  loaded, and sends the id it found.
-  SELF.Row(ETPrv:MailerSend, ETOp:Account, 0, 'GET', '{scheme}{host}/v1/api-quota', '*', |
+  SELF.Row(ETPrv:MailerSend, ETOp:Account, 0, 'GET', '{{scheme}{{host}/v1/api-quota', '*', |
            'Credits=remaining;Plan=!api quota')
   SELF.Row(ETPrv:MailerSend, ETOp:Suppressions, ETSup:Bounce, 'GET', |
-           '{scheme}{host}/v1/suppressions/hard-bounces?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/suppressions/hard-bounces?limit={{limit}&page={{page}', 'data', |
            'Id=id;Address=recipient.email|email;Reason=reason;When=@created_at')
   SELF.Row(ETPrv:MailerSend, ETOp:Suppressions, ETSup:Spam, 'GET', |
-           '{scheme}{host}/v1/suppressions/spam-complaints?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/suppressions/spam-complaints?limit={{limit}&page={{page}', 'data', |
            'Id=id;Address=recipient.email|email;Reason=!spam complaint;When=@created_at')
   SELF.Row(ETPrv:MailerSend, ETOp:Suppressions, ETSup:Unsub, 'GET', |
-           '{scheme}{host}/v1/suppressions/unsubscribes?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/suppressions/unsubscribes?limit={{limit}&page={{page}', 'data', |
            'Id=id;Address=recipient.email|email;Reason=reason;When=@created_at')
   SELF.Row(ETPrv:MailerSend, ETOp:Suppressions, ETSup:Block, 'GET', |
-           '{scheme}{host}/v1/suppressions/blocklist?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/suppressions/blocklist?limit={{limit}&page={{page}', 'data', |
            'Id=id;Address=recipient.email|email;Reason=reason;When=@created_at')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDelete, ETSup:Bounce, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/hard-bounces', '', '', '{"ids":["{id}"]}')
+           '{{scheme}{{host}/v1/suppressions/hard-bounces', '', '', '{{"ids":["{{id}"]}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDelete, ETSup:Spam, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/spam-complaints', '', '', '{"ids":["{id}"]}')
+           '{{scheme}{{host}/v1/suppressions/spam-complaints', '', '', '{{"ids":["{{id}"]}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDelete, ETSup:Unsub, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/unsubscribes', '', '', '{"ids":["{id}"]}')
+           '{{scheme}{{host}/v1/suppressions/unsubscribes', '', '', '{{"ids":["{{id}"]}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDelete, ETSup:Block, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/blocklist', '', '', '{"ids":["{id}"]}')
+           '{{scheme}{{host}/v1/suppressions/blocklist', '', '', '{{"ids":["{{id}"]}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDeleteAll, ETSup:Bounce, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/hard-bounces', '', '', '{"all":true}')
+           '{{scheme}{{host}/v1/suppressions/hard-bounces', '', '', '{{"all":true}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDeleteAll, ETSup:Spam, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/spam-complaints', '', '', '{"all":true}')
+           '{{scheme}{{host}/v1/suppressions/spam-complaints', '', '', '{{"all":true}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDeleteAll, ETSup:Unsub, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/unsubscribes', '', '', '{"all":true}')
+           '{{scheme}{{host}/v1/suppressions/unsubscribes', '', '', '{{"all":true}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppDeleteAll, ETSup:Block, 'DELETE', |
-           '{scheme}{host}/v1/suppressions/blocklist', '', '', '{"all":true}')
+           '{{scheme}{{host}/v1/suppressions/blocklist', '', '', '{{"all":true}')
   SELF.Row(ETPrv:MailerSend, ETOp:SuppAdd, ETSup:Block, 'POST', |
-           '{scheme}{host}/v1/suppressions/blocklist', '', '', |
-           '{"domain_id":"{domain}","recipients":["{email}"]}')
+           '{{scheme}{{host}/v1/suppressions/blocklist', '', '', |
+           '{{"domain_id":"{{domain}","recipients":["{{email}"]}')
   SELF.Row(ETPrv:MailerSend, ETOp:Stats, 0, 'GET', |
-           '{scheme}{host}/v1/analytics/date?date_from={epochfrom}&date_to={epochto}' & |
+           '{{scheme}{{host}/v1/analytics/date?date_from={{epochfrom}&date_to={{epochto}' & |
            '&group_by=days&event[]=sent&event[]=delivered&event[]=opened&event[]=clicked' & |
            '&event[]=hard_bounced&event[]=soft_bounced&event[]=spam_complaints' & |
            '&event[]=unsubscribed', 'data.stats', |
@@ -539,54 +539,54 @@ EmailApiClass.BuildMap PROCEDURE()
            'HardBounces=hard_bounced;SoftBounces=soft_bounced;SpamReports=spam_complaints;' & |
            'Unsubscribed=unsubscribed')
   SELF.Row(ETPrv:MailerSend, ETOp:Events, 0, 'GET', |
-           '{scheme}{host}/v1/activity/{domain}?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/activity/{{domain}?limit={{limit}&page={{page}', 'data', |
            'When=@created_at;EventName=type;Address=email.recipient.email;Subject=email.subject')
   SELF.Row(ETPrv:MailerSend, ETOp:Contacts, 0, 'GET', |
-           '{scheme}{host}/v1/recipients?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/recipients?limit={{limit}&page={{page}', 'data', |
            'Id=id;Address=email;When=@created_at')
   SELF.Row(ETPrv:MailerSend, ETOp:Templates, 0, 'GET', |
-           '{scheme}{host}/v1/templates?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/templates?limit={{limit}&page={{page}', 'data', |
            'Id=id;Name=name;When=@created_at')
   SELF.Row(ETPrv:MailerSend, ETOp:Domains, 0, 'GET', |
-           '{scheme}{host}/v1/domains?limit={limit}&page={page}', 'data', |
+           '{{scheme}{{host}/v1/domains?limit={{limit}&page={{page}', 'data', |
            'Id=id;Name=name;Verified=is_verified;Dkim=dkim;Spf=spf')
   SELF.Row(ETPrv:MailerSend, ETOp:Webhooks, 0, 'GET', |
-           '{scheme}{host}/v1/webhooks?domain_id={domain}', 'data', |
+           '{{scheme}{{host}/v1/webhooks?domain_id={{domain}', 'data', |
            'Id=id;Url=url;Events=events.0;Active=enabled')
-  SELF.Row(ETPrv:MailerSend, ETOp:WebhookDelete, 0, 'DELETE', '{scheme}{host}/v1/webhooks/{id}')
+  SELF.Row(ETPrv:MailerSend, ETOp:WebhookDelete, 0, 'DELETE', '{{scheme}{{host}/v1/webhooks/{{id}')
 !===== Amazon SES ============================================================
 !  The only provider that signs its requests rather than taking a key in a
 !  header - see SignedHeaders. The access key id goes in ApiKey2 and the
 !  secret in ApiKey, which leaves UserName and Password free for the quite
 !  separate SMTP credentials SES also issues.
-  SELF.Row(ETPrv:AmazonSes, ETOp:Account, 0, 'GET', '{scheme}{host}/v2/email/account', '*', |
+  SELF.Row(ETPrv:AmazonSes, ETOp:Account, 0, 'GET', '{{scheme}{{host}/v2/email/account', '*', |
            'Status=EnforcementStatus;Credits=SendQuota.Max24HourSend')
   SELF.Row(ETPrv:AmazonSes, ETOp:Suppressions, ETSup:All, 'GET', |
-           '{scheme}{host}/v2/email/suppression/addresses?PageSize={limit}', |
+           '{{scheme}{{host}/v2/email/suppression/addresses?PageSize={{limit}', |
            'SuppressedDestinationSummaries', |
            'Address=EmailAddress;KindText=Reason;Reason=Reason;When=@LastUpdateTime', |
            '', 'NextToken')
   SELF.Row(ETPrv:AmazonSes, ETOp:SuppDelete, ETSup:All, 'DELETE', |
-           '{scheme}{host}/v2/email/suppression/addresses/{email}')
+           '{{scheme}{{host}/v2/email/suppression/addresses/{{email}')
   SELF.Row(ETPrv:AmazonSes, ETOp:SuppAdd, ETSup:Bounce, 'PUT', |
-           '{scheme}{host}/v2/email/suppression/addresses/{email}', '', '', |
-           '{"Reason":"BOUNCE"}')
+           '{{scheme}{{host}/v2/email/suppression/addresses/{{email}', '', '', |
+           '{{"Reason":"BOUNCE"}')
   SELF.Row(ETPrv:AmazonSes, ETOp:SuppAdd, ETSup:Spam, 'PUT', |
-           '{scheme}{host}/v2/email/suppression/addresses/{email}', '', '', |
-           '{"Reason":"COMPLAINT"}')
+           '{{scheme}{{host}/v2/email/suppression/addresses/{{email}', '', '', |
+           '{{"Reason":"COMPLAINT"}')
   SELF.Row(ETPrv:AmazonSes, ETOp:Lists, 0, 'GET', |
-           '{scheme}{host}/v2/email/contact-lists', 'ContactLists', |
+           '{{scheme}{{host}/v2/email/contact-lists', 'ContactLists', |
            'Id=ContactListName;Name=ContactListName')
   SELF.Row(ETPrv:AmazonSes, ETOp:ListMembers, 0, 'GET', |
-           '{scheme}{host}/v2/email/contact-lists/{id}/contacts?PageSize={limit}', 'Contacts', |
+           '{{scheme}{{host}/v2/email/contact-lists/{{id}/contacts?PageSize={{limit}', 'Contacts', |
            'Address=EmailAddress;Unsubscribed=UnsubscribeAll', '', 'NextToken')
   SELF.Row(ETPrv:AmazonSes, ETOp:ContactAdd, 1, 'POST', |
-           '{scheme}{host}/v2/email/contact-lists/{id}/contacts', '', '', |
-           '{"EmailAddress":"{email}"}')
+           '{{scheme}{{host}/v2/email/contact-lists/{{id}/contacts', '', '', |
+           '{{"EmailAddress":"{{email}"}')
   SELF.Row(ETPrv:AmazonSes, ETOp:ContactDelete, 0, 'DELETE', |
-           '{scheme}{host}/v2/email/contact-lists/{id}/contacts/{email}')
+           '{{scheme}{{host}/v2/email/contact-lists/{{id}/contacts/{{email}')
   SELF.Row(ETPrv:AmazonSes, ETOp:Senders, 0, 'GET', |
-           '{scheme}{host}/v2/email/identities?PageSize={limit}', 'EmailIdentities', |
+           '{{scheme}{{host}/v2/email/identities?PageSize={{limit}', 'EmailIdentities', |
            'Id=IdentityName;Address=IdentityName;Verified=SendingEnabled;' & |
            'Status=IdentityType', '', 'NextToken')
   RETURN
@@ -833,14 +833,14 @@ p      LONG
     i    = 6
   ELSIF n > 4 AND LOWER(pText[1 : 4]) = 'http'
     mode = 1
-  ELSIF n > 8 AND pText[1 : 8] = '{scheme}'
+  ELSIF n > 8 AND pText[1 : 8] = '{{scheme}'
     mode = 1
   ELSE
     mode = 2
   END
 
   LOOP WHILE i <= n
-    IF pText[i] <> '{'
+    IF pText[i] <> '{{'
       SELF.UrlBuf.Add(pText[i])
       i += 1
       CYCLE
@@ -1430,8 +1430,8 @@ status  LONG
   pageSz = CHOOSE(SELF.PageSize > 0, SELF.PageSize, 100)
   maxRow = CHOOSE(SELF.MaxRows > 0, SELF.MaxRows, 5000)
   paged  = 0
-  IF INSTRING('{offset}', rowUrl, 1, 1) THEN paged = 1.
-  IF INSTRING('{page}', rowUrl, 1, 1)   THEN paged = 1.
+  IF INSTRING('{{offset}', rowUrl, 1, 1) THEN paged = 1.
+  IF INSTRING('{{page}', rowUrl, 1, 1)   THEN paged = 1.
   SELF.ArgOffset = 0
   SELF.ArgToken  = ''
   nextUrl = ''
@@ -1748,8 +1748,8 @@ found  BYTE
 
   IF NOT SELF.FindRow(ETOp:SuppDelete, k) THEN RETURN SELF.SetErr(ETApi:NotSupported).
   needId = 0
-  IF INSTRING('{id}', SELF.MapQ.Url, 1, 1)  THEN needId = 1.
-  IF INSTRING('{id}', SELF.MapQ.Body, 1, 1) THEN needId = 1.
+  IF INSTRING('{{id}', SELF.MapQ.Url, 1, 1)  THEN needId = 1.
+  IF INSTRING('{{id}', SELF.MapQ.Body, 1, 1) THEN needId = 1.
   IF needId
     found = 0
     LOOP i = 1 TO RECORDS(SELF.SuppQ)
@@ -1856,10 +1856,19 @@ variant BYTE
   IF SELF.MapQ.Kind <> variant THEN RETURN SELF.SetErr(ETApi:NotSupported).
   RETURN SELF.Perform(ETOp:ContactAdd, variant)
 
-EmailApiClass.DeleteContact PROCEDURE(STRING pIdOrAddress)
+EmailApiClass.DeleteContact PROCEDURE(STRING pIdOrAddress,<STRING pListId>)
   CODE
-  SELF.ArgId    = SUB(CLIP(pIdOrAddress), 1, 128)
+  !  Most providers delete a contact by one value - their own id, or the
+  !  address - so {id} and {email} are both filled with it. Amazon SES is the
+  !  first that needs BOTH: the LIST in {id} and the address in {email}. When
+  !  a list is named it wins, or the address ends up standing in for the list
+  !  and the row is deleted from a contact list that does not exist.
   SELF.ArgEmail = SUB(CLIP(pIdOrAddress), 1, 255)
+  IF NOT OMITTED(pListId) AND CLIP(pListId) <> ''
+    SELF.ArgId  = SUB(CLIP(pListId), 1, 128)
+  ELSE
+    SELF.ArgId  = SUB(CLIP(pIdOrAddress), 1, 128)
+  END
   RETURN SELF.Perform(ETOp:ContactDelete, 0)
 
 EmailApiClass.AddList PROCEDURE(STRING pName)
@@ -2006,9 +2015,9 @@ hdr CSTRING(1153)
   IF LOWER(SUB(CLIP(pPath), 1, 4)) = 'http'
     url = SUB(SELF.Expand(pPath), 1, 1024)
   ELSIF SUB(CLIP(pPath), 1, 1) = '/'
-    url = SUB(SELF.Expand('{scheme}{host}' & CLIP(pPath)), 1, 1024)
+    url = SUB(SELF.Expand('{{scheme}{{host}' & CLIP(pPath)), 1, 1024)
   ELSE
-    url = SUB(SELF.Expand('{scheme}{host}/' & CLIP(pPath)), 1, 1024)
+    url = SUB(SELF.Expand('{{scheme}{{host}/' & CLIP(pPath)), 1, 1024)
   END
   SELF.LastUrl = SUB(url, 1, 512)
   SELF.Net.Trace      = SELF.Mailer.Trace
@@ -2390,6 +2399,7 @@ Ask WINDOW('Address'),AT(,,220,66),GRAY,SYSTEM,FONT('Segoe UI',9),CENTER
   OPEN(Win)
   Win{PROP:Text} = SELF.Txt(ETATxt:Manage)
   DO NameEverything
+  DO NameColumns
   DO ShowCapability
   LocProvider = CLIP(SELF.Mailer.ProviderName(SELF.Mailer.Acc.Provider)) & '   -   ' & |
                 CLIP(SELF.Mailer.Acc.FromAddr)
@@ -2495,6 +2505,49 @@ NameEverything ROUTINE
   LocKindTxt = SELF.Txt(ETATxt:AllKinds)
   ?LocListSel{PROP:From} = SELF.Txt(ETATxt:AllKinds)
   LocListSel = SELF.Txt(ETATxt:AllKinds)
+
+!  The headings are the one part of this window that a FORMAT string owns, and
+!  a FORMAT string is fixed at design time - so everything else here answered in
+!  the user's language while nine lists went on saying Address, Kind, Reason.
+!  They are set by column number, once, from the same table as the rest.
+NameColumns ROUTINE
+  ?BlkList{PROPLIST:Header, 1}      = SELF.Txt(ETATxt:Address)
+  ?BlkList{PROPLIST:Header, 2}      = SELF.Txt(ETATxt:Kind)
+  ?BlkList{PROPLIST:Header, 3}      = SELF.Txt(ETATxt:Reason)
+  ?BlkList{PROPLIST:Header, 4}      = SELF.Txt(ETATxt:When)
+  ?StatList{PROPLIST:Header, 1}     = SELF.Txt(ETATxt:When)
+  ?StatList{PROPLIST:Header, 2}     = SELF.Txt(ETATxt:Requests)
+  ?StatList{PROPLIST:Header, 3}     = SELF.Txt(ETATxt:Delivered)
+  ?StatList{PROPLIST:Header, 4}     = SELF.Txt(ETATxt:Opens)
+  ?StatList{PROPLIST:Header, 5}     = SELF.Txt(ETATxt:Clicks)
+  ?StatList{PROPLIST:Header, 6}     = SELF.Txt(ETATxt:Bounces)
+  ?StatList{PROPLIST:Header, 7}     = SELF.Txt(ETATxt:Spam)
+  ?StatList{PROPLIST:Header, 8}     = SELF.Txt(ETATxt:Unsubs)
+  ?EventList{PROPLIST:Header, 1}    = SELF.Txt(ETATxt:When)
+  ?EventList{PROPLIST:Header, 2}    = SELF.Txt(ETATxt:Address)
+  ?EventList{PROPLIST:Header, 3}    = SELF.Txt(ETATxt:Events)
+  ?EventList{PROPLIST:Header, 4}    = SELF.Txt(ETATxt:Reason)
+  ?EventList{PROPLIST:Header, 5}    = SELF.Txt(ETATxt:Subject)
+  ?ContactList{PROPLIST:Header, 1}  = SELF.Txt(ETATxt:Address)
+  ?ContactList{PROPLIST:Header, 2}  = SELF.Txt(ETATxt:Name)
+  ?ContactList{PROPLIST:Header, 3}  = SELF.Txt(ETATxt:Status)
+  ?ContactList{PROPLIST:Header, 4}  = SELF.Txt(ETATxt:When)
+  ?ListList{PROPLIST:Header, 1}     = SELF.Txt(ETATxt:Name)
+  ?ListList{PROPLIST:Header, 2}     = SELF.Txt(ETATxt:Members)
+  ?CampaignList{PROPLIST:Header, 1} = SELF.Txt(ETATxt:Name)
+  ?CampaignList{PROPLIST:Header, 2} = SELF.Txt(ETATxt:Subject)
+  ?CampaignList{PROPLIST:Header, 3} = SELF.Txt(ETATxt:Status)
+  ?CampaignList{PROPLIST:Header, 4} = SELF.Txt(ETATxt:When)
+  ?TemplateList{PROPLIST:Header, 1} = SELF.Txt(ETATxt:Name)
+  ?TemplateList{PROPLIST:Header, 2} = SELF.Txt(ETATxt:Subject)
+  ?SenderList{PROPLIST:Header, 1}   = SELF.Txt(ETATxt:Address)
+  ?SenderList{PROPLIST:Header, 2}   = SELF.Txt(ETATxt:Name)
+  ?SenderList{PROPLIST:Header, 3}   = SELF.Txt(ETATxt:Verified)
+  ?DomainList{PROPLIST:Header, 1}   = SELF.Txt(ETATxt:Domains)
+  ?DomainList{PROPLIST:Header, 2}   = SELF.Txt(ETATxt:Verified)
+  ?DomainList{PROPLIST:Header, 3}   = SELF.Txt(ETATxt:Status)
+  ?HookList{PROPLIST:Header, 1}     = SELF.Txt(ETATxt:Url)
+  ?HookList{PROPLIST:Header, 2}     = SELF.Txt(ETATxt:Events)
 
 !  A tab whose operation this provider does not have is switched off.  That is
 !  what Supports() is for: the difference between "no rows" and "not offered"
@@ -2961,9 +3014,9 @@ DoDelContact ROUTINE
   !  Some providers delete a contact by their own id, some by the address.
   !  The id is preferred when there is one; the address is the fallback.
   IF CLIP(CtQ.CId)
-    ok = SELF.DeleteContact(CtQ.CId)
+    ok = SELF.DeleteContact(CtQ.CId, LocListId)
   ELSE
-    ok = SELF.DeleteContact(CtQ.CAddr)
+    ok = SELF.DeleteContact(CtQ.CAddr, LocListId)
   END
   DO Rested
   IF ok

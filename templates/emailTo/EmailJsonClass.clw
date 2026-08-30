@@ -199,7 +199,7 @@ b      LONG
   vStart            = SELF.Pos
 
   CASE SELF.Doc[SELF.Pos : SELF.Pos]
-  OF '{'
+  OF '{{'
     SELF.NodeQ.Kind = ETJs:Object
     ADD(SELF.NodeQ)
     ndx = RECORDS(SELF.NodeQ)
