@@ -425,6 +425,12 @@ SETTARGET()</pre>
   charts only &mdash; a stack has nothing to overlay, a horizontal bar chart has no vertical line
   painter, and a pie is not a cartesian chart at all. Left alone it emits nothing, so an application
   generated before v2.1 generates exactly the code it did before.</p>
+  <p><b>Values</b> is <i>Show values</i> for one series only: <i>As the chart</i>, <i>Show them</i> or
+  <i>Hide them</i>. It earns its keep on the same combo &mdash; switch the numbers on and both the bars
+  and the trend line label every category, the bars from below and the line from above, over the same
+  slots. Hiding them for the trend leaves the reading where it belongs. Note that a bar prints its
+  number <b>only if it fits over the bar</b>, so on a narrow chart with large figures none appear even
+  with the switch on.</p>
   <h3>Data</h3>
   <p>An ordered list &mdash; one row per bar, point or slice, left to right. Per row: <b>Label</b>,
   <b>Value</b> for series 1 (a literal number, or tick the box and give a variable / field / expression),
@@ -493,6 +499,12 @@ SETTARGET()</pre>
   tiene nada que superponer, un gráfico de barras horizontales no tiene pintor de líneas verticales, y
   un pastel no es un gráfico cartesiano. Si no lo tocás no emite nada, así que una aplicación generada
   antes de la v2.1 genera exactamente el mismo código que antes.</p>
+  <p><b>Values</b> es <i>Show values</i> para una sola serie: <i>As the chart</i>, <i>Show them</i> o
+  <i>Hide them</i>. Se gana el lugar en el mismo combo &mdash; al encender los números, las barras y la
+  línea de tendencia etiquetan cada categoría, las barras desde abajo y la línea desde arriba, sobre las
+  mismas ranuras. Apagarlos en la tendencia deja la lectura donde corresponde. Ojo que una barra imprime
+  su número <b>solo si entra sobre la barra</b>, así que en un gráfico angosto con cifras grandes no
+  aparece ninguno aunque el interruptor esté encendido.</p>
   <h3>Data</h3>
   <p>Una lista ordenada &mdash; una fila por barra, punto o porción, de izquierda a derecha. Por fila:
   <b>Label</b>, <b>Value</b> de la serie 1 (un número literal, o marca la casilla y pon una variable /

@@ -158,6 +158,9 @@ INCLUDE('GraficaBarraClass.INC'),ONCE
       #ENABLE(%gbWNSeries>=2 AND (%gbWType='Column' OR %gbWType='Line' OR %gbWType='Scatter'))
         #PROMPT('&Draw as:',DROP('As the chart type|Bars|Line')),%gbWS1Plot,DEFAULT('As the chart type')
       #ENDENABLE
+      #ENABLE(%gbWNSeries>=2)
+        #PROMPT('&Values:',DROP('As the chart|Show them|Hide them')),%gbWS1Values,DEFAULT('As the chart')
+      #ENDENABLE
     #ENDBOXED
     #ENABLE(%gbWNSeries>=2)
       #BOXED('Series 2')
@@ -168,6 +171,9 @@ INCLUDE('GraficaBarraClass.INC'),ONCE
         #ENDENABLE
         #ENABLE(%gbWNSeries>=2 AND (%gbWType='Column' OR %gbWType='Line' OR %gbWType='Scatter'))
           #PROMPT('D&raw as:',DROP('As the chart type|Bars|Line')),%gbWS2Plot,DEFAULT('As the chart type')
+        #ENDENABLE
+        #ENABLE(%gbWNSeries>=2)
+          #PROMPT('V&alues:',DROP('As the chart|Show them|Hide them')),%gbWS2Values,DEFAULT('As the chart')
         #ENDENABLE
       #ENDBOXED
     #ENDENABLE
@@ -181,6 +187,9 @@ INCLUDE('GraficaBarraClass.INC'),ONCE
         #ENABLE(%gbWNSeries>=2 AND (%gbWType='Column' OR %gbWType='Line' OR %gbWType='Scatter'))
           #PROMPT('Dr&aw as:',DROP('As the chart type|Bars|Line')),%gbWS3Plot,DEFAULT('As the chart type')
         #ENDENABLE
+        #ENABLE(%gbWNSeries>=2)
+          #PROMPT('Va&lues:',DROP('As the chart|Show them|Hide them')),%gbWS3Values,DEFAULT('As the chart')
+        #ENDENABLE
       #ENDBOXED
     #ENDENABLE
     #ENABLE(%gbWNSeries>=4)
@@ -192,6 +201,9 @@ INCLUDE('GraficaBarraClass.INC'),ONCE
         #ENDENABLE
         #ENABLE(%gbWNSeries>=2 AND (%gbWType='Column' OR %gbWType='Line' OR %gbWType='Scatter'))
           #PROMPT('Dra&w as:',DROP('As the chart type|Bars|Line')),%gbWS4Plot,DEFAULT('As the chart type')
+        #ENDENABLE
+        #ENABLE(%gbWNSeries>=2)
+          #PROMPT('Val&ues:',DROP('As the chart|Show them|Hide them')),%gbWS4Values,DEFAULT('As the chart')
         #ENDENABLE
       #ENDBOXED
     #ENDENABLE
@@ -382,6 +394,9 @@ Refresh:%gbWObject ROUTINE
       #ENABLE(%gbRNSeries>=2 AND (%gbRType='Column' OR %gbRType='Line' OR %gbRType='Scatter'))
         #PROMPT('&Draw as:',DROP('As the chart type|Bars|Line')),%gbRS1Plot,DEFAULT('As the chart type')
       #ENDENABLE
+      #ENABLE(%gbRNSeries>=2)
+        #PROMPT('&Values:',DROP('As the chart|Show them|Hide them')),%gbRS1Values,DEFAULT('As the chart')
+      #ENDENABLE
     #ENDBOXED
     #ENABLE(%gbRNSeries>=2)
       #BOXED('Series 2')
@@ -392,6 +407,9 @@ Refresh:%gbWObject ROUTINE
         #ENDENABLE
         #ENABLE(%gbRNSeries>=2 AND (%gbRType='Column' OR %gbRType='Line' OR %gbRType='Scatter'))
           #PROMPT('D&raw as:',DROP('As the chart type|Bars|Line')),%gbRS2Plot,DEFAULT('As the chart type')
+        #ENDENABLE
+        #ENABLE(%gbRNSeries>=2)
+          #PROMPT('V&alues:',DROP('As the chart|Show them|Hide them')),%gbRS2Values,DEFAULT('As the chart')
         #ENDENABLE
       #ENDBOXED
     #ENDENABLE
@@ -405,6 +423,9 @@ Refresh:%gbWObject ROUTINE
         #ENABLE(%gbRNSeries>=2 AND (%gbRType='Column' OR %gbRType='Line' OR %gbRType='Scatter'))
           #PROMPT('Dr&aw as:',DROP('As the chart type|Bars|Line')),%gbRS3Plot,DEFAULT('As the chart type')
         #ENDENABLE
+        #ENABLE(%gbRNSeries>=2)
+          #PROMPT('Va&lues:',DROP('As the chart|Show them|Hide them')),%gbRS3Values,DEFAULT('As the chart')
+        #ENDENABLE
       #ENDBOXED
     #ENDENABLE
     #ENABLE(%gbRNSeries>=4)
@@ -416,6 +437,9 @@ Refresh:%gbWObject ROUTINE
         #ENDENABLE
         #ENABLE(%gbRNSeries>=2 AND (%gbRType='Column' OR %gbRType='Line' OR %gbRType='Scatter'))
           #PROMPT('Dra&w as:',DROP('As the chart type|Bars|Line')),%gbRS4Plot,DEFAULT('As the chart type')
+        #ENDENABLE
+        #ENABLE(%gbRNSeries>=2)
+          #PROMPT('Val&ues:',DROP('As the chart|Show them|Hide them')),%gbRS4Values,DEFAULT('As the chart')
         #ENDENABLE
       #ENDBOXED
     #ENDENABLE
@@ -540,12 +564,16 @@ Refresh:%gbWObject ROUTINE
 #ENDIF
 #ENDIF
 #INSERT(%gbEmitPlot,%gbRObject,1,%gbRS1Plot)
+#INSERT(%gbEmitValues,%gbRObject,1,%gbRS1Values)
 #INSERT(%gbEmitPlot,%gbRObject,2,%gbRS2Plot)
+#INSERT(%gbEmitValues,%gbRObject,2,%gbRS2Values)
 #IF(%gbRNSeries>=3)
 #INSERT(%gbEmitPlot,%gbRObject,3,%gbRS3Plot)
+#INSERT(%gbEmitValues,%gbRObject,3,%gbRS3Values)
 #ENDIF
 #IF(%gbRNSeries>=4)
 #INSERT(%gbEmitPlot,%gbRObject,4,%gbRS4Plot)
+#INSERT(%gbEmitValues,%gbRObject,4,%gbRS4Values)
 #ENDIF
 #FOR(%gbRBar)
 #INSERT(%gbSetValueArgs,%gbRBarIsExpr,%gbRBarValue,%gbRBarField,%gbRNSeries,%gbRBarV2,%gbRBarV3,%gbRBarV4,%Args)
@@ -700,6 +728,15 @@ Refresh:%gbWObject ROUTINE
   %pObject.FontStyle = FONT:regular + FONT:italic
 #ENDIF
 #!
+#!  Whether ONE series prints its numbers. Nothing for 'As the chart', so a
+#!  chart that says nothing keeps following ShowValues as it always did.
+#GROUP(%gbEmitValues,%pObject,%pSeries,%pShow)
+#IF(%pShow = 'Show them')
+  %pObject.SetSeriesNumbers(%pSeries, Values:On)
+#ELSIF(%pShow = 'Hide them')
+  %pObject.SetSeriesNumbers(%pSeries, Values:Off)
+#ENDIF
+#!
 #GROUP(%gbEmitPlot,%pObject,%pSeries,%pPlot)
 #IF(%pPlot = 'Bars')
   %pObject.SetSeriesPlot(%pSeries, Plot:Bar)
@@ -819,12 +856,16 @@ Refresh:%gbWObject ROUTINE
 #ENDIF
 #ENDIF
 #INSERT(%gbEmitPlot,%gbWObject,1,%gbWS1Plot)
+#INSERT(%gbEmitValues,%gbWObject,1,%gbWS1Values)
 #INSERT(%gbEmitPlot,%gbWObject,2,%gbWS2Plot)
+#INSERT(%gbEmitValues,%gbWObject,2,%gbWS2Values)
 #IF(%gbWNSeries>=3)
 #INSERT(%gbEmitPlot,%gbWObject,3,%gbWS3Plot)
+#INSERT(%gbEmitValues,%gbWObject,3,%gbWS3Values)
 #ENDIF
 #IF(%gbWNSeries>=4)
 #INSERT(%gbEmitPlot,%gbWObject,4,%gbWS4Plot)
+#INSERT(%gbEmitValues,%gbWObject,4,%gbWS4Values)
 #ENDIF
 #FOR(%gbWBar)
 #INSERT(%gbSetValueArgs,%gbWBarIsExpr,%gbWBarValue,%gbWBarField,%gbWNSeries,%gbWBarV2,%gbWBarV3,%gbWBarV4,%Args)

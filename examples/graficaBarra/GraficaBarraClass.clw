@@ -49,6 +49,7 @@ i  LONG
     SELF.SeriesName[i] = ''
     SELF.SeriesColor[i] = COLOR:None
     SELF.SeriesPlot[i] = Plot:Default
+    SELF.SeriesNumbers[i] = Values:Default
   END
   SELF.ClearBars()                                           ! and the cells, so a local object cannot
                                                              ! open with stack rubbish in NoVal
@@ -83,6 +84,7 @@ i  LONG
     SELF.SeriesName[i] = ''
     SELF.SeriesColor[i] = COLOR:None
     SELF.SeriesPlot[i] = Plot:Default
+    SELF.SeriesNumbers[i] = Values:Default
   END
 
 GraficaBarraClass.AddBar PROCEDURE(STRING pLabel,REAL pValue,LONG pColor=-1)
@@ -111,6 +113,11 @@ GraficaBarraClass.SetSeriesPlot PROCEDURE(LONG pSeries,LONG pPlot)
                                                              ! here would only buy an empty legend entry
                                                              ! and an empty slot. A shape for a series
                                                              ! that does not exist yet is simply kept.
+
+GraficaBarraClass.SetSeriesNumbers PROCEDURE(LONG pSeries,LONG pShow)
+  CODE
+  IF pSeries < 1 OR pSeries > GraficaBarra:MaxSeries THEN RETURN.
+  SELF.SeriesNumbers[pSeries] = pShow
 
 GraficaBarraClass.AddCat PROCEDURE(STRING pLabel,REAL v1,REAL v2=0,REAL v3=0,REAL v4=0,REAL v5=0,REAL v6=0,REAL v7=0,REAL v8=0)
 c  LONG
@@ -287,6 +294,28 @@ GraficaBarraClass.PlotOf PROCEDURE(LONG pSeries)
     RETURN Plot:Line
   END
   RETURN Plot:Bar
+
+GraficaBarraClass.ShowsValues PROCEDURE(LONG pSeries)
+  CODE
+  IF pSeries > 0 AND pSeries <= GraficaBarra:MaxSeries
+    CASE SELF.SeriesNumbers[pSeries]
+    OF Values:On
+      RETURN 1
+    OF Values:Off
+      RETURN 0
+    END
+  END
+  RETURN SELF.ShowValues                                     ! Values:Default: what the chart says
+
+!  The layout has to reserve the strip the numbers sit in before any painter
+!  has run, so it asks whether ANY series is going to want it.
+GraficaBarraClass.AnyValues PROCEDURE()
+s  LONG
+  CODE
+  LOOP s = 1 TO SELF.SeriesCount()
+    IF SELF.ShowsValues(s) = 1 THEN RETURN 1.
+  END
+  RETURN 0
 
 GraficaBarraClass.IsCombo PROCEDURE()
 s  LONG
@@ -776,11 +805,11 @@ txt   STRING(64)
   IF SELF.IsHorizontal()
     IF SELF.ShowLabels = 1 THEN ml = labw * SELF.zCW + SELF.zPad.
     IF SELF.ShowScale = 1 THEN mb = SELF.zCH + SELF.zPad.
-    IF SELF.ShowValues = 1 THEN mr = (vw + 1) * SELF.zCW.
+    IF SELF.AnyValues() = 1 THEN mr = (vw + 1) * SELF.zCW.
   ELSE
     IF SELF.ShowScale = 1 THEN ml = lw * SELF.zCW + SELF.zPad.
     IF SELF.ShowLabels = 1 THEN mb = SELF.zCH + SELF.zPad.
-    IF SELF.ShowValues = 1 THEN mt = SELF.zCH + SELF.zPad.
+    IF SELF.AnyValues() = 1 THEN mt = SELF.zCH + SELF.zPad.
   END
   SELF.zPX += ml; SELF.zPY += mt
   SELF.zPW -= ml + mr; SELF.zPH -= mt + mb
@@ -954,7 +983,7 @@ txt   STRING(64)
         END
         IF bw < 1 THEN bw = 1.
         SELF.FillBox(bx, ry, bw, bh, c)
-        IF SELF.ShowValues = 1 AND bh >= SELF.zCH
+        IF SELF.ShowsValues(s) = 1 AND bh >= SELF.zCH
           txt = SELF.FmtNum(v, SELF.ValueDP)
           IF v >= 0
             tx = bx + bw + INT(SELF.zPad/2)
@@ -974,7 +1003,7 @@ txt   STRING(64)
         END
         IF bh < 1 THEN bh = 1.
         SELF.FillBox(bx, bt, bw, bh, c)
-        IF SELF.ShowValues = 1
+        IF SELF.ShowsValues(s) = 1
           txt = SELF.FmtNum(v, SELF.ValueDP)
           IF bw + SELF.zCW >= LEN(CLIP(txt)) * SELF.zCW      ! only if it fits over the bar
             IF v >= 0
@@ -1048,7 +1077,7 @@ txt   STRING(64)
         END
         IF bw < 1 THEN CYCLE.
         SELF.FillBox(bx, ry, bw, bh, c)
-        IF SELF.ShowValues = 1
+        IF SELF.ShowsValues(s) = 1
           txt = SELF.FmtNum(v, SELF.ValueDP)
           IF bw >= (LEN(CLIP(txt)) + 1) * SELF.zCW AND bh >= SELF.zCH
             SELF.TextMid(bx + INT(bw/2), ry + INT(bh/2) - INT(SELF.zCH/2), txt, SELF.TextColor)
@@ -1065,7 +1094,7 @@ txt   STRING(64)
         END
         IF bh < 1 THEN CYCLE.
         SELF.FillBox(bx, ry, bw, bh, c)
-        IF SELF.ShowValues = 1
+        IF SELF.ShowsValues(s) = 1
           txt = SELF.FmtNum(v, SELF.ValueDP)
           IF bh >= SELF.zCH + 2 AND bw >= (LEN(CLIP(txt)) + 1) * SELF.zCW
             SELF.TextMid(bx + INT(bw/2), ry + INT(bh/2) - INT(SELF.zCH/2), txt, SELF.TextColor)
@@ -1157,7 +1186,7 @@ txt   STRING(64)
     IF SELF.ShowMarkers = 1 OR SELF.ChartType = Chart:Scatter
       SELF.Marker(cx, cy, c)
     END
-    IF SELF.ShowValues = 1
+    IF SELF.ShowsValues(pSeries) = 1
       txt = SELF.FmtNum(SELF.GetValue(pSeries, i), SELF.ValueDP)
       SELF.TextMid(cx, cy - SELF.zCH - INT(SELF.zPad/2), txt, SELF.TextColor)
     END

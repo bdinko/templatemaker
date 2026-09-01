@@ -718,7 +718,8 @@ horizontal bar chart has no vertical line painter, and a pie is not a cartesian 
 that never sets it takes exactly the code path it took before, so every existing application is
 untouched. The chart also gets **its own type** — `FontName`, `FontSize`, `FontStyle`, or the Typeface /
 Size / Bold / Italic prompts — and a **size scales the layout with it**, so labels keep their spacing and
-thin themselves out instead of colliding. A cell can also be told it has **no value** — `Obj.SetNoValue(2, Obj.NBars)` — and that series
+thin themselves out instead of colliding. **Show values** can be switched per series too (`SetSeriesNumbers`), which is what keeps the numbers on
+the bars and off the trend line. A cell can also be told it has **no value** — `Obj.SetNoValue(2, Obj.NBars)` — and that series
 draws no bar there and **breaks its line** rather than diving to zero: the shape you need for a row of
 periods with an **average** bar on the end, which belongs on the chart but has no place on a trend. The prompts now live on **six tabs** rather than four: *Look* had grown to thirty prompts in
 five groups and had stopped fitting on screen, so it splits into what is **shown**, the **shapes** that

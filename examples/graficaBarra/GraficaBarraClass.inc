@@ -98,6 +98,11 @@ Plot:Default       EQUATE(0)                                   ! whatever ChartT
 Plot:Bar           EQUATE(1)                                   ! this series is a bar
 Plot:Line          EQUATE(2)                                   ! this series is a line
 
+! ---- whether ONE series prints its numbers (combos: bars yes, trend no) ----
+Values:Default     EQUATE(0)                                   ! whatever ShowValues says
+Values:On          EQUATE(1)                                   ! this series prints them
+Values:Off         EQUATE(2)                                   ! this series does not
+
 ! ---- legend placement ------------------------------------------------------
 Legend:Bottom      EQUATE(0)
 Legend:Right       EQUATE(1)
@@ -171,6 +176,8 @@ NSeries            LONG                                        ! 0/1 = one serie
 SeriesName         STRING(32),DIM(GraficaBarra:MaxSeries)
 SeriesColor        LONG,DIM(GraficaBarra:MaxSeries)            ! -1 (COLOR:None) = auto palette
 SeriesPlot         LONG,DIM(GraficaBarra:MaxSeries)            ! Plot:Default / Plot:Bar / Plot:Line
+SeriesNumbers      LONG,DIM(GraficaBarra:MaxSeries)            ! Values:Default / Values:On / Values:Off -
+                                                               ! ShowValues, but for one series only
 SeriesValue        REAL,DIM(GraficaBarra:MaxSeries2,GraficaBarra:MaxBars) ! series 2..8
 NoVal              BYTE,DIM(GraficaBarra:MaxSeries,GraficaBarra:MaxBars)  ! 1 = this cell has NO value:
                                                                ! the category is there, this series has
@@ -186,6 +193,8 @@ AddBar             PROCEDURE(STRING pLabel,REAL pValue,LONG pColor=-1)
 AddSeries          PROCEDURE(STRING pName,LONG pColor=-1,LONG pPlot=0),LONG,PROC ! returns the series number
 SetSeriesPlot      PROCEDURE(LONG pSeries,LONG pPlot)          ! Plot:Bar / Plot:Line for one series;
                                                                ! Plot:Default hands it back to ChartType
+SetSeriesNumbers   PROCEDURE(LONG pSeries,LONG pShow)          ! Values:On / Values:Off for one series;
+                                                               ! Values:Default hands it back to ShowValues
 AddCat             PROCEDURE(STRING pLabel,REAL v1,REAL v2=0,REAL v3=0,REAL v4=0,REAL v5=0,REAL v6=0,REAL v7=0,REAL v8=0)
 SetValue           PROCEDURE(LONG pSeries,LONG pCat,REAL pValue)  ! also clears NoVal for that cell
 SetNoValue         PROCEDURE(LONG pSeries,LONG pCat)           ! that cell has nothing to draw: the bar
@@ -210,6 +219,9 @@ Palette            PROCEDURE(LONG i),LONG                      ! professional au
 FmtNum             PROCEDURE(REAL v,LONG dp),STRING
 SeriesCount        PROCEDURE(),LONG                            ! effective series count (never 0)
 PlotOf             PROCEDURE(LONG pSeries),LONG                ! Plot:Bar or Plot:Line, resolved
+ShowsValues        PROCEDURE(LONG pSeries),BYTE                ! does THIS series print its numbers
+AnyValues          PROCEDURE(),BYTE                            ! does any of them (the layout has to
+                                                               ! reserve the room before it knows)
 IsCombo            PROCEDURE(),BYTE                            ! 1 = the series are not all one shape
 BarSeriesCount     PROCEDURE(),LONG                            ! how many series are drawn as bars
 BarSeriesIndex     PROCEDURE(LONG pSeries),LONG                ! its place among them (0 = not a bar)
