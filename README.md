@@ -40,6 +40,10 @@ Each template folder mirrors the Clarion `accessory` tree: `template\win` holds 
 `libsrc\win` the `.inc`/`.clw`/`.c` class sources, so installing one by hand is two folder copies -
 `template\win\*` into `accessory\template\win` and `libsrc\win\*` into `accessory\libsrc\win`.
 
+> **Upgrading from the old flat layout:** the Template Registry stores the full path of each `.tpl`. A template
+> registered straight from a repo folder (e.g. `templates\myCalc\myCalc.tpl`) fails with *GEN: Could not open
+> include file myCalc.tpl*. Copy it into `accessory` and re-register it from `accessory\template\win`.
+
 ```
 skills/clarion-template/        # the skill (SKILL.md + reference/)
 agents/clarion-template-pro.md  # the specialist subagent
