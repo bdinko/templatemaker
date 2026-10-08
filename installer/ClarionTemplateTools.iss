@@ -11,7 +11,7 @@
 ; ============================================================================
 
 #define AppName    "Clarion Template Tools"
-#define AppVersion "2.32.0"
+#define AppVersion "2.33.0"
 #define AppPublisher "Roberto Renz"
 #define AppExe     "ClarionTplDesigner.exe"
 #define ClarionTpl "C:\clarion12\accessory\template\win"
