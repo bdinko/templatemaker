@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")"
 MSB="C:/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe"
 for f in WordDocClass.inc WordDocClass.clw WordDocTools.inc WordDocTools.clw wdoc.c; do
-  sed 's/\r$//; s/$/\r/' ../../templates/myWordDoc/$f > $f
+  sed 's/\r$//; s/$/\r/' ../../templates/myWordDoc/libsrc/win/$f > $f
 done
 for p in Spike Flow Tools; do
   sed -i 's/\r$//; s/$/\r/' $p.clw

@@ -190,11 +190,11 @@
       <h2><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span> <a href="#install" class="top">#</a></h2>
       <div class="en">
       <ol>
-        <li>Copy <code>templates/myExport/ExportClass.inc</code> and <code>ExportClass.clw</code> to a folder
+        <li>Copy <code>templates/myExport/libsrc/win/ExportClass.inc</code> and <code>ExportClass.clw</code> to a folder
           on the Clarion redirection path (your app folder, or <code>\clarion12\libsrc\win</code>). They
           <b>must be stored in ANSI with CRLF line endings</b> — an LF-only copy makes the compiler report a
           bogus <code>Illegal data type: EXPORTCLASS</code> at every use site.</li>
-        <li>Copy <code>templates/myExport/myExport.tpl</code> into your template folder.</li>
+        <li>Copy <code>templates/myExport/template/win/myExport.tpl</code> into your template folder.</li>
         <li>In the IDE: <b>Setup ▸ Template Registry ▸ Register</b>, pick <code>myExport.tpl</code>.</li>
         <li>Open a browse procedure's window, and from the control-template list drag
           <b>myExport - Export button for a browse/list</b> onto the window.</li>
@@ -213,10 +213,12 @@
         linked, so there is no <code>MAPI32.LIB</code> to add.</div>
       <div class="filetree">
 templates/myExport/<br>
-&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the engine (config + method prototypes)</span><br>
-&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the implementation: dialog, 9 writers, ZIP, UTF-8</span><br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">global extension + control template + code template</span><br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the engine (config + method prototypes)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the implementation: dialog, 9 writers, ZIP, UTF-8</span><br>
 &nbsp;&nbsp;ExportClass.exp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">export list — only for a hand-coded multi-DLL build</span><br>
-&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">global extension + control template + code template</span><br>
 &nbsp;&nbsp;myExport.zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the four files above, for distribution</span><br>
 examples/myExport/<br>
 &nbsp;&nbsp;ExportDemo.clw / .cwproj&nbsp;&nbsp;<span style="color:#6b7785">a runnable demo — a list and one Export button</span>
@@ -224,12 +226,12 @@ examples/myExport/<br>
       </div>
       <div class="es">
       <ol>
-        <li>Copia <code>templates/myExport/ExportClass.inc</code> y <code>ExportClass.clw</code> a una
+        <li>Copia <code>templates/myExport/libsrc/win/ExportClass.inc</code> y <code>ExportClass.clw</code> a una
           carpeta del camino de redirección de Clarion (la carpeta de tu app, o
           <code>\clarion12\libsrc\win</code>). Deben guardarse <b class="i">en ANSI y con finales de línea
           CRLF</b>: una copia con solo LF hace que el compilador reporte un falso
           <code>Illegal data type: EXPORTCLASS</code> en cada uso.</li>
-        <li>Copia <code>templates/myExport/myExport.tpl</code> a tu carpeta de plantillas.</li>
+        <li>Copia <code>templates/myExport/template/win/myExport.tpl</code> a tu carpeta de plantillas.</li>
         <li>En el IDE: <b>Setup ▸ Template Registry ▸ Register</b>, y elige <code>myExport.tpl</code>.</li>
         <li>Abre la ventana de un procedimiento browse y arrastra desde la lista de plantillas de control
           <b>myExport - Export button for a browse/list</b> a la ventana.</li>
@@ -248,10 +250,12 @@ examples/myExport/<br>
         enlaza, así que no hay ninguna <code>MAPI32.LIB</code> que añadir.</div>
       <div class="filetree">
 templates/myExport/<br>
-&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">el motor (configuración + prototipos)</span><br>
-&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la implementación: diálogo, 9 escritores, ZIP, UTF-8</span><br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">extensión global + plantilla de control + code template</span><br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">el motor (configuración + prototipos)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la implementación: diálogo, 9 escritores, ZIP, UTF-8</span><br>
 &nbsp;&nbsp;ExportClass.exp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">lista de exportación — solo para multi-DLL escrito a mano</span><br>
-&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">extensión global + plantilla de control + code template</span><br>
 &nbsp;&nbsp;myExport.zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">los cuatro archivos anteriores, para distribuir</span><br>
 examples/myExport/<br>
 &nbsp;&nbsp;ExportDemo.clw / .cwproj&nbsp;&nbsp;<span style="color:#6b7785">demo que compila y corre — una lista y un botón Exportar</span>

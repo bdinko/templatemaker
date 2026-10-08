@@ -6,7 +6,7 @@
 set -e
 cd "$(dirname "$0")"
 CL=/c/clarion12/bin/ClarionCL.exe
-cp ../../../templates/myTaskPanel/{MyTaskPanel.inc,MyTaskPanel.clw,mtpd2d.c} /c/clarion12/accessory/libsrc/win/
+cp ../../../templates/myTaskPanel/libsrc/win/{MyTaskPanel.inc,MyTaskPanel.clw,mtpd2d.c} /c/clarion12/accessory/libsrc/win/
 cp myTaskPanel.tpl /c/clarion12/accessory/template/win/myTaskPanel.tpl
 "$CL" -tr "C:\clarion12\accessory\template\win\myTaskPanel.tpl"
 rm -f TaskPanelPre.app TASKPANELPRE* TaskPanelPre.clw TaskPanelPre_BC*; rm -rf obj

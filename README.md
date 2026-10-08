@@ -36,131 +36,45 @@ Clarion source so you know exactly what to verify.
 
 ## Repo layout
 
+Each template folder mirrors the Clarion `accessory` tree: `template\win` holds the `.tpl`/`.tpw` files and
+`libsrc\win` the `.inc`/`.clw`/`.c` class sources, so installing one by hand is two folder copies -
+`template\win\*` into `accessory\template\win` and `libsrc\win\*` into `accessory\libsrc\win`.
+
 ```
 skills/clarion-template/        # the skill (SKILL.md + reference/)
 agents/clarion-template-pro.md  # the specialist subagent
-templates/                      # ready-to-register Clarion templates
-  myPixel.tpl                   #   per-window diagnostic pixel (see below)
-  showLine.tpl                  #   Ctrl+Shift+P "where am I" hotkey (see below)
-  identifier.tpl                #   Ctrl+Shift+I shows the procedure name
+templates/                      # ready-to-register Clarion templates, one folder each:
+  <name>/                        #   every template folder has the same shape,
+    template/win/                #     the .tpl / .tpw  -> accessory\template\win
+    libsrc/win/                  #     the .inc / .clw / .c -> accessory\libsrc\win
+    README.md, *.zip, icons ...  #     docs, the distribution zip, images, build scripts
+  myPixel/                      #   per-window diagnostic pixel (see below)
+  showLine/                     #   Ctrl+Shift+P "where am I" hotkey (see below)
+  identifier/                   #   Ctrl+Shift+I shows the procedure name
   myFuncs/                      #   global function library (see below)
-    myFuncs.tpl                 #     self-contained: prototypes + bodies in one template
   myPie/                        #   pie chart for a window (see below)
-    myPie.tpl                   #     global helper + procedure extension
   myFontChanger/                #   global + per-list font picker (see below)
-    myFontChanger.tpl
   myBackground/                 #   global default + per-window background color/image (see below)
-    myBackground.tpl
   myQR/                         #   QR code into an image control, auto-refresh (see below)
-    myQR.tpl
-  myImage/                     #   12 image formats in, 9 out, every colour format (see below)
+  myImage/                      #   12 image formats in, 9 out, every colour format (see below)
   allImageRead/                 #   any picture, from anywhere, on a window or a report (see below)
-    allImageRead.tpl            #     global + drag-on canvas + window/report extensions + code template
-    d2dcanvas.c                 #     the GPU canvas: Direct2D, bound at run time, no import library
   myGauge/                      #   analog gauge/dial on windows and reports (see below)
-    GaugeClass.inc              #     the gauge class (config + method prototypes)
-    GaugeClass.clw              #     the implementation (geometry + native drawing)
-    myGauge.tpl                 #     global include + window + report extensions
   graficaBarra/                 #   13 chart types on windows and reports, vector on PDF (see below)
-    GraficaBarraClass.inc       #     the bar-graph class (config + method prototypes)
-    GraficaBarraClass.clw       #     the implementation (scale + BOX/LINE/SHOW drawing)
-    graficaBarra.tpl            #     global include + window + report extensions
-    graficaBarra.zip            #     the three files above, zipped for easy distribution
   myGaugePlus/                  #   ANTIALIASED (GDI+) gauge/dial on windows (see below)
-    gpcanvas.c                  #     GDI+ flat-API shim (bound at runtime, compiled by Clacpp)
-    AaCanvasClass.inc/.clw      #     reusable antialiased 2D canvas over GDI+
-    GaugePlusClass.inc/.clw     #     the pretty gauge, drawn on the canvas
-    myGaugePlus.tpl             #     global include + window + control template
   myCompress/                   #   pure-Clarion compression: DEFLATE/zlib/gzip (see below)
-    CompressClass.inc           #     the codec class (config + method prototypes)
-    CompressClass.clw           #     the implementation (inflate/deflate/containers)
-    CompressClassC.inc          #     optional C-backed subclass (the fast engine)
-    CompressClassC.clw          #     overrides Wrap/Unwrap to call mc.c
-    mc.c                        #     our own DEFLATE in C (compiled by Clarion's Clacpp)
-    myCompress.tpl              #     one global extension (engine prompt: Clarion / C)
   myPdfSign/                    #   pure-Clarion signed-PDF reader: who signed it (see below)
-    PdfSignClass.inc            #     the reader class (config + method prototypes)
-    PdfSignClass.clw            #     the implementation (PDF parse + PKCS#7/DER walk)
-    myPdfSign.tpl               #     one global extension (the shared object)
   myCalc/                       #   pop-up calculator beside a numeric field (see below)
-    CalcClass.inc               #     the calculator (4 modes, tape, EN/ES strings)
-    CalcClass.clw               #     the implementation (keypad, arithmetic, window)
-    calc16.ico                  #     the little calculator on the button
-    myCalc.tpl                  #     global extension + button control + code template
-    myCalc.zip                  #     the four files above, zipped for easy distribution
   myFilter/                     #   build filters for any browse (see below)
-    MyFilterClass.inc           #     the filter builder (fields, operators, EN/ES)
-    MyFilterClass.clw           #     the implementation (expressions + the window)
-    myFilter.tpl                #     global extension + browse button + code template
-    FilterTables.txt            #     table structures, if saved filters are shared
   myCalendar/                   #   pop-up date picker beside a date field (see below)
-    MyCalendarClass.inc         #     the calendar (views, range, EN/ES strings)
-    MyCalendarClass.clw         #     the implementation (date maths, drawing, window)
-    cal16.ico                   #     the little calendar on the button
-    myCalendar.tpl              #     global extension + button control + code template
-    myCalendar.zip              #     the four files above, zipped for easy distribution
   myExport/                     #   export any browse/list to 7 file formats, PDF or a printer (see below)
-    ExportClass.inc             #     the export engine (config + method prototypes)
-    ExportClass.clw             #     the implementation (dialog + 9 writers + ZIP + UTF-8)
-    ExportClass.exp             #     export list, for a hand-coded multi-DLL build only
-    myExport.tpl                #     global extension + Export-button control + code template
-    myExport.zip                #     the four files above, zipped for easy distribution
   myHook/                       #   intercept MESSAGE / STOP / HALT / errors (see below)
-    MsgHookClass.inc            #     the interceptor (rules, log, the seven RTL hooks)
-    MsgHookClass.clw            #     the implementation (hook thunks + append-only logger)
-    myHook.tpl                  #     global extension + per-procedure pause + code template
-    myHook.zip                  #     the three files above, zipped for easy distribution
   BrowseGrid/                   #   take over any ABC browse and draw it with Direct2D (see below)
-    BrowseGrid.tpl              #     the extension: one prompt sheet, no class to ship
-    d2grid.c                    #     the grid: Direct2D + DirectWrite, bound at run time
   BrowseGridLeg/                #   the same grid for the Legacy (CW20) chain (see below)
-    BrowseGridLeg.tpl           #     global + procedure extensions, search box, filter bar
-    d2gridleg.c                 #     the grid, plus filter buttons and drag-reorder
-    README.md                   #     what the port adds over the ABC original
   SDAspecto/                    #   one look for every window: rules, type, rescaling
-                                #     (see below)
-    SDAspecto.inc               #     the class: rule queue, per-window state, prototypes
-    SDAspecto.clw               #     the engine: matching, painting, rescaling, the INI
-    SDAspecto.tpl               #     the chain file
-    SDAspecto.tpw               #     1 app extension + 2 procedure extensions
-    VentanaConfigAspecto.txa    #     a ready-made settings window to IMPORT (optional)
   weatherWidget/                #   a weather card when your program starts (see below)
-    MyWeatherClass.inc          #     the widget (settings, the reading, EN/ES strings)
-    MyWeatherClass.clw          #     the implementation (curl + JSON + the drawn card)
-    weatherWidget.tpl           #     global extension + code template
-    weatherWidget.zip           #     the three files above, zipped for easy distribution
   emailTo/                      #   send e-mail and manage the account: SMTP/TLS, OAuth2,
-                                #     nine provider APIs (see below)
-    EmailNetClass.inc/.clw      #     transport: sockets, TLS, HTTPS, DPAPI (wraps emailc.c)
-    EmailMsgClass.inc/.clw      #     the message: MIME, base64, quoted-printable, UTF-8
-    EmailToClass.inc/.clw       #     the sender: accounts, SMTP, OAuth2, REST, the windows
-    EmailJsonClass.inc/.clw     #     reading the reply: a JSON parser in pure Clarion
-    EmailApiClass.inc/.clw      #     the management API: blocked, stats, campaigns, the window
-    emailc.c                    #     Winsock + SCHANNEL + WinHTTP + SHA-256 (Clacpp-compiled)
-    emailTo.tpl                 #     3 app extensions + 3 buttons + 4 code templates
-    emailTo10.tpl               #     the same, prompts re-laid out for Clarion 10's
-                                #       480 px AppGen dialog - GENERATED, do not edit
-    Build-NarrowTpl.ps1         #     generates it, and fails if anything stops fitting
-    EmailTables.txt             #     the settings-table structure, written out by hand
-    emailToTables.dctx          #     the dictionary to IMPORT: 7 tables (Dictionary
-                                #       Editor > File > Import > DCTX/XML)
-    emailToTables.dct           #     the same, prebuilt, if you would rather copy tables across
-    emailToTables.txd           #     Report Writer's format - for ClarionCL /di only
-    emailTo.zip                 #     all of the above, zipped for easy distribution
   notifications/                #   real Windows notifications (toasts), designed visually
-                                #     (see below)
-    toastc.c                    #     the engine: WinRT Windows.UI.Notifications through raw
-                                #       COM vtables, compiled into the program by Clacpp
-    NotificationClass.inc/.clw  #     the class: builder, designs, placeholders, events
-    notifications.tpl           #     global extension + 3 code templates + window extension
-    notifications.zip           #     the four files above, zipped for easy distribution
   myTaskPanel/                  #   task panels: collapsible groups docked left/right or floating
-                                #     (see below)
-    MyTaskPanel.inc/.clw        #     the class, all Clarion: window, layout, docking, menu copy, GDI
-    mtpd2d.c                    #     the DirectX painter (Direct2D + DirectWrite), compiled in only
-                                #       for the DirectX engine
-    myTaskPanel.tpl             #     global extension + procedure extension (groups, presets, menu)
-    myTaskPanel.zip             #     the four files above, zipped for easy distribution
 designer/ClarionTplDesigner/    # WPF visual designer for the prompt UI (see below)
 designer/NotificationDesigner/  # the Notification Designer (WPF): live Windows 11 preview,
                                 #   presets, Show on Windows; saves .ntf designs
@@ -192,7 +106,7 @@ README.md
 | **Diagnostics** | [**myPixel**](#t-mypixel) &nbsp;<sub>per-window diagnostic pixel</sub><br>[**showLine**](#t-showline) &nbsp;<sub>Ctrl+Shift+P "where am I" hotkey</sub><br>[**identifier**](#t-identifier) &nbsp;<sub>Ctrl+Shift+I shows the procedure name</sub> |
 
 <a id="t-mypixel"></a>
-### `templates/myPixel.tpl` — per-window diagnostic pixel
+### `templates/myPixel/` — per-window diagnostic pixel
 A global (APPLICATION-scope) ABC extension that needs no per-procedure setup. On **every** procedure
 that owns a window it drops a tiny configurable REGION "pixel" in the top-left corner. Hovering it shows
 a tooltip with the **procedure name**, the current **thread number**, and the **binary** the procedure
@@ -206,7 +120,7 @@ lives in (app/EXE or DLL). Pressing **Ctrl+Shift+I** pops a message box with the
   Global → Extensions.
 
 <a id="t-showline"></a>
-### `templates/showLine.tpl` — Ctrl+Shift+P "where am I" hotkey
+### `templates/showLine/` — Ctrl+Shift+P "where am I" hotkey
 A global (APPLICATION-scope) ABC extension that needs no per-procedure setup. On **every** windowed
 procedure it alerts **Ctrl+Shift+P**; pressing it pops a message telling you where you are: the
 **procedure** (the code you're in), the **control with focus** (its field number and USE variable), the
@@ -219,7 +133,7 @@ procedure it alerts **Ctrl+Shift+P**; pressing it pops a message telling you whe
 - Register it, then add **showLine - Where-Am-I Hotkey (Global)** under Global → Extensions.
 
 <a id="t-identifier"></a>
-### `templates/identifier.tpl` — Ctrl+Shift+I shows the procedure name
+### `templates/identifier/` — Ctrl+Shift+I shows the procedure name
 A global (APPLICATION-scope) ABC extension, no per-procedure setup. It alerts **Ctrl+Shift+I** on every
 windowed procedure; pressing it pops a message box with the current **procedure name** (baked in at
 generation time via `%Procedure`). Same proven injection as the other hotkey templates (self-contained
@@ -2216,7 +2130,7 @@ tampered one that correctly reports `CoversWholeFile=0`. Programmer's manual in
 [`docs/myPdfSign-template.html`](docs/myPdfSign-template.html).
 
 **myCompress gains an optional C fast-path (~4× faster) (v2.19).** The compression template now ships an
-optional **C engine**, [`templates/myCompress/mc.c`](templates/myCompress/mc.c) — our own clean-room DEFLATE
+optional **C engine**, [`templates/myCompress/libsrc/win/mc.c`](templates/myCompress/libsrc/win/mc.c) — our own clean-room DEFLATE
 port (**not** miniz/zlib/StringTheory) compiled by **Clarion's own C compiler** (`Clacpp`) via
 `PRAGMA('compile(mc.c)')`. Set `CmpUseC EQUATE(1)` and copy `mc.c`, and `CompressClass` routes through it:
 a 4 MB buffer compresses in **~200 ms instead of ~844 ms** (and a touch smaller, since C has no Clarion

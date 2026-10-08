@@ -1,6 +1,6 @@
 # BrowseGrid — the engine, and the proof it draws
 
-`templates/BrowseGrid/d2grid.c` is a grid drawn with **Direct2D and DirectWrite** into an ordinary
+`templates/BrowseGrid/libsrc/win/d2grid.c` is a grid drawn with **Direct2D and DirectWrite** into an ordinary
 Clarion `REGION`. It holds no data: the Clarion side pushes in the rows that are visible and the grid
 draws them, which is exactly the shape an ABC browse queue already has.
 
@@ -42,7 +42,7 @@ record you pointed at.
 
 ## The template, tested on a real browse
 
-`templates/BrowseGrid/BrowseGrid.tpl` is the drop-in: add it to a procedure that already has an ABC
+`templates/BrowseGrid/template/win/BrowseGrid.tpl` is the drop-in: add it to a procedure that already has an ABC
 browse, point it at the LIST, and the LIST is hidden with the grid drawn in its place.
 
 It was tested against a **copy of a real application** rather than an invented one — School's

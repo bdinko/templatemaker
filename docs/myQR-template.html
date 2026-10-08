@@ -118,7 +118,7 @@
     <ol>
       <li>Add an <b>IMAGE</b> control to the window (an Image — not a Region) and size it.</li>
       <li>IDE: <b>Setup ▸ Template Registry ▸ Register</b> → pick
-          <code>templates/myQR/myQR.tpl</code>.</li>
+          <code>templates/myQR/template/win/myQR.tpl</code>.</li>
       <li>Open the window procedure, click <b>Extensions</b>, add
           <b>myQR - QR code into an image control</b>.</li>
       <li>On the <b>General</b> tab pick the image control and set the value/size/ECC; <b>Generate</b>, build, run.</li>
@@ -408,7 +408,7 @@ myQR_CloseHandle(<span class="k">LONG</span>),<span class="k">LONG</span>,<span 
           <code>DO myQRRefresh</code> updates it immediately.</li>
       <li>A <code>myQR_&lt;feq&gt;.png</code> appears in the working directory and no console window flashes.</li>
     </ol>
-    <div class="callout tip"><b>Source</b> <code>templates/myQR/myQR.tpl</code> — fully commented, with the
+    <div class="callout tip"><b>Source</b> <code>templates/myQR/template/win/myQR.tpl</code> — fully commented, with the
        corpus citations behind <code>PROP:Text</code>, <code>CreateProcessA</code> and the struct layouts.</div>
   </section>
 

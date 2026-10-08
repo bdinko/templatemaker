@@ -8,7 +8,7 @@ import os
 import re
 
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                   '..', '..', 'templates', 'emailTo')
+                   '..', '..', 'templates', 'emailTo', 'libsrc', 'win')
 
 INCS = ['EmailNetClass.inc', 'EmailMsgClass.inc', 'EmailToClass.inc',
         'EmailJsonClass.inc', 'EmailApiClass.inc']

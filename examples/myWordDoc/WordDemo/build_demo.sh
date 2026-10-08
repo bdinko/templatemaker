@@ -1,5 +1,5 @@
 #!/bin/bash
-# Proves templates/myWordDoc/myWordDoc.tpl end to end, headless:
+# Proves templates/myWordDoc/template/win/myWordDoc.tpl end to end, headless:
 #   register (parse check) -> dictionary from WordDemoDict.dctx -> import
 #   WordDemo.txa -> generate -> compile WordDemo.exe with 32-bit MSBuild.
 #
@@ -15,7 +15,7 @@
 set -e
 cd "$(dirname "$0")"
 HERE_W="$(pwd -W)"
-TPL_DIR_W="$(cd ../../../templates/myWordDoc && pwd -W)"
+TPL_DIR_W="$(cd ../../../templates/myWordDoc/template/win && pwd -W)"
 CL=/c/clarion12/bin/ClarionCL.exe
 MSB="C:/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe"
 
@@ -70,7 +70,7 @@ PYEOF
 
 echo "== class files beside the app (CRLF) =="
 for f in WordDocClass.inc WordDocClass.clw WordDocTools.inc WordDocTools.clw wdoc.c; do
-  sed 's/\r$//; s/$/\r/' ../../../templates/myWordDoc/$f > $f
+  sed 's/\r$//; s/$/\r/' ../../../templates/myWordDoc/libsrc/win/$f > $f
 done
 
 echo "== project =="
