@@ -1,0 +1,18 @@
+<!--sample:AlertId=9-->
+<!--sample:Item=A4 paper-->
+<!--sample:Qty=3 boxes-->
+<!--sample:Min=10-->
+<toast launch="action=alert;id={AlertId}" scenario="urgent" useButtonStyle="true">
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="appLogoOverride" src="images\warning.png"/>
+      <text hint-maxLines="2">Stock below minimum</text>
+      <text>{Item}: {Qty} left (minimum {Min}).</text>
+    </binding>
+  </visual>
+  <actions>
+    <action content="Reorder now" arguments="action=reorder;id={AlertId}" hint-buttonStyle="Critical"/>
+    <action content="Remind me later" arguments="action=later;id={AlertId}"/>
+  </actions>
+  <audio src="ms-winsoundevent:Notification.Looping.Alarm2"/>
+</toast>

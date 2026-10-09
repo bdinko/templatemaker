@@ -95,7 +95,7 @@ TEST_CASES = [
     # ---------------- Designer: files & documents ----------------
     ("Designer - Files", "Open a template",
      "App open",
-     "File > Open and pick a shipped .tpl (e.g. templates\\myPie\\myPie.tpl).",
+     "File > Open and pick a shipped .tpl (e.g. templates\\myPie\\template\\win\\myPie.tpl).",
      "The prompt UI renders on the canvas at the real AT positions; image controls show their actual PNG icons."),
     ("Designer - Files", "Multiple documents / tabs",
      "App open",

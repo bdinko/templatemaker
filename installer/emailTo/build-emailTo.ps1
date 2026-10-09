@@ -18,7 +18,9 @@ param([switch]$SkipIscc)
 $ErrorActionPreference = 'Stop'
 $here    = $PSScriptRoot
 $repo    = Split-Path (Split-Path $here -Parent) -Parent
-$tpl     = Join-Path $repo 'templates\emailTo'
+$base    = Join-Path $repo 'templates\emailTo'
+$tpl     = Join-Path $base 'template\win'
+$lib     = Join-Path $base 'libsrc\win'
 $payload = Join-Path $here 'payload'
 $iss     = Join-Path $here 'emailTo.iss'
 
@@ -32,7 +34,7 @@ Write-Host "==> Cleaning payload" -ForegroundColor Cyan
 if (Test-Path $payload) { Remove-Item $payload -Recurse -Force }
 
 Write-Host "==> Generating the Clarion 10 (480 px) build of the template" -ForegroundColor Cyan
-& (Join-Path $tpl 'Build-NarrowTpl.ps1')
+& (Join-Path $base 'Build-NarrowTpl.ps1')
 if ($LASTEXITCODE -ne 0) { throw "the narrow template build failed - emailTo.tpl no longer fits a 480 px prompt sheet" }
 
 Write-Host "==> Staging" -ForegroundColor Cyan
@@ -46,12 +48,12 @@ New-Item -ItemType Directory -Force -Path (Join-Path $payload 'tpl10') | Out-Nul
 Copy-Item (Join-Path $tpl 'emailTo10.tpl') (Join-Path $payload 'tpl10\emailTo.tpl') -Force
 Write-Host "    tpl10     1  (Clarion 10 and older)"
 
-$classes = @(Get-ChildItem $tpl -File | Where-Object { $_.Extension -in '.inc', '.clw', '.c' })
+$classes = @(Get-ChildItem $lib -File | Where-Object { $_.Extension -in '.inc', '.clw', '.c' })
 $n = Stage (Join-Path $payload 'libsrc') $classes.FullName
 Write-Host "    libsrc    $n  classes + the C file"
 
 $dict = @('emailToTables.dctx', 'emailToTables.dct', 'emailToTables.txd', 'EmailTables.txt') |
-        ForEach-Object { Join-Path $tpl $_ } | Where-Object { Test-Path $_ }
+        ForEach-Object { Join-Path $base $_ } | Where-Object { Test-Path $_ }
 $n = Stage (Join-Path $payload 'dict') $dict
 Write-Host "    dict      $n  dictionary to import"
 

@@ -1,0 +1,18 @@
+<!--sample:InvoiceNo=1043-->
+<!--sample:Customer=Acme Ltd-->
+<!--sample:Amount=1.250,00 $-->
+<toast launch="action=open;invoice={InvoiceNo}">
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="appLogoOverride" src="images\logo.png"/>
+      <text hint-maxLines="2">Factura {InvoiceNo} pagada</text>
+      <text>{Customer} pag&#243; {Amount}.</text>
+      <text placement="attribution">Cuentas por cobrar</text>
+    </binding>
+  </visual>
+  <actions>
+    <action content="Abrir factura" arguments="action=open;invoice={InvoiceNo}"/>
+    <action content="Enviar recibo" arguments="action=receipt;invoice={InvoiceNo}"/>
+  </actions>
+  <audio src="ms-winsoundevent:Notification.Mail"/>
+</toast>

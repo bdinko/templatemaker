@@ -1,0 +1,282 @@
+[APPLICATION]
+VERSION 34
+TODO ABC ToDo
+DICTIONARY 'WordDemo.dct'
+PROCEDURE Main
+[COMMON]
+FROM ABC
+[PROMPTS]
+%GenerateProgress LONG  (0)
+[ADDITION]
+NAME myWordDoc myWordDocGlobal
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%wdGloDisable LONG  (0)
+[PROJECT]
+#system win32 exe
+#model clarion dll
+#pragma define(_ABCDllMode_=>0) -- GENERATED
+#pragma define(_ABCLinkMode_=>1) -- GENERATED
+#link "WordDemo.EXE"
+[PROGRAM]
+[COMMON]
+FROM ABC ABC
+[END]
+[MODULE]
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME Main
+[COMMON]
+DESCRIPTION 'Browse the documents'
+FROM ABC Window
+[FILES]
+[PRIMARY]
+Docs
+[INSTANCE]
+1
+[KEY]
+DOC:PKey
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 2
+WHEN  ('?Print') ('Call a Procedure')
+WHEN  ('?PrintCode') ('Call a Procedure')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 2
+WHEN  ('?Print') (PrintDocs)
+WHEN  ('?PrintCode') (PrintDocsCode)
+
+[ADDITION]
+NAME ABC BrowseBox
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%LocatorType DEFAULT  ('Step')
+%ScrollBehavior DEFAULT  ('Fixed Thumb')
+[ADDITION]
+NAME ABC BrowseUpdateButtons
+[INSTANCE]
+INSTANCE 2
+PARENT 1
+PROCPROP
+[PROMPTS]
+%UpdateProcedure PROCEDURE  (UpdateDoc)
+%EditViaPopup LONG  (1)
+[ADDITION]
+NAME ABC CloseButton
+[INSTANCE]
+INSTANCE 3
+[WINDOW]
+QuickWindow WINDOW('myWordDoc demo - documents'),AT(,,320,190),FONT('Segoe UI',9),RESIZE,CENTER,GRAY,IMM, |
+          SYSTEM
+          LIST,AT(8,8,304,150),USE(?Browse:1),HVSCROLL,FORMAT('40R(2)|M~Id~C(0)@n-14@200L(2)|M~Title~L(2)@s60@'), |
+            FROM(Queue:Browse:1),IMM,MSG('Browsing the documents'),#FIELDS(DOC:Id,DOC:Title),#ORIG(?List), |
+            #SEQ(1)
+          BUTTON('&Insert'),AT(8,166,45,14),USE(?Insert:2),#LINK(?Change:2),#ORIG(?Insert),#SEQ(2)
+          BUTTON('&Change'),AT(57,166,45,14),USE(?Change:2),DEFAULT,#LINK(?Delete:2),#ORIG(?Change),#SEQ(2)
+          BUTTON('&Delete'),AT(106,166,45,14),USE(?Delete:2),#LINK(?Insert:2),#ORIG(?Delete),#SEQ(2)
+          BUTTON('&Print'),AT(160,166,45,14),USE(?Print)
+          BUTTON('Print (&code)'),AT(209,166,50,14),USE(?PrintCode)
+          BUTTON('Close'),AT(267,166,45,14),USE(?Close),#ORIG(?Close),#SEQ(3)
+        END
+
+[END]
+[MODULE]
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME UpdateDoc
+[COMMON]
+DESCRIPTION 'Edit a document'
+FROM ABC Window
+[DATA]
+ActionMessage            CSTRING(40)
+[FILES]
+[PRIMARY]
+Docs
+[INSTANCE]
+1
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 0
+
+[ADDITION]
+NAME ABC SaveButton
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%InsertAllowed LONG  (1)
+%ChangeAllowed LONG  (1)
+%DeleteAllowed LONG  (1)
+%ActionOnCancel DEFAULT  ('Confirm cancel')
+%MessageLocation DEFAULT  ('Title Bar')
+%AfterGoodInsert DEFAULT  ('Return to caller')
+[ADDITION]
+NAME ABC CancelButton
+[INSTANCE]
+INSTANCE 2
+[ADDITION]
+NAME myWordDoc myWordDocEditor
+[INSTANCE]
+INSTANCE 3
+[PROMPTS]
+%wdDisable LONG  (0)
+%wdObject DEFAULT  ('WordDoc3')
+%wdBlob FIELD  (DOC:Body)
+%wdAutoSave LONG  (1)
+%wdToolbar LONG  (1)
+%wdReadOnly LONG  (0)
+%wdPageView LONG  (0)
+%wdPageWidth DEFAULT  ('L')
+%wdPageCustom LONG  (9360)
+%wdFont DEFAULT  ('')
+%wdSize LONG  (0)
+[ADDITION]
+NAME ABC WindowResize
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%UseAppStrategy DEFAULT  ('0')
+%AppStrategy DEFAULT  ('Spread')
+%RestrictMinSize LONG  (1)
+[WINDOW]
+QuickWindow WINDOW('Document'),AT(,,420,280),FONT('Segoe UI',9),RESIZE,CENTER,GRAY,IMM,SYSTEM
+          PROMPT('&Id:'),AT(8,9),USE(?DOC:Id:Prompt)
+          ENTRY(@n-14),AT(40,7,50,11),USE(DOC:Id),RIGHT(1),READONLY,SKIP
+          PROMPT('&Title:'),AT(100,9),USE(?DOC:Title:Prompt)
+          ENTRY(@s60),AT(130,7,282,11),USE(DOC:Title)
+          REGION,AT(8,24,404,230),USE(?WordDocRegion),#ORIG(?WordDocRegion),#SEQ(3)
+          BUTTON('&OK'),AT(312,260,48,14),USE(?OK),DEFAULT,#ORIG(?OK),#SEQ(1)
+          BUTTON('Cancel'),AT(364,260,48,14),USE(?Cancel),#ORIG(?Cancel),#SEQ(2)
+        END
+
+[END]
+[MODULE]
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME PrintDocs
+[COMMON]
+DESCRIPTION 'Print the documents'
+FROM ABC Report
+[FILES]
+[PRIMARY]
+Docs
+[INSTANCE]
+0
+[KEY]
+DOC:PKey
+[PROMPTS]
+%EnablePrintPreview LONG  (1)
+[ADDITION]
+NAME myWordDoc myWordDocReport
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%wrDisable LONG  (0)
+%wrObject DEFAULT  ('WordDocRpt1')
+%wrBlob FIELD  (DOC:Body)
+%wrImage DEFAULT  ('?DocImage')
+%wrBand DEFAULT  ('')
+%wrShrink LONG  (1)
+%wrOrder DEFAULT  ('A')
+[WINDOW]
+ProgressWindow WINDOW('Report Progress...'),AT(,,142,59),DOUBLE,CENTER,GRAY,TIMER(1)
+          PROGRESS,AT(15,15,111,12),USE(Progress:Thermometer),RANGE(0,100),#ORIG(Progress:Thermometer)
+          STRING(''),AT(0,3,141,10),USE(?Progress:UserString),CENTER,#ORIG(?Progress:UserString)
+          STRING(''),AT(0,30,141,10),USE(?Progress:PctText),CENTER,#ORIG(?Progress:PctText)
+          BUTTON('Cancel'),AT(45,42,50,15),USE(?Progress:Cancel),#ORIG(?Progress:Cancel)
+        END
+
+[REPORT]
+Report  REPORT,AT(1000,1500,6500,8500),PRE(RPT),PAPER(PAPER:LETTER),FONT('Arial',10,,FONT:regular), |
+          THOUS
+          HEADER,AT(1000,1000,6500,400),USE(?Header)
+            STRING('myWordDoc demo - every document in the table'),AT(0,50,6500,300),USE(?HeadTitle), |
+              FONT(,12,,FONT:bold)
+          END
+Detail    DETAIL,AT(0,0,6500,450),USE(?Detail)
+            STRING(@n-14),AT(0,100,700,250),USE(DOC:Id),RIGHT(1)
+            STRING(@s60),AT(800,100,5700,250),USE(DOC:Title),FONT(,,,FONT:bold)
+          END
+DocBand   DETAIL,AT(0,0,6500,8000),USE(?DocBand)
+            IMAGE,AT(0,0,6500,8000),USE(?DocImage)
+          END
+        END
+
+[END]
+[MODULE]
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME PrintDocsCode
+[COMMON]
+DESCRIPTION 'Print the documents - myWordDocPrintBlob code template'
+FROM ABC Report
+[FILES]
+[PRIMARY]
+Docs
+[INSTANCE]
+0
+[KEY]
+DOC:PKey
+[PROMPTS]
+%EnablePrintPreview LONG  (1)
+%DetailFilter DEPEND %ReportControl DEFAULT TIMES 1
+WHEN  ('?DocBand') ('False')
+
+[EMBED]
+EMBED %ProcessManagerMethodCodeSection
+[INSTANCES]
+WHEN 'TakeRecord'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[GROUP]
+PRIORITY 6100
+INSTANCE 1
+[END]
+[END]
+[END]
+[END]
+[ADDITION]
+NAME myWordDoc myWordDocPrintBlob
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%wcObject DEFAULT  ('WordDocPrint1')
+%wcDeclare LONG  (1)
+%wcBlob FIELD  (DOC:Body)
+%wcReport DEFAULT  ('Report')
+%wcImage DEFAULT  ('?DocImage')
+%wcBand DEFAULT  ('RPT:DocBand')
+%wcShrink LONG  (1)
+%wcReget LONG  (1)
+[WINDOW]
+ProgressWindow WINDOW('Report Progress...'),AT(,,142,59),DOUBLE,CENTER,GRAY,TIMER(1)
+          PROGRESS,AT(15,15,111,12),USE(Progress:Thermometer),RANGE(0,100),#ORIG(Progress:Thermometer)
+          STRING(''),AT(0,3,141,10),USE(?Progress:UserString),CENTER,#ORIG(?Progress:UserString)
+          STRING(''),AT(0,30,141,10),USE(?Progress:PctText),CENTER,#ORIG(?Progress:PctText)
+          BUTTON('Cancel'),AT(45,42,50,15),USE(?Progress:Cancel),#ORIG(?Progress:Cancel)
+        END
+
+[REPORT]
+Report  REPORT,AT(1000,1500,6500,8500),PRE(RPT),PAPER(PAPER:LETTER),FONT('Arial',10,,FONT:regular), |
+          THOUS
+          HEADER,AT(1000,1000,6500,400),USE(?Header)
+            STRING('myWordDoc demo - every document in the table'),AT(0,50,6500,300),USE(?HeadTitle), |
+              FONT(,12,,FONT:bold)
+          END
+Detail    DETAIL,AT(0,0,6500,450),USE(?Detail)
+            STRING(@n-14),AT(0,100,700,250),USE(DOC:Id),RIGHT(1)
+            STRING(@s60),AT(800,100,5700,250),USE(DOC:Title),FONT(,,,FONT:bold)
+          END
+DocBand   DETAIL,AT(0,0,6500,8000),USE(?DocBand)
+            IMAGE,AT(0,0,6500,8000),USE(?DocImage)
+          END
+        END
+
+[END]

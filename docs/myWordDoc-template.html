@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>myWordDoc - Programmer's Documentation / Documentación del programador</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-d:#084d93; --navy:#0E1A2B; --navy-2:#16263c;
+    --ink:#22303f; --muted:#6b7785; --line:#e3e8ef; --bg:#f5f7fa;
+    --card:#ffffff; --green:#1e7c5a; --amber:#9a6a12; --amber-bg:#fff7e8;
+    --green-bg:#eef8f3; --blue-bg:#eef4fc; --red-bg:#fcecec; --red:#b23a2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  nav{width:280px;flex:0 0 280px;background:linear-gradient(180deg,var(--navy),var(--navy-2));
+    color:#cdd8e6;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  nav .brand{padding:0 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  nav .brand h1{font-size:16px;margin:0;color:#fff} nav .brand span{font-size:12px;color:#8aa0bb}
+  nav a{display:block;color:#b9c7d8;padding:6px 22px;font-size:13.5px;border-left:3px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+  nav a.h2{padding-left:34px;font-size:13px;color:#9fb2c8}
+  nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#6e85a1;
+    padding:14px 22px 4px;font-weight:700}
+  main{flex:1;min-width:0}
+  header.hero{background:linear-gradient(120deg,#0c2a4d,var(--blue));color:#fff;padding:46px 52px 38px}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.3px}
+  header.hero p{margin:0;font-size:15.5px;color:#dbe8f8;max-width:780px}
+  header.hero .pill{display:inline-block;margin-top:16px;background:rgba(255,255,255,.16);
+    padding:4px 12px;border-radius:20px;font-size:12.5px}
+  .body{padding:14px 52px 80px;max-width:940px}
+  section{padding:22px 0;border-bottom:1px solid var(--line);scroll-margin-top:50px} section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:14px 0 10px;color:var(--navy);scroll-margin-top:50px}
+  h3{font-size:16px;margin:20px 0 6px;color:var(--blue-d)}
+  p{margin:9px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  code,kbd,pre{font-family:"Cascadia Code",Consolas,monospace}
+  code{background:#eef1f5;padding:1px 6px;border-radius:4px;font-size:13px;color:#1d3b5e}
+  kbd{background:#fff;border:1px solid #c9d3e0;border-bottom-width:2px;border-radius:5px;
+    padding:1px 7px;font-size:12.5px;color:#33455c}
+  pre{background:#0f1d2e;color:#dbe6f2;padding:16px 18px;border-radius:10px;overflow:auto;
+    font-size:13px;line-height:1.55;margin:12px 0}
+  pre .c{color:#7fa6c9} pre .k{color:#79c0ff} pre .s{color:#7ee0b8} pre .t{color:#ffd591}
+  .callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid}
+  .tip{background:var(--green-bg);border-color:#bfe3d3;color:#155}
+  .note{background:var(--blue-bg);border-color:#c5dcf6;color:#13456f}
+  .warn{background:var(--amber-bg);border-color:#ecd9a6;color:#6f5210}
+  .danger{background:var(--red-bg);border-color:#e6b8b2;color:#7c241b}
+  .callout b{display:block;margin-bottom:2px}
+  .callout b.i{display:inline;margin:0}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f0f4f9;color:var(--navy);font-weight:600}
+  tr:hover td{background:#fafcff}
+  .lead{font-size:16px;color:#3a4756}
+  footer{padding:24px 52px;color:var(--muted);font-size:13px}
+  .top{font-size:12px;color:var(--muted);float:right}
+  .langbar{display:flex;gap:8px;padding:14px 52px 0;background:var(--bg);position:sticky;top:0;z-index:20;
+    border-bottom:1px solid var(--line)}
+  .langbar button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);
+    padding:7px 16px;border-radius:8px 8px 0 0;font:600 13.5px/1 inherit;border-bottom:none}
+  .langbar button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  /* language toggle */
+  html[data-lang="en"] .es{display:none}
+  html[data-lang="es"] .en{display:none}
+  .filetree{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:14px 18px;line-height:1.7;color:#37485a}
+  .shot{max-width:100%;border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 2px 10px rgba(14,26,43,.14)}
+  .shots{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+  .shots figure{margin:0;flex:1 1 300px;min-width:0}
+  .shots figcaption{font-size:12.5px;color:var(--muted);padding-top:6px;text-align:center}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid #00000022;
+    vertical-align:-1px;margin-right:6px}
+  h4{font-size:13.5px;margin:18px 0 4px;color:var(--navy);text-transform:uppercase;letter-spacing:.5px}
+  .sig{font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px;color:var(--navy);font-weight:600;margin:18px 0 2px;padding-top:8px;border-top:1px dashed var(--line)}
+  td code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><h1>myWordDoc</h1><span class="en">Programmer's Documentation</span><span class="es">Documentación del programador</span></div>
+    <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
+    <div class="grp"><span class="en">Getting it in</span><span class="es">Puesta en marcha</span></div>
+    <a href="#install" class="h2"><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span></a>
+    <a href="#templates" class="h2"><span class="en">The four templates</span><span class="es">Las cuatro plantillas</span></a>
+    <div class="grp"><span class="en">The editor</span><span class="es">El editor</span></div>
+    <a href="#editor" class="h2"><span class="en">On a window</span><span class="es">En una ventana</span></a>
+    <a href="#toolbar" class="h2"><span class="en">Toolbar &amp; keys</span><span class="es">Barra y teclas</span></a>
+    <a href="#storage" class="h2"><span class="en">One BLOB, plain RTF</span><span class="es">Un BLOB, RTF normal</span></a>
+    <a href="#undo" class="h2"><span class="en">Undo</span><span class="es">Deshacer</span></a>
+    <div class="grp"><span class="en">Printing</span><span class="es">Impresión</span></div>
+    <a href="#report" class="h2"><span class="en">In a REPORT</span><span class="es">En un REPORT</span></a>
+    <a href="#flow" class="h2"><span class="en">WD:Flow and WD:Pages</span><span class="es">WD:Flow y WD:Pages</span></a>
+    <a href="#wmf" class="h2"><span class="en">Why WMF</span><span class="es">Por qué WMF</span></a>
+    <div class="grp"><span class="en">RTF tool classes</span><span class="es">Clases RTF</span></div>
+    <a href="#tools" class="h2"><span class="en">Six classes</span><span class="es">Seis clases</span></a>
+    <a href="#search" class="h2"><span class="en">Find &amp; replace</span><span class="es">Buscar y reemplazar</span></a>
+    <a href="#fonts" class="h2"><span class="en">Fonts</span><span class="es">Fuentes</span></a>
+    <a href="#text" class="h2"><span class="en">Plain text</span><span class="es">Texto plano</span></a>
+    <a href="#html" class="h2"><span class="en">HTML &amp; Markdown</span><span class="es">HTML y Markdown</span></a>
+    <a href="#merge" class="h2"><span class="en">Mail merge</span><span class="es">Combinar correspondencia</span></a>
+    <div class="grp"><span class="en">Inside</span><span class="es">Por dentro</span></div>
+    <a href="#inside" class="h2"><span class="en">How it is built</span><span class="es">Cómo está hecho</span></a>
+    <a href="#tests" class="h2"><span class="en">Demos &amp; tests</span><span class="es">Demos y pruebas</span></a>
+    <div class="grp"><span class="en">Reference</span><span class="es">Referencia</span></div>
+    <a href="#ref" class="h2"><span class="en">Class reference</span><span class="es">Referencia de clases</span></a>
+    <a href="#quirks" class="h2"><span class="en">Known limits</span><span class="es">Límites conocidos</span></a>
+    <a href="#trouble" class="h2"><span class="en">Troubleshooting</span><span class="es">Problemas</span></a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>myWordDoc</h1>
+      <p class="en">A <b>word processor for Clarion</b>, stored in a <b>BLOB</b>, that also <b>prints through a Clarion
+         REPORT</b>. Fonts, colours, lists, pictures and tables; search and replace, fonts in use, plain text, HTML,
+         Markdown and mail merge from code. No COM, no OCX, no DLL to ship: the control is C compiled into your exe by
+         Clarion's own compiler.</p>
+      <p class="es">Un <b>procesador de textos para Clarion</b>, guardado en un <b>BLOB</b>, que además <b>imprime con un
+         REPORT de Clarion</b>. Fuentes, colores, listas, imágenes y tablas; buscar y reemplazar, fuentes usadas, texto plano,
+         HTML, Markdown y combinación de correspondencia desde código. Sin COM, sin OCX, sin DLL que distribuir: el control
+         es C que compila dentro de tu exe el propio compilador de Clarion.</p>
+      <span class="pill en">RTF in a BLOB · vector printing · fills the page · 6 tool classes · one-step undo · EN / ES</span>
+      <span class="pill es">RTF en un BLOB · impresión vectorial · llena la página · 6 clases · deshacer en un paso · EN / ES</span>
+    </header>
+
+    <div class="langbar">
+      <button id="btn-en" onclick="setLang('en')">English</button>
+      <button id="btn-es" onclick="setLang('es')">Español</button>
+    </div>
+
+    <div class="body">
+    <section id="over">
+      <h2><span class="en">Overview</span><span class="es">Resumen</span> <a href="#over" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">Drop the editor on a form, point it at a BLOB, and users get a real word processor. Put the report
+        extension on a report and every record's document prints, as vectors, filling each page.</p>
+      <table>
+        <tr><th>&nbsp;</th><th>myWordDoc</th></tr>
+        <tr><td>Needs a DLL / OCX / COM</td><td><b>No</b>: <code>wdoc.c</code> is compiled into the exe by Clarion</td></tr>
+        <tr><td>Storage</td><td>Ordinary RTF in one BLOB: Word and WordPad open it</td></tr>
+        <tr><td>Editing</td><td>Fonts, sizes, bold/italic/underline/strike, colour, highlight, alignment, bullets, numbering, indents, pictures, tables</td></tr>
+        <tr><td>Printing</td><td>Through a Clarion REPORT, as vector metafiles; starts in the room left on a page</td></tr>
+        <tr><td>From code</td><td>Search &amp; replace, fonts, plain text, HTML, Markdown, mail merge</td></tr>
+        <tr><td>Undo</td><td>Ctrl+Z / toolbar; a whole tool operation is one step</td></tr>
+        <tr><td>Templates</td><td>Editor control, report extension, print code template, global extension (ABC)</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <p class="lead">Pon el editor en un formulario, apúntalo a un BLOB, y el usuario tiene un procesador de textos de verdad.
+        Pon la extensión en un informe y se imprime el documento de cada registro, en vectorial, llenando cada página.</p>
+      <table>
+        <tr><th>&nbsp;</th><th>myWordDoc</th></tr>
+        <tr><td>Necesita DLL / OCX / COM</td><td><b>No</b>: Clarion compila <code>wdoc.c</code> dentro del exe</td></tr>
+        <tr><td>Almacenamiento</td><td>RTF normal en un BLOB: lo abren Word y WordPad</td></tr>
+        <tr><td>Edición</td><td>Fuentes, tamaños, negrita/cursiva/subrayado/tachado, color, resaltado, alineación, viñetas, numeración, sangrías, imágenes, tablas</td></tr>
+        <tr><td>Impresión</td><td>Con un REPORT de Clarion, como metarchivos vectoriales; empieza en el hueco libre de la página</td></tr>
+        <tr><td>Desde código</td><td>Buscar y reemplazar, fuentes, texto plano, HTML, Markdown, combinación de correspondencia</td></tr>
+        <tr><td>Deshacer</td><td>Ctrl+Z / barra; una operación de herramienta entera es un paso</td></tr>
+        <tr><td>Plantillas</td><td>Control de editor, extensión de informe, plantilla de código, extensión global (ABC)</td></tr>
+      </table>
+      </div>
+      <figure class="shots" style="display:block">
+        <img class="shot en" src="myWordDoc-tools-window.png" alt="The editor with the tool classes attached: every &quot;Clarion&quot; highlighted by one call, and the font under the caret shown below.">
+        <img class="shot es" src="myWordDoc-tools-window-es.png" alt="El editor con las clases de herramientas: cada &quot;Clarion&quot; resaltado con una llamada y la fuente bajo el cursor abajo.">
+        <figcaption style="text-align:left"><span class="en">The editor with the tool classes attached: every "Clarion" highlighted by one call, and the font under the caret shown below.</span><span class="es">El editor con las clases de herramientas: cada "Clarion" resaltado con una llamada y la fuente bajo el cursor abajo.</span></figcaption>
+      </figure>
+    </section>
+    <section id="install">
+      <h2><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span> <a href="#install" class="top">#</a></h2>
+      <div class="en">
+      <p>Five source files and one template:</p>
+      <div class="filetree">templates/myWordDoc/<br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myWordDoc.tpl &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the AppGen templates<br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wdoc.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the control and the tools engine (C)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;WordDocClass.inc / .clw &nbsp;the editor class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;WordDocTools.inc / .clw &nbsp;the six RTF tool classes</div>
+      <ol>
+        <li>Copy the five source files to <code>accessory\libsrc\win</code> (or any folder on the redirection path), saved as
+          <b>ANSI with CRLF</b> line endings.</li>
+        <li>Copy <code>myWordDoc.tpl</code> to <code>accessory\template\win</code> and register it (Setup &rarr; Template Registry &rarr; Register).</li>
+        <li>Restart the IDE so it reads the new template, then regenerate.</li>
+      </ol>
+      <p>There is nothing to add to a project: <code>WordDocClass.clw</code> carries <code>PRAGMA('compile(wdoc.c)')</code>, and each
+        class has a <code>LINK</code> attribute, so the C and the Clarion modules come in by themselves.
+        <code>msftedit.dll</code> ships with every Windows since XP SP1.</p>
+      <div class="callout tip"><b>Hand-coded program</b>Just <code>INCLUDE('WordDocClass.INC'),ONCE</code> and, for the tools,
+        <code>INCLUDE('WordDocTools.INC'),ONCE</code>.</div>
+      </div>
+      <div class="es">
+      <p>Cinco ficheros fuente y una plantilla:</p>
+      <div class="filetree">templates/myWordDoc/<br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myWordDoc.tpl &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;las plantillas de AppGen<br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wdoc.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el control y el motor de las herramientas (C)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;WordDocClass.inc / .clw &nbsp;la clase del editor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;WordDocTools.inc / .clw &nbsp;las seis clases RTF</div>
+      <ol>
+        <li>Copia los cinco ficheros fuente en <code>accessory\libsrc\win</code> (o cualquier carpeta del redirection), guardados en
+          <b>ANSI con finales CRLF</b>.</li>
+        <li>Copia <code>myWordDoc.tpl</code> en <code>accessory\template\win</code> y regístrala (Setup &rarr; Template Registry &rarr; Register).</li>
+        <li>Reinicia el IDE para que lea la plantilla nueva y vuelve a generar.</li>
+      </ol>
+      <p>No hay que añadir nada al proyecto: <code>WordDocClass.clw</code> lleva <code>PRAGMA('compile(wdoc.c)')</code> y cada clase tiene
+        atributo <code>LINK</code>, así que el C y los módulos Clarion entran solos. <code>msftedit.dll</code> viene con todo Windows desde XP SP1.</p>
+      <div class="callout tip"><b>Programa a mano</b>Basta con <code>INCLUDE('WordDocClass.INC'),ONCE</code> y, para las herramientas,
+        <code>INCLUDE('WordDocTools.INC'),ONCE</code>.</div>
+      </div>
+    </section>
+    <section id="templates">
+      <h2><span class="en">The four templates</span><span class="es">Las cuatro plantillas</span> <a href="#templates" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Template</th><th>Kind</th><th>What it does</th></tr>
+        <tr><td><code>myWordDocGlobal</code></td><td>application extension (optional)</td><td>Includes the editor class and the tool classes in every procedure, for hand code. One switch turns myWordDoc off everywhere.</td></tr>
+        <tr><td><code>myWordDocEditor</code></td><td>control template on a REGION</td><td>The editor on a window or form, tied to a BLOB field. MULTI.</td></tr>
+        <tr><td><code>myWordDocReport</code></td><td>report extension</td><td>Prints each record's BLOB document through a report IMAGE.</td></tr>
+        <tr><td><code>myWordDocPrintBlob</code></td><td>code template</td><td>The same print loop, in any embed you choose.</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Plantilla</th><th>Tipo</th><th>Qué hace</th></tr>
+        <tr><td><code>myWordDocGlobal</code></td><td>extensión de aplicación (opcional)</td><td>Incluye la clase del editor y las clases RTF en todos los procedimientos, para código propio. Un interruptor desactiva myWordDoc en toda la aplicación.</td></tr>
+        <tr><td><code>myWordDocEditor</code></td><td>plantilla de control sobre una REGION</td><td>El editor en una ventana o formulario, ligado a un campo BLOB. MULTI.</td></tr>
+        <tr><td><code>myWordDocReport</code></td><td>extensión de informe</td><td>Imprime el documento BLOB de cada registro con un IMAGE del informe.</td></tr>
+        <tr><td><code>myWordDocPrintBlob</code></td><td>plantilla de código</td><td>El mismo bucle de impresión, en el embed que quieras.</td></tr>
+      </table>
+      </div>
+    </section>
+    <section id="editor">
+      <h2><span class="en">The editor on a window</span><span class="es">El editor en una ventana</span> <a href="#editor" class="top">#</a></h2>
+      <div class="en">
+      <p>Populate <b>myWordDocEditor</b> on the form, size the region and pick the <b>BLOB field</b>.</p>
+      <ul>
+        <li><b>General</b>: object name; <i>Save it with the record</i> (Insert, or Change when the document was edited).</li>
+        <li><b>Appearance</b>: toolbar, read only, page view, page width (Letter, A4, custom twips or the window), default font and size.</li>
+      </ul>
+      <p>It generates: the load right after the window opens (read only on a View request); <code>TakeEvent</code> so the editor follows the
+        region as the resizer moves, hides or disables it; <code>SaveBlob</code> in TakeCompleted, just before ABC writes the record; and
+        <code>Kill</code>. An untouched form closes without an update. The field must be a dictionary BLOB.</p>
+      <p>The same by hand:</p>
+      </div>
+      <div class="es">
+      <p>Pon <b>myWordDocEditor</b> en el formulario, dimensiona la región y elige el <b>campo BLOB</b>.</p>
+      <ul>
+        <li><b>General</b>: nombre del objeto; <i>Save it with the record</i> (al insertar, o al cambiar si el documento se editó).</li>
+        <li><b>Appearance</b>: barra, solo lectura, vista de página, ancho de página (Letter, A4, twips a medida o la ventana), fuente y tamaño por defecto.</li>
+      </ul>
+      <p>Genera: la carga justo al abrir la ventana (solo lectura si se pide Ver); <code>TakeEvent</code> para que el editor siga a la región
+        cuando el resizer la mueve, la oculta o la deshabilita; <code>SaveBlob</code> en TakeCompleted, justo antes de que ABC grabe el
+        registro; y <code>Kill</code>. Un formulario sin tocar se cierra sin actualizar. El campo debe ser un BLOB del diccionario.</p>
+      <p>Lo mismo a mano:</p>
+      </div>
+      <div class="en"><pre>Doc1     WordDocClass
+  <span class="k">CODE</span>
+  <span class="k">OPEN</span>(Window)
+  Doc1.PageWidth = WD:LetterWidth     <span class="c">! lines break where the printer will break them</span>
+  Doc1.PageView = <span class="k">TRUE</span>
+  Doc1.Init(0{PROP:Handle}, ?DocRegion)
+  Doc1.LoadBlob(DOC:Body)
+  <span class="k">ACCEPT</span>
+    Doc1.TakeEvent()                  <span class="c">! every event: follows resizes and TABs</span>
+  <span class="k">END</span>
+  Doc1.SaveBlob(DOC:Body)             <span class="c">! then write the record</span>
+  Doc1.Kill()
+  <span class="k">CLOSE</span>(Window)</pre></div><div class="es"><pre>Doc1     WordDocClass
+  <span class="k">CODE</span>
+  <span class="k">OPEN</span>(Window)
+  Doc1.PageWidth = WD:LetterWidth     <span class="c">! las líneas parten donde partirá la impresora</span>
+  Doc1.PageView = <span class="k">TRUE</span>
+  Doc1.Init(0{PROP:Handle}, ?DocRegion)
+  Doc1.LoadBlob(DOC:Body)
+  <span class="k">ACCEPT</span>
+    Doc1.TakeEvent()                  <span class="c">! en cada evento: sigue al redimensionado y a los TAB</span>
+  <span class="k">END</span>
+  Doc1.SaveBlob(DOC:Body)             <span class="c">! y después graba el registro</span>
+  Doc1.Kill()
+  <span class="k">CLOSE</span>(Window)</pre></div>
+      <figure class="shots" style="display:block">
+        <img class="shot en" src="myWordDoc-demo-form.png" alt="The generated form">
+        <img class="shot es" src="myWordDoc-demo-form.png" alt="El formulario generado">
+        <figcaption style="text-align:left"><span class="en">The generated <code>UpdateDoc</code> form of the AppGen demo
+          (<code>examples/myWordDoc/WordDemo</code>), editing the letter stored in the record's BLOB.</span><span class="es">El
+          formulario <code>UpdateDoc</code> generado de la demo de AppGen (<code>examples/myWordDoc/WordDemo</code>), editando la
+          carta guardada en el BLOB del registro. La demo generada está en inglés.</span></figcaption>
+      </figure>
+    </section>
+    <section id="toolbar">
+      <h2><span class="en">Toolbar, keys and page view</span><span class="es">Barra, teclas y vista de página</span> <a href="#toolbar" class="top">#</a></h2>
+      <div class="en">
+      <p>Font and size boxes, <b>B</b> <i>I</i> <u>U</u> <s>S</s>, text colour and highlight (the Windows colour dialog),
+        left/centre/right/justify, bullets, numbering, outdent/indent, insert picture (PNG, JPEG, BMP, EMF, WMF), insert table
+        (a menu of sizes), undo and redo. The buttons light up for the formatting under the caret, and the font and size boxes go
+        blank when the selection mixes several. It wraps onto a second row when the control is narrow.</p>
+      <p>Everything RichEdit knows works too: <kbd>Ctrl</kbd>+<kbd>B</kbd>/<kbd>I</kbd>/<kbd>U</kbd>, <kbd>Ctrl</kbd>+<kbd>L</kbd>/<kbd>E</kbd>/<kbd>R</kbd>/<kbd>J</kbd>,
+        <kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd>, the clipboard (including <b>pasting a picture</b>), Tab and Enter.</p>
+      <p>Set <code>PageWidth</code> (<code>WD:LetterWidth</code>, <code>WD:A4Width</code> or twips) and lines wrap <b>exactly where the
+        printer will</b>: text is measured on the default printer, as WordPad does. <code>PageView = TRUE</code> shows the document as a
+        sheet of that width on a grey desk. Every toolbar operation is also a method, so you can hide the toolbar
+        (<code>ShowToolbar = FALSE</code>) and drive it from your own buttons.</p>
+      </div>
+      <div class="es">
+      <p>Cajas de fuente y tamaño, <b>N</b> <i>K</i> <u>S</u> <s>T</s>, color de texto y resaltado (el diálogo de color de Windows),
+        izquierda/centro/derecha/justificado, viñetas, numeración, quitar/añadir sangría, insertar imagen (PNG, JPEG, BMP, EMF, WMF),
+        insertar tabla (un menú de tamaños), deshacer y rehacer. Los botones se iluminan según el formato bajo el cursor, y las
+        cajas de fuente y tamaño quedan en blanco si la selección mezcla varios. Pasa a una segunda fila si el control es estrecho.</p>
+      <p>Funciona todo lo que sabe RichEdit: <kbd>Ctrl</kbd>+<kbd>B</kbd>/<kbd>I</kbd>/<kbd>U</kbd>, <kbd>Ctrl</kbd>+<kbd>L</kbd>/<kbd>E</kbd>/<kbd>R</kbd>/<kbd>J</kbd>,
+        <kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd>, el portapapeles (incluido <b>pegar una imagen</b>), Tab y Enter.</p>
+      <p>Pon <code>PageWidth</code> (<code>WD:LetterWidth</code>, <code>WD:A4Width</code> o twips) y las líneas parten <b>exactamente donde
+        partirá la impresora</b>: el texto se mide en la impresora predeterminada, como hace WordPad. <code>PageView = TRUE</code> muestra
+        el documento como una hoja de ese ancho sobre un fondo gris. Cada operación de la barra es también un método, así que puedes
+        ocultar la barra (<code>ShowToolbar = FALSE</code>) y manejarlo con tus botones.</p>
+      </div>
+    </section>
+    <section id="storage">
+      <h2><span class="en">One BLOB, plain RTF</span><span class="es">Un BLOB, RTF normal</span> <a href="#storage" class="top">#</a></h2>
+      <div class="en">
+      <p>The BLOB holds ordinary RTF, so Word and WordPad open it, and pictures travel inside it (<code>{\pict\pngblip ...}</code>).
+        A BLOB holding plain text (not starting with <code>{\rtf</code>) loads as plain text, so an existing MEMO-style column can be
+        switched over without a conversion.</p>
+      <pre>Doc1.LoadBlob(DOC:Body)        <span class="c">! after the window opens</span>
+Doc1.SaveBlob(DOC:Body)        <span class="c">! before the record is written</span></pre>
+      <div class="callout warn"><b>Reports and processes: re-read the record</b>A VIEW read never fills a BLOB; it keeps the previous
+        record's. The report extension and the code template GET the record by its primary key before loading it. Do the same in your own loops.</div>
+      </div>
+      <div class="es">
+      <p>El BLOB guarda RTF normal, así que lo abren Word y WordPad, y las imágenes viajan dentro (<code>{\pict\pngblip ...}</code>).
+        Un BLOB con texto plano (que no empieza por <code>{\rtf</code>) se carga como texto, así que una columna tipo MEMO se puede pasar
+        sin conversión.</p>
+      <pre>Doc1.LoadBlob(DOC:Body)        <span class="c">! al abrir la ventana</span>
+Doc1.SaveBlob(DOC:Body)        <span class="c">! antes de grabar el registro</span></pre>
+      <div class="callout warn"><b>Informes y procesos: vuelve a leer el registro</b>Una lectura de VIEW nunca rellena un BLOB; conserva
+        el del registro anterior. La extensión de informe y la plantilla de código hacen GET por la clave primaria antes de cargarlo. Haz lo mismo en tus bucles.</div>
+      </div>
+    </section>
+    <section id="undo">
+      <h2><span class="en">Undo</span><span class="es">Deshacer</span> <a href="#undo" class="top">#</a></h2>
+      <div class="en">
+      <p>Ctrl+Z / Ctrl+Y, the toolbar arrows and <code>Undo()</code> / <code>Redo()</code>. <b>Each tool operation is one step</b>: a
+        <code>ReplaceAll</code> of 19 words, <code>SetFontAll</code>, <code>ScaleSizes</code>, <code>ReplaceFont</code>,
+        <code>HighlightAll</code> or a whole <code>Merge</code> comes back with one Ctrl+Z. Loading a document clears the history, so
+        Undo never reaches back into the previous record.</p>
+      </div>
+      <div class="es">
+      <p>Ctrl+Z / Ctrl+Y, las flechas de la barra y <code>Undo()</code> / <code>Redo()</code>. <b>Cada operación de herramienta es un
+        paso</b>: un <code>ReplaceAll</code> de 19 palabras, <code>SetFontAll</code>, <code>ScaleSizes</code>, <code>ReplaceFont</code>,
+        <code>HighlightAll</code> o un <code>Merge</code> entero se deshace con un Ctrl+Z. Cargar un documento vacía el historial, así
+        que Deshacer nunca vuelve al registro anterior.</p>
+      </div>
+      <div class="en"><pre>Search.ReplaceAll(<span class="s">'Acme Ltd'</span>, <span class="s">'Acme Limited'</span>)
+Search.Undo()                     <span class="c">! all of them back: the same as Ctrl+Z or Doc1.Undo()</span>
+<span class="k">IF</span> Doc1.CanUndo() <span class="k">THEN</span> <span class="k">ENABLE</span>(?UndoBtn) <span class="k">ELSE</span> <span class="k">DISABLE</span>(?UndoBtn).
+
+Doc1.BeginUndoGroup()             <span class="c">! your own edits as one step</span>
+Doc1.InsertText(<span class="s">'Dear '</span> &amp; <span class="k">CLIP</span>(CUS:Name) &amp; <span class="s">','</span>)
+Doc1.SelectText(0, 4)
+Doc1.Bold(WD:On)
+Doc1.EndUndoGroup()               <span class="c">! pairs nest</span>
+
+Doc1.ClearUndo()                  <span class="c">! forget the history</span>
+Doc1.SetUndoLimit(500)            <span class="c">! keep more than the default 100 steps</span></pre></div><div class="es"><pre>Search.ReplaceAll(<span class="s">'Acme SL'</span>, <span class="s">'Acme S.L.'</span>)
+Search.Undo()                     <span class="c">! vuelven todos: igual que Ctrl+Z o Doc1.Undo()</span>
+<span class="k">IF</span> Doc1.CanUndo() <span class="k">THEN</span> <span class="k">ENABLE</span>(?UndoBtn) <span class="k">ELSE</span> <span class="k">DISABLE</span>(?UndoBtn).
+
+Doc1.BeginUndoGroup()             <span class="c">! tus propias ediciones como un paso</span>
+Doc1.InsertText(<span class="s">'Estimado '</span> &amp; <span class="k">CLIP</span>(CLI:Nombre) &amp; <span class="s">':'</span>)
+Doc1.SelectText(0, 8)
+Doc1.Bold(WD:On)
+Doc1.EndUndoGroup()               <span class="c">! los pares se anidan</span>
+
+Doc1.ClearUndo()                  <span class="c">! olvidar el historial</span>
+Doc1.SetUndoLimit(500)            <span class="c">! más pasos que los 100 de serie</span></pre></div>
+      <div class="callout note"><b class="en">How</b><b class="es">Cómo</b><span class="en">The grouping is the text engine's own undo
+        (TOM <code>BeginEditCollection</code>, Windows 8 and later). On older Windows undo still works, one change at a time.</span><span class="es">La
+        agrupación es el propio deshacer del motor de texto (TOM <code>BeginEditCollection</code>, Windows 8 o posterior). En Windows anteriores
+        el deshacer sigue funcionando, cambio a cambio.</span></div>
+    </section>
+    <section id="report">
+      <h2><span class="en">Printing in a REPORT</span><span class="es">Imprimir en un REPORT</span> <a href="#report" class="top">#</a></h2>
+      <div class="en">
+      <p>Put an empty <b>IMAGE</b> in a DETAIL band, as wide as the document and as tall as the most one page can hold. Add
+        <b>myWordDocReport</b> and pick the BLOB and the IMAGE (the band is found from it). Choose whether the document prints before or
+        after the record's other detail bands. The extension takes the band out of ABC's own print loop, so it never prints twice, and
+        for each record it re-reads the record, loads the document and prints it. <b>myWordDocPrintBlob</b> does the same in any embed:
+        name the report, the IMAGE and the band, and set the band's Detail Filter to <code>False</code>.</p>
+      <p>By hand:</p>
+      </div>
+      <div class="es">
+      <p>Pon un <b>IMAGE</b> vacío en una banda DETAIL, tan ancho como el documento y tan alto como quepa en una página. Añade
+        <b>myWordDocReport</b> y elige el BLOB y el IMAGE (la banda se deduce de él). Elige si el documento se imprime antes o después
+        de las otras bandas del registro. La extensión saca la banda del bucle de impresión de ABC, así que nunca sale dos veces, y
+        para cada registro lo vuelve a leer, carga el documento y lo imprime. <b>myWordDocPrintBlob</b> hace lo mismo en cualquier embed:
+        indica el informe, el IMAGE y la banda, y pon el Detail Filter de la banda a <code>False</code>.</p>
+      <p>A mano:</p>
+      </div>
+      <div class="en"><pre>Doc1.InitHidden()                                   <span class="c">! once, after OPEN(Report)</span>
+...
+<span class="k">GET</span>(Docs, DOC:PKey)                                 <span class="c">! a VIEW read does not fill a BLOB</span>
+Doc1.LoadBlob(DOC:Body)
+<span class="k">LOOP</span> Page# = 1 <span class="k">TO</span> Doc1.PaginateForReport(Report, ?DocImage, WD:Flow)
+  Doc1.PreparePage(Report, ?DocImage, Page#)        <span class="c">! piece N into the IMAGE</span>
+  <span class="k">PRINT</span>(RPT:DocBand)
+<span class="k">END</span>
+...
+Doc1.Kill()                                         <span class="c">! deletes the temporary files</span></pre></div><div class="es"><pre>Doc1.InitHidden()                                   <span class="c">! una vez, tras OPEN(Report)</span>
+...
+<span class="k">GET</span>(Docs, DOC:PKey)                                 <span class="c">! una lectura de VIEW no rellena el BLOB</span>
+Doc1.LoadBlob(DOC:Body)
+<span class="k">LOOP</span> Page# = 1 <span class="k">TO</span> Doc1.PaginateForReport(Report, ?DocImage, WD:Flow)
+  Doc1.PreparePage(Report, ?DocImage, Page#)        <span class="c">! el trozo N en el IMAGE</span>
+  <span class="k">PRINT</span>(RPT:DocBand)
+<span class="k">END</span>
+...
+Doc1.Kill()                                         <span class="c">! borra los ficheros temporales</span></pre></div>
+      <figure class="shots" style="display:block">
+        <img class="shot en" src="myWordDoc-demo-report.png" alt="Three records through the generated report">
+        <img class="shot es" src="myWordDoc-demo-report.png" alt="Tres registros con el informe generado">
+        <figcaption style="text-align:left"><span class="en">The generated <code>PrintDocs</code> report over three records: the letter
+          starts right under its title on page 1, fills every page, and the third note follows straight after it.</span><span class="es">El
+          informe <code>PrintDocs</code> generado con tres registros: la carta empieza justo bajo su título en la página 1, llena cada
+          página y la tercera nota sale justo detrás (demo en inglés).</span></figcaption>
+      </figure>
+    </section>
+    <section id="flow">
+      <h2><span class="en">WD:Flow and WD:Pages</span><span class="es">WD:Flow y WD:Pages</span> <a href="#flow" class="top">#</a></h2>
+      <div class="en">
+      <p><b><code>WD:Flow</code></b> (the templates' default, <i>Fill the room left on each page, line by line</i>) cuts the document
+        <b>one line per piece</b>. Each line prints as its own band, the height of that line, and the report engine places every band
+        itself: on this page if it fits, on the next if not. So a long document starts in whatever room the previous record left, fills
+        that page, carries on over as many pages as it needs, and whatever prints next follows straight on.</p>
+      <p><b><code>WD:Pages</code></b> (the class default) cuts pieces the size of the IMAGE. A piece that won't fit in the room left
+        starts a new page, which can leave most of a page empty; <i>Shrink the last piece</i> trims the final piece to its text.</p>
+      </div>
+      <div class="es">
+      <p><b><code>WD:Flow</code></b> (lo que usan las plantillas por defecto, <i>Fill the room left on each page, line by line</i>) corta
+        el documento <b>en un trozo por línea</b>. Cada línea se imprime como su propia banda, de la altura de esa línea, y el motor de
+        informes coloca cada banda: en esta página si cabe, en la siguiente si no. Así un documento largo empieza en el hueco que dejó
+        el registro anterior, llena esa página, sigue en las que haga falta, y lo siguiente sale justo detrás.</p>
+      <p><b><code>WD:Pages</code></b> (el valor por defecto de la clase) corta trozos del tamaño del IMAGE. Un trozo que no cabe en el
+        hueco empieza página nueva, lo que puede dejar casi una página vacía; <i>Shrink the last piece</i> recorta el último trozo a su texto.</p>
+      </div>
+      <figure class="shots" style="display:block">
+        <img class="shot en" src="myWordDoc-flow-vs-pages.png" alt="The same three records printed both ways: 4 pages with WD:Pages, 3 with WD:Flow.">
+        <img class="shot es" src="myWordDoc-flow-vs-pages-es.png" alt="Los mismos tres registros impresos de las dos formas: 4 páginas con WD:Pages, 3 con WD:Flow.">
+        <figcaption style="text-align:left"><span class="en">The same three records printed both ways: 4 pages with WD:Pages, 3 with WD:Flow.</span><span class="es">Los mismos tres registros impresos de las dos formas: 4 páginas con WD:Pages, 3 con WD:Flow.</span></figcaption>
+      </figure>
+      <div class="callout warn"><b class="en">Keep the IMAGE alone in its band</b><b class="es">Deja el IMAGE solo en su banda</b>
+        <span class="en">In WD:Flow the band is cut down to each line, and the IMAGE's top is moved to 0 while printing. A line is never
+        split: a picture or table row that doesn't fit moves to the next page whole, as in Word.</span><span class="es">En WD:Flow la banda
+        se recorta a cada línea y el IMAGE se sube a 0 mientras imprime. Una línea nunca se parte: una imagen o una fila de tabla que no
+        cabe pasa entera a la página siguiente, como en Word.</span></div>
+      <div class="en"><p>Why line by line: a Clarion REPORT cannot tell a program how much room is left on a page, and it moves a band that
+        doesn't fit whole to the next page. Letting the engine place one line at a time avoids both, and nothing has to be measured.</p></div>
+      <div class="es"><p>Por qué línea a línea: un REPORT de Clarion no puede decirle a un programa cuánto sitio queda en la página, y
+        mueve entera a la página siguiente una banda que no cabe. Dejar que el motor coloque una línea cada vez evita las dos cosas y no
+        hay que medir nada.</p></div>
+    </section>
+    <section id="wmf">
+      <h2><span class="en">Why WMF, and what the conversion needed</span><span class="es">Por qué WMF y qué necesitó la conversión</span> <a href="#wmf" class="top">#</a></h2>
+      <div class="en">
+      <p>Each piece is drawn by RichEdit (<code>EM_FORMATRANGE</code>) into an enhanced metafile and written as a <b>placeable WMF</b>:
+        an <code>.emf</code> on a report IMAGE prints nothing, while the report engine plays a WMF's records straight into the page, so
+        text stays vector and PDFs stay small. <code>wdoc.c</code> fixes three things the conversion gets wrong:</p>
+      <ol>
+        <li><b>Pictures disappear</b>: RichEdit draws them with AlphaBlend, which WMF cannot express. They are composited onto white at
+          200 dpi and written as STRETCHDIB records.</li>
+        <li><b>The WMF is huge</b>: the converter hides a full copy of the EMF in comment records (11 MB for one page with a picture).
+          They are dropped.</li>
+        <li><b>Bullets print as "?"</b>: RichEdit draws them as U+2981 and symbol-font characters as U+F0xx. They are mapped into the ANSI range.</li>
+      </ol>
+      <p>Text is <b>measured on the default printer</b>, not the 96-dpi screen, so lines break in the editor exactly where they print.</p>
+      </div>
+      <div class="es">
+      <p>RichEdit dibuja cada trozo (<code>EM_FORMATRANGE</code>) en un metarchivo mejorado que se escribe como <b>WMF placeable</b>:
+        un <code>.emf</code> en un IMAGE de informe no imprime nada, mientras que el motor de informes reproduce los registros de un WMF
+        directamente en la página, así el texto sigue siendo vectorial y los PDF son pequeños. <code>wdoc.c</code> arregla tres cosas
+        que la conversión hace mal:</p>
+      <ol>
+        <li><b>Desaparecen las imágenes</b>: RichEdit las dibuja con AlphaBlend, que WMF no puede expresar. Se componen sobre blanco a
+          200 ppp y se escriben como registros STRETCHDIB.</li>
+        <li><b>El WMF es enorme</b>: el conversor esconde una copia entera del EMF en registros de comentario (11 MB para una página con
+          una imagen). Se eliminan.</li>
+        <li><b>Las viñetas salen como "?"</b>: RichEdit las dibuja como U+2981 y los caracteres de fuentes de símbolos como U+F0xx. Se
+          traducen al rango ANSI.</li>
+      </ol>
+      <p>El texto se <b>mide en la impresora predeterminada</b>, no en la pantalla de 96 ppp, así que las líneas parten en el editor
+        exactamente donde se imprimen.</p>
+      </div>
+    </section>
+    <section id="tools">
+      <h2><span class="en">RTF tool classes</span><span class="es">Clases RTF</span> <a href="#tools" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Class</th><th>What it does</th></tr>
+        <tr><td><code>RtfSearchClass</code></td><td>find, next/previous, count, replace, replace all, highlight every hit, the text around a hit</td></tr>
+        <tr><td><code>RtfFontClass</code></td><td>the font, size, style and colour at a position or in the selection; fonts in use; replace a font; set or scale every size</td></tr>
+        <tr><td><code>RtfTextClass</code></td><td>readable plain text (lists, table cells); word/character/paragraph/picture/table counts; excerpts; text to RTF</td></tr>
+        <tr><td><code>RtfHtmlClass</code></td><td>an HTML page or an e-mail fragment, pictures embedded or written as files</td></tr>
+        <tr><td><code>RtfMarkdownClass</code></td><td>headings, emphasis, lists, tables, pictures</td></tr>
+        <tr><td><code>RtfMergeClass</code></td><td>fills <code>[[Name]]</code> placeholders from your values or from BIND()ed fields</td></tr>
+      </table>
+      <p>Every class works on a document one of two ways. On a live editor the tools put the user's selection and scroll position back
+        when they finish; Find, FindNext and FindPrevious move to the hit on purpose. Positions are 0-based character positions, the
+        same ones <code>SelectText</code> takes.</p>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Clase</th><th>Qué hace</th></tr>
+        <tr><td><code>RtfSearchClass</code></td><td>buscar, siguiente/anterior, contar, reemplazar, reemplazar todo, resaltar cada coincidencia, el texto alrededor</td></tr>
+        <tr><td><code>RtfFontClass</code></td><td>la fuente, tamaño, estilo y color en una posición o en la selección; fuentes usadas; cambiar una fuente; fijar o escalar los tamaños</td></tr>
+        <tr><td><code>RtfTextClass</code></td><td>texto plano legible (listas, celdas); recuentos de palabras, caracteres, párrafos, imágenes y tablas; extractos; texto a RTF</td></tr>
+        <tr><td><code>RtfHtmlClass</code></td><td>una página HTML o un fragmento para un correo, con las imágenes incrustadas o en ficheros</td></tr>
+        <tr><td><code>RtfMarkdownClass</code></td><td>títulos, énfasis, listas, tablas, imágenes</td></tr>
+        <tr><td><code>RtfMergeClass</code></td><td>rellena marcadores <code>[[Nombre]]</code> con tus valores o con campos ligados con BIND()</td></tr>
+      </table>
+      <p>Todas trabajan sobre un documento de una de dos formas. En un editor vivo, al terminar devuelven la selección y el
+        desplazamiento del usuario; Find, FindNext y FindPrevious se mueven a la coincidencia a propósito. Las posiciones son posiciones
+        de carácter desde 0, las mismas que usa <code>SelectText</code>.</p>
+      </div>
+      <div class="en"><pre>Search.Attach(Doc1)               <span class="c">! the editor on the window: the user sees every change</span>
+<span class="c">! - or -</span>
+Text.LoadBlob(DOC:Body)           <span class="c">! its own hidden document (also LoadString, LoadFile)</span>
+...
+Search.SaveBlob(DOC:Body)         <span class="c">! keep the changes (also SaveFile, GetRtf)</span></pre></div><div class="es"><pre>Search.Attach(Doc1)               <span class="c">! el editor de la ventana: el usuario ve cada cambio</span>
+<span class="c">! - o bien -</span>
+Text.LoadBlob(DOC:Body)           <span class="c">! su propio documento oculto (también LoadString, LoadFile)</span>
+...
+Search.SaveBlob(DOC:Body)         <span class="c">! guardar los cambios (también SaveFile, GetRtf)</span></pre></div>
+    </section>
+    <section id="search">
+      <h2><span class="en">RtfSearchClass: find and replace</span><span class="es">RtfSearchClass: buscar y reemplazar</span> <a href="#search" class="top">#</a></h2>
+<div class="en"><pre>Search.Attach(Doc1)
+Search.WholeWord = <span class="k">TRUE</span>
+<span class="k">IF</span> Search.Find(<span class="s">'invoice'</span>) &gt;= 0                  <span class="c">! first hit, selected and scrolled into view</span>
+  <span class="k">MESSAGE</span>(Search.Count(<span class="s">'invoice'</span>) &amp; <span class="s">' found. The first: '</span> &amp; Search.Context(30))
+<span class="k">END</span>
+Search.FindNext()                               <span class="c">! goes round to the top while Wrap is on</span>
+Search.ReplaceAll(<span class="s">'Acme Ltd'</span>, <span class="s">'Acme Limited'</span>)   <span class="c">! each keeps its formatting; one Undo</span>
+Search.Replace(<span class="s">'colour'</span>, <span class="s">'color'</span>)               <span class="c">! Word's Replace button: find, then replace + next</span>
+Search.HighlightAll(<span class="s">'urgent'</span>, COLOR:Yellow)     <span class="c">! COLOR:None takes it off</span></pre></div><div class="es"><pre>Search.Attach(Doc1)
+Search.WholeWord = <span class="k">TRUE</span>
+<span class="k">IF</span> Search.Find(<span class="s">'factura'</span>) &gt;= 0                  <span class="c">! primera coincidencia, seleccionada y visible</span>
+  <span class="k">MESSAGE</span>(Search.Count(<span class="s">'factura'</span>) &amp; <span class="s">' encontradas. La primera: '</span> &amp; Search.Context(30))
+<span class="k">END</span>
+Search.FindNext()                               <span class="c">! vuelve al principio mientras Wrap esté activo</span>
+Search.ReplaceAll(<span class="s">'Acme SL'</span>, <span class="s">'Acme S.L.'</span>)       <span class="c">! cada una conserva su formato; un Deshacer</span>
+Search.Replace(<span class="s">'color'</span>, <span class="s">'colour'</span>)               <span class="c">! el botón Reemplazar de Word: busca, luego reemplaza y sigue</span>
+Search.HighlightAll(<span class="s">'urgente'</span>, COLOR:Yellow)    <span class="c">! COLOR:None lo quita</span></pre></div>
+      <div class="en"><p><code>FoundAt</code> / <code>FoundEnd</code> give the last hit and <code>TextAt(From, To)</code> any range.
+        <code>SelectHits = FALSE</code> searches without moving the user's selection. A replacement takes the formatting of the text it
+        replaces, so a bold name stays bold.</p></div>
+      <div class="es"><p><code>FoundAt</code> / <code>FoundEnd</code> dan la última coincidencia y <code>TextAt(Desde, Hasta)</code>
+        cualquier rango. <code>SelectHits = FALSE</code> busca sin mover la selección del usuario. Lo reemplazado toma el formato del texto
+        al que sustituye, así que un nombre en negrita sigue en negrita.</p></div>
+    </section>
+    <section id="fonts">
+      <h2><span class="en">RtfFontClass: which font am I on?</span><span class="es">RtfFontClass: ¿en qué fuente estoy?</span> <a href="#fonts" class="top">#</a></h2>
+<div class="en"><pre>Font.Attach(Doc1)
+Font.Read()                          <span class="c">! the selection; Font.Read(Pos) reads one character</span>
+?Status{PROP:Text} = Font.Describe() <span class="c">! 'Georgia 12pt, bold, italic'</span>
+Font.FontList()                      <span class="c">! 'Georgia, Segoe UI' - only characters you can see count</span>
+Font.MainFont()                      <span class="c">! the font most of the text is in</span>
+Font.ReplaceFont(<span class="s">'Comic Sans MS'</span>, <span class="s">'Segoe UI'</span>)
+Font.SetFontAll(<span class="s">'Calibri'</span>, 11)       <span class="c">! '' or 0 leaves that part as it is</span>
+Font.ScaleSizes(120)                 <span class="c">! every size 20% bigger, headings with it</span></pre></div><div class="es"><pre>Font.Attach(Doc1)
+Font.Read()                          <span class="c">! la selección; Font.Read(Pos) lee un carácter</span>
+?Status{PROP:Text} = Font.Describe() <span class="c">! 'Georgia 12pt, bold, italic' (en inglés)</span>
+Font.FontList()                      <span class="c">! 'Georgia, Segoe UI' - solo cuentan los caracteres visibles</span>
+Font.MainFont()                      <span class="c">! la fuente de la mayor parte del texto</span>
+Font.ReplaceFont(<span class="s">'Comic Sans MS'</span>, <span class="s">'Segoe UI'</span>)
+Font.SetFontAll(<span class="s">'Calibri'</span>, 11)       <span class="c">! '' o 0 deja esa parte como está</span>
+Font.ScaleSizes(120)                 <span class="c">! todos los tamaños un 20% mayores, títulos incluidos</span></pre></div>
+      <div class="en"><p>Over a selection that mixes styles a property says so: <code>Face</code> is blank, <code>Size</code> 0,
+        <code>Bold</code> and the other on/off values -1, <code>Color</code> or <code>Highlight</code> -2.
+        <code>Color = COLOR:None</code> means automatic.</p></div>
+      <div class="es"><p>Si la selección mezcla estilos, la propiedad lo indica: <code>Face</code> vacío, <code>Size</code> 0,
+        <code>Bold</code> y los demás sí/no a -1, <code>Color</code> o <code>Highlight</code> a -2. <code>Color = COLOR:None</code>
+        significa automático.</p></div>
+    </section>
+    <section id="text">
+      <h2><span class="en">RtfTextClass: plain text</span><span class="es">RtfTextClass: texto plano</span> <a href="#text" class="top">#</a></h2>
+<div class="en"><pre>Text.LoadBlob(DOC:Body)
+DOC:PlainText = Text.ToText()        <span class="c">! a search index, a LIST column, an SMS</span>
+DOC:Summary = Text.Excerpt(120)      <span class="c">! one line, cut at a word, with '...'</span>
+L:Info = Text.WordCount() &amp; <span class="s">' words, '</span> &amp; Text.CharCount() &amp; <span class="s">' characters'</span>
+Doc1.LoadString(Text.TextToRtf(NOTE:Memo, <span class="s">'Georgia'</span>, 12))   <span class="c">! a MEMO into the editor</span></pre></div><div class="es"><pre>Text.LoadBlob(DOC:Body)
+DOC:TextoPlano = Text.ToText()       <span class="c">! un índice de búsqueda, una columna, un SMS</span>
+DOC:Resumen = Text.Excerpt(120)      <span class="c">! una línea, cortada en una palabra, con '...'</span>
+L:Info = Text.WordCount() &amp; <span class="s">' palabras, '</span> &amp; Text.CharCount() &amp; <span class="s">' caracteres'</span>
+Doc1.LoadString(Text.TextToRtf(NOTA:Memo, <span class="s">'Georgia'</span>, 12))   <span class="c">! un MEMO en el editor</span></pre></div>
+      <div class="en"><p>Bullets become <code>- </code>, numbered items <code>1.</code> <code>b.</code> <code>iv.</code>, table cells are
+        separated by TAB. <code>ListPrefixes</code>, <code>Bullet</code>, <code>TabCells</code>, <code>PictureMarks</code> and
+        <code>Utf8</code> change that.</p>
+      <pre>What it can do
+- Formatting - bold, italic, underline, strike, colour and highlight.
+Product&#9;Units&#9;Revenue
+Widgets&#9;1,200&#9;$14,400</pre></div>
+      <div class="es"><p>Las viñetas pasan a <code>- </code>, los elementos numerados a <code>1.</code> <code>b.</code> <code>iv.</code>, y
+        las celdas se separan con TAB. <code>ListPrefixes</code>, <code>Bullet</code>, <code>TabCells</code>, <code>PictureMarks</code> y
+        <code>Utf8</code> lo cambian.</p>
+      <pre>Lo que sabe hacer
+- Formato - negrita, cursiva, subrayado, tachado, color y resaltado.
+Producto&#9;Unidades&#9;Ingresos
+Tornillos&#9;1.200&#9;14.400 €</pre></div>
+    </section>
+    <section id="html">
+      <h2><span class="en">RtfHtmlClass and RtfMarkdownClass</span><span class="es">RtfHtmlClass y RtfMarkdownClass</span> <a href="#html" class="top">#</a></h2>
+<div class="en"><pre>Html.LoadBlob(DOC:Body)
+Html.Title = DOC:Title
+Html.SaveHtml(<span class="s">'letter.html'</span>)      <span class="c">! a complete UTF-8 page</span>
+Html.FullPage = <span class="k">FALSE</span>             <span class="c">! only a &lt;div&gt;, for the body of an e-mail</span>
+Html.ImageFolder = <span class="s">'C:\Site\img'</span> <span class="c">! pictures as files instead of data: URIs ...</span>
+Html.ImageUrl = <span class="s">'img/'</span>            <span class="c">! ... linked as img/image1.png</span>
+Md.LoadBlob(DOC:Body)
+Md.SaveMarkdown(<span class="s">'letter.md'</span>)      <span class="c">! headings, lists, tables, pictures</span></pre></div><div class="es"><pre>Html.LoadBlob(DOC:Body)
+Html.Title = DOC:Titulo
+Html.SaveHtml(<span class="s">'carta.html'</span>)       <span class="c">! una página UTF-8 completa</span>
+Html.FullPage = <span class="k">FALSE</span>             <span class="c">! solo un &lt;div&gt;, para el cuerpo de un correo</span>
+Html.ImageFolder = <span class="s">'C:\Web\img'</span>  <span class="c">! imágenes como ficheros en vez de data: URI ...</span>
+Html.ImageUrl = <span class="s">'img/'</span>            <span class="c">! ... enlazadas como img/image1.png</span>
+Md.LoadBlob(DOC:Body)
+Md.SaveMarkdown(<span class="s">'carta.md'</span>)       <span class="c">! títulos, listas, tablas, imágenes</span></pre></div>
+      <figure class="shots" style="display:block">
+        <img class="shot en" src="myWordDoc-tools-html.png" alt="sample.rtf as HTML in a browser: fonts, colours, highlight, list, picture and table kept.">
+        <img class="shot es" src="myWordDoc-tools-html-es.png" alt="sample_es.rtf como HTML en un navegador: se conservan fuentes, colores, resaltado, lista, imagen y tabla.">
+        <figcaption style="text-align:left"><span class="en">sample.rtf as HTML in a browser: fonts, colours, highlight, list, picture and table kept.</span><span class="es">sample_es.rtf como HTML en un navegador: se conservan fuentes, colores, resaltado, lista, imagen y tabla.</span></figcaption>
+      </figure>
+      <div class="en"><p>Styles are inline, so the HTML survives mail clients that drop <code>&lt;style&gt;</code> blocks. PNG and JPEG
+        pictures are copied byte for byte; EMF, WMF and BMP are drawn at twice their size and saved as PNG through GDI+. In Markdown a
+        short paragraph in large type becomes a heading (<code>#</code> at 1.6 times the body size, <code>##</code> at 1.3, <code>###</code>
+        at 1.12 when all bold), and emphasis markers stay next to the words.</p></div>
+      <div class="es"><p>Los estilos van en línea, así que el HTML sobrevive a los clientes de correo que quitan los bloques
+        <code>&lt;style&gt;</code>. Las imágenes PNG y JPEG se copian byte a byte; EMF, WMF y BMP se dibujan al doble de tamaño y se guardan
+        como PNG con GDI+. En Markdown, un párrafo corto en letra grande pasa a título (<code>#</code> a 1,6 veces el cuerpo,
+        <code>##</code> a 1,3, <code>###</code> a 1,12 si es todo negrita), y las marcas de énfasis quedan pegadas a las palabras.</p></div>
+    </section>
+    <section id="merge">
+      <h2><span class="en">RtfMergeClass: mail merge</span><span class="es">RtfMergeClass: combinar correspondencia</span> <a href="#merge" class="top">#</a></h2>
+<div class="en"><pre>Merge.LoadBlob(TPL:Body)          <span class="c">! the template letter: "Dear [[CUS:Name]], ... [[When]]"</span>
+<span class="k">BIND</span>(CUS:Record)                  <span class="c">! BIND()ed fields fill their placeholders by themselves</span>
+Merge.SetField(<span class="s">'When'</span>, <span class="s">'on '</span> &amp; <span class="k">FORMAT</span>(ORD:ShipDate, @D17))
+<span class="k">IF</span> Merge.Missing() &lt;&gt; <span class="s">''</span>          <span class="c">! placeholders nothing will fill</span>
+  <span class="k">MESSAGE</span>(<span class="s">'No value for: '</span> &amp; Merge.Missing())
+<span class="k">END</span>
+Merge.Merge()                     <span class="c">! each value takes its placeholder's formatting</span>
+Merge.SaveBlob(LET:Body)          <span class="c">! the finished letter</span></pre></div><div class="es"><pre>Merge.LoadBlob(PLA:Body)          <span class="c">! la carta modelo: "Estimado [[CLI:Nombre]], ... [[Fecha]]"</span>
+<span class="k">BIND</span>(CLI:Record)                  <span class="c">! los campos con BIND() rellenan solos sus marcadores</span>
+Merge.SetField(<span class="s">'Fecha'</span>, <span class="k">FORMAT</span>(PED:FechaEnvio, @D17))
+<span class="k">IF</span> Merge.Missing() &lt;&gt; <span class="s">''</span>          <span class="c">! marcadores que nada rellenará</span>
+  <span class="k">MESSAGE</span>(<span class="s">'Sin valor para: '</span> &amp; Merge.Missing())
+<span class="k">END</span>
+Merge.Merge()                     <span class="c">! cada valor toma el formato de su marcador</span>
+Merge.SaveBlob(CAR:Body)          <span class="c">! la carta terminada</span></pre></div>
+      <div class="callout tip"><b class="en">One copy per record</b><b class="es">Una copia por registro</b><span class="en">Merge into a
+        fresh copy of the template each time: LoadBlob, Merge, SaveBlob. FieldOpen / FieldClose change the [[ ]] markers;
+        BlankUnknown empties the placeholders nothing filled.</span><span class="es">Combina siempre sobre una copia nueva de la plantilla:
+        LoadBlob, Merge, SaveBlob. FieldOpen / FieldClose cambian los marcadores [[ ]]; BlankUnknown vacía los que nadie rellenó.</span></div>
+    </section>
+    <section id="inside">
+      <h2><span class="en">How it is built</span><span class="es">Cómo está hecho</span> <a href="#inside" class="top">#</a></h2>
+      <div class="en">
+      <p><code>wdoc.c</code> registers its own window class (<code>myWordDocHost</code>) whose window procedure paints the toolbar and
+        holds the editing surface: <b>RICHEDIT50W</b> in <code>msftedit.dll</code>, the engine behind WordPad, used as a component for
+        typing, line breaking, selection, undo, the clipboard and RTF. The host is its parent, so RichEdit's notifications come to our
+        window procedure and the Clarion window is never subclassed. Every Win32 call is bound with LoadLibrary/GetProcAddress, so there
+        is no import library. A document created with no parent window is invisible: that is what reports and the tool classes use.</p>
+      <table>
+        <tr><th>Detail</th><th>Why it matters</th></tr>
+        <tr><td>Structures packed on 2 bytes</td><td>Clarion's C compiler packs structs on 2-byte boundaries, so the hole Win32 leaves in CHARFORMAT2 is spelled out. <code>StructSizes()</code> checks it: 84188.</td></tr>
+        <tr><td>IRichEditOleCallback</td><td>RichEdit keeps BMP, EMF and WMF pictures as OLE objects and drops them silently unless its owner hands it storage. wdoc.c registers the callback, as WordPad does.</td></tr>
+        <tr><td><code>GT_RAWTEXT</code></td><td>The tools read the raw text, where table rows are U+FFF9 &hellip; U+FFFB, cells end in U+0007 and a picture is U+FFFC, so every index is a real character position.</td></tr>
+        <tr><td>Run walking</td><td>A stretch with one look is found by doubling the selection while RichEdit reports one format, then halving back to the edge: a few messages per run, not one per character.</td></tr>
+        <tr><td>TOM edit collections</td><td>Each tool operation runs between BeginEditCollection and EndEditCollection, so it is one undo step.</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <p><code>wdoc.c</code> registra su propia clase de ventana (<code>myWordDocHost</code>), cuyo procedimiento pinta la barra y
+        contiene la superficie de edición: <b>RICHEDIT50W</b> de <code>msftedit.dll</code>, el motor de WordPad, usado como componente para
+        escribir, partir líneas, seleccionar, deshacer, el portapapeles y el RTF. El anfitrión es su padre, así que las notificaciones de
+        RichEdit llegan a nuestro procedimiento y la ventana Clarion nunca se subclasifica. Cada llamada Win32 se enlaza con
+        LoadLibrary/GetProcAddress, sin biblioteca de importación. Un documento creado sin ventana padre es invisible: eso es lo que usan
+        los informes y las clases de herramientas.</p>
+      <table>
+        <tr><th>Detalle</th><th>Por qué importa</th></tr>
+        <tr><td>Estructuras empaquetadas a 2 bytes</td><td>El compilador C de Clarion empaqueta a 2 bytes, así que el hueco que deja Win32 en CHARFORMAT2 está escrito a mano. <code>StructSizes()</code> lo comprueba: 84188.</td></tr>
+        <tr><td>IRichEditOleCallback</td><td>RichEdit guarda las imágenes BMP, EMF y WMF como objetos OLE y las descarta en silencio si su dueño no le da almacenamiento. wdoc.c registra el callback, como WordPad.</td></tr>
+        <tr><td><code>GT_RAWTEXT</code></td><td>Las herramientas leen el texto en bruto, donde las filas son U+FFF9 &hellip; U+FFFB, las celdas acaban en U+0007 y una imagen es U+FFFC, así cada índice es una posición real.</td></tr>
+        <tr><td>Recorrido de tramos</td><td>Un tramo con un mismo aspecto se encuentra doblando la selección mientras RichEdit informa un solo formato y luego partiendo a la mitad hasta el borde: pocos mensajes por tramo, no uno por carácter.</td></tr>
+        <tr><td>Colecciones de edición TOM</td><td>Cada operación de herramienta va entre BeginEditCollection y EndEditCollection, así que es un solo paso de deshacer.</td></tr>
+      </table>
+      </div>
+    </section>
+    <section id="tests">
+      <h2><span class="en">Demos and tests</span><span class="es">Demos y pruebas</span> <a href="#tests" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Program</th><th>What it proves</th></tr>
+        <tr><td><code>examples/myWordDoc/Spike.exe AUTO</code></td><td>30 headless checks of the class: struct layout, every format getter after its setter, tables, pictures, Find, a BLOB round trip through a TopSpeed record, pagination, metafiles.</td></tr>
+        <tr><td><code>Spike.exe REPORT</code></td><td>Prints sample.rtf through a REPORT into PROP:Preview and copies the pages out.</td></tr>
+        <tr><td><code>Flow.exe</code> [<code>PAGES</code>] [<code>ES</code>]</td><td>A note, the long letter and another note in one report, as WD:Flow or WD:Pages: the comparison image above.</td></tr>
+        <tr><td><code>Tools.exe AUTO</code></td><td>60 checks of the tool classes and undo, with every export written to <code>tools_out\</code>.</td></tr>
+        <tr><td><code>Tools.exe</code> [<code>ES</code>]</td><td>The window in the screenshots: find, replace, highlight, the font under the caret, the exports.</td></tr>
+        <tr><td><code>WordDemo/build_demo.sh</code></td><td>The templates through AppGen: dictionary, TXA import, generate, compile; browse, form and two reports.</td></tr>
+      </table>
+      <p>Build them with <code>examples/myWordDoc/build.sh</code> (32-bit MSBuild, Clarion 12).</p>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Programa</th><th>Qué demuestra</th></tr>
+        <tr><td><code>examples/myWordDoc/Spike.exe AUTO</code></td><td>30 comprobaciones sin ventana de la clase: estructuras, cada lectura de formato tras su escritura, tablas, imágenes, Find, un BLOB de ida y vuelta por un registro TopSpeed, paginación, metarchivos.</td></tr>
+        <tr><td><code>Spike.exe REPORT</code></td><td>Imprime sample.rtf con un REPORT en PROP:Preview y copia las páginas.</td></tr>
+        <tr><td><code>Flow.exe</code> [<code>PAGES</code>] [<code>ES</code>]</td><td>Una nota, la carta larga y otra nota en un informe, con WD:Flow o WD:Pages: la imagen comparativa de arriba.</td></tr>
+        <tr><td><code>Tools.exe AUTO</code></td><td>60 comprobaciones de las clases RTF y del deshacer, con cada exportación escrita en <code>tools_out\</code>.</td></tr>
+        <tr><td><code>Tools.exe</code> [<code>ES</code>]</td><td>La ventana de las capturas: buscar, reemplazar, resaltar, la fuente bajo el cursor, las exportaciones.</td></tr>
+        <tr><td><code>WordDemo/build_demo.sh</code></td><td>Las plantillas pasando por AppGen: diccionario, importación TXA, generación y compilación; browse, formulario y dos informes.</td></tr>
+      </table>
+      <p>Se compilan con <code>examples/myWordDoc/build.sh</code> (MSBuild de 32 bits, Clarion 12).</p>
+      </div>
+    </section>
+    <section id="ref">
+      <h2><span class="en">Class reference</span><span class="es">Referencia de clases</span> <a href="#ref" class="top">#</a></h2>
+      <div class="en">
+      <p>Every public property, method and equate of <b>WordDocClass</b> and the six tool classes, each with its signature, what it does
+        and a line of Clarion: <a href="myWordDoc-reference.html"><b>myWordDoc-reference.html</b></a>.</p>
+      </div>
+      <div class="es">
+      <p>Todas las propiedades, métodos y equates públicos de <b>WordDocClass</b> y de las seis clases RTF, cada uno con su firma, lo
+        que hace y una línea de Clarion: <a href="myWordDoc-reference.html"><b>myWordDoc-reference.html</b></a>.</p>
+      </div>
+    </section>
+    <section id="quirks">
+      <h2><span class="en">Known limits</span><span class="es">Límites conocidos</span> <a href="#quirks" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Limit</th><th>Why</th><th>Workaround</th></tr>
+        <tr><td>GIF, TIFF and ICO cannot be inserted from the toolbar</td><td>RTF has no blip type for them</td><td>Convert to PNG, or paste them (the clipboard gives RichEdit a bitmap)</td></tr>
+        <tr><td>Printed text is limited to the ANSI code page</td><td>WMF text records are 8-bit</td><td>Fine for Western languages; Greek/Cyrillic/CJK show on screen and in the BLOB, not in print</td></tr>
+        <tr><td>Printed pictures are 200 dpi</td><td>keeps pages and PDFs small</td><td><code>PIC_DPI</code> in wdoc.c</td></tr>
+        <tr><td>No headers, footers or page numbers inside the document</td><td>the document is a band, not a page</td><td>use the REPORT's own header and footer</td></tr>
+        <tr><td>WD:Flow keeps a paragraph's space-before at the top of a page</td><td>each line prints exactly as laid out</td><td>barely visible; use WD:Pages if it matters</td></tr>
+        <tr><td>Undo comes back one change at a time on Windows 7</td><td>TOM edit collections need RichEdit 8 (Windows 8+)</td><td>none needed; it still works</td></tr>
+        <tr><td><code>RtfFontClass.Describe</code> is English</td><td>it is a convenience string</td><td>build your own text from the properties</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Límite</th><th>Por qué</th><th>Solución</th></tr>
+        <tr><td>GIF, TIFF e ICO no se pueden insertar desde la barra</td><td>RTF no tiene tipo de imagen para ellos</td><td>Conviértelos a PNG, o pégalos (el portapapeles le da a RichEdit un mapa de bits)</td></tr>
+        <tr><td>El texto impreso se limita a la página de códigos ANSI</td><td>los registros de texto WMF son de 8 bits</td><td>Bien para idiomas occidentales; griego/cirílico/CJK se ven en pantalla y en el BLOB, no al imprimir</td></tr>
+        <tr><td>Las imágenes se imprimen a 200 ppp</td><td>mantiene pequeños páginas y PDF</td><td><code>PIC_DPI</code> en wdoc.c</td></tr>
+        <tr><td>Sin cabeceras, pies ni números de página dentro del documento</td><td>el documento es una banda, no una página</td><td>usa la cabecera y el pie del REPORT</td></tr>
+        <tr><td>WD:Flow conserva el espacio anterior de un párrafo al principio de página</td><td>cada línea se imprime tal cual se maquetó</td><td>apenas se nota; usa WD:Pages si importa</td></tr>
+        <tr><td>En Windows 7 el deshacer va cambio a cambio</td><td>las colecciones de TOM necesitan RichEdit 8 (Windows 8+)</td><td>no hace falta; sigue funcionando</td></tr>
+        <tr><td><code>RtfFontClass.Describe</code> está en inglés</td><td>es una cadena de conveniencia</td><td>compone tu propio texto con las propiedades</td></tr>
+      </table>
+      </div>
+    </section>
+    <section id="trouble">
+      <h2><span class="en">Troubleshooting</span><span class="es">Problemas</span> <a href="#trouble" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Symptom</th><th>Cause and cure</th></tr>
+        <tr><td><code>Illegal data type</code> on the class declaration</td><td>A source file saved with Unix line endings. Clarion source must be <b>CRLF</b>.</td></tr>
+        <tr><td>The template does not appear after copying it</td><td>Register it, then <b>restart the IDE</b>: it reads the registry at start-up.</td></tr>
+        <tr><td>Every record prints the same document</td><td>A VIEW read does not fill BLOBs. Tick <i>Re-read the record by its primary key</i> (code template) or GET the record yourself.</td></tr>
+        <tr><td>The report prints the band twice</td><td>The band is also printed by ABC. The extension handles it; with the code template set the band's Detail Filter to <code>False</code>.</td></tr>
+        <tr><td>Other controls in the document band vanish or move</td><td>In WD:Flow the band is cut to each line. Keep the IMAGE alone in its band.</td></tr>
+        <tr><td><code>Doc1.Err</code> is not 0 after Init</td><td>The step that failed: -4 msftedit.dll missing, -6 no display device, -10/-11/-12 a window could not be created.</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Síntoma</th><th>Causa y solución</th></tr>
+        <tr><td><code>Illegal data type</code> en la declaración de la clase</td><td>Un fichero fuente guardado con finales de línea Unix. El código Clarion debe ser <b>CRLF</b>.</td></tr>
+        <tr><td>La plantilla no aparece tras copiarla</td><td>Regístrala y <b>reinicia el IDE</b>: lee el registro al arrancar.</td></tr>
+        <tr><td>Todos los registros imprimen el mismo documento</td><td>Una lectura de VIEW no rellena los BLOB. Marca <i>Re-read the record by its primary key</i> (plantilla de código) o haz tú el GET.</td></tr>
+        <tr><td>El informe imprime la banda dos veces</td><td>ABC también imprime la banda. La extensión lo resuelve; con la plantilla de código pon el Detail Filter de la banda a <code>False</code>.</td></tr>
+        <tr><td>Otros controles de la banda del documento desaparecen o se mueven</td><td>En WD:Flow la banda se recorta a cada línea. Deja el IMAGE solo en su banda.</td></tr>
+        <tr><td><code>Doc1.Err</code> distinto de 0 tras Init</td><td>El paso que falló: -4 falta msftedit.dll, -6 sin dispositivo de pantalla, -10/-11/-12 no se pudo crear una ventana.</td></tr>
+      </table>
+      </div>
+    </section>
+
+    </div>
+    <footer>
+      <span class="en">myWordDoc - Programmer's Documentation. Written from the shipped source (wdoc.c, WordDocClass.inc/.clw, WordDocTools.inc/.clw, myWordDoc.tpl). Regenerate with <code>python examples/myWordDoc/docgen/make_docs.py</code>.</span>
+      <span class="es">myWordDoc - Documentación del programador. Escrita a partir del código distribuido (wdoc.c, WordDocClass.inc/.clw, WordDocTools.inc/.clw, myWordDoc.tpl). Se regenera con <code>python examples/myWordDoc/docgen/make_docs.py</code>.</span>
+    </footer>
+  </main>
+</div>
+<script>
+  function setLang(l){
+    document.documentElement.setAttribute('data-lang', l);
+    document.getElementById('btn-en').classList.toggle('on', l==='en');
+    document.getElementById('btn-es').classList.toggle('on', l==='es');
+    try{ localStorage.setItem('mc-lang', l); }catch(e){}
+  }
+  var saved='en';
+  try{ saved = localStorage.getItem('mc-lang') || (navigator.language||'en').slice(0,2); }catch(e){}
+  setLang(saved==='es' ? 'es' : 'en');
+</script>
+</body>
+</html>

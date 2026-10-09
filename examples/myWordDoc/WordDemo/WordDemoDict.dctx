@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dictionary Name="WordDemo" DctxFormat="4">
+	<Table Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e01}" Ident="1" Name="Docs" Prefix="DOC" Driver="TOPSPEED" Path="Docs.tps" Create="true" Thread="true" Bindable="true" Description="Documents">
+		<Field Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e02}" Ident="2" Name="Id" DataType="LONG" ScreenPicture="@n-14" ScreenPrompt="Id:" ReportHeading="Id">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Id:&apos;),USE(?DOC:Id:Prompt)"/>
+				<Line Text=" ENTRY(@n-14),USE(DOC:Id),RIGHT(1)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" STRING(@n-14),USE(DOC:Id),RIGHT(1)"/>
+			</ReportControl>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e03}" Ident="3" Name="Title" DataType="STRING" Size="60" ScreenPicture="@s60" ScreenPrompt="Title:" ReportHeading="Title">
+			<WindowControl>
+				<Line Text=" PROMPT(&apos;Title:&apos;),USE(?DOC:Title:Prompt)"/>
+				<Line Text=" ENTRY(@s60),USE(DOC:Title)"/>
+			</WindowControl>
+			<ReportControl>
+				<Line Text=" STRING(@s60),USE(DOC:Title)"/>
+			</ReportControl>
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Field Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e04}" Ident="4" Name="Body" DataType="MEMO" Binary="true">
+			<Validity Check="NOCHECKS"/>
+		</Field>
+		<Key Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e05}" Ident="5" Order="1" Name="PKey" KeyType="KEY" Unique="true" Primary="true" AutoNumber="true">
+			<Component Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e06}" FieldId="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e02}" Order="1" Ascend="true">
+			</Component>
+		</Key>
+		<Key Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e07}" Ident="6" Order="2" Name="TitleKey" KeyType="KEY" Exclude="false">
+			<Component Guid="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e08}" FieldId="{5b1d7a20-3c41-4e8a-9a10-6f2b8c1d0e03}" Order="1" Ascend="true">
+			</Component>
+		</Key>
+	</Table>
+</Dictionary>

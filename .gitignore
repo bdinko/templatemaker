@@ -16,10 +16,7 @@ examples/**/map/
 examples/**/my3D_preview.html
 
 # Third-party AJE template assets (not redistributed)
-templates/AJEBackupAPP.tpl
-templates/AJE*.png
-templates/aje*.png
-templates/ajebackup.zip
+templates/AJEBackupAPP/
 
 # Edge user-data-dir leftovers from my3D embedded-browser testing
 examples/**/*.edge/
@@ -213,3 +210,40 @@ examples/emailTo/*.tps
 examples/emailTo/*.log
 examples/emailTo/*.csv
 examples/emailTo/*.ini
+
+# myWordDoc spike output
+examples/myWordDoc/Docs.tps
+examples/myWordDoc/*.wmf
+examples/myWordDoc/*.emf
+examples/myWordDoc/rpt_*.png
+examples/myWordDoc/page1*.png
+examples/myWordDoc/paste.rtf
+# class files are copied in from templates/myWordDoc by build.sh / build_demo.sh
+examples/myWordDoc/WordDocClass.*
+examples/myWordDoc/WordDocTools.*
+examples/myWordDoc/tools_out/
+examples/myWordDoc/tools_window.*
+examples/myWordDoc/wdoc.c
+examples/myWordDoc/*.ini
+examples/myWordDoc/editor*.png
+examples/myWordDoc/click_*.png
+# WordDemo: everything build_demo.sh regenerates (keep the .txa, .dctx, .cwproj.in, Docs.tps)
+examples/myWordDoc/WordDemo/WordDocClass.*
+examples/myWordDoc/WordDemo/WordDocTools.*
+examples/myWordDoc/WordDemo/wdoc.c
+examples/myWordDoc/WordDemo/CLARION120.RED
+examples/myWordDoc/WordDemo/WordDemo.app
+examples/myWordDoc/WordDemo/WordDemo.dct
+examples/myWordDoc/WordDemo/WordDemo.bpp
+examples/myWordDoc/WordDemo/WordDemo.shp
+examples/myWordDoc/WordDemo/WordDemo.cwproj
+examples/myWordDoc/WordDemo/WordDemo*.clw
+examples/myWordDoc/WordDemo/WORDDEMO*.INC
+examples/myWordDoc/WordDemo/WORDDEMO*.EXP
+examples/myWordDoc/WordDemo/WORDDEMO_BC*.CLW
+examples/myWordDoc/WordDemo/obj/
+examples/myWordDoc/WordDemo/map/
+examples/myWordDoc/WordDemo/*.dll
+examples/myWordDoc/WordDemo/*.exe
+examples/myWordDoc/WordDemo/*.lib
+examples/myWordDoc/docgen/__pycache__/

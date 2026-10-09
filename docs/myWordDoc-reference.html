@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>myWordDoc - Class reference / Referencia de clases</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-d:#084d93; --navy:#0E1A2B; --navy-2:#16263c;
+    --ink:#22303f; --muted:#6b7785; --line:#e3e8ef; --bg:#f5f7fa;
+    --card:#ffffff; --green:#1e7c5a; --amber:#9a6a12; --amber-bg:#fff7e8;
+    --green-bg:#eef8f3; --blue-bg:#eef4fc; --red-bg:#fcecec; --red:#b23a2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  nav{width:280px;flex:0 0 280px;background:linear-gradient(180deg,var(--navy),var(--navy-2));
+    color:#cdd8e6;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  nav .brand{padding:0 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  nav .brand h1{font-size:16px;margin:0;color:#fff} nav .brand span{font-size:12px;color:#8aa0bb}
+  nav a{display:block;color:#b9c7d8;padding:6px 22px;font-size:13.5px;border-left:3px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+  nav a.h2{padding-left:34px;font-size:13px;color:#9fb2c8}
+  nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#6e85a1;
+    padding:14px 22px 4px;font-weight:700}
+  main{flex:1;min-width:0}
+  header.hero{background:linear-gradient(120deg,#0c2a4d,var(--blue));color:#fff;padding:46px 52px 38px}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.3px}
+  header.hero p{margin:0;font-size:15.5px;color:#dbe8f8;max-width:780px}
+  header.hero .pill{display:inline-block;margin-top:16px;background:rgba(255,255,255,.16);
+    padding:4px 12px;border-radius:20px;font-size:12.5px}
+  .body{padding:14px 52px 80px;max-width:940px}
+  section{padding:22px 0;border-bottom:1px solid var(--line);scroll-margin-top:50px} section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:14px 0 10px;color:var(--navy);scroll-margin-top:50px}
+  h3{font-size:16px;margin:20px 0 6px;color:var(--blue-d)}
+  p{margin:9px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  code,kbd,pre{font-family:"Cascadia Code",Consolas,monospace}
+  code{background:#eef1f5;padding:1px 6px;border-radius:4px;font-size:13px;color:#1d3b5e}
+  kbd{background:#fff;border:1px solid #c9d3e0;border-bottom-width:2px;border-radius:5px;
+    padding:1px 7px;font-size:12.5px;color:#33455c}
+  pre{background:#0f1d2e;color:#dbe6f2;padding:16px 18px;border-radius:10px;overflow:auto;
+    font-size:13px;line-height:1.55;margin:12px 0}
+  pre .c{color:#7fa6c9} pre .k{color:#79c0ff} pre .s{color:#7ee0b8} pre .t{color:#ffd591}
+  .callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid}
+  .tip{background:var(--green-bg);border-color:#bfe3d3;color:#155}
+  .note{background:var(--blue-bg);border-color:#c5dcf6;color:#13456f}
+  .warn{background:var(--amber-bg);border-color:#ecd9a6;color:#6f5210}
+  .danger{background:var(--red-bg);border-color:#e6b8b2;color:#7c241b}
+  .callout b{display:block;margin-bottom:2px}
+  .callout b.i{display:inline;margin:0}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f0f4f9;color:var(--navy);font-weight:600}
+  tr:hover td{background:#fafcff}
+  .lead{font-size:16px;color:#3a4756}
+  footer{padding:24px 52px;color:var(--muted);font-size:13px}
+  .top{font-size:12px;color:var(--muted);float:right}
+  .langbar{display:flex;gap:8px;padding:14px 52px 0;background:var(--bg);position:sticky;top:0;z-index:20;
+    border-bottom:1px solid var(--line)}
+  .langbar button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);
+    padding:7px 16px;border-radius:8px 8px 0 0;font:600 13.5px/1 inherit;border-bottom:none}
+  .langbar button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  /* language toggle */
+  html[data-lang="en"] .es{display:none}
+  html[data-lang="es"] .en{display:none}
+  .filetree{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:14px 18px;line-height:1.7;color:#37485a}
+  .shot{max-width:100%;border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 2px 10px rgba(14,26,43,.14)}
+  .shots{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+  .shots figure{margin:0;flex:1 1 300px;min-width:0}
+  .shots figcaption{font-size:12.5px;color:var(--muted);padding-top:6px;text-align:center}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid #00000022;
+    vertical-align:-1px;margin-right:6px}
+  h4{font-size:13.5px;margin:18px 0 4px;color:var(--navy);text-transform:uppercase;letter-spacing:.5px}
+  .sig{font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px;color:var(--navy);font-weight:600;margin:18px 0 2px;padding-top:8px;border-top:1px dashed var(--line)}
+  td code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><h1>myWordDoc</h1><span class="en">Class reference</span><span class="es">Referencia de clases</span></div>
+    <a href="#conv"><span class="en">Conventions</span><span class="es">Convenciones</span></a>
+    <a href="#equates"><span class="en">Equates</span><span class="es">Equates</span></a>
+    <div class="grp"><span class="en">WordDocClass</span><span class="es">WordDocClass</span></div>
+    <a href="#wd-props" class="h2"><span class="en">Properties</span><span class="es">Propiedades</span></a>
+    <a href="#wd-0" class="h2"><span class="en">Life cycle</span><span class="es">Ciclo de vida</span></a>
+    <a href="#wd-1" class="h2"><span class="en">Content</span><span class="es">Contenido</span></a>
+    <a href="#wd-2" class="h2"><span class="en">Inserting at the caret</span><span class="es">Insertar en el cursor</span></a>
+    <a href="#wd-3" class="h2"><span class="en">Formatting the selection</span><span class="es">Formato de la selección</span></a>
+    <a href="#wd-4" class="h2"><span class="en">Editing and undo</span><span class="es">Edición y deshacer</span></a>
+    <a href="#wd-5" class="h2"><span class="en">Printing</span><span class="es">Impresión</span></a>
+    <div class="grp"><span class="en">Tool classes</span><span class="es">Clases de herramientas</span></div>
+    <a href="#base" class="h2"><span class="en">RtfToolBase (every tool)</span><span class="es">RtfToolBase (todas)</span></a>
+    <a href="#rtfsearch" class="h2"><span class="en">RtfSearchClass</span><span class="es">RtfSearchClass</span></a>
+    <a href="#rtffont" class="h2"><span class="en">RtfFontClass</span><span class="es">RtfFontClass</span></a>
+    <a href="#rtftext" class="h2"><span class="en">RtfTextClass</span><span class="es">RtfTextClass</span></a>
+    <a href="#rtfhtml" class="h2"><span class="en">RtfHtmlClass</span><span class="es">RtfHtmlClass</span></a>
+    <a href="#rtfmd" class="h2"><span class="en">RtfMarkdownClass</span><span class="es">RtfMarkdownClass</span></a>
+    <a href="#rtfmerge" class="h2"><span class="en">RtfMergeClass</span><span class="es">RtfMergeClass</span></a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>myWordDoc - class reference</h1>
+      <div class="en"><p>Every public property and method of <b>WordDocClass</b> and the six RTF tool classes, in the order the <code>.inc</code> files declare them, each with what it does and a line of Clarion that uses it. The guide is in <a href="myWordDoc-template.html" style="color:#fff;text-decoration:underline">myWordDoc-template.html</a>.</p></div><div class="es"><p>Todas las propiedades y métodos públicos de <b>WordDocClass</b> y de las seis clases RTF, en el orden en que los declaran los <code>.inc</code>, cada uno con lo que hace y una línea de Clarion que lo usa. La guía está en <a href="myWordDoc-template.html" style="color:#fff;text-decoration:underline">myWordDoc-template.html</a>.</p></div>
+      <span class="pill en">WordDocClass · RtfToolBase · RtfSearchClass · RtfFontClass · RtfTextClass · RtfHtmlClass · RtfMarkdownClass · RtfMergeClass</span>
+      <span class="pill es">WordDocClass · RtfToolBase · RtfSearchClass · RtfFontClass · RtfTextClass · RtfHtmlClass · RtfMarkdownClass · RtfMergeClass</span>
+    </header>
+
+    <div class="langbar">
+      <button id="btn-en" onclick="setLang('en')">English</button>
+      <button id="btn-es" onclick="setLang('es')">Español</button>
+    </div>
+
+    <div class="body">
+    <section id="conv">
+      <h2><span class="en">Conventions</span><span class="es">Convenciones</span> <a href="#conv" class="top">#</a></h2>
+      <div class="en">
+      <p>The examples assume these declarations:</p>
+      <pre>  <span class="k">INCLUDE</span>(<span class="s">'WordDocClass.INC'</span>),<span class="k">ONCE</span>
+  <span class="k">INCLUDE</span>(<span class="s">'WordDocTools.INC'</span>),<span class="k">ONCE</span>
+Doc1     WordDocClass            <span class="c">! an editor on a window (or a hidden document)</span>
+Search   RtfSearchClass
+Font     RtfFontClass
+Text     RtfTextClass
+Html     RtfHtmlClass
+Md       RtfMarkdownClass
+Merge    RtfMergeClass</pre>
+      <ul>
+        <li>Positions are <b>0-based character positions</b>; a paragraph break counts as one.</li>
+        <li>Sizes in <b>twips</b> are 1/1440 inch: 720 = half an inch, 1440 = an inch.</li>
+        <li>Colours are Clarion colours (<code>COLOR:Red</code>, <code>0F0FFFFh</code>); <code>COLOR:None</code> means automatic.</li>
+        <li>Methods marked <code>PROC</code> can be called as a statement, ignoring the result.</li>
+      </ul>
+      </div>
+      <div class="es">
+      <p>Los ejemplos suponen estas declaraciones:</p>
+      <pre>  <span class="k">INCLUDE</span>(<span class="s">'WordDocClass.INC'</span>),<span class="k">ONCE</span>
+  <span class="k">INCLUDE</span>(<span class="s">'WordDocTools.INC'</span>),<span class="k">ONCE</span>
+Doc1     WordDocClass            <span class="c">! un editor en una ventana (o un documento oculto)</span>
+Search   RtfSearchClass
+Font     RtfFontClass
+Text     RtfTextClass
+Html     RtfHtmlClass
+Md       RtfMarkdownClass
+Merge    RtfMergeClass</pre>
+      <ul>
+        <li>Las posiciones son <b>posiciones de carácter desde 0</b>; un salto de párrafo cuenta como uno.</li>
+        <li>Los tamaños en <b>twips</b> son 1/1440 de pulgada: 720 = media pulgada, 1440 = una pulgada.</li>
+        <li>Los colores son colores de Clarion (<code>COLOR:Red</code>, <code>0F0FFFFh</code>); <code>COLOR:None</code> significa automático.</li>
+        <li>Los métodos con <code>PROC</code> se pueden llamar como sentencia, ignorando el resultado.</li>
+      </ul>
+      </div>
+    </section>
+    <section id="equates">
+      <h2><span class="en">Equates</span><span class="es">Equates</span> <a href="#equates" class="top">#</a></h2>
+      <table>
+        <tr><th>Equate</th><th><span class="en">Value</span><span class="es">Valor</span></th><th><span class="en">Used with</span><span class="es">Uso</span></th></tr>
+        <tr><td><code>WD:Toolbar</code></td><td>1</td><td><span class="en">Init flags: the formatting toolbar</span><span class="es">Flags de Init: la barra de formato</span></td></tr>
+        <tr><td><code>WD:ReadOnly</code></td><td>2</td><td><span class="en">Init flags: view only</span><span class="es">Flags de Init: solo lectura</span></td></tr>
+        <tr><td><code>WD:PageView</code></td><td>4</td><td><span class="en">Init flags: the printed width on a grey desk</span><span class="es">Flags de Init: el ancho impreso sobre un fondo gris</span></td></tr>
+        <tr><td><code>WD:NoBorder</code></td><td>8</td><td><span class="en">Init flags: no frame</span><span class="es">Flags de Init: sin marco</span></td></tr>
+        <tr><td><code>WD:Left WD:Right WD:Center WD:Justify</code></td><td>1-4</td><td><span class="en">SetAlign, GetFormat(8), RtfFontClass.Align</span><span class="es">SetAlign, GetFormat(8), RtfFontClass.Align</span></td></tr>
+        <tr><td><code>WD:NoList WD:Bullets WD:Numbers</code></td><td>0-2</td><td><span class="en">SetList, GetFormat(9), RtfFontClass.List</span><span class="es">SetList, GetFormat(9), RtfFontClass.List</span></td></tr>
+        <tr><td><code>WD:LowerLetters WD:UpperLetters</code></td><td>3-4</td><td><span class="en">SetList: a. b. c. / A. B. C.</span><span class="es">SetList: a. b. c. / A. B. C.</span></td></tr>
+        <tr><td><code>WD:LowerRoman WD:UpperRoman</code></td><td>5-6</td><td><span class="en">SetList: i. ii. iii. / I. II. III.</span><span class="es">SetList: i. ii. iii. / I. II. III.</span></td></tr>
+        <tr><td><code>WD:Off WD:On WD:Toggle</code></td><td>0-2</td><td><span class="en">Bold, Italic, Underline, Strike</span><span class="es">Bold, Italic, Underline, Strike</span></td></tr>
+        <tr><td><code>WD:LetterWidth</code></td><td>9360</td><td><span class="en">line width of Letter paper with 1-inch margins, in twips</span><span class="es">ancho de línea de un Letter con márgenes de 1 pulgada, en twips</span></td></tr>
+        <tr><td><code>WD:A4Width</code></td><td>9026</td><td><span class="en">the same for A4</span><span class="es">lo mismo para A4</span></td></tr>
+        <tr><td><code>WD:Pages</code></td><td>0</td><td><span class="en">PaginateForReport: pieces the size of the IMAGE</span><span class="es">PaginateForReport: trozos del tamaño del IMAGE</span></td></tr>
+        <tr><td><code>WD:Flow</code></td><td>1</td><td><span class="en">PaginateForReport: line by line, filling the room left on each page</span><span class="es">PaginateForReport: línea a línea, llenando el hueco de cada página</span></td></tr>
+      </table>
+      <pre>Doc1.Init(0{PROP:Handle}, ?DocRegion, WD:Toolbar + WD:PageView)
+Doc1.SetAlign(WD:Justify)
+Doc1.SetList(WD:UpperRoman)
+Doc1.Bold(WD:On)
+Doc1.SetPageWidth(WD:A4Width)</pre>
+    </section>
+    <section id="wd-props">
+      <h2><span class="en">WordDocClass: properties</span><span class="es">WordDocClass: propiedades</span> <a href="#wd-props" class="top">#</a></h2>
+      <h3><span class="en">Properties - set before Init</span><span class="es">Propiedades - antes de Init</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>ShowToolbar</code></td><td>BYTE(1)</td><td><span class="en">show the formatting toolbar</span><span class="es">muestra la barra de formato</span></td><td><code>Doc1.ShowToolbar = FALSE</code></td></tr>
+        <tr><td><code>ReadOnly</code></td><td>BYTE</td><td><span class="en">view only</span><span class="es">solo lectura</span></td><td><code>Doc1.ReadOnly = TRUE</code></td></tr>
+        <tr><td><code>PageView</code></td><td>BYTE</td><td><span class="en">show the printed width on a grey desk (needs PageWidth)</span><span class="es">muestra el ancho impreso sobre un fondo gris (necesita PageWidth)</span></td><td><code>Doc1.PageView = TRUE</code></td></tr>
+        <tr><td><code>PageWidth</code></td><td>LONG</td><td><span class="en">printed line width in twips; 0 wraps at the window edge</span><span class="es">ancho de línea impreso en twips; 0 corta en el borde de la ventana</span></td><td><code>Doc1.PageWidth = WD:LetterWidth</code></td></tr>
+        <tr><td><code>DefaultFont</code></td><td>CSTRING(32)</td><td><span class="en">font of a new document; blank = Segoe UI</span><span class="es">fuente de un documento nuevo; vacío = Segoe UI</span></td><td><code>Doc1.DefaultFont = 'Calibri'</code></td></tr>
+        <tr><td><code>DefaultSize</code></td><td>REAL</td><td><span class="en">its size in points; 0 = 11</span><span class="es">su tamaño en puntos; 0 = 11</span></td><td><code>Doc1.DefaultSize = 12</code></td></tr>
+      </table>
+      <h3><span class="en">Properties - read only</span><span class="es">Propiedades - solo lectura</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>Err</code></td><td>LONG</td><td><span class="en">not 0 when Init / InitHidden failed: the step that failed</span><span class="es">distinto de 0 si Init / InitHidden falló: el paso que falló</span></td><td><code>IF Doc1.Err THEN MESSAGE('Editor: ' &amp; Doc1.Err).</code></td></tr>
+        <tr><td><code>Pages</code></td><td>LONG</td><td><span class="en">pieces made by the last Paginate</span><span class="es">trozos creados por el último Paginate</span></td><td><code>LOOP P# = 1 TO Doc1.Pages</code></td></tr>
+      </table>
+    </section>
+    <section id="wd-0">
+      <h2><span class="en">WordDocClass: life cycle</span><span class="es">WordDocClass: ciclo de vida</span> <a href="#wd-0" class="top">#</a></h2>
+      <div class="sig">Init(LONG pWinHandle, LONG pFeq, LONG pFlags=-1),BYTE,PROC</div>
+      <div class="en"><p>Creates the editor over a REGION placed in the window formatter. With <code>pFlags = -1</code> the flags come from ShowToolbar, ReadOnly and PageView. Returns FALSE and sets <code>Err</code> on failure.</p></div><div class="es"><p>Crea el editor encima de una REGION colocada en el diseñador de ventanas. Con <code>pFlags = -1</code> los flags salen de ShowToolbar, ReadOnly y PageView. Devuelve FALSE y rellena <code>Err</code> si falla.</p></div>
+      <div class="en"><pre><span class="k">OPEN</span>(Window)
+Doc1.PageWidth = WD:LetterWidth
+<span class="k">IF</span> <span class="k">NOT</span> Doc1.Init(0{PROP:Handle}, ?DocRegion) <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'No editor: '</span> &amp; Doc1.Err).</pre></div><div class="es"><pre><span class="k">OPEN</span>(Window)
+Doc1.PageWidth = WD:LetterWidth
+<span class="k">IF</span> <span class="k">NOT</span> Doc1.Init(0{PROP:Handle}, ?DocRegion) <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Sin editor: '</span> &amp; Doc1.Err).</pre></div>
+      <div class="sig">InitHidden(),BYTE,PROC</div>
+      <div class="en"><p>An invisible document with no window: for reports, exports and batch work.</p></div><div class="es"><p>Un documento invisible, sin ventana: para informes, exportaciones y procesos por lotes.</p></div>
+      <pre>Doc1.InitHidden()
+Doc1.LoadBlob(DOC:Body)</pre>
+      <div class="sig">Kill()</div>
+      <div class="en"><p>Destroys the editor and deletes the page files it wrote. Call it before <code>CLOSE(Window)</code>; the destructor runs it again harmlessly.</p></div><div class="es"><p>Destruye el editor y borra los ficheros de página que escribió. Llámalo antes de <code>CLOSE(Window)</code>; el destructor lo repite sin problema.</p></div>
+      <pre>Doc1.Kill()
+<span class="k">CLOSE</span>(Window)</pre>
+      <div class="sig">TakeEvent(),BYTE,PROC</div>
+      <div class="en"><p>Call it for every event in the ACCEPT loop. It keeps the editor over its REGION when the window is resized or a TAB changes, and returns TRUE while the document has unsaved changes.</p></div><div class="es"><p>Llámalo en cada evento del bucle ACCEPT. Mantiene el editor sobre su REGION al redimensionar la ventana o cambiar de TAB, y devuelve TRUE mientras haya cambios sin guardar.</p></div>
+      <pre><span class="k">ACCEPT</span>
+  <span class="k">IF</span> Doc1.TakeEvent() <span class="k">THEN</span> <span class="k">ENABLE</span>(?SaveButton) <span class="k">ELSE</span> <span class="k">DISABLE</span>(?SaveButton).
+<span class="k">END</span></pre>
+      <div class="sig">Reposition()</div>
+      <div class="en"><p>Moves the editor to its REGION now. TakeEvent does this for you; call it after moving or hiding the REGION from code.</p></div><div class="es"><p>Coloca el editor sobre su REGION ahora mismo. TakeEvent ya lo hace; llámalo si mueves u ocultas la REGION desde código.</p></div>
+      <pre>?DocRegion{PROP:Height} = ?DocRegion{PROP:Height} + 50
+Doc1.Reposition()</pre>
+      <div class="sig">Alive(),BYTE</div>
+      <div class="en"><p>TRUE while the editor exists.</p></div><div class="es"><p>TRUE mientras el editor exista.</p></div>
+      <pre><span class="k">IF</span> Doc1.Alive() <span class="k">THEN</span> Doc1.SaveBlob(DOC:Body).</pre>
+      <div class="sig">Hwnd(),LONG</div>
+      <div class="en"><p>The Windows handle of the editor (its host window), for API calls of your own.</p></div><div class="es"><p>El handle de Windows del editor (su ventana anfitriona), para tus propias llamadas a la API.</p></div>
+      <div class="en"><pre>SetFocus(Doc1.Hwnd())                 <span class="c">! SetFocus prototyped in your MAP</span></pre></div><div class="es"><pre>SetFocus(Doc1.Hwnd())                 <span class="c">! SetFocus declarado en tu MAP</span></pre></div>
+      <div class="sig">Slot(),LONG</div>
+      <div class="en"><p>The document's number inside wdoc.c. The tool classes use it; you seldom need it.</p></div><div class="es"><p>El número del documento dentro de wdoc.c. Lo usan las clases de herramientas; rara vez lo necesitarás.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Doc1.Slot() = 0 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Not initialised'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Doc1.Slot() = 0 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Sin inicializar'</span>).</pre></div>
+      <div class="sig">StructSizes(),LONG</div>
+      <div class="en"><p>A self-test: 84188 when the C structures match Win32 (CHARFORMAT2 84 bytes, PARAFORMAT2 188).</p></div><div class="es"><p>Una autoprueba: 84188 cuando las estructuras C coinciden con Win32 (CHARFORMAT2 84 bytes, PARAFORMAT2 188).</p></div>
+      <div class="en"><pre><span class="k">IF</span> Doc1.StructSizes() &lt;&gt; 84188 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'wdoc.c built with the wrong packing'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Doc1.StructSizes() &lt;&gt; 84188 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'wdoc.c compilado con otro empaquetado'</span>).</pre></div>
+
+    </section>
+    <section id="wd-1">
+      <h2><span class="en">WordDocClass: content</span><span class="es">WordDocClass: contenido</span> <a href="#wd-1" class="top">#</a></h2>
+      <div class="sig">LoadBlob(*BLOB pBlob)</div>
+      <div class="en"><p>Loads RTF, or plain text, from a BLOB. Clears the undo history and the modified flag.</p></div><div class="es"><p>Carga RTF, o texto plano, desde un BLOB. Vacía el historial de deshacer y la marca de modificado.</p></div>
+      <pre>Doc1.LoadBlob(DOC:Body)</pre>
+      <div class="sig">SaveBlob(*BLOB pBlob)</div>
+      <div class="en"><p>Writes the document into the BLOB as RTF and clears the modified flag. Then write the record as usual.</p></div><div class="es"><p>Escribe el documento en el BLOB como RTF y quita la marca de modificado. Después graba el registro como siempre.</p></div>
+      <pre>Doc1.SaveBlob(DOC:Body)
+Access:Docs.Update()</pre>
+      <div class="sig">LoadString(STRING pRtfOrText)</div>
+      <div class="en"><p>Loads from a string. One that starts with <code>{\rtf</code> is RTF, anything else plain text.</p></div><div class="es"><p>Carga desde una cadena. Si empieza por <code>{\rtf</code> es RTF; si no, texto plano.</p></div>
+      <div class="en"><pre>Doc1.LoadString(<span class="s">'Dear customer,&lt;13,10&gt;Thank you for your order.'</span>)</pre></div><div class="es"><pre>Doc1.LoadString(<span class="s">'Estimado cliente:&lt;13,10&gt;Gracias por su pedido.'</span>)</pre></div>
+      <div class="sig">GetRtf(),STRING</div>
+      <div class="en"><p>The whole document as RTF.</p></div><div class="es"><p>Todo el documento como RTF.</p></div>
+      <pre>L:Rtf = Doc1.GetRtf()</pre>
+      <div class="sig">GetText(),STRING</div>
+      <div class="en"><p>The document as plain text (RtfTextClass gives more control over lists and tables).</p></div><div class="es"><p>El documento como texto plano (RtfTextClass da más control sobre listas y tablas).</p></div>
+      <pre>DOC:Words = Doc1.GetText()</pre>
+      <div class="sig">LoadFile(STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Loads an .rtf (or .txt) file.</p></div><div class="es"><p>Carga un fichero .rtf (o .txt).</p></div>
+      <div class="en"><pre><span class="k">IF</span> <span class="k">NOT</span> Doc1.LoadFile(<span class="s">'C:\Letters\welcome.rtf'</span>) <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Cannot open the file'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> <span class="k">NOT</span> Doc1.LoadFile(<span class="s">'C:\Cartas\bienvenida.rtf'</span>) <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'No se puede abrir'</span>).</pre></div>
+      <div class="sig">SaveFile(STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Saves the document as an .rtf file that Word and WordPad open.</p></div><div class="es"><p>Guarda el documento como un .rtf que abren Word y WordPad.</p></div>
+      <div class="en"><pre>Doc1.SaveFile(<span class="s">'C:\Letters\'</span> &amp; <span class="k">CLIP</span>(CUS:Code) &amp; <span class="s">'.rtf'</span>)</pre></div><div class="es"><pre>Doc1.SaveFile(<span class="s">'C:\Cartas\'</span> &amp; <span class="k">CLIP</span>(CLI:Codigo) &amp; <span class="s">'.rtf'</span>)</pre></div>
+      <div class="sig">ClearAll()</div>
+      <div class="en"><p>Empties the document.</p></div><div class="es"><p>Vacía el documento.</p></div>
+      <pre>Doc1.ClearAll()</pre>
+      <div class="sig">Length(),LONG</div>
+      <div class="en"><p>The number of characters.</p></div><div class="es"><p>El número de caracteres.</p></div>
+      <div class="en"><pre>?Count{PROP:Text} = Doc1.Length() &amp; <span class="s">' characters'</span></pre></div><div class="es"><pre>?Count{PROP:Text} = Doc1.Length() &amp; <span class="s">' caracteres'</span></pre></div>
+      <div class="sig">Modified(),BYTE</div>
+      <div class="en"><p>TRUE when the user changed the document since it was loaded or saved.</p></div><div class="es"><p>TRUE si el usuario cambió el documento desde que se cargó o guardó.</p></div>
+      <pre><span class="k">IF</span> Doc1.Modified() <span class="k">THEN</span> Doc1.SaveBlob(DOC:Body).</pre>
+      <div class="sig">SetModified(BYTE pOn)</div>
+      <div class="en"><p>Sets or clears the modified flag.</p></div><div class="es"><p>Pone o quita la marca de modificado.</p></div>
+      <div class="en"><pre>Doc1.SetModified(<span class="k">FALSE</span>)              <span class="c">! after saving it somewhere yourself</span></pre></div><div class="es"><pre>Doc1.SetModified(<span class="k">FALSE</span>)              <span class="c">! tras guardarlo tú en otro sitio</span></pre></div>
+
+    </section>
+    <section id="wd-2">
+      <h2><span class="en">WordDocClass: inserting at the caret</span><span class="es">WordDocClass: insertar en el cursor</span> <a href="#wd-2" class="top">#</a></h2>
+      <div class="sig">InsertText(STRING pText)</div>
+      <div class="en"><p>Types text at the caret, replacing the selection.</p></div><div class="es"><p>Escribe texto en el cursor, sustituyendo la selección.</p></div>
+      <div class="en"><pre>Doc1.InsertText(<span class="s">'Kind regards,&lt;13,10&gt;'</span> &amp; <span class="k">CLIP</span>(USE:Name))</pre></div><div class="es"><pre>Doc1.InsertText(<span class="s">'Un saludo,&lt;13,10&gt;'</span> &amp; <span class="k">CLIP</span>(USU:Nombre))</pre></div>
+      <div class="sig">InsertRtf(STRING pRtf)</div>
+      <div class="en"><p>Inserts formatted RTF at the caret.</p></div><div class="es"><p>Inserta RTF con formato en el cursor.</p></div>
+      <div class="en"><pre>Doc1.InsertRtf(<span class="s">'{{\rtf1{{\b Important:} read before signing.}'</span>)</pre></div><div class="es"><pre>Doc1.InsertRtf(<span class="s">'{{\rtf1{{\b Importante:} l\''e9alo antes de firmar.}'</span>)</pre></div>
+      <div class="sig">InsertImage(STRING pFileName, LONG pMaxWidthTw=0),LONG,PROC</div>
+      <div class="en"><p>Inserts a PNG, JPEG, BMP, EMF or WMF picture, scaled down to <code>pMaxWidthTw</code> (0 = the page width). Returns 1 on success, -1 when the file cannot be read, -2 for any other format, -3 when out of memory.</p></div><div class="es"><p>Inserta una imagen PNG, JPEG, BMP, EMF o WMF, reducida a <code>pMaxWidthTw</code> (0 = el ancho de página). Devuelve 1 si va bien, -1 si no se puede leer, -2 si es otro formato, -3 sin memoria.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Doc1.InsertImage(CUS:LogoFile, 2880) &lt;&gt; 1 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Not a picture I can use'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Doc1.InsertImage(CLI:Logo, 2880) &lt;&gt; 1 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'No es una imagen válida'</span>).</pre></div>
+      <div class="sig">InsertTable(LONG pRows, LONG pCols, LONG pWidthTw=0),BYTE,PROC</div>
+      <div class="en"><p>Inserts a table with thin borders, spread over <code>pWidthTw</code> (0 = the page width).</p></div><div class="es"><p>Inserta una tabla con bordes finos, repartida en <code>pWidthTw</code> (0 = el ancho de página).</p></div>
+      <div class="en"><pre>Doc1.InsertTable(4, 3)                <span class="c">! 4 rows, 3 columns</span></pre></div><div class="es"><pre>Doc1.InsertTable(4, 3)                <span class="c">! 4 filas, 3 columnas</span></pre></div>
+
+    </section>
+    <section id="wd-3">
+      <h2><span class="en">WordDocClass: formatting the selection</span><span class="es">WordDocClass: formato de la selección</span> <a href="#wd-3" class="top">#</a></h2>
+      <div class="sig">Bold / Italic / Underline / Strike (BYTE pHow=WD:Toggle)</div>
+      <div class="en"><p>Switch the style on, off or over.</p></div><div class="es"><p>Activan, desactivan o alternan el estilo.</p></div>
+      <div class="en"><pre>Doc1.SelectText(0, 12)
+Doc1.Bold(WD:On)
+Doc1.Italic()                         <span class="c">! toggles</span>
+Doc1.Underline(WD:Off)
+Doc1.Strike(WD:Toggle)</pre></div><div class="es"><pre>Doc1.SelectText(0, 12)
+Doc1.Bold(WD:On)
+Doc1.Italic()                         <span class="c">! alterna</span>
+Doc1.Underline(WD:Off)
+Doc1.Strike(WD:Toggle)</pre></div>
+      <div class="sig">SetFont(STRING pFace)</div>
+      <div class="en"><p>The font of the selection.</p></div><div class="es"><p>La fuente de la selección.</p></div>
+      <pre>Doc1.SetFont(<span class="s">'Georgia'</span>)</pre>
+      <div class="sig">SetFontSize(REAL pPoints)</div>
+      <div class="en"><p>The size of the selection.</p></div><div class="es"><p>El tamaño de la selección.</p></div>
+      <pre>Doc1.SetFontSize(14)</pre>
+      <div class="sig">SetColor(LONG pColor)</div>
+      <div class="en"><p>The text colour; COLOR:None = automatic.</p></div><div class="es"><p>El color del texto; COLOR:None = automático.</p></div>
+      <pre>Doc1.SetColor(COLOR:Red)</pre>
+      <div class="sig">SetHighlight(LONG pColor)</div>
+      <div class="en"><p>The highlighter colour behind the text; COLOR:None takes it off.</p></div><div class="es"><p>El color de resaltado tras el texto; COLOR:None lo quita.</p></div>
+      <pre>Doc1.SetHighlight(COLOR:Yellow)</pre>
+      <div class="sig">SetAlign(BYTE pAlign)</div>
+      <div class="en"><p>Aligns the paragraphs in the selection.</p></div><div class="es"><p>Alinea los párrafos de la selección.</p></div>
+      <pre>Doc1.SetAlign(WD:Center)</pre>
+      <div class="sig">SetList(BYTE pStyle)</div>
+      <div class="en"><p>Bullets or numbering for the paragraphs in the selection; WD:NoList removes it.</p></div><div class="es"><p>Viñetas o numeración para los párrafos de la selección; WD:NoList la quita.</p></div>
+      <pre>Doc1.SetList(WD:Numbers)</pre>
+      <div class="sig">Indent / Outdent (LONG pTwips=360)</div>
+      <div class="en"><p>Move the paragraphs right or left.</p></div><div class="es"><p>Mueven los párrafos a la derecha o a la izquierda.</p></div>
+      <div class="en"><pre>Doc1.Indent()                         <span class="c">! a quarter of an inch</span>
+Doc1.Outdent(720)                     <span class="c">! half an inch back</span></pre></div><div class="es"><pre>Doc1.Indent()                         <span class="c">! un cuarto de pulgada</span>
+Doc1.Outdent(720)                     <span class="c">! media pulgada atrás</span></pre></div>
+      <div class="sig">GetFont(),STRING</div>
+      <div class="en"><p>The font of the selection; blank when it mixes fonts.</p></div><div class="es"><p>La fuente de la selección; vacía si mezcla fuentes.</p></div>
+      <pre>?FontName{PROP:Text} = Doc1.GetFont()</pre>
+      <div class="sig">GetFormat(LONG pWhich),LONG</div>
+      <div class="en"><p>One detail of the selection: 1 bold, 2 italic, 3 underline, 4 strike (1/0), 5 size in points &times; 10, 6 text colour (0 = automatic), 7 highlight (0FFFFFFh = none), 8 alignment, 9 list style. -1 when mixed. RtfFontClass.Read gives them all at once.</p></div><div class="es"><p>Un detalle de la selección: 1 negrita, 2 cursiva, 3 subrayado, 4 tachado (1/0), 5 tamaño en puntos &times; 10, 6 color (0 = automático), 7 resaltado (0FFFFFFh = ninguno), 8 alineación, 9 lista. -1 si está mezclado. RtfFontClass.Read los da todos a la vez.</p></div>
+      <pre><span class="k">IF</span> Doc1.GetFormat(1) = 1 <span class="k">THEN</span> ?BoldBtn{PROP:Icon} = <span class="s">'boldon.ico'</span>.
+L:Points = Doc1.GetFormat(5) / 10</pre>
+
+    </section>
+    <section id="wd-4">
+      <h2><span class="en">WordDocClass: editing and undo</span><span class="es">WordDocClass: edición y deshacer</span> <a href="#wd-4" class="top">#</a></h2>
+      <div class="sig">Undo() / Redo()</div>
+      <div class="en"><p>The same as Ctrl+Z / Ctrl+Y. A whole tool operation (Replace All, a merge, Set Font) is one step.</p></div><div class="es"><p>Lo mismo que Ctrl+Z / Ctrl+Y. Una operación de herramienta entera (Reemplazar todo, una combinación, cambiar fuente) es un solo paso.</p></div>
+      <pre>Doc1.Undo()
+Doc1.Redo()</pre>
+      <div class="sig">CanUndo(),BYTE / CanRedo(),BYTE</div>
+      <div class="en"><p>Whether there is something to undo or redo.</p></div><div class="es"><p>Si hay algo que deshacer o rehacer.</p></div>
+      <pre><span class="k">IF</span> Doc1.CanUndo() <span class="k">THEN</span> <span class="k">ENABLE</span>(?UndoBtn) <span class="k">ELSE</span> <span class="k">DISABLE</span>(?UndoBtn).</pre>
+      <div class="sig">ClearUndo()</div>
+      <div class="en"><p>Forgets the undo history. The Load methods do this for you.</p></div><div class="es"><p>Olvida el historial de deshacer. Los métodos Load ya lo hacen.</p></div>
+      <pre>Doc1.ClearUndo()</pre>
+      <div class="sig">SetUndoLimit(LONG pSteps)</div>
+      <div class="en"><p>How many steps are kept (100 by default).</p></div><div class="es"><p>Cuántos pasos se guardan (100 por defecto).</p></div>
+      <pre>Doc1.SetUndoLimit(500)</pre>
+      <div class="sig">BeginUndoGroup() / EndUndoGroup()</div>
+      <div class="en"><p>Everything in between undoes as one step. Pairs nest.</p></div><div class="es"><p>Todo lo que hay entre ambos se deshace en un paso. Los pares se pueden anidar.</p></div>
+      <pre>Doc1.BeginUndoGroup()
+Doc1.InsertText(<span class="s">'Re: '</span> &amp; <span class="k">CLIP</span>(ORD:Number))
+Doc1.SelectText(0, 3)
+Doc1.Bold(WD:On)
+Doc1.EndUndoGroup()</pre>
+      <div class="sig">CutText() / CopyText() / PasteText()</div>
+      <div class="en"><p>The clipboard, like Ctrl+X / Ctrl+C / Ctrl+V.</p></div><div class="es"><p>El portapapeles, como Ctrl+X / Ctrl+C / Ctrl+V.</p></div>
+      <pre>Doc1.SelectAll()
+Doc1.CopyText()</pre>
+      <div class="sig">SelectAll()</div>
+      <div class="en"><p>Selects the whole document.</p></div><div class="es"><p>Selecciona todo el documento.</p></div>
+      <pre>Doc1.SelectAll()
+Doc1.SetFont(<span class="s">'Arial'</span>)</pre>
+      <div class="sig">SelectText(LONG pFrom, LONG pTo)</div>
+      <div class="en"><p>Selects a range; pTo = -1 is the end. SelectText(N, N) puts the caret at N.</p></div><div class="es"><p>Selecciona un rango; pTo = -1 es el final. SelectText(N, N) pone el cursor en N.</p></div>
+      <div class="en"><pre>Doc1.SelectText(0, 0)                 <span class="c">! caret at the top</span>
+Doc1.SelectText(Doc1.Length(), Doc1.Length())   <span class="c">! caret at the end</span></pre></div><div class="es"><pre>Doc1.SelectText(0, 0)                 <span class="c">! cursor al principio</span>
+Doc1.SelectText(Doc1.Length(), Doc1.Length())   <span class="c">! cursor al final</span></pre></div>
+      <div class="sig">Find(STRING pText, BYTE pMatchCase=0, BYTE pWholeWord=0),LONG,PROC</div>
+      <div class="en"><p>Selects the next match after the caret, going round to the top. Returns its position or -1. RtfSearchClass does more.</p></div><div class="es"><p>Selecciona la siguiente coincidencia tras el cursor, volviendo al principio. Devuelve su posición o -1. RtfSearchClass hace más.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Doc1.Find(<span class="s">'total'</span>, <span class="k">FALSE</span>, <span class="k">TRUE</span>) &lt; 0 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Not found'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Doc1.Find(<span class="s">'total'</span>, <span class="k">FALSE</span>, <span class="k">TRUE</span>) &lt; 0 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'No encontrado'</span>).</pre></div>
+      <div class="sig">Focus()</div>
+      <div class="en"><p>Puts the keyboard focus in the editor.</p></div><div class="es"><p>Pone el foco del teclado en el editor.</p></div>
+      <pre>Doc1.Focus()</pre>
+      <div class="sig">SetReadOnly(BYTE pOn)</div>
+      <div class="en"><p>Locks or unlocks the document while it is open.</p></div><div class="es"><p>Bloquea o desbloquea el documento con la ventana abierta.</p></div>
+      <pre>Doc1.SetReadOnly(<span class="k">CHOOSE</span>(DOC:Signed = <span class="k">TRUE</span>))</pre>
+      <div class="sig">SetToolbar(BYTE pOn)</div>
+      <div class="en"><p>Shows or hides the toolbar while it is open.</p></div><div class="es"><p>Muestra u oculta la barra con la ventana abierta.</p></div>
+      <pre>Doc1.SetToolbar(<span class="k">FALSE</span>)</pre>
+      <div class="sig">SetZoom(LONG pPercent)</div>
+      <div class="en"><p>Zooms the view; 0 = 100%.</p></div><div class="es"><p>Amplía la vista; 0 = 100%.</p></div>
+      <pre>Doc1.SetZoom(150)</pre>
+      <div class="sig">SetPaperColor(LONG pColor)</div>
+      <div class="en"><p>The colour behind the text on screen; COLOR:None = the window colour.</p></div><div class="es"><p>El color detrás del texto en pantalla; COLOR:None = el de la ventana.</p></div>
+      <div class="en"><pre>Doc1.SetPaperColor(0F0FFFFh)          <span class="c">! pale cream</span></pre></div><div class="es"><pre>Doc1.SetPaperColor(0F0FFFFh)          <span class="c">! crema claro</span></pre></div>
+      <div class="sig">SetPageWidth(LONG pTwips)</div>
+      <div class="en"><p>Wraps the lines at the printed width, so they break where they will on paper; 0 wraps at the window edge.</p></div><div class="es"><p>Corta las líneas al ancho impreso, para que partan donde partirán en papel; 0 corta en el borde de la ventana.</p></div>
+      <pre>Doc1.SetPageWidth(WD:A4Width)</pre>
+
+    </section>
+    <section id="wd-5">
+      <h2><span class="en">WordDocClass: printing</span><span class="es">WordDocClass: impresión</span> <a href="#wd-5" class="top">#</a></h2>
+      <div class="sig">Paginate(LONG pWidthTw, LONG pHeightTw),LONG,PROC</div>
+      <div class="en"><p>Splits the document into pages of that size and returns how many.</p></div><div class="es"><p>Divide el documento en páginas de ese tamaño y devuelve cuántas.</p></div>
+      <pre>Pages# = Doc1.Paginate(WD:LetterWidth, 12960)     <span class="c">! 6.5 x 9 in</span></pre>
+      <div class="sig">RenderPage(LONG pPage),STRING</div>
+      <div class="en"><p>Writes page N into the temp folder as a WMF and returns the file name. Kill deletes those files.</p></div><div class="es"><p>Escribe la página N en la carpeta temporal como WMF y devuelve el nombre. Kill borra esos ficheros.</p></div>
+      <div class="en"><pre>?Preview{PROP:Text} = Doc1.RenderPage(1)          <span class="c">! page 1 on an IMAGE</span></pre></div><div class="es"><pre>?Preview{PROP:Text} = Doc1.RenderPage(1)          <span class="c">! página 1 en un IMAGE</span></pre></div>
+      <div class="sig">RenderPageTo(LONG pPage, STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Writes page N to a file you name: an EMF for .emf, a placeable WMF for .wmf.</p></div><div class="es"><p>Escribe la página N en el fichero que digas: EMF para .emf, WMF placeable para .wmf.</p></div>
+      <pre>Doc1.RenderPageTo(1, <span class="s">'C:\Out\page1.emf'</span>)</pre>
+      <div class="sig">PageUsedHeight(LONG pPage),LONG</div>
+      <div class="en"><p>How many twips of page N the text really fills.</p></div><div class="es"><p>Cuántos twips de la página N ocupa realmente el texto.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Doc1.PageUsedHeight(Doc1.Pages) &lt; 1440 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'The last page is almost empty'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Doc1.PageUsedHeight(Doc1.Pages) &lt; 1440 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'La última página está casi vacía'</span>).</pre></div>
+      <div class="sig">PaginateForReport(*REPORT pReport, LONG pImageFeq, BYTE pMode=0),LONG</div>
+      <div class="en"><p>Measures the report IMAGE and cuts the document to fit it. WD:Pages makes pieces the size of the IMAGE; WD:Flow cuts one line per band, so the document starts in whatever room is left on the page. Returns the number of pieces.</p></div><div class="es"><p>Mide el IMAGE del informe y corta el documento a su medida. WD:Pages hace trozos del tamaño del IMAGE; WD:Flow corta una línea por banda, así el documento empieza en el hueco que quede en la página. Devuelve el número de trozos.</p></div>
+      <pre><span class="k">LOOP</span> P# = 1 <span class="k">TO</span> Doc1.PaginateForReport(Report, ?DocImage, WD:Flow)
+  Doc1.PreparePage(Report, ?DocImage, P#)
+  <span class="k">PRINT</span>(RPT:DocBand)
+<span class="k">END</span></pre>
+      <div class="sig">PreparePage(*REPORT pReport, LONG pImageFeq, LONG pPage, BYTE pShrinkLast=1)</div>
+      <div class="en"><p>Points the IMAGE at piece N and sizes it and its band. With WD:Pages, pShrinkLast shrinks the last piece to its text, so what follows comes straight after it.</p></div><div class="es"><p>Apunta el IMAGE al trozo N y ajusta su tamaño y el de su banda. Con WD:Pages, pShrinkLast encoge el último trozo a su texto, para que lo siguiente salga justo detrás.</p></div>
+      <div class="en"><pre>Doc1.PreparePage(Report, ?DocImage, P#, <span class="k">FALSE</span>)    <span class="c">! keep the full height</span>
+<span class="k">PRINT</span>(RPT:DocBand)</pre></div><div class="es"><pre>Doc1.PreparePage(Report, ?DocImage, P#, <span class="k">FALSE</span>)    <span class="c">! altura completa</span>
+<span class="k">PRINT</span>(RPT:DocBand)</pre></div>
+
+    </section>
+    <section id="base">
+      <h2><span class="en">RtfToolBase: shared by every tool</span><span class="es">RtfToolBase: común a todas</span> <a href="#base" class="top">#</a></h2>
+      <div class="en"><p>Every tool class inherits these.</p></div><div class="es"><p>Todas las clases de herramientas los heredan.</p></div>
+      <div class="sig">Doc (&amp;amp;WordDocClass)</div>
+      <div class="en"><p>The document the tool works on: any WordDocClass method can be called on it.</p></div><div class="es"><p>El documento sobre el que trabaja la herramienta: admite cualquier método de WordDocClass.</p></div>
+      <pre>Search.LoadBlob(DOC:Body)
+Search.Doc.SetFont(<span class="s">'Arial'</span>)</pre>
+      <div class="sig">Attach(*WordDocClass pDoc)</div>
+      <div class="en"><p>Works on an existing document: an editor on a window, or a report's hidden document.</p></div><div class="es"><p>Trabaja sobre un documento existente: un editor en una ventana o el documento oculto de un informe.</p></div>
+      <pre>Search.Attach(Doc1)</pre>
+      <div class="sig">LoadString / LoadBlob / LoadFile (...),BYTE,PROC</div>
+      <div class="en"><p>Load into the tool's own hidden document (or into the attached one).</p></div><div class="es"><p>Cargan en el documento oculto propio de la herramienta (o en el adjunto).</p></div>
+      <pre>Text.LoadBlob(DOC:Body)
+Html.LoadFile(<span class="s">'C:\Letters\welcome.rtf'</span>)
+Md.LoadString(L:Rtf)</pre>
+      <div class="sig">SaveBlob(*BLOB pBlob) / SaveFile(STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Keep the changed document.</p></div><div class="es"><p>Guardan el documento cambiado.</p></div>
+      <pre>Search.ReplaceAll(<span class="s">'2025'</span>, <span class="s">'2026'</span>)
+Search.SaveBlob(DOC:Body)</pre>
+      <div class="sig">GetRtf(),STRING</div>
+      <div class="en"><p>The document as RTF.</p></div><div class="es"><p>El documento como RTF.</p></div>
+      <pre>LET:Body = Merge.GetRtf()</pre>
+      <div class="sig">Ready(),BYTE</div>
+      <div class="en"><p>TRUE when there is a document to work on.</p></div><div class="es"><p>TRUE si hay un documento con el que trabajar.</p></div>
+      <pre><span class="k">IF</span> <span class="k">NOT</span> Text.Ready() <span class="k">THEN</span> Text.LoadBlob(DOC:Body).</pre>
+      <div class="sig">Undo() / Redo() / CanUndo(),BYTE</div>
+      <div class="en"><p>The document's undo; each tool operation is one step.</p></div><div class="es"><p>El deshacer del documento; cada operación es un paso.</p></div>
+      <pre>Search.ReplaceAll(<span class="s">'Mr'</span>, <span class="s">'Ms'</span>)
+<span class="k">IF</span> Search.CanUndo() <span class="k">THEN</span> Search.Undo().</pre>
+      <div class="sig">Kill()</div>
+      <div class="en"><p>Lets go of the document; a hidden one the tool made is destroyed. The destructor does the same.</p></div><div class="es"><p>Suelta el documento; si era uno oculto creado por la herramienta, lo destruye. El destructor hace lo mismo.</p></div>
+      <pre>Search.Kill()</pre>
+
+    </section>
+    <section id="rtfsearch">
+      <h2><span class="en">RtfSearchClass</span><span class="es">RtfSearchClass</span> <a href="#rtfsearch" class="top">#</a></h2>
+      <div class="en"><p class="lead">Find, count, replace and highlight.</p></div><div class="es"><p class="lead">Buscar, contar, reemplazar y resaltar.</p></div>
+      <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>MatchCase</code></td><td>BYTE</td><td><span class="en">"Smith" does not find "smith"</span><span class="es">"Smith" no encuentra "smith"</span></td><td><code>Search.MatchCase = TRUE</code></td></tr>
+        <tr><td><code>WholeWord</code></td><td>BYTE</td><td><span class="en">"art" does not find "party"</span><span class="es">"arte" no encuentra "artesano"</span></td><td><code>Search.WholeWord = TRUE</code></td></tr>
+        <tr><td><code>Wrap</code></td><td>BYTE(1)</td><td><span class="en">FindNext / FindPrevious go round the end</span><span class="es">FindNext / FindPrevious dan la vuelta al llegar al final</span></td><td><code>Search.Wrap = FALSE</code></td></tr>
+        <tr><td><code>SelectHits</code></td><td>BYTE(1)</td><td><span class="en">select and scroll to each hit</span><span class="es">selecciona cada coincidencia y la hace visible</span></td><td><code>Search.SelectHits = FALSE</code></td></tr>
+        <tr><td><code>FoundAt</code></td><td>LONG</td><td><span class="en">where the last hit starts; -1 = none</span><span class="es">dónde empieza la última coincidencia; -1 = ninguna</span></td><td><code>IF Search.FoundAt &gt;= 0 THEN ...</code></td></tr>
+        <tr><td><code>FoundEnd</code></td><td>LONG</td><td><span class="en">where it ends</span><span class="es">dónde termina</span></td><td><code>L:Len = Search.FoundEnd - Search.FoundAt</code></td></tr>
+        <tr><td><code>What</code></td><td>CSTRING(1024)</td><td><span class="en">what the last Find looked for</span><span class="es">lo que buscó el último Find</span></td><td><code>Search.What = L:Find</code></td></tr>
+      </table>
+      <h3><span class="en">Methods</span><span class="es">Métodos</span></h3>
+      <div class="sig">Find(STRING pText),LONG,PROC</div>
+      <div class="en"><p>The first hit from the top; its position or -1.</p></div><div class="es"><p>La primera coincidencia desde el principio; su posición o -1.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Search.Find(<span class="s">'overdue'</span>) &lt; 0 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'No overdue items'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Search.Find(<span class="s">'vencido'</span>) &lt; 0 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Nada vencido'</span>).</pre></div>
+      <div class="sig">FindNext(),LONG,PROC / FindPrevious(),LONG,PROC</div>
+      <div class="en"><p>The next or previous hit of <code>What</code>.</p></div><div class="es"><p>La coincidencia siguiente o anterior de <code>What</code>.</p></div>
+      <pre>Search.Wrap = <span class="k">FALSE</span>
+<span class="k">IF</span> Search.Find(<span class="s">'total'</span>) &gt;= 0
+  <span class="k">LOOP</span>
+    ResultQ:Pos = Search.FoundAt
+    <span class="k">ADD</span>(ResultQ)
+    <span class="k">IF</span> Search.FindNext() &lt; 0 <span class="k">THEN</span> <span class="k">BREAK</span>.
+  <span class="k">END</span>
+<span class="k">END</span></pre>
+      <div class="sig">Count(STRING pText),LONG</div>
+      <div class="en"><p>How many hits there are.</p></div><div class="es"><p>Cuántas coincidencias hay.</p></div>
+      <div class="en"><pre>?Info{PROP:Text} = Search.Count(<span class="s">'Clarion'</span>) &amp; <span class="s">' mentions'</span></pre></div><div class="es"><pre>?Info{PROP:Text} = Search.Count(<span class="s">'Clarion'</span>) &amp; <span class="s">' menciones'</span></pre></div>
+      <div class="sig">Replace(STRING pFind, STRING pWith),BYTE,PROC</div>
+      <div class="en"><p>Like Word's Replace button: the first call finds; each later call replaces the hit showing and finds the next. TRUE when it replaced one.</p></div><div class="es"><p>Como el botón Reemplazar de Word: la primera llamada busca; cada llamada siguiente reemplaza la coincidencia visible y busca la siguiente. TRUE si reemplazó.</p></div>
+      <pre><span class="k">OF</span> ?ReplaceBtn
+  Search.Replace(L:Find, L:With)</pre>
+      <div class="sig">ReplaceAll(STRING pFind, STRING pWith),LONG,PROC</div>
+      <div class="en"><p>Replaces every hit, keeping each one's formatting; returns how many. One Undo takes them all back.</p></div><div class="es"><p>Reemplaza todas, conservando el formato de cada una; devuelve cuántas. Un solo Deshacer las recupera todas.</p></div>
+      <div class="en"><pre><span class="k">MESSAGE</span>(Search.ReplaceAll(<span class="s">'Acme Ltd'</span>, <span class="s">'Acme Limited'</span>) &amp; <span class="s">' replaced'</span>)</pre></div><div class="es"><pre><span class="k">MESSAGE</span>(Search.ReplaceAll(<span class="s">'Acme SL'</span>, <span class="s">'Acme S.L.'</span>) &amp; <span class="s">' reemplazos'</span>)</pre></div>
+      <div class="sig">HighlightAll(STRING pText, LONG pColor=COLOR:Yellow),LONG,PROC</div>
+      <div class="en"><p>Paints every hit with a highlight; COLOR:None takes it off again.</p></div><div class="es"><p>Resalta todas las coincidencias; COLOR:None quita el resaltado.</p></div>
+      <pre>Search.HighlightAll(L:Find)
+Search.HighlightAll(L:Find, COLOR:None)</pre>
+      <div class="sig">Context(LONG pChars=40),STRING</div>
+      <div class="en"><p>The plain text around the last hit, with ... where it was cut.</p></div><div class="es"><p>El texto alrededor de la última coincidencia, con ... donde se corta.</p></div>
+      <pre><span class="k">IF</span> Search.Find(L:Find) &gt;= 0 <span class="k">THEN</span> ResultQ:Line = Search.Context(30); <span class="k">ADD</span>(ResultQ).</pre>
+      <div class="sig">TextAt(LONG pFrom, LONG pTo),STRING</div>
+      <div class="en"><p>The plain text of a range.</p></div><div class="es"><p>El texto plano de un rango.</p></div>
+      <pre>L:Word = Search.TextAt(Search.FoundAt, Search.FoundEnd)</pre>
+
+    </section>
+    <section id="rtffont">
+      <h2><span class="en">RtfFontClass</span><span class="es">RtfFontClass</span> <a href="#rtffont" class="top">#</a></h2>
+      <div class="en"><p class="lead">Which font am I on, and the fonts a document uses.</p></div><div class="es"><p class="lead">En qué fuente estoy y qué fuentes usa el documento.</p></div>
+      <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>Face</code></td><td>CSTRING(32)</td><td><span class="en">the font; '' = mixed</span><span class="es">la fuente; '' = mezcladas</span></td><td><code>?Font{PROP:Text} = Font.Face</code></td></tr>
+        <tr><td><code>Size</code></td><td>REAL</td><td><span class="en">points; 0 = mixed</span><span class="es">puntos; 0 = mezclados</span></td><td><code>IF Font.Size &gt; 14 THEN ...</code></td></tr>
+        <tr><td><code>Bold Italic Underline Strike</code></td><td>LONG</td><td><span class="en">1 on, 0 off, -1 mixed</span><span class="es">1 sí, 0 no, -1 mezclado</span></td><td><code>L:IsBold = CHOOSE(Font.Bold = 1)</code></td></tr>
+        <tr><td><code>Script</code></td><td>LONG</td><td><span class="en">0 normal, 1 superscript, 2 subscript, -1 mixed</span><span class="es">0 normal, 1 superíndice, 2 subíndice, -1 mezclado</span></td><td><code>IF Font.Script = 1 THEN ...</code></td></tr>
+        <tr><td><code>Color</code></td><td>LONG</td><td><span class="en">text colour; COLOR:None automatic, -2 mixed</span><span class="es">color del texto; COLOR:None automático, -2 mezclado</span></td><td><code>?Swatch{PROP:Fill} = Font.Color</code></td></tr>
+        <tr><td><code>Highlight</code></td><td>LONG</td><td><span class="en">highlight; COLOR:None none, -2 mixed</span><span class="es">resaltado; COLOR:None ninguno, -2 mezclado</span></td><td><code>IF Font.Highlight &lt;&gt; COLOR:None THEN ...</code></td></tr>
+        <tr><td><code>Align</code></td><td>LONG</td><td><span class="en">WD:Left..WD:Justify, -1 mixed</span><span class="es">WD:Left..WD:Justify, -1 mezclado</span></td><td><code>IF Font.Align = WD:Center THEN ...</code></td></tr>
+        <tr><td><code>List</code></td><td>LONG</td><td><span class="en">WD:NoList..WD:UpperRoman, -1 mixed</span><span class="es">WD:NoList..WD:UpperRoman, -1 mezclado</span></td><td><code>IF Font.List = WD:Bullets THEN ...</code></td></tr>
+      </table>
+      <h3><span class="en">Methods</span><span class="es">Métodos</span></h3>
+      <div class="sig">Read(LONG pPos=-1),BYTE,PROC</div>
+      <div class="en"><p>Fills the properties from the selection (-1) or from the character at pPos.</p></div><div class="es"><p>Rellena las propiedades desde la selección (-1) o desde el carácter en pPos.</p></div>
+      <div class="en"><pre><span class="k">OF</span> EVENT:Timer
+  Font.Read()                         <span class="c">! what font am I on?</span>
+  ?Status{PROP:Text} = Font.Describe()</pre></div><div class="es"><pre><span class="k">OF</span> EVENT:Timer
+  Font.Read()                         <span class="c">! ¿en qué fuente estoy?</span>
+  ?Status{PROP:Text} = Font.Describe()</pre></div>
+      <div class="sig">Describe(),STRING</div>
+      <div class="en"><p>The last Read in words (English).</p></div><div class="es"><p>El último Read en palabras (en inglés).</p></div>
+      <pre><span class="k">MESSAGE</span>(Font.Describe())              <span class="c">! 'Georgia 12pt, bold, italic'</span></pre>
+      <div class="sig">FontCount(),LONG</div>
+      <div class="en"><p>Scans the document; how many fonts it uses. Call it before FontName and FontChars.</p></div><div class="es"><p>Recorre el documento; cuántas fuentes usa. Llámalo antes de FontName y FontChars.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Font.FontCount() &gt; 3 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Too many fonts'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Font.FontCount() &gt; 3 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Demasiadas fuentes'</span>).</pre></div>
+      <div class="sig">FontName(LONG pN),STRING / FontChars(LONG pN),LONG</div>
+      <div class="en"><p>Font N, and how many characters are set in it.</p></div><div class="es"><p>La fuente N y cuántos caracteres la usan.</p></div>
+      <pre><span class="k">LOOP</span> I# = 1 <span class="k">TO</span> Font.FontCount()
+  FontQ:Name = Font.FontName(I#)
+  FontQ:Chars = Font.FontChars(I#)
+  <span class="k">ADD</span>(FontQ)
+<span class="k">END</span></pre>
+      <div class="sig">FontList(&lt;STRING pSep&gt;),STRING</div>
+      <div class="en"><p>Every font in one string, separated by pSep (default ', ').</p></div><div class="es"><p>Todas las fuentes en una cadena, separadas por pSep (', ' por defecto).</p></div>
+      <pre>?Fonts{PROP:Text} = Font.FontList()
+L:Lines = Font.FontList(<span class="s">'&lt;13,10&gt;'</span>)</pre>
+      <div class="sig">MainFont(),STRING</div>
+      <div class="en"><p>The font most of the text uses.</p></div><div class="es"><p>La fuente que usa la mayor parte del texto.</p></div>
+      <pre><span class="k">IF</span> Font.MainFont() &lt;&gt; <span class="s">'Segoe UI'</span> <span class="k">THEN</span> Font.SetFontAll(<span class="s">'Segoe UI'</span>).</pre>
+      <div class="sig">ReplaceFont(STRING pOld, STRING pNew),LONG,PROC</div>
+      <div class="en"><p>Everything in one font goes into another; returns how many stretches changed.</p></div><div class="es"><p>Todo lo que está en una fuente pasa a otra; devuelve cuántos tramos cambiaron.</p></div>
+      <pre>Font.ReplaceFont(<span class="s">'Times New Roman'</span>, <span class="s">'Georgia'</span>)</pre>
+      <div class="sig">SetFontAll(STRING pFace, REAL pPoints=0)</div>
+      <div class="en"><p>The whole document in one font and/or size; '' or 0 leaves that part alone.</p></div><div class="es"><p>Todo el documento en una fuente y/o tamaño; '' o 0 lo deja como está.</p></div>
+      <div class="en"><pre>Font.SetFontAll(<span class="s">'Calibri'</span>, 11)
+Font.SetFontAll(<span class="s">''</span>, 12)               <span class="c">! size only</span></pre></div><div class="es"><pre>Font.SetFontAll(<span class="s">'Calibri'</span>, 11)
+Font.SetFontAll(<span class="s">''</span>, 12)               <span class="c">! solo el tamaño</span></pre></div>
+      <div class="sig">SetFontRange(LONG pFrom, LONG pTo, STRING pFace, REAL pPoints=0)</div>
+      <div class="en"><p>The same for a range; pTo = -1 is the end.</p></div><div class="es"><p>Lo mismo para un rango; pTo = -1 es el final.</p></div>
+      <div class="en"><pre>Font.SetFontRange(0, 15, <span class="s">'Georgia'</span>, 20)    <span class="c">! the title</span></pre></div><div class="es"><pre>Font.SetFontRange(0, 15, <span class="s">'Georgia'</span>, 20)    <span class="c">! el título</span></pre></div>
+      <div class="sig">ScaleSizes(LONG pPercent),LONG,PROC</div>
+      <div class="en"><p>Every size times a percentage, never under 4 pt.</p></div><div class="es"><p>Cada tamaño por un porcentaje, nunca menos de 4 pt.</p></div>
+      <div class="en"><pre>Font.ScaleSizes(120)                  <span class="c">! large-print copy</span></pre></div><div class="es"><pre>Font.ScaleSizes(120)                  <span class="c">! copia en letra grande</span></pre></div>
+
+    </section>
+    <section id="rtftext">
+      <h2><span class="en">RtfTextClass</span><span class="es">RtfTextClass</span> <a href="#rtftext" class="top">#</a></h2>
+      <div class="en"><p class="lead">RTF to plain text, counts and excerpts.</p></div><div class="es"><p class="lead">RTF a texto plano, recuentos y extractos.</p></div>
+      <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>ListPrefixes</code></td><td>BYTE(1)</td><td><span class="en">- before bullets, 1. b. iv. before numbered items</span><span class="es">- delante de viñetas, 1. b. iv. delante de elementos numerados</span></td><td><code>Text.ListPrefixes = FALSE</code></td></tr>
+        <tr><td><code>Bullet</code></td><td>CSTRING(16)</td><td><span class="en">what a bullet becomes; '' = '- '</span><span class="es">en qué se convierte una viñeta; '' = '- '</span></td><td><code>Text.Bullet = '* '</code></td></tr>
+        <tr><td><code>TabCells</code></td><td>BYTE(1)</td><td><span class="en">table cells separated by TAB; off = ' | '</span><span class="es">celdas separadas por TAB; desactivado = ' | '</span></td><td><code>Text.TabCells = FALSE</code></td></tr>
+        <tr><td><code>PictureMarks</code></td><td>BYTE</td><td><span class="en">write [picture] where a picture was</span><span class="es">escribe [picture] donde había una imagen</span></td><td><code>Text.PictureMarks = TRUE</code></td></tr>
+        <tr><td><code>Utf8</code></td><td>BYTE</td><td><span class="en">UTF-8 instead of the ANSI code page</span><span class="es">UTF-8 en vez de la página de códigos ANSI</span></td><td><code>Text.Utf8 = TRUE</code></td></tr>
+      </table>
+      <h3><span class="en">Methods</span><span class="es">Métodos</span></h3>
+      <div class="sig">ToText(),STRING,PROC</div>
+      <div class="en"><p>The document as plain text.</p></div><div class="es"><p>El documento como texto plano.</p></div>
+      <pre>Text.LoadBlob(DOC:Body)
+DOC:PlainText = Text.ToText()</pre>
+      <div class="sig">SaveText(STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Writes it to a file.</p></div><div class="es"><p>Lo escribe en un fichero.</p></div>
+      <pre>Text.SaveText(<span class="s">'C:\Out\letter.txt'</span>)</pre>
+      <div class="sig">WordCount(),LONG</div>
+      <div class="en"><p>The number of words.</p></div><div class="es"><p>El número de palabras.</p></div>
+      <div class="en"><pre>?Words{PROP:Text} = Text.WordCount() &amp; <span class="s">' words'</span></pre></div><div class="es"><pre>?Words{PROP:Text} = Text.WordCount() &amp; <span class="s">' palabras'</span></pre></div>
+      <div class="sig">CharCount(BYTE pWithSpaces=1),LONG</div>
+      <div class="en"><p>The number of characters, with or without spaces.</p></div><div class="es"><p>El número de caracteres, con o sin espacios.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Text.CharCount(<span class="k">FALSE</span>) &gt; 1600 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Too long'</span>).</pre></div><div class="es"><pre><span class="k">IF</span> Text.CharCount(<span class="k">FALSE</span>) &gt; 1600 <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Demasiado largo'</span>).</pre></div>
+      <div class="sig">ParagraphCount() / PictureCount() / TableCount(),LONG</div>
+      <div class="en"><p>Paragraphs with text, pictures and tables.</p></div><div class="es"><p>Párrafos con texto, imágenes y tablas.</p></div>
+      <pre>L:Info = Text.ParagraphCount() &amp; <span class="s">'/'</span> &amp; Text.PictureCount() &amp; <span class="s">'/'</span> &amp; Text.TableCount()</pre>
+      <div class="sig">Excerpt(LONG pMaxChars=200),STRING</div>
+      <div class="en"><p>The start of the text on one line, cut at a word, with ...</p></div><div class="es"><p>El principio del texto en una línea, cortado en una palabra, con ...</p></div>
+      <div class="en"><pre>DOC:Summary = Text.Excerpt(120)       <span class="c">! a browse column</span></pre></div><div class="es"><pre>DOC:Resumen = Text.Excerpt(120)       <span class="c">! columna de un browse</span></pre></div>
+      <div class="sig">IsRtf(STRING pText),BYTE</div>
+      <div class="en"><p>TRUE when the string starts with {\rtf.</p></div><div class="es"><p>TRUE si la cadena empieza por {\rtf.</p></div>
+      <pre><span class="k">IF</span> <span class="k">NOT</span> Text.IsRtf(L:Imported) <span class="k">THEN</span> L:Imported = Text.TextToRtf(L:Imported).</pre>
+      <div class="sig">TextToRtf(STRING pText, &lt;STRING pFace&gt;, REAL pPoints=0),STRING</div>
+      <div class="en"><p>Plain text as an RTF document: escapes \ { }, turns line breaks into paragraphs and accents into \'e9.</p></div><div class="es"><p>Texto plano como documento RTF: escapa \ { }, convierte los saltos en párrafos y los acentos en \'e9.</p></div>
+      <pre>Doc1.LoadString(Text.TextToRtf(NOTE:Memo, <span class="s">'Georgia'</span>, 12))</pre>
+
+    </section>
+    <section id="rtfhtml">
+      <h2><span class="en">RtfHtmlClass</span><span class="es">RtfHtmlClass</span> <a href="#rtfhtml" class="top">#</a></h2>
+      <div class="en"><p class="lead">RTF to HTML.</p></div><div class="es"><p class="lead">RTF a HTML.</p></div>
+      <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>FullPage</code></td><td>BYTE(1)</td><td><span class="en">a complete page; 0 = a &lt;div&gt; fragment</span><span class="es">una página completa; 0 = un fragmento &lt;div&gt;</span></td><td><code>Html.FullPage = FALSE</code></td></tr>
+        <tr><td><code>Title</code></td><td>CSTRING(256)</td><td><span class="en">the page's &lt;title&gt;</span><span class="es">el &lt;title&gt; de la página</span></td><td><code>Html.Title = DOC:Title</code></td></tr>
+        <tr><td><code>SkipPictures</code></td><td>BYTE</td><td><span class="en">leave pictures out</span><span class="es">deja fuera las imágenes</span></td><td><code>Html.SkipPictures = TRUE</code></td></tr>
+        <tr><td><code>ImageFolder</code></td><td>CSTRING(261)</td><td><span class="en">'' = pictures embedded as data: URIs; a folder = written there as image1.png...</span><span class="es">'' = imágenes incrustadas como data: URI; una carpeta = se escriben ahí como image1.png...</span></td><td><code>Html.ImageFolder = 'C:\Site\img'</code></td></tr>
+        <tr><td><code>ImageUrl</code></td><td>CSTRING(261)</td><td><span class="en">how the page links those files</span><span class="es">cómo enlaza la página esos ficheros</span></td><td><code>Html.ImageUrl = 'img/'</code></td></tr>
+      </table>
+      <h3><span class="en">Methods</span><span class="es">Métodos</span></h3>
+      <div class="sig">ToHtml(),STRING,PROC</div>
+      <div class="en"><p>The document as UTF-8 HTML.</p></div><div class="es"><p>El documento como HTML UTF-8.</p></div>
+      <div class="en"><pre>Html.LoadBlob(DOC:Body)
+Html.FullPage = <span class="k">FALSE</span>
+L:Body = Html.ToHtml()                <span class="c">! the body of an e-mail</span></pre></div><div class="es"><pre>Html.LoadBlob(DOC:Body)
+Html.FullPage = <span class="k">FALSE</span>
+L:Body = Html.ToHtml()                <span class="c">! el cuerpo de un correo</span></pre></div>
+      <div class="sig">SaveHtml(STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Writes it to a file.</p></div><div class="es"><p>Lo escribe en un fichero.</p></div>
+      <div class="en"><pre>Html.Title = <span class="s">'Welcome letter'</span>
+<span class="k">IF</span> Html.SaveHtml(<span class="s">'C:\Out\welcome.html'</span>) <span class="k">THEN</span> <span class="k">RUN</span>(<span class="s">'explorer C:\Out\welcome.html'</span>).</pre></div><div class="es"><pre>Html.Title = <span class="s">'Carta de bienvenida'</span>
+<span class="k">IF</span> Html.SaveHtml(<span class="s">'C:\Out\bienvenida.html'</span>) <span class="k">THEN</span> <span class="k">RUN</span>(<span class="s">'explorer C:\Out\bienvenida.html'</span>).</pre></div>
+
+    </section>
+    <section id="rtfmd">
+      <h2><span class="en">RtfMarkdownClass</span><span class="es">RtfMarkdownClass</span> <a href="#rtfmd" class="top">#</a></h2>
+      <div class="en"><p class="lead">RTF to Markdown.</p></div><div class="es"><p class="lead">RTF a Markdown.</p></div>
+      <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>SkipPictures</code></td><td>BYTE</td><td><span class="en">leave pictures out</span><span class="es">deja fuera las imágenes</span></td><td><code>Md.SkipPictures = TRUE</code></td></tr>
+        <tr><td><code>ImageFolder</code></td><td>CSTRING(261)</td><td><span class="en">as RtfHtmlClass</span><span class="es">como en RtfHtmlClass</span></td><td><code>Md.ImageFolder = 'C:\Wiki\media'</code></td></tr>
+        <tr><td><code>ImageUrl</code></td><td>CSTRING(261)</td><td><span class="en">as RtfHtmlClass</span><span class="es">como en RtfHtmlClass</span></td><td><code>Md.ImageUrl = 'media/'</code></td></tr>
+      </table>
+      <h3><span class="en">Methods</span><span class="es">Métodos</span></h3>
+      <div class="sig">ToMarkdown(),STRING,PROC</div>
+      <div class="en"><p>The document as UTF-8 Markdown.</p></div><div class="es"><p>El documento como Markdown UTF-8.</p></div>
+      <pre>Md.LoadBlob(DOC:Body)
+L:Markdown = Md.ToMarkdown()</pre>
+      <div class="sig">SaveMarkdown(STRING pFileName),BYTE,PROC</div>
+      <div class="en"><p>Writes it to a file.</p></div><div class="es"><p>Lo escribe en un fichero.</p></div>
+      <pre>Md.SaveMarkdown(<span class="s">'C:\Wiki\'</span> &amp; <span class="k">CLIP</span>(DOC:Code) &amp; <span class="s">'.md'</span>)</pre>
+
+    </section>
+    <section id="rtfmerge">
+      <h2><span class="en">RtfMergeClass</span><span class="es">RtfMergeClass</span> <a href="#rtfmerge" class="top">#</a></h2>
+      <div class="en"><p class="lead">Mail merge: [[Name]] placeholders.</p></div><div class="es"><p class="lead">Combinación de correspondencia: marcadores [[Nombre]].</p></div>
+      <h3><span class="en">Properties</span><span class="es">Propiedades</span></h3>
+      <table>
+        <tr><th><span class="en">Property</span><span class="es">Propiedad</span></th><th><span class="en">Type</span><span class="es">Tipo</span></th><th><span class="en">Meaning</span><span class="es">Significado</span></th><th><span class="en">Example</span><span class="es">Ejemplo</span></th></tr>
+        <tr><td><code>FieldOpen</code></td><td>CSTRING(9)</td><td><span class="en">the opening marker; '' = [[</span><span class="es">el marcador de apertura; '' = [[</span></td><td><code>Merge.FieldOpen = '&lt;&lt;&lt;&lt;'</code></td></tr>
+        <tr><td><code>FieldClose</code></td><td>CSTRING(9)</td><td><span class="en">the closing marker; '' = ]]</span><span class="es">el marcador de cierre; '' = ]]</span></td><td><code>Merge.FieldClose = '&gt;&gt;'</code></td></tr>
+        <tr><td><code>UseBound</code></td><td>BYTE(1)</td><td><span class="en">a field not set with SetField is looked up with EVALUATE, so BIND()ed fields fill themselves</span><span class="es">un campo no asignado con SetField se busca con EVALUATE, así los campos con BIND() se rellenan solos</span></td><td><code>Merge.UseBound = FALSE</code></td></tr>
+        <tr><td><code>BlankUnknown</code></td><td>BYTE</td><td><span class="en">a placeholder nothing filled becomes ''</span><span class="es">un marcador que nadie rellenó queda vacío</span></td><td><code>Merge.BlankUnknown = TRUE</code></td></tr>
+      </table>
+      <h3><span class="en">Methods</span><span class="es">Métodos</span></h3>
+      <div class="sig">SetField(STRING pName, STRING pValue)</div>
+      <div class="en"><p>A value for [[pName]]. Not case-sensitive; setting it again replaces it.</p></div><div class="es"><p>Un valor para [[pName]]. No distingue mayúsculas; asignarlo otra vez lo sustituye.</p></div>
+      <div class="en"><pre>Merge.SetField(<span class="s">'When'</span>, <span class="k">FORMAT</span>(ORD:ShipDate, @D17))
+Merge.SetField(<span class="s">'Total'</span>, <span class="k">LEFT</span>(<span class="k">FORMAT</span>(ORD:Total, @N$13.2)))</pre></div><div class="es"><pre>Merge.SetField(<span class="s">'Fecha'</span>, <span class="k">FORMAT</span>(PED:FechaEnvio, @D17))
+Merge.SetField(<span class="s">'Total'</span>, <span class="k">LEFT</span>(<span class="k">FORMAT</span>(PED:Total, @N13.2)))</pre></div>
+      <div class="sig">ClearFields()</div>
+      <div class="en"><p>Forgets every SetField value.</p></div><div class="es"><p>Olvida todos los valores de SetField.</p></div>
+      <pre>Merge.ClearFields()</pre>
+      <div class="sig">Merge(),LONG,PROC</div>
+      <div class="en"><p>Fills the placeholders; returns how many were replaced. Each value takes its placeholder's formatting; one Undo takes the whole merge back.</p></div><div class="es"><p>Rellena los marcadores; devuelve cuántos se reemplazaron. Cada valor toma el formato de su marcador; un Deshacer recupera toda la combinación.</p></div>
+      <pre>Merge.LoadBlob(TPL:Body)
+<span class="k">BIND</span>(CUS:Record)
+Merge.Merge()
+Merge.SaveBlob(LET:Body)</pre>
+      <div class="sig">FieldCount(),LONG / FieldName(LONG pN),STRING</div>
+      <div class="en"><p>The distinct placeholders in the document.</p></div><div class="es"><p>Los marcadores distintos del documento.</p></div>
+      <pre><span class="k">LOOP</span> I# = 1 <span class="k">TO</span> Merge.FieldCount()
+  FieldQ:Name = Merge.FieldName(I#)
+  <span class="k">ADD</span>(FieldQ)
+<span class="k">END</span></pre>
+      <div class="sig">Missing(),STRING</div>
+      <div class="en"><p>The placeholders nothing will fill, comma-separated.</p></div><div class="es"><p>Los marcadores que nada rellenará, separados por comas.</p></div>
+      <div class="en"><pre><span class="k">IF</span> Merge.Missing() &lt;&gt; <span class="s">''</span> <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'No value for: '</span> &amp; Merge.Missing()); <span class="k">RETURN</span>.</pre></div><div class="es"><pre><span class="k">IF</span> Merge.Missing() &lt;&gt; <span class="s">''</span> <span class="k">THEN</span> <span class="k">MESSAGE</span>(<span class="s">'Sin valor para: '</span> &amp; Merge.Missing()); <span class="k">RETURN</span>.</pre></div>
+
+    </section>
+
+    </div>
+    <footer>
+      <span class="en">myWordDoc - Programmer's Documentation. Written from the shipped source (wdoc.c, WordDocClass.inc/.clw, WordDocTools.inc/.clw, myWordDoc.tpl). Regenerate with <code>python examples/myWordDoc/docgen/make_docs.py</code>.</span>
+      <span class="es">myWordDoc - Documentación del programador. Escrita a partir del código distribuido (wdoc.c, WordDocClass.inc/.clw, WordDocTools.inc/.clw, myWordDoc.tpl). Se regenera con <code>python examples/myWordDoc/docgen/make_docs.py</code>.</span>
+    </footer>
+  </main>
+</div>
+<script>
+  function setLang(l){
+    document.documentElement.setAttribute('data-lang', l);
+    document.getElementById('btn-en').classList.toggle('on', l==='en');
+    document.getElementById('btn-es').classList.toggle('on', l==='es');
+    try{ localStorage.setItem('mc-lang', l); }catch(e){}
+  }
+  var saved='en';
+  try{ saved = localStorage.getItem('mc-lang') || (navigator.language||'en').slice(0,2); }catch(e){}
+  setLang(saved==='es' ? 'es' : 'en');
+</script>
+</body>
+</html>

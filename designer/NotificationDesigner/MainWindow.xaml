@@ -1,0 +1,185 @@
+<Window x:Class="NotificationDesigner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Notification Designer" Width="1320" Height="860" MinWidth="1080" MinHeight="680"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource Canvas}"
+        UseLayoutRounding="True" SnapsToDevicePixels="True" TextOptions.TextFormattingMode="Display">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <!-- ============ top bar ============ -->
+        <Border Grid.Row="0" Background="{StaticResource SlateDark}">
+            <DockPanel LastChildFill="False" Margin="14,0">
+                <Border DockPanel.Dock="Left" Width="30" Height="30" CornerRadius="7" Background="{StaticResource Accent}" VerticalAlignment="Center">
+                    <TextBlock Text="&#xEA8F;" FontFamily="{StaticResource Icons}" FontSize="15" Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel DockPanel.Dock="Left" Margin="12,0,24,0" VerticalAlignment="Center">
+                    <TextBlock Text="Notification Designer" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="FileLabel" Text="Untitled" Foreground="#AAB2BE" FontSize="11.5"/>
+                </StackPanel>
+                <Button DockPanel.Dock="Left" Style="{StaticResource Bar}" VerticalAlignment="Center" Click="New_Click" ToolTip="Start from a preset (Ctrl+N)">
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE710;" FontFamily="{StaticResource Icons}" Margin="0,1,8,0"/><TextBlock Text="New"/></StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Left" Style="{StaticResource Bar}" VerticalAlignment="Center" Click="Open_Click" ToolTip="Open a .ntf design (Ctrl+O)">
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8E5;" FontFamily="{StaticResource Icons}" Margin="0,1,8,0"/><TextBlock Text="Open"/></StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Left" Style="{StaticResource Bar}" VerticalAlignment="Center" Click="Save_Click" ToolTip="Save (Ctrl+S)">
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE74E;" FontFamily="{StaticResource Icons}" Margin="0,1,8,0"/><TextBlock Text="Save"/></StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Left" Style="{StaticResource Bar}" VerticalAlignment="Center" Click="SaveAs_Click" ToolTip="Save under a new name">
+                    <TextBlock Text="Save as..."/>
+                </Button>
+
+                <Button DockPanel.Dock="Right" Style="{StaticResource Bar}" Click="Help_Click" VerticalAlignment="Center" ToolTip="How the designer and the template fit together">
+                    <TextBlock Text="&#xE897;" FontFamily="{StaticResource Icons}"/>
+                </Button>
+                <Button DockPanel.Dock="Right" Style="{StaticResource Primary}" Click="ShowOnWindows_Click" Margin="0,0,8,0" Padding="16,8" VerticalAlignment="Center"
+                        ToolTip="Send this notification to Windows now, with the sample values (F5)">
+                    <StackPanel Orientation="Horizontal"><TextBlock Text="&#xE768;" FontFamily="{StaticResource Icons}" Margin="0,1,8,0"/><TextBlock Text="Show on Windows"/></StackPanel>
+                </Button>
+            </DockPanel>
+        </Border>
+
+        <!-- ============ body ============ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="168"/>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- section rail -->
+            <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="DESIGN" Margin="20,18,0,8" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Subtle}"/>
+                    <ListBox x:Name="Nav" BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource NavItem}"
+                             SelectionChanged="Nav_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                </DockPanel>
+            </Border>
+
+            <!-- editor -->
+            <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="24,20,24,6">
+                        <TextBlock x:Name="SectionTitle" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource Ink}"/>
+                        <TextBlock x:Name="SectionHint" FontSize="12.5" Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                    <ScrollViewer x:Name="EditorScroll" VerticalScrollBarVisibility="Auto" Padding="24,8,20,24">
+                        <StackPanel x:Name="Editor"/>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <!-- stage -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="24,16,24,8" LastChildFill="False">
+                    <Border DockPanel.Dock="Left" Background="#E1E5EA" CornerRadius="8" Padding="2">
+                        <TabControl x:Name="StageTabs" BorderThickness="0" Background="Transparent" Padding="0" SelectionChanged="StageTabs_SelectionChanged">
+                            <TabControl.Template>
+                                <ControlTemplate TargetType="TabControl">
+                                    <TabPanel IsItemsHost="True"/>
+                                </ControlTemplate>
+                            </TabControl.Template>
+                            <TabItem Header="Preview" Style="{StaticResource SegTab}"/>
+                            <TabItem Header="XML" Style="{StaticResource SegTab}"/>
+                            <TabItem Header="Clarion code" Style="{StaticResource SegTab}"/>
+                        </TabControl>
+                    </Border>
+                    <StackPanel x:Name="ThemeSwitch" DockPanel.Dock="Right" Orientation="Horizontal">
+                        <TextBlock Text="Windows theme" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="12.5"/>
+                        <Border Background="#E1E5EA" CornerRadius="8" Padding="2">
+                            <StackPanel Orientation="Horizontal">
+                                <ToggleButton x:Name="LightBtn" Content="Light" Click="Theme_Click" Tag="light" Padding="12,4" Cursor="Hand">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border x:Name="b" CornerRadius="6" Padding="{TemplateBinding Padding}" Background="Transparent">
+                                                <ContentPresenter TextElement.Foreground="{StaticResource Muted}" x:Name="cp" VerticalAlignment="Center" TextElement.FontSize="12.5"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="b" Property="Background" Value="White"/>
+                                                    <Setter TargetName="cp" Property="TextElement.Foreground" Value="{StaticResource Ink}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                                <ToggleButton x:Name="DarkBtn" Content="Dark" Click="Theme_Click" Tag="dark" Padding="12,4" Cursor="Hand"
+                                              Template="{Binding Template, ElementName=LightBtn}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- preview -->
+                <Border x:Name="Desk" Grid.Row="1" Margin="24,0,24,12" CornerRadius="12" ClipToBounds="True">
+                    <Grid>
+                        <ScrollViewer x:Name="PreviewScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid MinHeight="420">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,30">
+                                    <ContentControl x:Name="PreviewHost"/>
+                                    <WrapPanel x:Name="PreviewChips" HorizontalAlignment="Center" Margin="0,18,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>
+                        <TextBox x:Name="XmlBox" Visibility="Collapsed" FontFamily="{StaticResource Mono}" FontSize="12.5" IsReadOnly="True"
+                                 Background="#FBFCFD" Padding="18,14" BorderThickness="0" TextWrapping="NoWrap"
+                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+                        <TextBox x:Name="CodeBox" Visibility="Collapsed" FontFamily="{StaticResource Mono}" FontSize="12.5" IsReadOnly="True"
+                                 Background="#FBFCFD" Padding="18,14" BorderThickness="0" TextWrapping="NoWrap"
+                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+                        <Button x:Name="CopyBtn" Visibility="Collapsed" Content="Copy" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Margin="0,12,16,0" Click="Copy_Click"/>
+                    </Grid>
+                </Border>
+
+                <!-- checks + event log -->
+                <Grid Grid.Row="2" Margin="24,0,24,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="White" CornerRadius="10" BorderBrush="{StaticResource Line}" BorderThickness="1" Padding="16,12" MinHeight="96">
+                        <StackPanel>
+                            <TextBlock Text="CHECKS" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Subtle}" Margin="0,0,0,6"/>
+                            <StackPanel x:Name="Checks"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Background="White" CornerRadius="10" BorderBrush="{StaticResource Line}" BorderThickness="1" Padding="16,12" MinHeight="96">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                                <Button DockPanel.Dock="Right" Style="{StaticResource IconBtn}" Content="&#xE74D;" ToolTip="Clear" Click="ClearLog_Click" Padding="4"/>
+                                <TextBlock Text="WHAT THE PROGRAM WOULD RECEIVE" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource Subtle}"/>
+                            </DockPanel>
+                            <ScrollViewer MaxHeight="110" VerticalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="EventLog">
+                                    <TextBlock x:Name="EventHint" Text="Press Show on Windows, then click the notification or one of its buttons."
+                                               Foreground="{StaticResource Subtle}" FontSize="12.5" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- ============ status ============ -->
+        <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0">
+            <DockPanel Margin="16,0">
+                <TextBlock x:Name="StatusRight" DockPanel.Dock="Right" Foreground="{StaticResource Subtle}" FontSize="12" VerticalAlignment="Center"/>
+                <TextBlock x:Name="Status" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

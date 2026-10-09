@@ -168,11 +168,11 @@
       <h2><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span> <a href="#install" class="top">#</a></h2>
       <div class="en">
       <ol>
-        <li>Copy <code>templates/myCalc/CalcClass.inc</code>, <code>CalcClass.clw</code> and
+        <li>Copy <code>templates/myCalc/libsrc/win/CalcClass.inc</code>, <code>CalcClass.clw</code> and
           <code>calc16.ico</code> to a folder on the Clarion redirection path (your app folder, or
           <code>\clarion12\libsrc\win</code>). The two source files <b>must be ANSI with CRLF line
           endings</b>.</li>
-        <li>Copy <code>templates/myCalc/myCalc.tpl</code> into your template folder.</li>
+        <li>Copy <code>templates/myCalc/template/win/myCalc.tpl</code> into your template folder.</li>
         <li>In the IDE: <b>Setup ▸ Template Registry ▸ Register</b>, pick <code>myCalc.tpl</code>.</li>
         <li>Open a window, and from the control-template list drag
           <b>myCalc - Calculator button beside a numeric field</b> next to the entry you want it to fill in.</li>
@@ -188,10 +188,12 @@
         <a href="#language">language setting</a> live.</div>
       <div class="filetree">
 templates/myCalc/<br>
-&nbsp;&nbsp;CalcClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the calculator: modes, actions, strings, prototypes</span><br>
-&nbsp;&nbsp;CalcClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the implementation: keypad, arithmetic, window</span><br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myCalc.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">global extension + button control + code template</span><br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;CalcClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the calculator: modes, actions, strings, prototypes</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;CalcClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the implementation: keypad, arithmetic, window</span><br>
 &nbsp;&nbsp;calc16.ico&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the little calculator on the button</span><br>
-&nbsp;&nbsp;myCalc.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">global extension + button control + code template</span><br>
 &nbsp;&nbsp;myCalc.zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the four files above, for distribution</span><br>
 examples/myCalc/<br>
 &nbsp;&nbsp;CalcDemo.clw / .cwproj&nbsp;<span style="color:#6b7785">a runnable demo — three fields, three buttons</span>
@@ -199,11 +201,11 @@ examples/myCalc/<br>
       </div>
       <div class="es">
       <ol>
-        <li>Copia <code>templates/myCalc/CalcClass.inc</code>, <code>CalcClass.clw</code> y
+        <li>Copia <code>templates/myCalc/libsrc/win/CalcClass.inc</code>, <code>CalcClass.clw</code> y
           <code>calc16.ico</code> a una carpeta del camino de redirección de Clarion (la carpeta de tu app, o
           <code>\clarion12\libsrc\win</code>). Los dos archivos de código <b>tienen que estar en ANSI y con
           finales de línea CRLF</b>.</li>
-        <li>Copia <code>templates/myCalc/myCalc.tpl</code> a tu carpeta de plantillas.</li>
+        <li>Copia <code>templates/myCalc/template/win/myCalc.tpl</code> a tu carpeta de plantillas.</li>
         <li>En el IDE: <b>Setup ▸ Template Registry ▸ Register</b>, y elige <code>myCalc.tpl</code>.</li>
         <li>Abre una ventana y arrastra desde la lista de plantillas de control
           <b>myCalc - Calculator button beside a numeric field</b> junto al campo que quieras rellenar.</li>
@@ -219,10 +221,12 @@ examples/myCalc/<br>
         la <a href="#language">selección de idioma</a>.</div>
       <div class="filetree">
 templates/myCalc/<br>
-&nbsp;&nbsp;CalcClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la calculadora: modos, acciones, textos, prototipos</span><br>
-&nbsp;&nbsp;CalcClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la implementación: teclado, aritmética, ventana</span><br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myCalc.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">extensión global + control del botón + code template</span><br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;CalcClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la calculadora: modos, acciones, textos, prototipos</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;CalcClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la implementación: teclado, aritmética, ventana</span><br>
 &nbsp;&nbsp;calc16.ico&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la calculadorita del botón</span><br>
-&nbsp;&nbsp;myCalc.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">extensión global + control del botón + code template</span><br>
 &nbsp;&nbsp;myCalc.zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">los cuatro archivos anteriores, para distribuir</span><br>
 examples/myCalc/<br>
 &nbsp;&nbsp;CalcDemo.clw / .cwproj&nbsp;<span style="color:#6b7785">demo que compila — tres campos, tres botones</span>

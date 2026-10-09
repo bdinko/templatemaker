@@ -71,21 +71,27 @@
 <body>
 <div class="wrap">
   <nav>
-    <div class="brand"><h1>myExport</h1><span class="en">Programmer's Documentation · v1.2</span><span class="es">Documentación del programador · v1.2</span></div>
+    <div class="brand"><h1>myExport</h1><span class="en">Programmer's Documentation · v1.8</span><span class="es">Documentación del programador · v1.8</span></div>
     <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
     <div class="grp"><span class="en">Using it</span><span class="es">Cómo usarlo</span></div>
     <a href="#install" class="h2"><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span></a>
     <a href="#button" class="h2"><span class="en">The Export button</span><span class="es">El botón Exportar</span></a>
     <a href="#code" class="h2"><span class="en">An existing button or menu</span><span class="es">Un botón o menú que ya tienes</span></a>
     <a href="#dialog" class="h2"><span class="en">The run-time dialog</span><span class="es">El diálogo en ejecución</span></a>
+    <a href="#email" class="h2"><span class="en">Email it when it's done</span><span class="es">Enviarlo por correo al terminar</span></a>
     <a href="#picker" class="h2"><span class="en">Choosing the columns</span><span class="es">Elegir las columnas</span></a>
     <a href="#remember" class="h2"><span class="en">Remembering the last export</span><span class="es">Recordar la última exportación</span></a>
     <a href="#scope" class="h2"><span class="en">Which records get exported</span><span class="es">Qué registros se exportan</span></a>
     <a href="#language" class="h2"><span class="en">English or Spanish</span><span class="es">Inglés o español</span></a>
     <a href="#multidll" class="h2"><span class="en">Multi-DLL applications</span><span class="es">Aplicaciones multi-DLL</span></a>
     <div class="grp"><span class="en">The formats</span><span class="es">Los formatos</span></div>
-    <a href="#formats" class="h2"><span class="en">All seven, compared</span><span class="es">Los siete, comparados</span></a>
+    <a href="#formats" class="h2"><span class="en">All nine, compared</span><span class="es">Los nueve, comparados</span></a>
+    <a href="#printpdf" class="h2"><span class="en">Print &amp; PDF</span><span class="es">Print y PDF</span></a>
     <a href="#excel" class="h2"><span class="en">Excel .xlsx</span><span class="es">Excel .xlsx</span></a>
+    <a href="#numfmt" class="h2"><span class="en">Number formats: decimals and negatives</span><span class="es">Formatos numéricos: decimales y negativos</span></a>
+    <a href="#summary" class="h2"><span class="en">Summary rows: Sum, Average, Min, Max, Count</span><span class="es">Filas de resumen: Suma, Promedio, Mín, Máx, Cuenta</span></a>
+    <a href="#subtotal" class="h2"><span class="en">Subtotal / group rows</span><span class="es">Filas de subtotal / grupo</span></a>
+    <a href="#workbook" class="h2"><span class="en">Multiple sheets in one workbook</span><span class="es">Varias hojas en un mismo libro</span></a>
     <a href="#smaller" class="h2"><span class="en">Smaller workbooks</span><span class="es">Libros más pequeños</span></a>
     <div class="grp"><span class="en">How it works</span><span class="es">Cómo funciona</span></div>
     <a href="#columns" class="h2"><span class="en">Reading the list</span><span class="es">Cómo lee la lista</span></a>
@@ -100,14 +106,16 @@
       <h1>myExport</h1>
       <p class="en">Put an <b>Export</b> button on any browse or list. One press asks for the format, the file name
          and which columns to send, then writes <b>CSV</b>, <b>CSV&nbsp;UTF-8</b>, <b>TSV</b>, <b>XML</b>,
-         <b>JSON</b>, <b>HTML</b> or a real <b>Excel&nbsp;.xlsx</b> workbook — in pure Clarion, with nothing
+         <b>JSON</b>, <b>HTML</b> or a real <b>Excel&nbsp;.xlsx</b> workbook — or sends it straight to a
+         <b>printer</b>, or builds a real, paginated <b>PDF</b> — in pure Clarion, with nothing
          to deploy.</p>
       <p class="es">Pon un botón <b>Exportar</b> en cualquier browse o lista. Una pulsación pide el
          formato, el nombre del archivo y qué columnas enviar, y escribe <b>CSV</b>, <b>CSV&nbsp;UTF-8</b>,
          <b>TSV</b>, <b>XML</b>, <b>JSON</b>, <b>HTML</b> o un libro de <b>Excel&nbsp;.xlsx</b> de verdad —
+         o lo manda directo a una <b>impresora</b>, o arma un <b>PDF</b> real y paginado —
          en Clarion puro, sin nada que instalar.</p>
-      <span class="pill en">7 formats · real OOXML .xlsx · pick / rename / re-picture columns · no Excel, no COM, no helper .exe</span>
-      <span class="pill es">7 formatos · .xlsx OOXML real · elegir / renombrar / re-picture de columnas · sin Excel, sin COM, sin programa auxiliar</span>
+      <span class="pill en">9 formats · real OOXML .xlsx · straight-to-printer or a hand-built PDF · pick / rename / re-picture columns · no Excel, no COM, no helper .exe</span>
+      <span class="pill es">9 formatos · .xlsx OOXML real · impresión directa o PDF hecho a mano · elegir / renombrar / re-picture de columnas · sin Excel, sin COM, sin programa auxiliar</span>
     </header>
     <div class="langbar">
       <button id="btn-en" onclick="setLang('en')">English</button>
@@ -121,7 +129,7 @@
       <div class="en">
       <p class="lead">Drag <b>myExport&nbsp;-&nbsp;Export button</b> onto a browse window. That is the whole
         job: you get a wired-up button, a modal dialog that asks for a format, a destination and which
-        columns to send, and seven writers behind it.</p>
+        columns to send, and nine writers behind it.</p>
       <p>The part that makes it worth having is that <b>you never describe your columns to it</b>. At the
         moment the button is pressed it reads the LIST control's own <code>FORMAT</code> — which columns
         exist, which queue field each one shows, its heading and its picture — and pulls the values out of
@@ -137,7 +145,7 @@
         <tr><td>Needs a DLL / OCX / COM / helper .exe</td><td><b>No</b> — nothing to redistribute</td></tr>
         <tr><td>Column setup</td><td><b>None</b> — read from the live LIST every time</td></tr>
         <tr><td>Column control</td><td>The user ticks, renames and re-pictures columns in the dialog</td></tr>
-        <tr><td>Formats</td><td>CSV, CSV UTF-8, TSV, XML, JSON, HTML, Excel .xlsx</td></tr>
+        <tr><td>Formats</td><td>CSV, CSV UTF-8, TSV, XML, JSON, HTML, Excel .xlsx, Print, PDF</td></tr>
         <tr><td>Records</td><td>Every record in the browse (walks the view), or just the loaded page</td></tr>
         <tr><td>Where it goes</td><td>The user picks, in a standard Save-As dialog</td></tr>
       </table>
@@ -150,7 +158,7 @@
       <div class="es">
       <p class="lead">Arrastra <b>myExport&nbsp;-&nbsp;Export button</b> sobre la ventana de un browse. Eso
         es todo: obtienes un botón ya cableado, un diálogo modal que pide el formato, el destino y qué
-        columnas enviar, y siete escritores detrás.</p>
+        columnas enviar, y nueve escritores detrás.</p>
       <p>Lo que de verdad lo hace útil es que <b>nunca le describes tus columnas</b>. En el momento en que
         se pulsa el botón lee el <code>FORMAT</code> del propio control LIST — qué columnas hay, qué campo
         de la cola muestra cada una, su encabezado y su picture — y saca los valores de la cola con
@@ -166,7 +174,7 @@
         <tr><td>¿Necesita DLL / OCX / COM / programa auxiliar?</td><td><b>No</b> — no hay nada que redistribuir</td></tr>
         <tr><td>Configuración de columnas</td><td><b>Ninguna</b> — se leen del LIST vivo cada vez</td></tr>
         <tr><td>Control de columnas</td><td>El usuario marca, renombra y cambia el picture en el diálogo</td></tr>
-        <tr><td>Formatos</td><td>CSV, CSV UTF-8, TSV, XML, JSON, HTML, Excel .xlsx</td></tr>
+        <tr><td>Formatos</td><td>CSV, CSV UTF-8, TSV, XML, JSON, HTML, Excel .xlsx, Print, PDF</td></tr>
         <tr><td>Registros</td><td>Todos los del browse (recorre la vista), o solo la página cargada</td></tr>
         <tr><td>Destino</td><td>Lo elige el usuario, en un diálogo Guardar como estándar</td></tr>
       </table>
@@ -182,11 +190,11 @@
       <h2><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span> <a href="#install" class="top">#</a></h2>
       <div class="en">
       <ol>
-        <li>Copy <code>templates/myExport/ExportClass.inc</code> and <code>ExportClass.clw</code> to a folder
+        <li>Copy <code>templates/myExport/libsrc/win/ExportClass.inc</code> and <code>ExportClass.clw</code> to a folder
           on the Clarion redirection path (your app folder, or <code>\clarion12\libsrc\win</code>). They
           <b>must be stored in ANSI with CRLF line endings</b> — an LF-only copy makes the compiler report a
           bogus <code>Illegal data type: EXPORTCLASS</code> at every use site.</li>
-        <li>Copy <code>templates/myExport/myExport.tpl</code> into your template folder.</li>
+        <li>Copy <code>templates/myExport/template/win/myExport.tpl</code> into your template folder.</li>
         <li>In the IDE: <b>Setup ▸ Template Registry ▸ Register</b>, pick <code>myExport.tpl</code>.</li>
         <li>Open a browse procedure's window, and from the control-template list drag
           <b>myExport - Export button for a browse/list</b> onto the window.</li>
@@ -200,13 +208,17 @@
         application the global extension <b class="i">myExport - Global</b> is optional — add it only if you
         also want to call the class from hand-written code in procedures that have no Export button. In a
         <b class="i">multi-DLL</b> application it is required, in every app: see
-        <a href="#multidll">Multi-DLL applications</a>.</div>
+        <a href="#multidll">Multi-DLL applications</a>. Nothing extra is needed for <a href="#email">Email it
+        when it's done</a> either: <code>MAPI32.DLL</code> is loaded when the first e-mail is sent, not
+        linked, so there is no <code>MAPI32.LIB</code> to add.</div>
       <div class="filetree">
 templates/myExport/<br>
-&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the engine (config + method prototypes)</span><br>
-&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the implementation: dialog, 7 writers, ZIP, UTF-8</span><br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">global extension + control template + code template</span><br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the engine (config + method prototypes)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the implementation: dialog, 9 writers, ZIP, UTF-8</span><br>
 &nbsp;&nbsp;ExportClass.exp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">export list — only for a hand-coded multi-DLL build</span><br>
-&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">global extension + control template + code template</span><br>
 &nbsp;&nbsp;myExport.zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">the four files above, for distribution</span><br>
 examples/myExport/<br>
 &nbsp;&nbsp;ExportDemo.clw / .cwproj&nbsp;&nbsp;<span style="color:#6b7785">a runnable demo — a list and one Export button</span>
@@ -214,12 +226,12 @@ examples/myExport/<br>
       </div>
       <div class="es">
       <ol>
-        <li>Copia <code>templates/myExport/ExportClass.inc</code> y <code>ExportClass.clw</code> a una
+        <li>Copia <code>templates/myExport/libsrc/win/ExportClass.inc</code> y <code>ExportClass.clw</code> a una
           carpeta del camino de redirección de Clarion (la carpeta de tu app, o
           <code>\clarion12\libsrc\win</code>). Deben guardarse <b class="i">en ANSI y con finales de línea
           CRLF</b>: una copia con solo LF hace que el compilador reporte un falso
           <code>Illegal data type: EXPORTCLASS</code> en cada uso.</li>
-        <li>Copia <code>templates/myExport/myExport.tpl</code> a tu carpeta de plantillas.</li>
+        <li>Copia <code>templates/myExport/template/win/myExport.tpl</code> a tu carpeta de plantillas.</li>
         <li>En el IDE: <b>Setup ▸ Template Registry ▸ Register</b>, y elige <code>myExport.tpl</code>.</li>
         <li>Abre la ventana de un procedimiento browse y arrastra desde la lista de plantillas de control
           <b>myExport - Export button for a browse/list</b> a la ventana.</li>
@@ -233,13 +245,17 @@ examples/myExport/<br>
         de un solo EXE la extensión global <b class="i">myExport - Global</b> es opcional: agrégala solo si
         además quieres llamar a la clase desde código escrito a mano en procedimientos que no tienen botón.
         En una aplicación <b class="i">multi-DLL</b> es obligatoria, en todas las apps: ver
-        <a href="#multidll">Aplicaciones multi-DLL</a>.</div>
+        <a href="#multidll">Aplicaciones multi-DLL</a>. Tampoco hace falta nada extra para <a href="#email">Enviarlo
+        por correo al terminar</a>: <code>MAPI32.DLL</code> se carga al enviar el primer correo, no se
+        enlaza, así que no hay ninguna <code>MAPI32.LIB</code> que añadir.</div>
       <div class="filetree">
 templates/myExport/<br>
-&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">el motor (configuración + prototipos)</span><br>
-&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la implementación: diálogo, 7 escritores, ZIP, UTF-8</span><br>
+&nbsp;&nbsp;template/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">extensión global + plantilla de control + code template</span><br>
+&nbsp;&nbsp;libsrc/win/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">el motor (configuración + prototipos)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;ExportClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">la implementación: diálogo, 9 escritores, ZIP, UTF-8</span><br>
 &nbsp;&nbsp;ExportClass.exp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">lista de exportación — solo para multi-DLL escrito a mano</span><br>
-&nbsp;&nbsp;myExport.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">extensión global + plantilla de control + code template</span><br>
 &nbsp;&nbsp;myExport.zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6b7785">los cuatro archivos anteriores, para distribuir</span><br>
 examples/myExport/<br>
 &nbsp;&nbsp;ExportDemo.clw / .cwproj&nbsp;&nbsp;<span style="color:#6b7785">demo que compila y corre — una lista y un botón Exportar</span>
@@ -276,7 +292,7 @@ examples/myExport/<br>
   Exporter1.Title        = <span class="s">'BrowseCustomers'</span>
   Exporter1.Headers      = 1
   Exporter1.Pictures     = 1
-  Exporter1.Allow        = 127               <span class="c">! the format checkboxes, as a bit mask</span>
+  Exporter1.Allow        = 511               <span class="c">! the format checkboxes, as a bit mask - all nine ticked by default</span>
   <span class="k">IF</span> Exporter1.Ask()                       <span class="c">! format + folder + file name</span>
     <span class="k">IF</span> Exporter1.StartFile()
       BRW1.Reset()                           <span class="c">! the top of the current sort order</span>
@@ -322,7 +338,7 @@ examples/myExport/<br>
   Exporter1.Title        = <span class="s">'BrowseCustomers'</span>
   Exporter1.Headers      = 1
   Exporter1.Pictures     = 1
-  Exporter1.Allow        = 127               <span class="c">! las casillas de formato, como máscara de bits</span>
+  Exporter1.Allow        = 511               <span class="c">! las casillas de formato, como máscara de bits - las nueve marcadas por defecto</span>
   <span class="k">IF</span> Exporter1.Ask()                       <span class="c">! formato + carpeta + nombre de archivo</span>
     <span class="k">IF</span> Exporter1.StartFile()
       BRW1.Reset()                           <span class="c">! al principio del orden actual</span>
@@ -372,8 +388,11 @@ examples/myExport/<br>
           extension automatically, so <code>Invoices.csv</code> becomes <code>Invoices.xlsx</code>.</li>
         <li><b>File name</b> — pre-filled with <code>&lt;Title&gt;_yyyymmdd&lt;ext&gt;</code> in the current
           folder. <b>…</b> opens the standard Windows Save-As browser (with its own overwrite warning).</li>
-        <li><b>Include the column headings</b>, <b>Apply each column's picture</b> and <b>Open the file when
-          it is done</b> — the template's settings, still changeable per export.</li>
+        <li><b>Include the column headings</b>, <b>Apply each column's picture</b>, <b>Open the file when
+          it is done</b>, <b>Email the file when it is done</b> (see <a href="#email">Email it when it's
+          done</a>) and <b>Summary rows: Sum / Avg / Min / Max</b> — the template's settings, still
+          changeable per export. The summary-row checkboxes only take effect for <b>Excel .xlsx</b>; they
+          are greyed out for every other format.</li>
       </ul>
       <p>Below that is the <a href="#picker">column picker</a>, then the three options and the format's
         own one-line note.</p>
@@ -393,8 +412,11 @@ examples/myExport/<br>
         <li><b>Nombre de archivo</b> — se propone <code>&lt;Title&gt;_aaaammdd&lt;ext&gt;</code> en la carpeta
           actual. El botón <b>…</b> abre el diálogo Guardar como de Windows (con su propio aviso de
           sobrescritura).</li>
-        <li><b>Incluir los encabezados</b>, <b>Aplicar el picture de cada columna</b> y <b>Abrir el archivo
-          al terminar</b> — los valores de la plantilla, todavía modificables en cada exportación.</li>
+        <li><b>Incluir los encabezados</b>, <b>Aplicar el picture de cada columna</b>, <b>Abrir el archivo
+          al terminar</b>, <b>Enviar el archivo por correo al terminar</b> (ver <a href="#email">Enviarlo
+          por correo al terminar</a>) y <b>Filas de resumen: Sum / Avg / Min / Max</b> — los valores de la
+          plantilla, todavía modificables en cada exportación. Las casillas de filas de resumen solo tienen
+          efecto en <b>Excel .xlsx</b>; en cualquier otro formato aparecen deshabilitadas.</li>
       </ul>
       <p>Debajo está el <a href="#picker">selector de columnas</a>, luego las tres opciones y la nota de una
         línea propia del formato.</p>
@@ -403,6 +425,154 @@ examples/myExport/<br>
       <div class="callout tip"><b>El aviso es una ventana modal, nunca un pitido</b>
         Si va bien, informa del número de filas y la ruta completa; si falla, dice qué pasó — una carpeta
         que no existe, un archivo abierto en Excel, un disco lleno.</div>
+      </div>
+    </section>
+
+    <section id="email">
+      <h2><span class="en">Email it when it's done</span><span class="es">Enviarlo por correo al terminar</span> <a href="#email" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">A checkbox next to "Open the file when it is done" — tick it, and once the file is
+        written, myExport opens a new message in whatever's registered as the default <b>Simple MAPI</b>
+        client (Outlook, Windows Mail, or anything else set up that way) with the file already attached.
+        It only opens the compose window — nothing sends silently. You still press Send.</p>
+      <table>
+        <tr><th>Member</th><th>Default</th><th>Meaning</th></tr>
+        <tr><td><code>EmailWhenDone</code></td><td>0</td><td>Attach and open a compose window after a successful export. Persisted the same way <code>OpenWhenDone</code> is.</td></tr>
+        <tr><td><code>EmailSubject</code></td><td>blank</td><td>Blank = uses <code>Title</code>.</td></tr>
+        <tr><td><code>EmailBody</code></td><td>blank</td><td>Note text in the new message.</td></tr>
+        <tr><td><code>EmailToFront</code></td><td>1</td><td>Try to bring the mail client's own window to the front, rather than it only flashing on the taskbar. See below.</td></tr>
+      </table>
+      <p>In the dialog, <b>"Bring email to front"</b> sits on the same row as "Email the file when it is
+        done" — hidden entirely until Email itself is ticked, since it has nothing to do otherwise.</p>
+      <div class="callout note"><b>Why a mail client only used to flash on the taskbar</b>
+        Windows deliberately won't let a background process steal the foreground outright — by design, so
+        no application can grab focus away from whatever you're doing. Right before handing off to
+        <code>MAPISendMail</code>, myExport now calls the standard, documented fix for exactly this —
+        <code>AllowSetForegroundWindow(-1)</code> — telling Windows to let the next window that asks for
+        the foreground actually have it. This works reliably when the mail client is already running;
+        when it has to start cold from nothing, there can still be a timing window where Windows'
+        permission lapses before the client's own window is ready to ask for it.</div>
+      <p>Skipped for <code>Exp:Print</code> (no file to attach), and skipped automatically for
+        <code>PreviewOut()</code>'s own scratch PDF in TEMP — that one is never worth emailing.</p>
+      <div class="callout warn"><b>It goes to whatever Windows says is the default client, not necessarily
+        the one you use daily</b>
+        Simple MAPI reads <code>HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail</code> to decide who handles this -
+        a separate setting from the browser-style "default mail app" most people think of, and a separate
+        one again from which mail client you personally have open. If another mail-capable program was
+        installed more recently, it may have quietly taken that registry key over. There is no code-level
+        way to force a specific installed client through Simple MAPI; the fix is always on the Windows side
+        (Outlook's own "Make Outlook the default program for email" button, in File → Options → General,
+        is the safest way to reclaim it).</div>
+      <div class="callout note"><b>32-bit callers and 64-bit Outlook do not mix</b>
+        Simple MAPI loads the mail client's own provider DLL directly into the calling process, so the
+        bitness has to match. A 32-bit Clarion EXE (the normal case) cannot load a 64-bit Outlook's
+        provider - Windows silently falls back to whatever else it can load, which can mean the wrong
+        program opens even though the registry correctly points at Outlook. Check which one you have via
+        <code>C:\Program Files\Microsoft Office\</code> (64-bit) vs. <code>C:\Program Files
+        (x86)\Microsoft Office\</code> (32-bit). If they don't match, either install the 32-bit edition of
+        Outlook, or override <code>EmailFile()</code> to drive Outlook through COM automation instead (see
+        below) - COM automation talks to Outlook as a separate process and isn't affected by this at all.</div>
+      <h3>Using something other than Simple MAPI</h3>
+      <p><code>EmailFile(pFile)</code> is declared <code>VIRTUAL</code> specifically so it can be replaced.
+        The base class needs nothing beyond Windows itself: it finds <code>MAPISendMail</code> in
+        <code>MAPI32.DLL</code> with <code>LoadLibrary</code>/<code>GetProcAddress</code> the first time
+        it is called, so there is no import library to link, and a machine with no mail client at all
+        just gets the “could not e-mail” message. A derived class can override just this one method to route through a
+        commercial automation library instead — CapeSoft's Office Inside, for instance, whose
+        <code>oiOutlook.SendEmail()</code> talks to Outlook via COM automation rather than Simple MAPI's
+        in-process DLL loading, sidestepping the 32/64-bit mismatch entirely:</p>
+<pre>MyExportClass CLASS(ExportClass)
+EmailFile           PROCEDURE(STRING pFile),PROTECTED,VIRTUAL
+                  END
+
+MyExportClass.EmailFile PROCEDURE(STRING pFile)
+Outlook   &amp;oiOutlook
+subj      CSTRING(129)
+  CODE
+  subj = CLIP(SELF.EmailSubject)
+  <span class="k">IF</span> ~subj <span class="k">THEN</span> subj = CLIP(SELF.Title) .
+  Outlook &amp;= <span class="k">NEW</span> oiOutlook
+  <span class="k">IF</span> Outlook.Init()
+    Outlook.SendEmail(<span class="s">''</span>,<span class="s">''</span>,<span class="s">''</span>,subj,CLIP(LEFT(pFile)),SELF.EmailBody,1,1)  <span class="c">! pOpen=1: opens, never auto-sends</span>
+    Outlook.Kill()
+  <span class="k">END</span>
+  <span class="k">DISPOSE</span>(Outlook)</pre>
+      <p>Use <code>MyExportClass</code> wherever you'd otherwise declare <code>ExportClass</code> — every
+        other feature is inherited unchanged, only <code>EmailFile()</code> is different.</p>
+      </div>
+      <div class="es">
+      <p class="lead">Una casilla junto a "Abrir el archivo al terminar" — actívala, y en cuanto el archivo
+        se escribe, myExport abre un mensaje nuevo en lo que sea que esté registrado como cliente <b>Simple
+        MAPI</b> predeterminado (Outlook, Windows Mail, o cualquier otro configurado así) con el archivo ya
+        adjunto. Solo abre la ventana de redacción — nada se envía en silencio. Tú sigues pulsando Enviar.</p>
+      <table>
+        <tr><th>Miembro</th><th>Por defecto</th><th>Significado</th></tr>
+        <tr><td><code>EmailWhenDone</code></td><td>0</td><td>Adjunta y abre una ventana de redacción tras una exportación exitosa. Se persiste igual que <code>OpenWhenDone</code>.</td></tr>
+        <tr><td><code>EmailSubject</code></td><td>vacío</td><td>Vacío = usa <code>Title</code>.</td></tr>
+        <tr><td><code>EmailBody</code></td><td>vacío</td><td>Texto de nota en el mensaje nuevo.</td></tr>
+        <tr><td><code>EmailToFront</code></td><td>1</td><td>Intenta traer al frente la propia ventana del cliente de correo, en vez de que solo parpadee en la barra de tareas. Ver abajo.</td></tr>
+      </table>
+      <p>En el diálogo, <b>"Traer correo al frente"</b> está en la misma fila que "Enviar el archivo por correo
+        al terminar" — oculta por completo hasta que se marca Email, ya que sin eso no tiene sentido.</p>
+      <div class="callout note"><b>Por qué un cliente de correo antes solo parpadeaba en la barra de tareas</b>
+        Windows deliberadamente no deja que un proceso en segundo plano robe el primer plano sin más — por
+        diseño, para que ninguna aplicación pueda quitarle el foco a lo que estés haciendo. Justo antes de
+        pasarle el control a <code>MAPISendMail</code>, myExport ahora llama a la solución estándar y
+        documentada para esto exactamente — <code>AllowSetForegroundWindow(-1)</code> — diciéndole a
+        Windows que deje que la próxima ventana que pida el primer plano lo consiga de verdad. Esto
+        funciona de forma fiable cuando el cliente de correo ya está abierto; cuando tiene que arrancar
+        desde cero, todavía puede haber una ventana de tiempo en la que el permiso de Windows caduque antes
+        de que la ventana propia del cliente esté lista para pedirlo.</div>
+      <p>Se omite para <code>Exp:Print</code> (no hay archivo que adjuntar), y se omite automáticamente
+        para el PDF de prueba de <code>PreviewOut()</code> en TEMP — a ese nunca vale la pena mandarlo por
+        correo.</p>
+      <div class="callout warn"><b>Va a lo que Windows diga que es el cliente predeterminado, no
+        necesariamente al que usas a diario</b>
+        Simple MAPI lee <code>HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail</code> para decidir quién lo
+        maneja — un ajuste distinto del "programa de correo predeterminado" al estilo navegador que la
+        mayoría imagina, y distinto también de qué cliente de correo tengas tú abierto personalmente. Si se
+        instaló otro programa con capacidad de correo más recientemente, puede haberse quedado con esa
+        clave del registro sin avisar. No hay forma, a nivel de código, de forzar un cliente instalado
+        específico a través de Simple MAPI; la solución siempre está del lado de Windows (el botón propio
+        de Outlook "Make Outlook the default program for email", en Archivo → Opciones → General, es la
+        forma más segura de recuperarlo).</div>
+      <div class="callout note"><b>Un proceso de 32 bits y un Outlook de 64 bits no se mezclan</b>
+        Simple MAPI carga el DLL del propio proveedor del cliente de correo directamente dentro del proceso
+        que llama, así que los bits tienen que coincidir. Un EXE de Clarion de 32 bits (el caso normal) no
+        puede cargar el proveedor de un Outlook de 64 bits - Windows recurre en silencio a lo que sí pueda
+        cargar, lo que puede significar que se abra el programa equivocado aunque el registro apunte
+        correctamente a Outlook. Comprueba cuál tienes mirando <code>C:\Program Files\Microsoft
+        Office\</code> (64 bits) frente a <code>C:\Program Files (x86)\Microsoft Office\</code> (32 bits).
+        Si no coinciden, instala la edición de 32 bits de Outlook, o redefine <code>EmailFile()</code> para
+        manejar Outlook por automatización COM en su lugar (ver abajo) - la automatización COM habla con
+        Outlook como un proceso aparte y esto no le afecta en absoluto.</div>
+      <h3>Usar algo distinto de Simple MAPI</h3>
+      <p><code>EmailFile(pFile)</code> está declarado <code>VIRTUAL</code> justamente para poder
+        reemplazarlo. La clase base no necesita nada más que Windows: busca <code>MAPISendMail</code> en
+        <code>MAPI32.DLL</code> con <code>LoadLibrary</code>/<code>GetProcAddress</code> la primera vez
+        que se usa, así que no hay librería de importación que enlazar, y una máquina sin cliente de
+        correo simplemente recibe el mensaje de «no se pudo enviar». Una clase derivada puede redefinir solo este método
+        para pasar por una librería de automatización comercial en su lugar — Office Inside de CapeSoft, por ejemplo, cuyo
+        <code>oiOutlook.SendEmail()</code> habla con Outlook por automatización COM en vez de la carga de
+        DLL en el mismo proceso de Simple MAPI, evitando por completo el problema de 32/64 bits:</p>
+<pre>MyExportClass CLASS(ExportClass)
+EmailFile           PROCEDURE(STRING pFile),PROTECTED,VIRTUAL
+                  END
+
+MyExportClass.EmailFile PROCEDURE(STRING pFile)
+Outlook   &amp;oiOutlook
+subj      CSTRING(129)
+  CODE
+  subj = CLIP(SELF.EmailSubject)
+  <span class="k">IF</span> ~subj <span class="k">THEN</span> subj = CLIP(SELF.Title) .
+  Outlook &amp;= <span class="k">NEW</span> oiOutlook
+  <span class="k">IF</span> Outlook.Init()
+    Outlook.SendEmail(<span class="s">''</span>,<span class="s">''</span>,<span class="s">''</span>,subj,CLIP(LEFT(pFile)),SELF.EmailBody,1,1)  <span class="c">! pOpen=1: abre, nunca envía solo</span>
+    Outlook.Kill()
+  <span class="k">END</span>
+  <span class="k">DISPOSE</span>(Outlook)</pre>
+      <p>Usa <code>MyExportClass</code> donde antes declararías <code>ExportClass</code> — todo lo demás se
+        hereda sin cambios, solo <code>EmailFile()</code> es distinto.</p>
       </div>
     </section>
 
@@ -418,6 +588,7 @@ examples/myExport/<br>
         <tr><td><b>#</b></td><td>Its position on the list, so a renamed column is still findable.</td></tr>
         <tr><td><b>Heading in the file</b></td><td>What the file will call it — the CSV/TSV heading, the XML element, the JSON key, the Excel and HTML header.</td></tr>
         <tr><td><b>Picture</b></td><td>The Clarion picture used to format the value.</td></tr>
+        <tr><td><b>Tot</b></td><td><code>X</code> when the column is included in whichever <a href="#summary">summary rows</a> are turned on. <b>Toggle total</b> flips it — refused with a popup for a non-numeric column.</td></tr>
         <tr><td><b>Column on the list</b></td><td>The heading the LIST itself carries — unchanged, as a reference point.</td></tr>
       </table>
       <h3>Rename / picture…</h3>
@@ -469,6 +640,7 @@ examples/myExport/<br>
         <tr><td><b>#</b></td><td>Su posición en la lista, para reconocer una columna aunque la hayas renombrado.</td></tr>
         <tr><td><b>Heading in the file</b></td><td>Cómo la llamará el archivo: el encabezado CSV/TSV, el elemento XML, la clave JSON y el título en Excel y HTML.</td></tr>
         <tr><td><b>Picture</b></td><td>El picture de Clarion con el que se formatea el valor.</td></tr>
+        <tr><td><b>Tot</b></td><td><code>X</code> cuando la columna está incluida en las <a href="#summary">filas de resumen</a> que estén activadas. <b>Toggle total</b> la cambia — se rechaza con un aviso si la columna no es numérica.</td></tr>
         <tr><td><b>Column on the list</b></td><td>El encabezado que lleva el LIST — sin cambios, como referencia.</td></tr>
       </table>
       <h3>Rename / picture…</h3>
@@ -921,7 +1093,7 @@ MyExporter.Txt PROCEDURE(LONG pId)
     </section>
 
     <section id="formats">
-      <h2><span class="en">All seven, compared</span><span class="es">Los siete, comparados</span> <a href="#formats" class="top">#</a></h2>
+      <h2><span class="en">All nine, compared</span><span class="es">Los nueve, comparados</span> <a href="#formats" class="top">#</a></h2>
       <div class="en">
       <table>
         <tr><th>Format</th><th>Encoding</th><th>Notes</th></tr>
@@ -932,6 +1104,8 @@ MyExporter.Txt PROCEDURE(LONG pId)
         <tr><td><b>JSON</b></td><td>UTF-8</td><td>An array of objects, keys from the headings. <b>Numeric columns are written as JSON numbers</b>, not strings; dates and times stay text.</td></tr>
         <tr><td><b>Excel .xlsx</b></td><td>UTF-8</td><td>A real OOXML workbook — see below.</td></tr>
         <tr><td><b>HTML</b></td><td>UTF-8</td><td>A styled, self-contained table with a sticky-looking header, zebra rows and right-aligned numbers. Prints well and pastes into Word or Excel.</td></tr>
+        <tr><td><b>Print</b></td><td>—</td><td>No file at all — straight to <code>PrinterName</code> or the Windows default printer, plain GDI. See <a href="#printpdf">Print &amp; PDF</a>.</td></tr>
+        <tr><td><b>PDF</b></td><td>—</td><td>A real, paginated PDF built by hand, no Acrobat, no print driver. See <a href="#printpdf">Print &amp; PDF</a>.</td></tr>
       </table>
       </div>
       <div class="es">
@@ -944,7 +1118,129 @@ MyExporter.Txt PROCEDURE(LONG pId)
         <tr><td><b>JSON</b></td><td>UTF-8</td><td>Un arreglo de objetos, con las claves sacadas de los encabezados. <b class="i">Las columnas numéricas se escriben como números JSON</b>, no como cadenas; las fechas y horas siguen siendo texto.</td></tr>
         <tr><td><b>Excel .xlsx</b></td><td>UTF-8</td><td>Un libro OOXML de verdad — ver abajo.</td></tr>
         <tr><td><b>HTML</b></td><td>UTF-8</td><td>Una tabla con estilo, autónoma, con encabezado destacado, filas alternas y números alineados a la derecha. Se imprime bien y se pega en Word o Excel.</td></tr>
+        <tr><td><b>Print</b></td><td>—</td><td>Sin archivo alguno — directo a <code>PrinterName</code> o a la impresora predeterminada de Windows, GDI puro. Ver <a href="#printpdf">Print y PDF</a>.</td></tr>
+        <tr><td><b>PDF</b></td><td>—</td><td>Un PDF real y paginado, hecho a mano, sin Acrobat ni driver de impresión. Ver <a href="#printpdf">Print y PDF</a>.</td></tr>
       </table>
+      </div>
+    </section>
+
+    <section id="printpdf">
+      <h2><span class="en">Print &amp; PDF</span><span class="es">Print y PDF</span> <a href="#printpdf" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">These two are not file-format writers so much as the same page layout engine
+        aimed at two different outputs — a printer's device context for <b>Print</b>, and a hand-built PDF
+        byte stream for <b>PDF</b>. Both paginate, both share the same <b>Page Setup</b> dialog, and neither
+        needs Excel, Acrobat, a print driver wrapper, or any file at all in Print's case.</p>
+      <h3>Print</h3>
+      <p>Plain GDI: <code>CreateDC</code> on <code>PrinterName</code> (blank = the Windows default printer),
+        then <code>StartDoc</code> / <code>StartPage</code> / <code>TextOut</code> / <code>EndPage</code> /
+        <code>EndDoc</code> — one call per column per row, using the printer's own reported character
+        metrics so columns line up. No spooler quirks to work around, no <code>PRINTER</code> structure to
+        fill in by hand.</p>
+      <p>The dialog's <b>Save to</b> field disappears for Print — there is nothing to save — and the
+        <b>Export</b> button relabels itself <b>Print</b>.</p>
+      <h3>PDF</h3>
+      <p>A genuine, minimal PDF 1.4 file assembled a line at a time: two Helvetica fonts (regular and
+        bold), one page object and one content stream per page, a cross-reference table with real byte
+        offsets, and a trailer — nothing borrowed from a print driver or a third-party library. The title
+        (from <code>Title</code>) is set in bold at the top of page one, then the heading row, then one
+        line of text per cell, paginating automatically as the page fills.</p>
+      <div class="callout warn"><b>Every number in the file matters</b>
+        A PDF reader like Chrome's own viewer is far stricter about a well-formed cross-reference table,
+        object offsets and stream <code>/Length</code> values than Acrobat's forgiving repair logic. This
+        writer keeps every number that ends up in the file — object numbers, offsets, coordinates, stream
+        lengths — on a hand-rolled, unpadded decimal conversion rather than Clarion's own default
+        numeric-to-string behaviour, specifically so it holds up under a strict reader as well as a lenient
+        one.</div>
+      <div class="callout note"><b>A 2,000-page ceiling, with a warning if you hit it</b>
+        A single PDF here holds up to 2,000 pages. Cross that, and the export doesn't fail or produce a
+        corrupted file — it stops adding pages, finishes the file correctly with whatever fit, and shows a
+        clear <b>"PDF incomplete"</b> warning (or sets <code>PdfTruncated</code>, checkable in code even
+        with <code>Confirm</code> off) so missing rows are never silent. If you're regularly landing anywhere
+        near that ceiling, Excel or CSV handle a data set that size far better than a several-thousand-page
+        PDF ever will.</div>
+      <h3>Page Setup</h3>
+      <p style="text-align:center;margin:16px 0">
+        <img src="myExport-pagesetup.png" alt="The Page Setup dialog: orientation, paper, and four margins"
+             style="max-width:100%;border:1px solid var(--line);border-radius:8px;
+                    box-shadow:0 2px 8px rgba(14,26,43,.14)"></p>
+      <p>The <b>Page Setup…</b> button appears in the dialog only for Print and PDF. It sets:</p>
+      <table>
+        <tr><th>Member</th><th>Default</th><th>Meaning</th></tr>
+        <tr><td><code>PageOrient</code></td><td><code>Exp:Landscape</code></td><td><code>Exp:Portrait</code> or <code>Exp:Landscape</code> — both formats.</td></tr>
+        <tr><td><code>PagePaper</code></td><td><code>Exp:Letter</code></td><td><code>Exp:Letter</code> or <code>Exp:A4</code> — <b>PDF only</b>; Print always uses the printer's own paper size.</td></tr>
+        <tr><td><code>MarginLeft</code> / <code>Top</code> / <code>Right</code> / <code>Bottom</code></td><td>720 (0.5")</td><td>Twips (1440 per inch), both formats. The Page Setup dialog shows and accepts inches.</td></tr>
+        <tr><td><code>FontSize</code></td><td>9</td><td>Points, body text.</td></tr>
+        <tr><td><code>TitleSize</code></td><td>14</td><td>Points, the bold title on page one.</td></tr>
+        <tr><td><code>PrinterName</code></td><td>blank</td><td>Blank = the Windows default printer. <b>Print only.</b></td></tr>
+      </table>
+      <div class="callout note"><b>PageOrient persists across runs; the rest do not, yet</b>
+        Page Setup writes straight into these properties, so the next export in the <i>same run</i> always
+        keeps them, Print or PDF. Across separate runs of the app, only <code>PageOrient</code> is actually
+        saved and reloaded (with <code>Persist</code> on) — <code>PagePaper</code>, the four margins,
+        <code>FontSize</code>, <code>TitleSize</code>, and <code>PrinterName</code> all reset to their
+        compiled defaults the next time the app starts. Widening that to the rest of Page Setup would be a
+        small, easy addition using the exact same pattern, if you need it.</div>
+      </div>
+      <div class="es">
+      <p class="lead">Estos dos no son tanto escritores de formato de archivo como el mismo motor de
+        maquetación de página apuntando a dos salidas distintas — un contexto de dispositivo de impresora
+        para <b>Print</b>, y un flujo de bytes PDF hecho a mano para <b>PDF</b>. Ambos paginan, ambos
+        comparten el mismo diálogo de <b>Configurar página</b>, y ninguno necesita Excel, Acrobat, un
+        envoltorio de driver de impresión, ni ningún archivo en el caso de Print.</p>
+      <h3>Print</h3>
+      <p>GDI puro: <code>CreateDC</code> sobre <code>PrinterName</code> (en blanco = la impresora
+        predeterminada de Windows), y luego <code>StartDoc</code> / <code>StartPage</code> /
+        <code>TextOut</code> / <code>EndPage</code> / <code>EndDoc</code> — una llamada por columna y fila,
+        usando las métricas de carácter que reporta la propia impresora para que las columnas cuadren. Sin
+        rarezas del spooler que sortear, sin rellenar a mano una estructura <code>PRINTER</code>.</p>
+      <p>El campo <b>Save to</b> del diálogo desaparece para Print — no hay nada que guardar — y el botón
+        <b>Export</b> se renombra a <b>Print</b>.</p>
+      <h3>PDF</h3>
+      <p>Un archivo PDF 1.4 genuino y mínimo, armado línea a línea: dos fuentes Helvetica (normal y
+        negrita), un objeto de página y un content stream por página, una tabla de referencias cruzadas con
+        offsets de byte reales, y un trailer — nada tomado prestado de un driver de impresión ni de una
+        librería externa. El título (de <code>Title</code>) va en negrita arriba de la página uno, luego la
+        fila de encabezados, y luego una línea de texto por celda, paginando solo cuando la página se
+        llena.</p>
+      <div class="callout warn"><b>Cada número del archivo importa</b>
+        Un lector de PDF como el propio visor de Chrome es mucho más estricto con una tabla de referencias
+        cruzadas bien formada, los offsets de los objetos y los valores <code>/Length</code> de los
+        streams que la lógica de reparación tolerante de Acrobat. Este escritor mantiene cada número que
+        termina en el archivo — números de objeto, offsets, coordenadas, longitudes de stream — con una
+        conversión decimal hecha a mano y sin relleno, en vez de depender de la conversión numérica por
+        defecto de Clarion, precisamente para aguantar tanto en un lector estricto como en uno tolerante.
+      </div>
+      <div class="callout note"><b>Un tope de 2000 páginas, con aviso si se alcanza</b>
+        Un solo PDF aquí admite hasta 2000 páginas. Pasar de ahí no hace fallar la exportación ni produce
+        un archivo corrupto — deja de añadir páginas, termina el archivo correctamente con lo que sí cupo,
+        y muestra un aviso claro de <b>"PDF incompleto"</b> (o pone <code>PdfTruncated</code>, comprobable
+        desde código incluso con <code>Confirm</code> apagado), así que nunca faltan filas en silencio. Si
+        te acercas a ese tope con regularidad, Excel o CSV manejan un conjunto de datos de ese tamaño mucho
+        mejor de lo que jamás lo hará un PDF de varios miles de páginas.</div>
+      <h3>Configurar página</h3>
+      <p style="text-align:center;margin:16px 0">
+        <img src="myExport-pagesetup.png" alt="El diálogo Configurar página: orientación, papel y cuatro márgenes"
+             style="max-width:100%;border:1px solid var(--line);border-radius:8px;
+                    box-shadow:0 2px 8px rgba(14,26,43,.14)"></p>
+      <p>El botón <b>Page Setup…</b> aparece en el diálogo solo para Print y PDF. Ajusta:</p>
+      <table>
+        <tr><th>Miembro</th><th>Por defecto</th><th>Significado</th></tr>
+        <tr><td><code>PageOrient</code></td><td><code>Exp:Landscape</code></td><td><code>Exp:Portrait</code> o <code>Exp:Landscape</code> — ambos formatos.</td></tr>
+        <tr><td><code>PagePaper</code></td><td><code>Exp:Letter</code></td><td><code>Exp:Letter</code> o <code>Exp:A4</code> — <b class="i">solo PDF</b>; Print siempre usa el tamaño de papel de la propia impresora.</td></tr>
+        <tr><td><code>MarginLeft</code> / <code>Top</code> / <code>Right</code> / <code>Bottom</code></td><td>720 (0,5")</td><td>Twips (1440 por pulgada), ambos formatos. El diálogo de Configurar página los muestra y los acepta en pulgadas.</td></tr>
+        <tr><td><code>FontSize</code></td><td>9</td><td>Puntos, texto del cuerpo.</td></tr>
+        <tr><td><code>TitleSize</code></td><td>14</td><td>Puntos, el título en negrita de la página uno.</td></tr>
+        <tr><td><code>PrinterName</code></td><td>vacío</td><td>Vacío = la impresora predeterminada de Windows. <b class="i">Solo Print.</b></td></tr>
+      </table>
+      <div class="callout note"><b>PageOrient persiste entre ejecuciones; el resto todavía no</b>
+        Configurar página escribe directamente en estas propiedades, así que la siguiente exportación en
+        la <i>misma ejecución</i> siempre las conserva, Print o PDF. Entre ejecuciones distintas de la
+        aplicación, solo <code>PageOrient</code> se guarda y se vuelve a cargar de verdad (con
+        <code>Persist</code> activo) — <code>PagePaper</code>, los cuatro márgenes, <code>FontSize</code>,
+        <code>TitleSize</code> y <code>PrinterName</code> vuelven todos a sus valores por defecto de
+        compilación la próxima vez que arranca la aplicación. Extender esto al resto de Configurar página
+        sería una adición pequeña y sencilla, con el mismo patrón exacto, si la necesitas.</div>
       </div>
     </section>
 
@@ -957,7 +1253,7 @@ MyExporter.Txt PROCEDURE(LONG pId)
 _rels/.rels
 xl/workbook.xml                 <span class="c">! the sheet, named from Title</span>
 xl/_rels/workbook.xml.rels
-xl/styles.xml                   <span class="c">! two cell formats: normal and bold</span>
+xl/styles.xml                   <span class="c">! three cell formats: normal, bold heading, bold + border</span>
 xl/worksheets/sheet1.xml        <span class="c">! the data</span></pre>
       <p>The sheet is not a dump. It carries:</p>
       <ul>
@@ -966,6 +1262,8 @@ xl/worksheets/sheet1.xml        <span class="c">! the data</span></pre>
         <li><b>A bold heading row</b>, and a <b>frozen pane</b> under it so the headings stay put.</li>
         <li><b>An auto-filter</b> across the used range.</li>
         <li><b>Column widths</b> carried over from the widths on screen.</li>
+        <li><b>Optional summary rows</b> — Sum, Average, Minimum, Maximum, Count — with real formulas, bold and
+          top-bordered. See <a href="#summary">Summary rows</a>.</li>
       </ul>
       <p>A column counts as numeric when the queue field is not a string <i>and</i> its picture is blank or
         an <code>@N</code> picture. A <code>@D</code> date, a <code>@T</code> time or a
@@ -978,7 +1276,7 @@ xl/worksheets/sheet1.xml        <span class="c">! the data</span></pre>
 _rels/.rels
 xl/workbook.xml                 <span class="c">! la hoja, con el nombre de Title</span>
 xl/_rels/workbook.xml.rels
-xl/styles.xml                   <span class="c">! dos formatos de celda: normal y negrita</span>
+xl/styles.xml                   <span class="c">! tres formatos de celda: normal, negrita, negrita + borde</span>
 xl/worksheets/sheet1.xml        <span class="c">! los datos</span></pre>
       <p>La hoja no es un volcado. Lleva:</p>
       <ul>
@@ -989,10 +1287,480 @@ xl/worksheets/sheet1.xml        <span class="c">! los datos</span></pre>
           encabezados no se muevan.</li>
         <li><b>Un autofiltro</b> sobre el rango usado.</li>
         <li><b>Los anchos de columna</b> heredados de los anchos en pantalla.</li>
+        <li><b>Filas de resumen opcionales</b> — Suma, Promedio, Mínimo, Máximo, Cuenta — con fórmulas reales, en
+          negrita y con borde superior. Ver <a href="#summary">Filas de resumen</a>.</li>
       </ul>
       <p>Una columna cuenta como numérica cuando el campo de la cola no es una cadena <i>y</i> su picture
         está vacío o es un picture <code>@N</code>. Una fecha <code>@D</code>, una hora <code>@T</code> o un
         patrón <code>@P</code> se quedan como texto, que es lo que quieres.</p>
+      </div>
+    </section>
+
+    <section id="numfmt">
+      <h2><span class="en">Number formats: decimals and negatives</span><span class="es">Formatos numéricos: decimales y negativos</span> <a href="#numfmt" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">Every numeric cell is written as a real number, not text — deliberate, since that's
+        what makes a column sortable, filterable, and usable in formulas once it lands in Excel. Left
+        alone, though, a real number renders under Excel's own <b>General</b> format, which strips trailing
+        zeros: <code>123.00</code> becomes <code>123</code>. Nothing is lost — the underlying value is
+        still exactly right, and any formula referencing it still computes correctly — but the display
+        no longer matches what the column's own picture showed on screen.</p>
+      <p>This is fixed automatically, per column, from that column's own picture — no property to set for
+        this half. A picture like <code>@n-9.2</code> means 2 decimal places (the number after the dot is
+        parsed as a value, not counted as characters — <code>@n-20.10</code> means 10 places, not 1), and a
+        column showing decimals gets a matching Excel number format applied to its cells, keeping
+        <code>123.00</code> looking like <code>123.00</code>. A plain integer column is untouched — General
+        already displays it correctly, so no custom format is added, and nothing about its output changes.
+        Columns sharing an identical picture share one format entry rather than each getting their own;
+        the same format is applied to that column's Sum/Average/Min/Max/Count cell too, when one exists.</p>
+      <h3>Negative numbers: leading minus, or parentheses</h3>
+      <p>One property controls how a negative value in a formatted column displays:</p>
+      <table>
+        <tr><th>Member</th><th>Default</th><th>Meaning</th></tr>
+        <tr><td><code>NegativeParens</code></td><td>0</td><td>0 = leading minus (<code>-123.45</code>, Excel's own default). 1 = parentheses (<code>(123.45)</code>) instead.</td></tr>
+      </table>
+      <p>It's a runtime switch, not a fixed choice — set it however suits the export in front of you:</p>
+<pre>Exporter1.NegativeParens = 1      <span class="c">! this export's negatives show as (123.45)</span>
+...
+Exporter1.NegativeParens = 0      <span class="c">! back to a leading minus for the next one</span></pre>
+      <p>There's no dialog checkbox for this one — it's set in code, the same way <a
+        href="#workbook"><code>SplitByGroup</code></a> is. Turning it on applies to <b>every</b> numeric
+        column in that export, not a chosen few; a plain integer column that would otherwise be left on
+        General also picks up a format at that point, purely so its negatives can show in parentheses too.</p>
+      </div>
+      <div class="es">
+      <p class="lead">Cada celda numérica se escribe como un número real, no como texto — algo deliberado,
+        ya que eso es lo que hace que una columna se pueda ordenar, filtrar y usar en fórmulas una vez en
+        Excel. Sin más, sin embargo, un número real se muestra bajo el formato <b>General</b> propio de
+        Excel, que quita los ceros finales: <code>123.00</code> se convierte en <code>123</code>. No se
+        pierde nada — el valor de fondo sigue siendo exactamente correcto, y cualquier fórmula que lo
+        referencie sigue calculando bien — pero la presentación ya no coincide con lo que mostraba en
+        pantalla el picture propio de esa columna.</p>
+      <p>Esto se corrige automáticamente, por columna, a partir del picture propio de esa columna — no hay
+        propiedad que ajustar para esta mitad. Un picture como <code>@n-9.2</code> significa 2 decimales
+        (el número después del punto se interpreta como un valor, no se cuentan caracteres —
+        <code>@n-20.10</code> significa 10 lugares, no 1), y una columna que muestra decimales recibe un
+        formato numérico de Excel a juego aplicado a sus celdas, para que <code>123.00</code> siga
+        pareciendo <code>123.00</code>. Una columna entera pura queda sin tocar — General ya la muestra
+        correctamente, así que no se añade ningún formato personalizado, y nada cambia en su salida.
+        Columnas que comparten un picture idéntico comparten una sola entrada de formato en vez de tener
+        cada una la suya; el mismo formato se aplica también a la celda de Sum/Average/Min/Max/Count de esa
+        columna, cuando existe.</p>
+      <h3>Números negativos: signo menos, o paréntesis</h3>
+      <p>Una propiedad controla cómo se muestra un valor negativo en una columna con formato:</p>
+      <table>
+        <tr><th>Miembro</th><th>Por defecto</th><th>Significado</th></tr>
+        <tr><td><code>NegativeParens</code></td><td>0</td><td>0 = signo menos al frente (<code>-123.45</code>, el propio de Excel). 1 = paréntesis (<code>(123.45)</code>) en su lugar.</td></tr>
+      </table>
+      <p>Es un interruptor en tiempo de ejecución, no una elección fija — ajústalo como convenga a la
+        exportación que tengas delante:</p>
+<pre>Exporter1.NegativeParens = 1      <span class="c">! los negativos de esta exportación se ven como (123.45)</span>
+...
+Exporter1.NegativeParens = 0      <span class="c">! vuelve al signo menos para la siguiente</span></pre>
+      <p>No hay casilla en el diálogo para esto — se ajusta por código, igual que <a
+        href="#workbook"><code>SplitByGroup</code></a>. Activarlo se aplica a <b>todas</b> las columnas
+        numéricas de esa exportación, no a unas pocas elegidas; una columna entera pura que de otro modo se
+        habría dejado en General también recibe un formato en ese momento, precisamente para que sus
+        negativos puedan mostrarse entre paréntesis también.</p>
+      </div>
+    </section>
+
+    <section id="summary">
+      <h2><span class="en">Summary rows: Sum, Average, Min, Max, Count</span><span class="es">Filas de resumen: Suma, Promedio, Mín, Máx, Cuenta</span> <a href="#summary" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">Excel .xlsx exports can carry up to five extra rows directly under the data — one
+        each for <b>Sum</b>, <b>Average</b>, <b>Minimum</b>, <b>Maximum</b>, and <b>Count</b> — every one
+        a real Excel formula, not a pre-computed number pasted in.</p>
+      <p>Turn one or more on with the <b>Summary rows: Sum / Avg / Min / Max / Cnt</b> checkboxes in the
+        dialog, then tick the <b>Tot</b> column for whichever numeric columns should be included — the same
+        <b>Tot</b> column and <b>Toggle total</b> button described under
+        <a href="#picker">Choosing the columns</a>. A column ticked for <b>Tot</b> participates in
+        <i>every</i> summary row that is turned on; there is no separate on/off per row type. Ticking
+        <b>Tot</b> on a text column is refused with a popup — there is nothing to sum.</p>
+      <p style="text-align:center;margin:16px 0">
+        <img src="myExport-totals.png" alt="The picker with a Tot column, and Summary rows checkboxes"
+             style="max-width:100%;border:1px solid var(--line);border-radius:8px;
+                    box-shadow:0 2px 8px rgba(14,26,43,.14)"></p>
+      <p>Whichever rows are on stack directly under the data, always in this order — Sum, then Average,
+        then Minimum, then Maximum, then Count, skipping any that are off:</p>
+<pre><span class="c">! 11 data rows, headings on: data is rows 2..12</span>
+Total     =SUM(A2:A12)
+Average   =AVERAGE(A2:A12)
+Minimum   =MIN(A2:A12)
+Maximum   =MAX(A2:A12)
+Count     =COUNT(A2:A12)</pre>
+      <p>Each formula's cell also carries a <b>cached value</b> — computed while the rows were being
+        written, the same running Sum/Min/Max/count every ticked column already tracks — so a viewer that
+        never recalculates still shows the right number; opening it in Excel and pressing a key recalculates
+        it live from the formula as usual. The row is bold with a thin top border, and its label lands in
+        the first column that is <i>not</i> itself part of the calculation — so a totalled first column
+        just pushes the label to the second, rather than being skipped.</p>
+      <div class="callout note"><b>Count shares its column's own number format</b>
+        If a column has a decimal-preserving format (see <a href="#numfmt">Number formats</a>), its Count
+        cell inherits that same format — a count of 5 in a 2-decimal column shows as <code>5.00</code>,
+        not a clean <code>5</code>. The underlying value is still exactly right; it's purely cosmetic, and
+        the tradeoff for not needing a separate style per summary kind.</div>
+      <h3>Labels and switches from code</h3>
+      <table>
+        <tr><th>Member</th><th>Default</th><th>Meaning</th></tr>
+        <tr><td><code>Totals</code></td><td>0</td><td>Write the Sum row.</td></tr>
+        <tr><td><code>TotalsLabel</code></td><td><code>'Total'</code></td><td>Its label.</td></tr>
+        <tr><td><code>TotalsAvg</code></td><td>0</td><td>Write the Average row.</td></tr>
+        <tr><td><code>AvgLabel</code></td><td><code>'Average'</code></td><td>Its label.</td></tr>
+        <tr><td><code>TotalsMin</code></td><td>0</td><td>Write the Minimum row.</td></tr>
+        <tr><td><code>MinLabel</code></td><td><code>'Minimum'</code></td><td>Its label.</td></tr>
+        <tr><td><code>TotalsMax</code></td><td>0</td><td>Write the Maximum row.</td></tr>
+        <tr><td><code>MaxLabel</code></td><td><code>'Maximum'</code></td><td>Its label.</td></tr>
+        <tr><td><code>TotalsCnt</code></td><td>0</td><td>Write the Count row. Not to be confused with the <code>TotalsCount()</code> <i>method</i> below, which counts ticked columns, not rows.</td></tr>
+        <tr><td><code>CntLabel</code></td><td><code>'Count'</code></td><td>Its label.</td></tr>
+      </table>
+      <p>Preset which columns are totalled — and skip the dialog entirely — the same way you would preset
+        any other column choice:</p>
+<pre>Exporter1.Init(?List,MyQueue)
+Exporter1.Fmt        = Exp:XLSX
+Exporter1.Totals     = 1                     <span class="c">! Sum row</span>
+Exporter1.TotalsAvg  = 1                     <span class="c">! and Average, on the same run</span>
+Exporter1.ColumnTotal(3,1)                   <span class="c">! sum/average column 3 - must be numeric</span>
+Exporter1.ColumnTotal(5,1)                   <span class="c">! and column 5</span>
+Exporter1.ExportQueue()</pre>
+      <div class="callout note"><b>Excel .xlsx only</b>
+        There is nowhere to put a formula in CSV, TSV, XML or JSON, so the four checkboxes are disabled
+        for every other format and the summary rows are silently skipped — nothing errors, the export just
+        has no extra rows.</div>
+      </div>
+      <div class="es">
+      <p class="lead">Las exportaciones a Excel .xlsx pueden llevar hasta cinco filas extra justo debajo
+        de los datos — una para <b>Suma</b>, otra para <b>Promedio</b>, otra para <b>Mínimo</b>, otra para
+        <b>Máximo</b>, y otra para <b>Cuenta</b> — cada una con una fórmula real de Excel, no un número ya
+        calculado y pegado.</p>
+      <p>Actívalas con las casillas <b>Summary rows: Sum / Avg / Min / Max / Cnt</b> del diálogo, y marca
+        la columna <b>Tot</b> en las columnas numéricas que quieras incluir — la misma columna <b>Tot</b> y
+        el botón <b>Toggle total</b> descritos en <a href="#picker">Elegir las columnas</a>. Una columna
+        marcada con <b>Tot</b> participa en <i>todas</i> las filas de resumen que estén activas; no hay un
+        interruptor por separado para cada tipo de fila. Marcar <b>Tot</b> en una columna de texto se
+        rechaza con un aviso — no hay nada que sumar.</p>
+      <p style="text-align:center;margin:16px 0">
+        <img src="myExport-totals.png" alt="El selector con una columna Tot y las casillas Summary rows"
+             style="max-width:100%;border:1px solid var(--line);border-radius:8px;
+                    box-shadow:0 2px 8px rgba(14,26,43,.14)"></p>
+      <p>Las filas activas se apilan justo debajo de los datos, siempre en este orden — Suma, luego
+        Promedio, luego Mínimo, luego Máximo, luego Cuenta, saltando las que estén apagadas:</p>
+<pre><span class="c">! 11 filas de datos, con encabezados: los datos van en las filas 2..12</span>
+Total     =SUM(A2:A12)
+Average   =AVERAGE(A2:A12)
+Minimum   =MIN(A2:A12)
+Maximum   =MAX(A2:A12)
+Count     =COUNT(A2:A12)</pre>
+      <p>La celda de cada fórmula también lleva un <b>valor en caché</b> — calculado mientras se escribían
+        las filas, la misma Suma/Mín/Máx/conteo que ya lleva cada columna marcada — así que un lector que
+        nunca recalcula igual muestra el número correcto; al abrirlo en Excel y pulsar una tecla se
+        recalcula en vivo desde la fórmula como siempre. La fila va en negrita con un borde superior fino,
+        y su etiqueta cae en la primera columna que <i>no</i> forma parte del cálculo — así que si la
+        primera columna es la que se totaliza, la etiqueta simplemente pasa a la segunda, en vez de
+        saltarse.</p>
+      <div class="callout note"><b>Cuenta comparte el formato numérico propio de su columna</b>
+        Si una columna tiene un formato que preserva decimales (ver <a href="#numfmt">Formatos
+        numéricos</a>), su celda de Cuenta hereda ese mismo formato — una cuenta de 5 en una columna de 2
+        decimales se muestra como <code>5.00</code>, no como un limpio <code>5</code>. El valor de fondo
+        sigue siendo exactamente correcto; es puramente estético, y es el precio de no necesitar un estilo
+        separado por cada tipo de resumen.</div>
+      <h3>Etiquetas e interruptores desde código</h3>
+      <table>
+        <tr><th>Miembro</th><th>Por defecto</th><th>Significado</th></tr>
+        <tr><td><code>Totals</code></td><td>0</td><td>Escribe la fila de Suma.</td></tr>
+        <tr><td><code>TotalsLabel</code></td><td><code>'Total'</code></td><td>Su etiqueta.</td></tr>
+        <tr><td><code>TotalsAvg</code></td><td>0</td><td>Escribe la fila de Promedio.</td></tr>
+        <tr><td><code>AvgLabel</code></td><td><code>'Average'</code></td><td>Su etiqueta.</td></tr>
+        <tr><td><code>TotalsMin</code></td><td>0</td><td>Escribe la fila de Mínimo.</td></tr>
+        <tr><td><code>MinLabel</code></td><td><code>'Minimum'</code></td><td>Su etiqueta.</td></tr>
+        <tr><td><code>TotalsMax</code></td><td>0</td><td>Escribe la fila de Máximo.</td></tr>
+        <tr><td><code>MaxLabel</code></td><td><code>'Maximum'</code></td><td>Su etiqueta.</td></tr>
+        <tr><td><code>TotalsCnt</code></td><td>0</td><td>Escribe la fila de Cuenta. No confundir con el <i>método</i> <code>TotalsCount()</code> de abajo, que cuenta columnas marcadas, no filas.</td></tr>
+        <tr><td><code>CntLabel</code></td><td><code>'Count'</code></td><td>Su etiqueta.</td></tr>
+      </table>
+      <p>Para fijar desde código qué columnas se totalizan — y saltarte el diálogo por completo — de la
+        misma forma que fijarías cualquier otra elección de columna:</p>
+<pre>Exporter1.Init(?List,MyQueue)
+Exporter1.Fmt        = Exp:XLSX
+Exporter1.Totals     = 1                     <span class="c">! fila de Suma</span>
+Exporter1.TotalsAvg  = 1                     <span class="c">! y Promedio, en la misma pasada</span>
+Exporter1.ColumnTotal(3,1)                   <span class="c">! suma/promedia la columna 3 - debe ser numérica</span>
+Exporter1.ColumnTotal(5,1)                   <span class="c">! y la columna 5</span>
+Exporter1.ExportQueue()</pre>
+      <div class="callout note"><b>Solo Excel .xlsx</b>
+        En CSV, TSV, XML o JSON no hay dónde poner una fórmula, así que las cuatro casillas aparecen
+        deshabilitadas en cualquier otro formato y las filas de resumen simplemente se omiten — no da
+        error, la exportación solo sale sin esas filas extra.</div>
+      </div>
+    </section>
+
+    <section id="subtotal">
+      <h2><span class="en">Subtotal / group rows</span><span class="es">Filas de subtotal / grupo</span> <a href="#subtotal" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">The same picker's <b>Grp</b> column and <b>Toggle group</b> button (next to <b>Tot</b>
+        and <b>Toggle total</b>) mark ONE column — any column, not just numeric ones — as the one to break
+        on. Whenever that column's value changes between one row and the next, a bold subtotal row is
+        inserted right there before continuing, and the very last group gets one too, once the data runs
+        out. This only works because <a href="#summary">Summary rows</a> already tracks Sum/Min/Max/Count
+        per column — the subtotal machinery just resets those same running totals at every break instead
+        of only at the very end.</p>
+      <div class="callout warn"><b>The data must already be sorted by the group column</b>
+        A subtotal row appears every time the group column's value differs from the row before it — full
+        stop. There is no look-ahead, no re-sorting, no grouping by similarity. If the browse isn't already
+        ordered by that column, you'll get a new "group" every time the value happens to change, not real
+        groups.</div>
+      <p>Whichever of Sum/Average/Min/Max are already ticked apply to the subtotal rows too — there's no
+        separate switch for "which totals show up at a break" versus "which show up at the very end."
+        The label repeats the pattern the grand-total row already uses: it always lands in the
+        <b>leftmost</b> column (not necessarily the group column itself), reading <code>"&lt;label&gt;
+        &lt;group value&gt;"</code> — e.g. <b>"Total East"</b> — and every other column in that row still
+        gets a styled, bordered cell even with nothing to show, so the row's top border draws as one
+        unbroken line across the full width instead of stopping wherever a column happens to be blank.</p>
+      <div class="callout note"><b>The grand total still comes out right</b>
+        Once subtotal rows exist, a naive <code>=SUM(A2:A50)</code> for the very last, grand-total row
+        would double-count every group's own subtotal sitting inside that same range. Both levels use
+        Excel's <code>SUBTOTAL()</code> instead of a plain function — the group rows as
+        <code>=SUBTOTAL(9,B2:B4)</code>, say, and the grand total as <code>=SUBTOTAL(9,A2:A50)</code> —
+        specifically because <code>SUBTOTAL()</code> only ever ignores another cell if that cell's own
+        formula is <i>also</i> <code>SUBTOTAL()</code>; it has no other way to recognise "this row is a
+        subtotal." A group's own range never contains another subtotal, so its own row computes an
+        identical value either way — using <code>SUBTOTAL()</code> there doesn't change what that row
+        shows, it just makes the cell visible to the outer call. This switch only happens when a group
+        column is actually set; a plain export without grouping still gets a plain <code>SUM()</code>,
+        unchanged.</div>
+      <p>From code, the same idea as <code>ColumnTotal()</code>:</p>
+<pre>Exporter1.ColumnGroupBy(2,1)     <span class="c">! column 2 is THE group-by column - only one at a time</span>
+Exporter1.Totals = 1              <span class="c">! Sum, both at each break and at the grand total</span>
+Exporter1.ColumnTotal(4,1)        <span class="c">! sum column 4 within each group</span></pre>
+      <p><code>ColumnGroupBy()</code> is single-select — ticking a new column clears whichever one was
+        ticked before, the same way a radio button would, since only one break column makes sense at a
+        time.</p>
+      </div>
+      <div class="es">
+      <p class="lead">La misma columna <b>Grp</b> del selector y el botón <b>Toggle group</b> (junto a
+        <b>Tot</b> y <b>Toggle total</b>) marcan UNA columna — cualquiera, no solo las numéricas — como
+        aquella por la que se hace el corte. Cada vez que el valor de esa columna cambia entre una fila y
+        la siguiente, se inserta ahí mismo una fila de subtotal en negrita antes de seguir, y el último
+        grupo también recibe una, en cuanto se acaban los datos. Esto funciona porque <a
+        href="#summary">Filas de resumen</a> ya lleva el Sum/Mín/Máx/Conteo por columna — el mecanismo de
+        subtotal solo reinicia esos mismos acumulados en cada corte en vez de solo al final.</p>
+      <div class="callout warn"><b>Los datos deben venir ya ordenados por la columna de grupo</b>
+        Aparece una fila de subtotal cada vez que el valor de la columna de grupo difiere del de la fila
+        anterior — así de simple. No hay adelanto de lectura, ni reordenamiento, ni agrupación por
+        similitud. Si el browse no viene ya ordenado por esa columna, tendrás un "grupo" nuevo cada vez que
+        el valor cambie, no grupos reales.</p>
+      <p>Los que ya estén marcados de Sum/Average/Min/Max se aplican también a las filas de subtotal — no
+        hay un interruptor aparte para "cuáles aparecen en un corte" frente a "cuáles aparecen al final".
+        La etiqueta repite el mismo patrón que ya usa la fila de gran total: siempre cae en la columna más
+        a la <b>izquierda</b> (no necesariamente la columna de grupo en sí), con el texto <code>"&lt;etiqueta&gt;
+        &lt;valor de grupo&gt;"</code> — por ejemplo <b>"Total East"</b> — y cualquier otra columna en esa
+        fila igual recibe una celda con estilo y borde aunque no tenga nada que mostrar, para que el borde
+        superior de la fila se dibuje como una sola línea continua en todo el ancho en vez de cortarse
+        donde una columna esté vacía.</p>
+      <div class="callout note"><b>El gran total sigue saliendo correcto</b>
+        En cuanto existen filas de subtotal, un ingenuo <code>=SUM(A2:A50)</code> para la última fila, la
+        del gran total, contaría dos veces el subtotal de cada grupo que ya está dentro de ese mismo rango.
+        Ambos niveles usan <code>SUBTOTAL()</code> de Excel en vez de una función normal — las filas de
+        grupo como <code>=SUBTOTAL(9,B2:B4)</code>, por ejemplo, y el gran total como
+        <code>=SUBTOTAL(9,A2:A50)</code> — precisamente porque <code>SUBTOTAL()</code> solo ignora otra
+        celda si la fórmula de esa celda es <i>también</i> <code>SUBTOTAL()</code>; no tiene otra manera de
+        reconocer "esta fila es un subtotal". El rango propio de un grupo nunca contiene otro subtotal, así
+        que su propia fila calcula un valor idéntico de cualquier forma — usar <code>SUBTOTAL()</code> ahí
+        no cambia lo que muestra esa fila, solo hace visible la celda a la llamada externa. Este cambio
+        solo ocurre cuando de verdad hay una columna de grupo puesta; una exportación normal sin agrupar
+        sigue recibiendo un <code>SUM()</code> normal, sin cambios.</div>
+      <p>Desde código, la misma idea que <code>ColumnTotal()</code>:</p>
+<pre>Exporter1.ColumnGroupBy(2,1)     <span class="c">! la columna 2 es LA columna de grupo - solo una a la vez</span>
+Exporter1.Totals = 1              <span class="c">! Suma, tanto en cada corte como en el gran total</span>
+Exporter1.ColumnTotal(4,1)        <span class="c">! suma la columna 4 dentro de cada grupo</span></pre>
+      <p><code>ColumnGroupBy()</code> es de selección única — marcar una columna nueva quita la que
+        estuviera marcada antes, igual que un botón de radio, porque solo tiene sentido una columna de
+        corte a la vez.</p>
+      </div>
+    </section>
+
+    <section id="workbook">
+      <h2><span class="en">Multiple sheets in one workbook</span><span class="es">Varias hojas en un mismo libro</span> <a href="#workbook" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">Two different ways to end up with more than one tab in the same .xlsx, for two
+        different situations — combining <i>several separate lists</i> into one workbook you assemble
+        yourself, or automatically splitting <i>one already-grouped export</i> into a sheet per group.
+        Both are <b>code-driven only</b>: there is no dialog for this, because several different lists at
+        once have no single format/column choice a picker could sensibly ask about.</p>
+      <h3>Combining several lists yourself</h3>
+      <p>Four extra methods bracket the familiar <code>StartFile()</code>/<code>AddRow()</code>/<code>EndFile()</code>
+        loop you already know, once per sheet, inside one outer pair:</p>
+<pre>Exporter1.Fmt = Exp:XLSX
+Exporter1.FileName = <span class="s">'C:\reports\school.xlsx'</span>
+
+<span class="k">IF</span> Exporter1.StartWorkbook()
+  Exporter1.Init(?List1, StudentsQueue)
+  <span class="k">IF</span> Exporter1.StartSheet(<span class="s">'Students'</span>)
+    <span class="c">! the SAME AddRow() loop you already write for a single-sheet export</span>
+    <span class="k">LOOP</span>
+      <span class="k">IF</span> BRW1.Next() <span class="k">THEN BREAK</span> .
+      Exporter1.AddRow()
+    <span class="k">END</span>
+    Exporter1.EndSheet()
+  <span class="k">END</span>
+
+  Exporter1.Init(?List2, CoursesQueue)                     <span class="c">! rebind for the next sheet's own columns</span>
+  <span class="k">IF</span> Exporter1.StartSheet(<span class="s">'Courses'</span>)
+    <span class="k">LOOP</span>
+      <span class="k">IF</span> BRW2.Next() <span class="k">THEN BREAK</span> .
+      Exporter1.AddRow()
+    <span class="k">END</span>
+    Exporter1.EndSheet()
+  <span class="k">END</span>
+
+  Exporter1.EndWorkbook()                                  <span class="c">! assembles and writes the actual file</span>
+<span class="k">END</span></pre>
+      <p>Each sheet keeps its own independent column selection, headers, pictures, and totals/subtotal
+        grouping — because each one runs through its own <code>Init()</code> and its own
+        <code>StartSheet()</code>/<code>AddRow()</code>/<code>EndSheet()</code>, exactly like a standalone
+        export does. Tab order matches call order; a duplicate tab name (Excel refuses two identical ones)
+        gets " (2)", " (3)" appended automatically, the same way Windows renames a second copy of a file.</p>
+      <table>
+        <tr><th>Method</th><th>Meaning</th></tr>
+        <tr><td><code>StartWorkbook()</code></td><td>Once, before the first sheet. Excel .xlsx only.</td></tr>
+        <tr><td><code>StartSheet(pName)</code></td><td>Like <code>StartFile()</code>, scoped to one sheet — call <code>Init()</code> first if this sheet's columns differ from the last.</td></tr>
+        <tr><td><code>EndSheet()</code></td><td>Like the worksheet half of <code>EndFile()</code>, but stashes the sheet instead of writing to disk.</td></tr>
+        <tr><td><code>EndWorkbook()</code></td><td>Assembles every stashed sheet and writes the .xlsx. Reports "N rows exported" across every sheet combined.</td></tr>
+      </table>
+      <h3>Splitting one grouped export automatically</h3>
+      <p>A different question: rather than combining several browses, you have <i>one</i> grouped export
+        (see <a href="#subtotal">Subtotal / group rows</a>) and want every group to <i>also</i> land on its
+        own tab, in addition to the normal, single main sheet with its inline subtotal rows. One property:</p>
+<pre>Exporter1.SplitByGroup = 1        <span class="c">! needs a Grp column already set, same as subtotal rows</span></pre>
+      <p>Nothing else changes about how you call the class — still the plain
+        <code>StartFile()</code>/<code>AddRow()</code>/<code>EndFile()</code> loop, one pass over the
+        browse. Internally, every <code>AddRow()</code> call writes the row twice: once into the main
+        sheet (unchanged), and once into a second, entirely separate buffer for whichever group is
+        currently open. A break closes that buffer off — with its own Sum/Avg/Min/Max row, using the same
+        per-group running totals the inline subtotal rows already track — and stashes it as its own named
+        sheet. The main sheet always ends up as the first tab regardless of the order sheets get stashed
+        internally, since it's meant to stay the workbook's obvious default view.</p>
+      <p>In the dialog, this is the <b>"Split into sheets"</b> checkbox sitting on the same row as the
+        Summary rows checkboxes — greyed out, like they are, for anything other than Excel .xlsx.</p>
+      <h3>Building a code template for this</h3>
+      <p>Since combining several lists is code-driven, a Clarion <b>code template</b> (<code>#CODE</code>,
+        the same kind as an "insert this snippet where I click" template) can generate the
+        <code>StartWorkbook</code>/<code>Init</code>/<code>StartSheet</code>/loop/<code>EndSheet</code>/<code>EndWorkbook</code>
+        wiring for you, the same way the Export button's own template generates its dialog wiring. The
+        shape of it:</p>
+      <ul>
+        <li>A <b>repeating prompt group</b> — one row per sheet, each with its own List control, Browse
+          object and sheet name — so the developer adds sheets the same way they'd add rows to any other
+          repeating list in the Clarion IDE, in Template Language:
+          <code>#PROMPT('Sheets:',FROM(%group)),MULTI ... #ENDPROMPT</code>, with a nested
+          <code>#PROMPT('List control:',CONTROL)</code> per row.</li>
+        <li>An <code>#ATSTART</code> block that walks the group with <code>#FOR(%group)...#ENDFOR</code>
+          once, at generation time, auto-detecting each row's queue from its List control's own
+          <code>FROM()</code> attribute — the same trick the existing single-list export template already
+          uses, via <code>EXTRACT(%ControlStatement,'FROM',1)</code>.</li>
+        <li>The actual code-emission section walks the same group a second time, emitting one
+          <code>Init</code>/<code>StartSheet</code>/<code>LOOP</code>/<code>EndSheet</code> block per row,
+          bracketed by a single <code>StartWorkbook()</code>/<code>EndWorkbook()</code> pair.</li>
+      </ul>
+      <div class="callout warn"><b>This is a pattern to build, not something bundled with the class</b>
+        Unlike everything else on this page, a repeating-group code template is Template Language, not
+        Clarion code — a genuinely different scripting system, and one that needs registering and testing
+        in your own environment before trusting it. Treat the shape above as a starting point, not a
+        drop-in file.</div>
+      </div>
+      <div class="es">
+      <p class="lead">Dos formas distintas de terminar con más de una pestaña en el mismo .xlsx, para dos
+        situaciones distintas — combinar <i>varias listas separadas</i> en un libro que ensamblas tú mismo,
+        o dividir automáticamente <i>una exportación ya agrupada</i> en una hoja por grupo. Ambas son
+        <b>solo por código</b>: no hay diálogo para esto, porque varias listas distintas a la vez no tienen
+        una única elección de formato/columnas que un selector pudiera preguntar con sentido.</p>
+      <h3>Combinar varias listas tú mismo</h3>
+      <p>Cuatro métodos extra rodean el ya conocido bucle
+        <code>StartFile()</code>/<code>AddRow()</code>/<code>EndFile()</code>, una vez por hoja, dentro de
+        un par exterior:</p>
+<pre>Exporter1.Fmt = Exp:XLSX
+Exporter1.FileName = <span class="s">'C:\reports\school.xlsx'</span>
+
+<span class="k">IF</span> Exporter1.StartWorkbook()
+  Exporter1.Init(?List1, StudentsQueue)
+  <span class="k">IF</span> Exporter1.StartSheet(<span class="s">'Students'</span>)
+    <span class="c">! el MISMO bucle AddRow() que ya escribes para una exportación de una sola hoja</span>
+    <span class="k">LOOP</span>
+      <span class="k">IF</span> BRW1.Next() <span class="k">THEN BREAK</span> .
+      Exporter1.AddRow()
+    <span class="k">END</span>
+    Exporter1.EndSheet()
+  <span class="k">END</span>
+
+  Exporter1.Init(?List2, CoursesQueue)                     <span class="c">! reasigna para las columnas de la siguiente hoja</span>
+  <span class="k">IF</span> Exporter1.StartSheet(<span class="s">'Courses'</span>)
+    <span class="k">LOOP</span>
+      <span class="k">IF</span> BRW2.Next() <span class="k">THEN BREAK</span> .
+      Exporter1.AddRow()
+    <span class="k">END</span>
+    Exporter1.EndSheet()
+  <span class="k">END</span>
+
+  Exporter1.EndWorkbook()                                  <span class="c">! ensambla y escribe el archivo real</span>
+<span class="k">END</span></pre>
+      <p>Cada hoja conserva su propia selección de columnas, encabezados, pictures y totales/agrupación de
+        subtotal — porque cada una pasa por su propio <code>Init()</code> y su propio
+        <code>StartSheet()</code>/<code>AddRow()</code>/<code>EndSheet()</code>, igual que una exportación
+        independiente. El orden de las pestañas sigue el orden de las llamadas; un nombre de pestaña
+        duplicado (Excel rechaza dos iguales) recibe " (2)", " (3)" automáticamente, igual que Windows
+        renombra una segunda copia de un archivo.</p>
+      <table>
+        <tr><th>Método</th><th>Significado</th></tr>
+        <tr><td><code>StartWorkbook()</code></td><td>Una vez, antes de la primera hoja. Solo Excel .xlsx.</td></tr>
+        <tr><td><code>StartSheet(pName)</code></td><td>Como <code>StartFile()</code>, para una hoja — llama a <code>Init()</code> antes si esta hoja tiene columnas distintas de la anterior.</td></tr>
+        <tr><td><code>EndSheet()</code></td><td>Como la mitad de hoja de <code>EndFile()</code>, pero guarda la hoja en vez de escribirla a disco.</td></tr>
+        <tr><td><code>EndWorkbook()</code></td><td>Ensambla todas las hojas guardadas y escribe el .xlsx. Informa "N filas exportadas" sumando todas las hojas.</td></tr>
+      </table>
+      <h3>Dividir automáticamente una exportación agrupada</h3>
+      <p>Una pregunta distinta: en vez de combinar varios browses, tienes <i>una</i> exportación agrupada
+        (ver <a href="#subtotal">Filas de subtotal / grupo</a>) y quieres que cada grupo <i>también</i>
+        caiga en su propia pestaña, además de la hoja principal normal con sus filas de subtotal en línea.
+        Una propiedad:</p>
+<pre>Exporter1.SplitByGroup = 1        <span class="c">! necesita una columna Grp ya puesta, igual que las filas de subtotal</span></pre>
+      <p>Nada más cambia en cómo llamas a la clase — sigue siendo el mismo bucle
+        <code>StartFile()</code>/<code>AddRow()</code>/<code>EndFile()</code>, una sola pasada por el
+        browse. Por dentro, cada llamada a <code>AddRow()</code> escribe la fila dos veces: una en la hoja
+        principal (sin cambios), y otra en un segundo búfer, totalmente aparte, para el grupo que esté
+        abierto en ese momento. Un corte cierra ese búfer — con su propia fila Sum/Avg/Min/Max, usando los
+        mismos totales por grupo que ya llevan las filas de subtotal en línea — y lo guarda como su propia
+        hoja con nombre. La hoja principal siempre termina como la primera pestaña sin importar el orden en
+        que se guarden las hojas por dentro, porque está pensada para seguir siendo la vista por defecto
+        obvia del libro.</p>
+      <p>En el diálogo, esta es la casilla <b>"Split into sheets"</b> que está en la misma fila que las
+        casillas de Filas de resumen — deshabilitada, igual que ellas, para cualquier formato que no sea
+        Excel .xlsx.</p>
+      <h3>Construir una plantilla de código para esto</h3>
+      <p>Como combinar varias listas es solo por código, una <b>plantilla de código</b> de Clarion
+        (<code>#CODE</code>, del mismo tipo que una plantilla de "inserta esto donde hagas clic") puede
+        generar el cableado de
+        <code>StartWorkbook</code>/<code>Init</code>/<code>StartSheet</code>/bucle/<code>EndSheet</code>/<code>EndWorkbook</code>
+        por ti, igual que la propia plantilla del botón Exportar genera el cableado de su diálogo. La forma
+        que tendría:</p>
+      <ul>
+        <li>Un <b>grupo de prompts repetible</b> — una fila por hoja, cada una con su propio control List,
+          objeto Browse y nombre de hoja — para que el desarrollador añada hojas igual que añadiría filas a
+          cualquier otra lista repetible del IDE de Clarion, en Template Language:
+          <code>#PROMPT('Sheets:',FROM(%grupo)),MULTI ... #ENDPROMPT</code>, con un
+          <code>#PROMPT('List control:',CONTROL)</code> anidado por fila.</li>
+        <li>Un bloque <code>#ATSTART</code> que recorre el grupo con
+          <code>#FOR(%grupo)...#ENDFOR</code> una vez, en tiempo de generación, detectando automáticamente
+          la cola de cada fila a partir del atributo <code>FROM()</code> propio de su control List — el
+          mismo truco que ya usa la plantilla de exportación de una sola lista, vía
+          <code>EXTRACT(%ControlStatement,'FROM',1)</code>.</li>
+        <li>La sección de generación de código en sí recorre el mismo grupo una segunda vez, emitiendo un
+          bloque <code>Init</code>/<code>StartSheet</code>/<code>LOOP</code>/<code>EndSheet</code> por fila,
+          entre un único par <code>StartWorkbook()</code>/<code>EndWorkbook()</code>.</li>
+      </ul>
+      <div class="callout warn"><b>Esto es un patrón para construir, no algo incluido con la clase</b>
+        A diferencia de todo lo demás en esta página, una plantilla de código con grupo repetible es
+        Template Language, no código Clarion — un sistema de scripting genuinamente distinto, y que hay que
+        registrar y probar en tu propio entorno antes de confiar en él. Toma la forma de arriba como punto
+        de partida, no como un archivo listo para usar.</div>
       </div>
     </section>
 
@@ -1082,9 +1850,13 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <li><b>UTF-8 conversion is skipped when it is a no-op.</b> Pure-ASCII text already is valid UTF-8,
           so the buffer is scanned once and copied straight through; only text with high bytes goes through
           <code>MultiByteToWideChar</code> / <code>WideCharToMultiByte</code>.</li>
-        <li><b>Writing is one Win32 call.</b> <code>CreateFileA</code> / <code>WriteFile</code> /
-          <code>CloseHandle</code> from <code>MODULE('win32')</code> — the whole buffer in a single write,
-          no driver, no record-at-a-time loop.</li>
+        <li><b>Writing is atomic.</b> The buffer goes to a <code>.tmp</code> file next to the real one
+          (<code>CreateFileA</code> / <code>WriteFile</code> / <code>CloseHandle</code> from
+          <code>MODULE('win32')</code>, the whole buffer in one write), then <code>MoveFileExA</code> swaps
+          it into the real name in one step. A viewer that already has the previous export open — which is
+          the normal case, since <code>OpenWhenDone</code> opens every export — keeps reading its own
+          already-open handle to the old content until it re-opens the path, rather than catching the file
+          mid-write.</li>
         <li><b>The class knows nothing about ABC.</b> It takes a control number and a queue; the browse walk
           lives in the generated code. So it works just as well in a legacy or hand-coded app.</li>
       </ul>
@@ -1100,9 +1872,13 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <li><b>La conversión a UTF-8 se salta cuando no hace nada.</b> El texto puramente ASCII ya es UTF-8
           válido, así que se recorre el búfer una vez y se copia tal cual; solo el texto con bytes altos
           pasa por <code>MultiByteToWideChar</code> / <code>WideCharToMultiByte</code>.</li>
-        <li><b>Escribir es una sola llamada de Win32.</b> <code>CreateFileA</code> / <code>WriteFile</code> /
-          <code>CloseHandle</code> desde <code>MODULE('win32')</code> — todo el búfer en una escritura, sin
-          driver y sin bucle registro a registro.</li>
+        <li><b>Escribir es atómico.</b> El búfer va primero a un archivo <code>.tmp</code> junto al
+          definitivo (<code>CreateFileA</code> / <code>WriteFile</code> / <code>CloseHandle</code> desde
+          <code>MODULE('win32')</code>, todo el búfer en una sola escritura), y luego
+          <code>MoveFileExA</code> lo intercambia por el nombre real en un solo paso. Un lector que ya
+          tenga abierta la exportación anterior — el caso normal, porque <code>OpenWhenDone</code> abre
+          cada exportación — sigue leyendo su propio identificador ya abierto al contenido viejo hasta que
+          vuelve a abrir la ruta, en vez de sorprender al archivo a medio escribir.</li>
         <li><b>La clase no sabe nada de ABC.</b> Recibe un número de control y una cola; el recorrido del
           browse vive en el código generado. Por eso funciona igual de bien en una app legacy o escrita a
           mano.</li>
@@ -1135,12 +1911,18 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <tr><td><code>ColumnOn(pCol)</code></td><td>BYTE — is it ticked?</td></tr>
         <tr><td><code>ColumnHeading(pCol)</code> / <code>ColumnPic(pCol)</code></td><td>The current heading / picture.</td></tr>
         <tr><td><code>ColumnDefault(pCol)</code> / <code>ColumnDefaultPic(pCol)</code></td><td>What the LIST itself uses.</td></tr>
+        <tr><td><code>ColumnIsNum(pCol)</code></td><td>BYTE — is it classified as numeric?</td></tr>
+        <tr><td><code>ColumnTotal(pCol, on)</code></td><td>Include or exclude a numeric column from every enabled <a href="#summary">summary row</a>; ignored on a non-numeric column.</td></tr>
+        <tr><td><code>ColumnTotalOn(pCol)</code></td><td>BYTE — is it ticked for the summary rows?</td></tr>
+        <tr><td><code>TotalsCount()</code></td><td>LONG — how many USED, numeric columns are ticked.</td></tr>
+        <tr><td><code>ColumnGroupBy(pCol, on)</code></td><td>Marks pCol as THE group-by/subtotal column. Single-select — turning one on turns any other off. See <a href="#subtotal">Subtotal / group rows</a>.</td></tr>
+        <tr><td><code>ColumnGroupOn(pCol)</code></td><td>BYTE — is it the group-by column?</td></tr>
       </table>
       <h3>Options</h3>
       <table>
         <tr><th>Member</th><th>Default</th><th>Meaning</th></tr>
         <tr><td><code>Title</code></td><td><code>'Data'</code></td><td>Sheet name, XML root, HTML heading, and the basis of the suggested file name.</td></tr>
-        <tr><td><code>Allow</code></td><td><code>127</code></td><td>Bit mask of offered formats — <code>Exp:AllowCSV</code>, <code>Exp:AllowXLSX</code>, … or <code>Exp:AllowAll</code>.</td></tr>
+        <tr><td><code>Allow</code></td><td><code>Exp:AllowAll</code> (511)</td><td>Bit mask of offered formats — <code>Exp:AllowCSV</code>, <code>Exp:AllowXLSX</code>, … or <code>Exp:AllowAll</code>.</td></tr>
         <tr><td><code>Fmt</code></td><td><code>Exp:CSV</code></td><td>The chosen format. Set it yourself to skip the dialog.</td></tr>
         <tr><td><code>FileName</code></td><td>blank</td><td>Full path of the file to write.</td></tr>
         <tr><td><code>Headers</code></td><td>1</td><td>Write a heading row.</td></tr>
@@ -1154,6 +1936,20 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <tr><td><code>Confirm</code></td><td>1</td><td>Show the success / failure popup.</td></tr>
         <tr><td><code>Delim</code></td><td><code>','</code></td><td>CSV separator — set it to <code>';'</code> for European locales.</td></tr>
         <tr><td><code>RowTag</code></td><td><code>'Row'</code></td><td>XML element for one row.</td></tr>
+        <tr><td><code>PrinterName</code></td><td>blank</td><td>Blank = the Windows default printer. Print only.</td></tr>
+        <tr><td><code>PageOrient</code></td><td><code>Exp:Landscape</code></td><td>Print &amp; PDF page orientation. See <a href="#printpdf">Print &amp; PDF</a>.</td></tr>
+        <tr><td><code>PagePaper</code></td><td><code>Exp:Letter</code></td><td><code>Exp:Letter</code> / <code>Exp:A4</code> — PDF only.</td></tr>
+        <tr><td><code>MarginLeft/Top/Right/Bottom</code></td><td>720</td><td>Twips (1440/inch), Print &amp; PDF.</td></tr>
+        <tr><td><code>FontSize</code> / <code>TitleSize</code></td><td>9 / 14</td><td>Points, Print &amp; PDF body text and title.</td></tr>
+        <tr><td><code>PagesOut</code></td><td>—</td><td>Read-only. Pages produced by the last Print or PDF.</td></tr>
+        <tr><td><code>PdfTruncated</code></td><td>0</td><td>Read-only. 1 = the last PDF hit its 2,000-page ceiling and left some rows out — check even with <code>Confirm</code> off. See <a href="#printpdf">Print &amp; PDF</a>.</td></tr>
+        <tr><td><code>Totals</code> / <code>TotalsAvg</code> / <code>TotalsMin</code> / <code>TotalsMax</code> / <code>TotalsCnt</code></td><td>0</td><td>Write a Sum / Average / Minimum / Maximum / Count row (Excel .xlsx only). See <a href="#summary">Summary rows</a>.</td></tr>
+        <tr><td><code>TotalsLabel</code> / <code>AvgLabel</code> / <code>MinLabel</code> / <code>MaxLabel</code> / <code>CntLabel</code></td><td><code>'Total'</code> / <code>'Average'</code> / <code>'Minimum'</code> / <code>'Maximum'</code> / <code>'Count'</code></td><td>That row's label.</td></tr>
+        <tr><td><code>NegativeParens</code></td><td>0</td><td>1 = negatives show as <code>(123.45)</code> instead of <code>-123.45</code>, in every numeric column's own xlsx format. See <a href="#numfmt">Number formats</a>.</td></tr>
+        <tr><td><code>SplitByGroup</code></td><td>0</td><td>Also write one extra sheet per distinct group value. Needs a group-by column. See <a href="#workbook">Multiple sheets in one workbook</a>.</td></tr>
+        <tr><td><code>EmailWhenDone</code></td><td>0</td><td>Open a compose window (Simple MAPI) with the file attached. See <a href="#email">Email it when it's done</a>.</td></tr>
+        <tr><td><code>EmailSubject</code> / <code>EmailBody</code></td><td>blank</td><td>Blank subject = uses <code>Title</code>; blank body = no note text.</td></tr>
+        <tr><td><code>EmailToFront</code></td><td>1</td><td>Try to bring the mail client's window forward instead of just flashing the taskbar. See <a href="#email">Email it when it's done</a>.</td></tr>
       </table>
       <h3>Doing the work</h3>
       <table>
@@ -1167,6 +1963,13 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <tr><td><code>EndFile()</code></td><td>BYTE</td><td>Finish, write to disk, optionally open it.</td></tr>
         <tr><td><code>CellText(col)</code></td><td>STRING</td><td>VIRTUAL — override to reshape a value on its way out.</td></tr>
         <tr><td><code>HeaderText(col)</code></td><td>STRING</td><td>VIRTUAL — override to rename a column in the file.</td></tr>
+        <tr><td><code>PrintOut()</code></td><td>BYTE</td><td>Skip the dialog and print immediately, with whatever <code>Fmt</code>, columns and Page Setup are already set.</td></tr>
+        <tr><td><code>PreviewOut()</code></td><td>BYTE</td><td>Same idea, but opens a PDF preview instead of sending it to paper.</td></tr>
+        <tr><td><code>StartWorkbook()</code></td><td>BYTE</td><td>Once, before the first sheet. Excel .xlsx only. See <a href="#workbook">Multiple sheets in one workbook</a>.</td></tr>
+        <tr><td><code>StartSheet(pName)</code></td><td>BYTE</td><td>Like <code>StartFile()</code>, scoped to one sheet.</td></tr>
+        <tr><td><code>EndSheet()</code></td><td>BYTE</td><td>Like the worksheet half of <code>EndFile()</code>, but stashes instead of writing.</td></tr>
+        <tr><td><code>EndWorkbook()</code></td><td>BYTE</td><td>Assembles every stashed sheet and writes the .xlsx.</td></tr>
+        <tr><td><code>PageSetup()</code></td><td>—</td><td>The orientation / paper / margins dialog. Called from the <b>Page Setup…</b> button; callable directly to skip it too.</td></tr>
       </table>
       <h3>Results</h3>
       <table>
@@ -1198,12 +2001,18 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <tr><td><code>ColumnOn(pCol)</code></td><td>BYTE — ¿está marcada?</td></tr>
         <tr><td><code>ColumnHeading(pCol)</code> / <code>ColumnPic(pCol)</code></td><td>El encabezado / picture actual.</td></tr>
         <tr><td><code>ColumnDefault(pCol)</code> / <code>ColumnDefaultPic(pCol)</code></td><td>Lo que usa el propio LIST.</td></tr>
+        <tr><td><code>ColumnIsNum(pCol)</code></td><td>BYTE — ¿está clasificada como numérica?</td></tr>
+        <tr><td><code>ColumnTotal(pCol, on)</code></td><td>Incluye o excluye una columna numérica de cada <a href="#summary">fila de resumen</a> activa; se ignora en una columna no numérica.</td></tr>
+        <tr><td><code>ColumnTotalOn(pCol)</code></td><td>BYTE — ¿está marcada para las filas de resumen?</td></tr>
+        <tr><td><code>TotalsCount()</code></td><td>LONG — cuántas columnas USED y numéricas están marcadas.</td></tr>
+        <tr><td><code>ColumnGroupBy(pCol, on)</code></td><td>Marca pCol como LA columna de grupo/subtotal. Selección única — marcar una apaga cualquier otra. Ver <a href="#subtotal">Filas de subtotal / grupo</a>.</td></tr>
+        <tr><td><code>ColumnGroupOn(pCol)</code></td><td>BYTE — ¿es la columna de grupo?</td></tr>
       </table>
       <h3>Opciones</h3>
       <table>
         <tr><th>Miembro</th><th>Por defecto</th><th>Significado</th></tr>
         <tr><td><code>Title</code></td><td><code>'Data'</code></td><td>Nombre de hoja, raíz XML, título HTML, y base del nombre de archivo propuesto.</td></tr>
-        <tr><td><code>Allow</code></td><td><code>127</code></td><td>Máscara de bits de los formatos ofrecidos — <code>Exp:AllowCSV</code>, <code>Exp:AllowXLSX</code>, … o <code>Exp:AllowAll</code>.</td></tr>
+        <tr><td><code>Allow</code></td><td><code>Exp:AllowAll</code> (511)</td><td>Máscara de bits de los formatos ofrecidos — <code>Exp:AllowCSV</code>, <code>Exp:AllowXLSX</code>, … o <code>Exp:AllowAll</code>.</td></tr>
         <tr><td><code>Fmt</code></td><td><code>Exp:CSV</code></td><td>El formato elegido. Ponlo tú mismo para saltarte el diálogo.</td></tr>
         <tr><td><code>FileName</code></td><td>vacío</td><td>Ruta completa del archivo a escribir.</td></tr>
         <tr><td><code>Headers</code></td><td>1</td><td>Escribe una fila de encabezados.</td></tr>
@@ -1217,6 +2026,20 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <tr><td><code>Confirm</code></td><td>1</td><td>Muestra el aviso de éxito / error.</td></tr>
         <tr><td><code>Delim</code></td><td><code>','</code></td><td>Separador CSV — ponlo a <code>';'</code> para configuraciones regionales europeas.</td></tr>
         <tr><td><code>RowTag</code></td><td><code>'Row'</code></td><td>Elemento XML de una fila.</td></tr>
+        <tr><td><code>PrinterName</code></td><td>vacío</td><td>Vacío = la impresora predeterminada de Windows. Solo Print.</td></tr>
+        <tr><td><code>PageOrient</code></td><td><code>Exp:Landscape</code></td><td>Orientación de página para Print y PDF. Ver <a href="#printpdf">Print y PDF</a>.</td></tr>
+        <tr><td><code>PagePaper</code></td><td><code>Exp:Letter</code></td><td><code>Exp:Letter</code> / <code>Exp:A4</code> — solo PDF.</td></tr>
+        <tr><td><code>MarginLeft/Top/Right/Bottom</code></td><td>720</td><td>Twips (1440/pulgada), Print y PDF.</td></tr>
+        <tr><td><code>FontSize</code> / <code>TitleSize</code></td><td>9 / 14</td><td>Puntos, texto del cuerpo y título en Print y PDF.</td></tr>
+        <tr><td><code>PagesOut</code></td><td>—</td><td>Solo lectura. Páginas producidas por el último Print o PDF.</td></tr>
+        <tr><td><code>PdfTruncated</code></td><td>0</td><td>Solo lectura. 1 = el último PDF alcanzó su tope de 2000 páginas y dejó filas fuera — comprobar incluso con <code>Confirm</code> apagado. Ver <a href="#printpdf">Print y PDF</a>.</td></tr>
+        <tr><td><code>Totals</code> / <code>TotalsAvg</code> / <code>TotalsMin</code> / <code>TotalsMax</code> / <code>TotalsCnt</code></td><td>0</td><td>Escribe una fila de Suma / Promedio / Mínimo / Máximo / Cuenta (solo Excel .xlsx). Ver <a href="#summary">Filas de resumen</a>.</td></tr>
+        <tr><td><code>TotalsLabel</code> / <code>AvgLabel</code> / <code>MinLabel</code> / <code>MaxLabel</code> / <code>CntLabel</code></td><td><code>'Total'</code> / <code>'Average'</code> / <code>'Minimum'</code> / <code>'Maximum'</code> / <code>'Count'</code></td><td>La etiqueta de esa fila.</td></tr>
+        <tr><td><code>NegativeParens</code></td><td>0</td><td>1 = los negativos se ven como <code>(123.45)</code> en vez de <code>-123.45</code>, en el formato xlsx propio de cada columna numérica. Ver <a href="#numfmt">Formatos numéricos</a>.</td></tr>
+        <tr><td><code>SplitByGroup</code></td><td>0</td><td>También escribe una hoja extra por cada valor de grupo distinto. Necesita una columna de grupo. Ver <a href="#workbook">Varias hojas en un mismo libro</a>.</td></tr>
+        <tr><td><code>EmailWhenDone</code></td><td>0</td><td>Abre una ventana de redacción (Simple MAPI) con el archivo adjunto. Ver <a href="#email">Enviarlo por correo al terminar</a>.</td></tr>
+        <tr><td><code>EmailSubject</code> / <code>EmailBody</code></td><td>vacío</td><td>Asunto vacío = usa <code>Title</code>; cuerpo vacío = sin texto de nota.</td></tr>
+        <tr><td><code>EmailToFront</code></td><td>1</td><td>Intenta traer al frente la ventana del cliente de correo en vez de solo parpadear en la barra de tareas. Ver <a href="#email">Enviarlo por correo al terminar</a>.</td></tr>
       </table>
       <h3>Hacer el trabajo</h3>
       <table>
@@ -1230,6 +2053,13 @@ valor = <span class="k">FORMAT</span>(<span class="k">WHAT</span>(Queue:Browse,f
         <tr><td><code>EndFile()</code></td><td>BYTE</td><td>Termina, escribe a disco y opcionalmente lo abre.</td></tr>
         <tr><td><code>CellText(col)</code></td><td>STRING</td><td>VIRTUAL — redefínelo para transformar un valor de salida.</td></tr>
         <tr><td><code>HeaderText(col)</code></td><td>STRING</td><td>VIRTUAL — redefínelo para renombrar una columna en el archivo.</td></tr>
+        <tr><td><code>PrintOut()</code></td><td>BYTE</td><td>Salta el diálogo e imprime enseguida, con el <code>Fmt</code>, las columnas y la Configuración de página que ya estén puestos.</td></tr>
+        <tr><td><code>PreviewOut()</code></td><td>BYTE</td><td>La misma idea, pero abre una vista previa en PDF en vez de mandarlo a papel.</td></tr>
+        <tr><td><code>StartWorkbook()</code></td><td>BYTE</td><td>Una vez, antes de la primera hoja. Solo Excel .xlsx. Ver <a href="#workbook">Varias hojas en un mismo libro</a>.</td></tr>
+        <tr><td><code>StartSheet(pName)</code></td><td>BYTE</td><td>Como <code>StartFile()</code>, para una hoja.</td></tr>
+        <tr><td><code>EndSheet()</code></td><td>BYTE</td><td>Como la mitad de hoja de <code>EndFile()</code>, pero guarda en vez de escribir.</td></tr>
+        <tr><td><code>EndWorkbook()</code></td><td>BYTE</td><td>Ensambla todas las hojas guardadas y escribe el .xlsx.</td></tr>
+        <tr><td><code>PageSetup()</code></td><td>—</td><td>El diálogo de orientación / papel / márgenes. Se llama desde el botón <b class="i">Page Setup…</b>; también se puede llamar directo para saltárselo.</td></tr>
       </table>
       <h3>Resultados</h3>
       <table>
@@ -1256,6 +2086,9 @@ Exporter1.OpenWhenDone = 0                   <span class="c">! do not launch Exc
 <span class="k">IF</span> ~Exporter1.ExportQueue()
   <span class="c">! Exporter1.ErrText says why</span>
 <span class="k">END</span></pre>
+      <p>To also preset which columns get <b>Sum</b>/<b>Average</b>/<b>Min</b>/<b>Max</b> rows, see the
+        code example under <a href="#summary">Summary rows</a> — same idea, <code>ColumnTotal()</code>
+        instead of <code>ColumnUse()</code>.</p>
       <p>To export something that is not a queue walk at all — a VIEW, a file, a computed set — drive the
         three writing methods yourself:</p>
 <pre><span class="k">IF</span> Exporter1.Ask()
@@ -1292,6 +2125,9 @@ Exporter1.ColumnRename(2,<span class="s">'Nombre del cliente'</span>)
 Exporter1.ColumnPicture(5,<span class="s">''</span>)             <span class="c">! valor crudo, sin picture</span>
 Exporter1.AllowColumns = 0                   <span class="c">! y que el usuario no lo cambie</span>
 Exporter1.Run()</pre>
+      <p>Para fijar también qué columnas llevan filas de <b>Suma</b>/<b>Promedio</b>/<b>Mín</b>/<b>Máx</b>,
+        mira el ejemplo de código en <a href="#summary">Filas de resumen</a> — la misma idea, con
+        <code>ColumnTotal()</code> en vez de <code>ColumnUse()</code>.</p>
       <p>Para exportar algo que no es un recorrido de cola — una VIEW, un archivo, un conjunto calculado —
         maneja tú mismo los tres métodos de escritura:</p>
 <pre><span class="k">IF</span> Exporter1.Ask()
@@ -1316,6 +2152,7 @@ Exporter1.Run()</pre>
         <tr><td><code>Unknown identifier: BRW1</code> when compiling</td><td>The <b>Browse object</b> prompt does not match the real BrowseBox object name. Check the BrowseBox extension's Classes tab.</td></tr>
         <tr><td>Accents look wrong in Excel</td><td>Use <b>CSV UTF-8</b> rather than plain CSV — Excel needs the BOM. Or export <b>.xlsx</b>, which is always UTF-8.</td></tr>
         <tr><td>Excel shows numbers as text</td><td>The column has a non-<code>@N</code> picture, so it is treated as text on purpose. Untick <b>Apply each column's picture</b>, or give the column an <code>@N</code> picture.</td></tr>
+        <tr><td>A summary row (Sum/Avg/Min/Max) does not appear</td><td>Check three things: the format is <b>Excel .xlsx</b> (the checkboxes are disabled for every other format), at least one of the four is ticked, and at least one numeric column has <b>Tot</b> ticked. See <a href="#summary">Summary rows</a>.</td></tr>
         <tr><td>A column you wanted is missing</td><td>It is un-ticked in the picker — hidden and icon columns start that way. Tick it, or untick <b>Start with visible columns only</b> so they all start on.</td></tr>
         <tr><td>A rename or tick was forgotten between exports</td><td>The list's layout changed (a column added, removed, re-sized or re-ordered), so the column list was rebuilt. Expected.</td></tr>
         <tr><td>"A Clarion picture starts with @"</td><td>The picture typed into the column popup is not a picture. Leave it blank for the raw value.</td></tr>
@@ -1335,6 +2172,7 @@ Exporter1.Run()</pre>
         <tr><td><code>Unknown identifier: BRW1</code> al compilar</td><td>El prompt <b class="i">Browse object</b> no coincide con el nombre real del objeto BrowseBox. Míralo en la pestaña Classes de la extensión BrowseBox.</td></tr>
         <tr><td>Los acentos se ven mal en Excel</td><td>Usa <b class="i">CSV UTF-8</b> en vez de CSV a secas: Excel necesita el BOM. O exporta <b class="i">.xlsx</b>, que siempre es UTF-8.</td></tr>
         <tr><td>Excel muestra los números como texto</td><td>La columna tiene un picture que no es <code>@N</code>, así que se trata como texto a propósito. Desmarca <b class="i">Apply each column's picture</b>, o dale a la columna un picture <code>@N</code>.</td></tr>
+        <tr><td>No aparece una fila de resumen (Sum/Avg/Min/Max)</td><td>Comprueba tres cosas: el formato es <b class="i">Excel .xlsx</b> (las casillas aparecen deshabilitadas en cualquier otro formato), al menos una de las cuatro está marcada, y al menos una columna numérica tiene <b class="i">Tot</b> marcado. Ver <a href="#summary">Filas de resumen</a>.</td></tr>
         <tr><td>Falta una columna que querías</td><td>Está desmarcada en el selector — las ocultas y las de icono empiezan así. Márcala, o desmarca <b class="i">Start with visible columns only</b> para que todas empiecen activas.</td></tr>
         <tr><td>Se perdió un renombrado o una marca entre exportaciones</td><td>Cambió la disposición de la lista (una columna añadida, quitada, redimensionada o reordenada), así que la lista de columnas se reconstruyó. Es lo esperado.</td></tr>
         <tr><td>"A Clarion picture starts with @"</td><td>El picture escrito en la ventana de columna no es un picture. Déjalo en blanco para el valor crudo.</td></tr>

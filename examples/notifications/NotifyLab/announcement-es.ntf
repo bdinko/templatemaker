@@ -1,0 +1,15 @@
+<!--sample:Version=4.2-->
+<toast launch="action=whatsnew">
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="hero" src="images\hero.png"/>
+      <image placement="appLogoOverride" src="images\logo.png"/>
+      <text hint-maxLines="2">La versi&#243;n {Version} est&#225; lista</text>
+      <text>Informes m&#225;s r&#225;pidos, modo oscuro y un panel nuevo.</text>
+    </binding>
+  </visual>
+  <actions>
+    <action content="Novedades" arguments="action=whatsnew"/>
+    <action content="Notas de la versi&#243;n" activationType="protocol" arguments="https://example.com/release-notes"/>
+  </actions>
+</toast>

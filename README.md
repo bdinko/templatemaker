@@ -36,133 +36,73 @@ Clarion source so you know exactly what to verify.
 
 ## Repo layout
 
+Each template folder mirrors the Clarion `accessory` tree: `template\win` holds the `.tpl`/`.tpw` files and
+`libsrc\win` the `.inc`/`.clw`/`.c` class sources, so installing one by hand is two folder copies -
+`template\win\*` into `accessory\template\win` and `libsrc\win\*` into `accessory\libsrc\win`.
+
+> **Upgrading from the old flat layout:** the Template Registry stores the full path of each `.tpl`. A template
+> registered straight from a repo folder (e.g. `templates\myCalc\myCalc.tpl`) fails with *GEN: Could not open
+> include file myCalc.tpl*. Copy it into `accessory` and re-register it from `accessory\template\win`.
+
 ```
 skills/clarion-template/        # the skill (SKILL.md + reference/)
 agents/clarion-template-pro.md  # the specialist subagent
-templates/                      # ready-to-register Clarion templates
-  myPixel.tpl                   #   per-window diagnostic pixel (see below)
-  showLine.tpl                  #   Ctrl+Shift+P "where am I" hotkey (see below)
-  identifier.tpl                #   Ctrl+Shift+I shows the procedure name
+templates/                      # ready-to-register Clarion templates, one folder each:
+  <name>/                        #   every template folder has the same shape,
+    template/win/                #     the .tpl / .tpw  -> accessory\template\win
+    libsrc/win/                  #     the .inc / .clw / .c -> accessory\libsrc\win
+    README.md, *.zip, icons ...  #     docs, the distribution zip, images, build scripts
+  myPixel/                      #   per-window diagnostic pixel (see below)
+  showLine/                     #   Ctrl+Shift+P "where am I" hotkey (see below)
+  identifier/                   #   Ctrl+Shift+I shows the procedure name
   myFuncs/                      #   global function library (see below)
-    myFuncs.tpl                 #     self-contained: prototypes + bodies in one template
   myPie/                        #   pie chart for a window (see below)
-    myPie.tpl                   #     global helper + procedure extension
   myFontChanger/                #   global + per-list font picker (see below)
-    myFontChanger.tpl
   myBackground/                 #   global default + per-window background color/image (see below)
-    myBackground.tpl
   myQR/                         #   QR code into an image control, auto-refresh (see below)
-    myQR.tpl
-  myImage/                     #   12 image formats in, 9 out, every colour format (see below)
+  myImage/                      #   12 image formats in, 9 out, every colour format (see below)
   allImageRead/                 #   any picture, from anywhere, on a window or a report (see below)
-    allImageRead.tpl            #     global + drag-on canvas + window/report extensions + code template
-    d2dcanvas.c                 #     the GPU canvas: Direct2D, bound at run time, no import library
   myGauge/                      #   analog gauge/dial on windows and reports (see below)
-    GaugeClass.inc              #     the gauge class (config + method prototypes)
-    GaugeClass.clw              #     the implementation (geometry + native drawing)
-    myGauge.tpl                 #     global include + window + report extensions
   graficaBarra/                 #   13 chart types on windows and reports, vector on PDF (see below)
-    GraficaBarraClass.inc       #     the bar-graph class (config + method prototypes)
-    GraficaBarraClass.clw       #     the implementation (scale + BOX/LINE/SHOW drawing)
-    graficaBarra.tpl            #     global include + window + report extensions
-    graficaBarra.zip            #     the three files above, zipped for easy distribution
   myGaugePlus/                  #   ANTIALIASED (GDI+) gauge/dial on windows (see below)
-    gpcanvas.c                  #     GDI+ flat-API shim (bound at runtime, compiled by Clacpp)
-    AaCanvasClass.inc/.clw      #     reusable antialiased 2D canvas over GDI+
-    GaugePlusClass.inc/.clw     #     the pretty gauge, drawn on the canvas
-    myGaugePlus.tpl             #     global include + window + control template
   myCompress/                   #   pure-Clarion compression: DEFLATE/zlib/gzip (see below)
-    CompressClass.inc           #     the codec class (config + method prototypes)
-    CompressClass.clw           #     the implementation (inflate/deflate/containers)
-    CompressClassC.inc          #     optional C-backed subclass (the fast engine)
-    CompressClassC.clw          #     overrides Wrap/Unwrap to call mc.c
-    mc.c                        #     our own DEFLATE in C (compiled by Clarion's Clacpp)
-    myCompress.tpl              #     one global extension (engine prompt: Clarion / C)
   myPdfSign/                    #   pure-Clarion signed-PDF reader: who signed it (see below)
-    PdfSignClass.inc            #     the reader class (config + method prototypes)
-    PdfSignClass.clw            #     the implementation (PDF parse + PKCS#7/DER walk)
-    myPdfSign.tpl               #     one global extension (the shared object)
   myCalc/                       #   pop-up calculator beside a numeric field (see below)
-    CalcClass.inc               #     the calculator (4 modes, tape, EN/ES strings)
-    CalcClass.clw               #     the implementation (keypad, arithmetic, window)
-    calc16.ico                  #     the little calculator on the button
-    myCalc.tpl                  #     global extension + button control + code template
-    myCalc.zip                  #     the four files above, zipped for easy distribution
   myFilter/                     #   build filters for any browse (see below)
-    MyFilterClass.inc           #     the filter builder (fields, operators, EN/ES)
-    MyFilterClass.clw           #     the implementation (expressions + the window)
-    myFilter.tpl                #     global extension + browse button + code template
-    FilterTables.txt            #     table structures, if saved filters are shared
   myCalendar/                   #   pop-up date picker beside a date field (see below)
-    MyCalendarClass.inc         #     the calendar (views, range, EN/ES strings)
-    MyCalendarClass.clw         #     the implementation (date maths, drawing, window)
-    cal16.ico                   #     the little calendar on the button
-    myCalendar.tpl              #     global extension + button control + code template
-    myCalendar.zip              #     the four files above, zipped for easy distribution
-  myExport/                     #   export any browse/list to 7 file formats (see below)
-    ExportClass.inc             #     the export engine (config + method prototypes)
-    ExportClass.clw             #     the implementation (dialog + 7 writers + ZIP + UTF-8)
-    ExportClass.exp             #     export list, for a hand-coded multi-DLL build only
-    myExport.tpl                #     global extension + Export-button control + code template
-    myExport.zip                #     the four files above, zipped for easy distribution
+  myExport/                     #   export any browse/list to 7 file formats, PDF or a printer (see below)
   myHook/                       #   intercept MESSAGE / STOP / HALT / errors (see below)
-    MsgHookClass.inc            #     the interceptor (rules, log, the seven RTL hooks)
-    MsgHookClass.clw            #     the implementation (hook thunks + append-only logger)
-    myHook.tpl                  #     global extension + per-procedure pause + code template
-    myHook.zip                  #     the three files above, zipped for easy distribution
   BrowseGrid/                   #   take over any ABC browse and draw it with Direct2D (see below)
-    BrowseGrid.tpl              #     the extension: one prompt sheet, no class to ship
-    d2grid.c                    #     the grid: Direct2D + DirectWrite, bound at run time
   BrowseGridLeg/                #   the same grid for the Legacy (CW20) chain (see below)
-    BrowseGridLeg.tpl           #     global + procedure extensions, search box, filter bar
-    d2gridleg.c                 #     the grid, plus filter buttons and drag-reorder
-    README.md                   #     what the port adds over the ABC original
   SDAspecto/                    #   one look for every window: rules, type, rescaling
-                                #     (see below)
-    SDAspecto.inc               #     the class: rule queue, per-window state, prototypes
-    SDAspecto.clw               #     the engine: matching, painting, rescaling, the INI
-    SDAspecto.tpl               #     the chain file
-    SDAspecto.tpw               #     1 app extension + 2 procedure extensions
-    VentanaConfigAspecto.txa    #     a ready-made settings window to IMPORT (optional)
   weatherWidget/                #   a weather card when your program starts (see below)
-    MyWeatherClass.inc          #     the widget (settings, the reading, EN/ES strings)
-    MyWeatherClass.clw          #     the implementation (curl + JSON + the drawn card)
-    weatherWidget.tpl           #     global extension + code template
-    weatherWidget.zip           #     the three files above, zipped for easy distribution
   emailTo/                      #   send e-mail and manage the account: SMTP/TLS, OAuth2,
-                                #     nine provider APIs (see below)
-    EmailNetClass.inc/.clw      #     transport: sockets, TLS, HTTPS, DPAPI (wraps emailc.c)
-    EmailMsgClass.inc/.clw      #     the message: MIME, base64, quoted-printable, UTF-8
-    EmailToClass.inc/.clw       #     the sender: accounts, SMTP, OAuth2, REST, the windows
-    EmailJsonClass.inc/.clw     #     reading the reply: a JSON parser in pure Clarion
-    EmailApiClass.inc/.clw      #     the management API: blocked, stats, campaigns, the window
-    emailc.c                    #     Winsock + SCHANNEL + WinHTTP + SHA-256 (Clacpp-compiled)
-    emailTo.tpl                 #     3 app extensions + 3 buttons + 4 code templates
-    emailTo10.tpl               #     the same, prompts re-laid out for Clarion 10's
-                                #       480 px AppGen dialog - GENERATED, do not edit
-    Build-NarrowTpl.ps1         #     generates it, and fails if anything stops fitting
-    EmailTables.txt             #     the settings-table structure, written out by hand
-    emailToTables.dctx          #     the dictionary to IMPORT: 7 tables (Dictionary
-                                #       Editor > File > Import > DCTX/XML)
-    emailToTables.dct           #     the same, prebuilt, if you would rather copy tables across
-    emailToTables.txd           #     Report Writer's format - for ClarionCL /di only
-    emailTo.zip                 #     all of the above, zipped for easy distribution
+  notifications/                #   real Windows notifications (toasts), designed visually
+  myTaskPanel/                  #   task panels: collapsible groups docked left/right or floating
 designer/ClarionTplDesigner/    # WPF visual designer for the prompt UI (see below)
+designer/NotificationDesigner/  # the Notification Designer (WPF): live Windows 11 preview,
+                                #   presets, Show on Windows; saves .ntf designs
+designer/NotificationDesigner.Tests/  # its xUnit tests (XML writer/reader, validator, paths)
 installer/                      # builds the installer + a portable single-file exe
   emailTo/                      #   and a stand-alone one for emailTo alone, Clarion 10+
+  build-notification-designer.ps1  # tests + publishes NotificationDesigner.exe to run\
+                                #   (-Deploy: into <Clarion>\accessory\bin too)
 README.md
 ```
 
 ## Included templates
 
-**Jump to a template.** 29 of them; each links to its own section below.
+**Jump to a template.** 32 of them; each links to its own section below.
 
 | | |
 |---|---|
 | **Mail** | [**emailTo**](#t-emailto) &nbsp;<sub>send e-mail, and manage the account: SMTP/TLS, OAuth2 and nine provider APIs</sub> |
+| **Notify the user** | [**notifications**](#t-notifications) &nbsp;<sub>real Windows notifications, designed in a visual designer: buttons, replies, live progress</sub> |
+| **Documents** | [**myWordDoc**](#t-myworddoc) &nbsp;<sub>a word processor stored in a BLOB (text, pictures, tables), printed through a Clarion REPORT</sub> |
+| **Navigation** | [**myTaskPanel**](#t-mytaskpanel) &nbsp;<sub>task panels docked left/right or floating, nested submenus, presets, a copy of the system menu; Clarion or DirectX engine</sub> |
 | **Charts & gauges** | [**graficaBarra**](#t-graficabarra) &nbsp;<sub>thirteen chart types on windows and reports (vector on PDF)</sub><br>[**myPie**](#t-mypie) &nbsp;<sub>pie chart on a window</sub><br>[**myGauge**](#t-mygauge) &nbsp;<sub>analog gauges/dials on windows and reports</sub><br>[**myGaugePlus**](#t-mygaugeplus) &nbsp;<sub>antialiased (GDI+) gauges/dials on windows</sub> |
 | **Images & codes** | [**myImage**](#t-myimage) &nbsp;<sub>twelve image formats in, nine out, every colour format</sub><br>[**allImageRead**](#t-allimageread) &nbsp;<sub>any picture, from anywhere, on a window or a report</sub><br>[**myQR**](#t-myqr) &nbsp;<sub>QR code into an image control</sub><br>[**myQRDraw**](#t-myqrdraw) &nbsp;<sub>offline QR code drawn with BOX primitives</sub><br>[**myBarcodeGen**](#t-mybarcodegen) &nbsp;<sub>nine barcode types, offline, drawn with BOX primitives</sub> |
-| **Browses & lists** | [**BrowseGrid**](#t-browsegrid) &nbsp;<sub>take over any ABC browse and draw it with Direct2D</sub><br>[**BrowseGridLeg**](#t-browsegridleg) &nbsp;<sub>the same grid for the Legacy (CW20) chain</sub><br>[**myFilter**](#t-myfilter) &nbsp;<sub>build filters for any browse</sub><br>[**myExport**](#t-myexport) &nbsp;<sub>export any browse or list to seven file formats</sub> |
+| **Browses & lists** | [**BrowseGrid**](#t-browsegrid) &nbsp;<sub>take over any ABC browse and draw it with Direct2D</sub><br>[**BrowseGridLeg**](#t-browsegridleg) &nbsp;<sub>the same grid for the Legacy (CW20) chain</sub><br>[**myFilter**](#t-myfilter) &nbsp;<sub>build filters for any browse</sub><br>[**myExport**](#t-myexport) &nbsp;<sub>export any browse or list to seven file formats, PDF or a printer</sub> |
 | **Beside a field** | [**myCalc**](#t-mycalc) &nbsp;<sub>a pop-up calculator beside any numeric field</sub><br>[**myCalendar**](#t-mycalendar) &nbsp;<sub>a pop-up date picker beside any date field</sub> |
 | **Files & data** | [**myCompress**](#t-mycompress) &nbsp;<sub>pure-Clarion compression (memory + files)</sub><br>[**myPdfSign**](#t-mypdfsign) &nbsp;<sub>read a signed PDF and see who signed it</sub> |
 | **Look & feel** | [**SDAspecto**](#t-sdaspecto) &nbsp;<sub>one look for every window: rules, typography and rescaling</sub><br>[**myFontChanger**](#t-myfontchanger) &nbsp;<sub>global + per-list font picker</sub><br>[**myBackground**](#t-mybackground) &nbsp;<sub>global default + per-window background color / image</sub><br>[**weatherWidget**](#t-weatherwidget) &nbsp;<sub>the weather, on a card at start-up</sub><br>[**my3D**](#t-my3d) &nbsp;<sub>real WebGL2 3D scenes driven from Clarion</sub><br>[**myYuru**](#t-myyuru) &nbsp;<sub>yuruyurau animated flow-field art on a window</sub> |
@@ -170,7 +110,7 @@ README.md
 | **Diagnostics** | [**myPixel**](#t-mypixel) &nbsp;<sub>per-window diagnostic pixel</sub><br>[**showLine**](#t-showline) &nbsp;<sub>Ctrl+Shift+P "where am I" hotkey</sub><br>[**identifier**](#t-identifier) &nbsp;<sub>Ctrl+Shift+I shows the procedure name</sub> |
 
 <a id="t-mypixel"></a>
-### `templates/myPixel.tpl` — per-window diagnostic pixel
+### `templates/myPixel/` — per-window diagnostic pixel
 A global (APPLICATION-scope) ABC extension that needs no per-procedure setup. On **every** procedure
 that owns a window it drops a tiny configurable REGION "pixel" in the top-left corner. Hovering it shows
 a tooltip with the **procedure name**, the current **thread number**, and the **binary** the procedure
@@ -184,7 +124,7 @@ lives in (app/EXE or DLL). Pressing **Ctrl+Shift+I** pops a message box with the
   Global → Extensions.
 
 <a id="t-showline"></a>
-### `templates/showLine.tpl` — Ctrl+Shift+P "where am I" hotkey
+### `templates/showLine/` — Ctrl+Shift+P "where am I" hotkey
 A global (APPLICATION-scope) ABC extension that needs no per-procedure setup. On **every** windowed
 procedure it alerts **Ctrl+Shift+P**; pressing it pops a message telling you where you are: the
 **procedure** (the code you're in), the **control with focus** (its field number and USE variable), the
@@ -197,7 +137,7 @@ procedure it alerts **Ctrl+Shift+P**; pressing it pops a message telling you whe
 - Register it, then add **showLine - Where-Am-I Hotkey (Global)** under Global → Extensions.
 
 <a id="t-identifier"></a>
-### `templates/identifier.tpl` — Ctrl+Shift+I shows the procedure name
+### `templates/identifier/` — Ctrl+Shift+I shows the procedure name
 A global (APPLICATION-scope) ABC extension, no per-procedure setup. It alerts **Ctrl+Shift+I** on every
 windowed procedure; pressing it pops a message box with the current **procedure name** (baked in at
 generation time via `%Procedure`). Same proven injection as the other hotkey templates (self-contained
@@ -592,6 +532,62 @@ many rows fit and sets the `LIST` line height so ABC loads that many. One too ma
 was loaded, drawn, and then clipped away behind the bar: selectable with the arrow key and impossible to
 see. The **Overlay** style was never affected, because that bar floats over the rows and takes no height
 from anything.
+
+**What v1.28 fixed.** *Find text* across several columns built a filter that would not parse. The clause
+was joined in two steps &mdash; `expr = CLIP(expr) & ' OR '` and then `expr = CLIP(expr) & CLIP(one)` &mdash;
+and the second `CLIP` eats the space the first one had just added, so the expression came out as
+`...1,1) ORINSTRING(...)`. The evaluator reads that run-together token as one identifier and the view
+opens with *BIND has not been called for ORINSTRING (1011)*, filters and ranges ignored. It is built as a
+single expression now. Only *In all columns* reproduced it &mdash; with one column there is no `OR` to run
+together, which is why the same field of a related table searched fine on its own.
+
+**What v1.36 adds and fixes.** Three fixes first, because they are defects rather than features. The
+**selected row landed in the two-pixel sliver**: `BG:Fill` mixed the count of rows that fit *entirely*
+with the count it *draws* — one more, painted deliberately so scrolling can be by pixel — and used the
+drawing count for the scroll arithmetic, so arrowing past the last whole row put the selection somewhere
+it could not be seen. The **grid read thinner than the LIST beside it** with the same typeface
+configured, and that was neither contrast nor hinting: `"Roboto Medium"` is a *family* to GDI, which
+resolves it to the Medium face, while DirectWrite hands that family its 400-weight member — two
+different **faces**, not two renderings. The weight is now read from the last word of the family name.
+And **saved column layouts were saved empty**: their loops sat inside the dialog's `ACCEPT`, where a
+field equate resolves against *that* window, so `%bgList` read a control of the dialog and wrote nothing
+— without erroring.
+
+Then the features. **Settings shared by every browse**: three groups — the heading menu, the look
+(Look + Colours + Variables, inherited together because Variables overrides the other two), and the
+mouse — set once on the global extension and inherited with one tick each. Column numbers that also get
+the click are deliberately excluded: they belong to *that* browse. **Column layouts**, saved under a
+name and recalled, storing widths, which columns are visible and which carry a total — no filters (an
+expression that will not parse is a run-time error at window open) and no order (the grid does not
+reorder). Drivable from an embed (`Grid1:SchName` + `DO BG:SchLoad:Grid1`) and from a **code template**,
+for the layout that follows from who opened the window rather than from a button. Plus **GDI text
+rendering**, a **font weight** prompt, and each heading-menu option can be switched off individually.
+
+**A date column filters from a calendar** (#38, DCortassa). A column with an `@d` picture keeps the Clarion day
+serial underneath, so *Find text…* used to ask for that number. Now it opens a From / To dialog with an ABC
+`CalendarClass` popup on each field and builds `FIELD >= from AND FIELD <= to` over the serials; *Filter by
+value…* and the *Filter on ‹value›* menu label show the date through the column's own picture while the filter
+keeps comparing the serial. Every file of the procedure is `BIND`'d once at window `Init`, so a date filter
+works from any sort-order tab, not only the one whose order uses the field. It also found the `CLIP` separator
+bug independently &mdash; the `ORINSTRING` of v1.28 has a twin, `ANDIVAVTA:FECHA`, in the values dialog. **v1.37** routes that dialog's captions (*Find by date*, *From*, *To*, and the two calendar titles) through the
+same EN/ES text table as every other dialog; they had arrived in Spanish only.
+
+#37 (v1.36) and #38 landed a week apart on the same routines; merging them by hand kept both. Two things
+changed in the reconciliation: the new `BG:DateFind` routine is generated under the *local-or-inherited*
+symbol that guards `BG:Find`, or a browse inheriting its menu from the global extension would call a routine
+that was never written; and the `Init` loop binds the files of **this procedure** (`%ProcFilesUsed`) rather
+than asking `%FileIsUsed()`, a global-scope question that answers *no* from a procedure whenever *Generate
+all file declarations* is off &mdash; proved by generating an app from a TXA: zero `BIND`s with the old loop,
+one per file with this one.
+
+**v1.38 — icon columns** ([#39](https://github.com/robertorenz/templatemaker/pull/39),
+[#40](https://github.com/robertorenz/templatemaker/pull/40), DCortassa). A column with conditional icons of its own
+&mdash; a two-state status, say &mdash; used to be taken for a tick box because its icon list happened to hold two
+entries; now only icons *named* like a tick box are, and any other icon column draws the developer's own icons,
+decoded from the `.ico` and handed to Direct2D. The icon and colour fields are found in the queue **by name**
+(`<field>_Icon`, `<field>_NormalFG`) instead of at a guessed offset, which was wrong as soon as a column had both.
+And the icons now show on every machine, not only the one that built the app: Clarion compiles `azul.ico` into the
+exe as the resource `AZUL_ICO`, so that is the name asked for, with the path and the exe's folder as fallbacks.
 
 Measured on a real application: a fill costs **under 200 µs** — 1.2 % of a 60 Hz frame — and the generated
 code makes **three file accesses**, none of them on the drawing path. The one to know about is *Filter by
@@ -1113,11 +1109,23 @@ a button or menu you already have) and **myFilterGlobal** (the class, the langua
 Copy `MyFilterClass.inc` and `MyFilterClass.clw` (**ANSI, CRLF** — they are pure ASCII) to the redirection path.
 
 <a id="t-myexport"></a>
-### `templates/myExport/` — export any browse or list to seven file formats
+### `templates/myExport/` — export any browse or list to seven file formats, PDF or a printer
 Drag **myExport - Export button** onto a browse window and you get a wired-up **Export…** button. Pressing it
 opens a modal dialog that asks for the **format**, the **folder and file name** (through the standard Windows
 Save-As browser) and **which columns to send** — then writes **CSV**, **CSV UTF-8** (with the BOM Excel needs
-before it trusts accents), **TSV**, **XML**, **JSON**, **HTML** or a real **Excel `.xlsx`** workbook.
+before it trusts accents), **TSV**, **XML**, **JSON**, **HTML** or a real **Excel `.xlsx`** workbook — or, since
+v1.4, a paginated **PDF** or straight to a **printer**.
+
+**v1.4 — paper, totals and e-mail** (contributed by [antonnagel](https://github.com/antonnagel),
+[#41](https://github.com/robertorenz/templatemaker/pull/41)). **PDF** is hand-built (Helvetica, real metrics, column
+headings repeated on every page) and **Print** goes straight to a Windows printer with no file at all, both through
+a **Page Setup…** dialog for orientation, Letter/A4 and margins. Tick **Tot** on a numeric column and the export gets
+**summary rows** — Sum, Average, Count, Minimum, Maximum — and tick **Grp** on a column to break the rows into
+**groups with their own subtotal rows**; `SplitByGroup` also puts every group on its **own worksheet** of the
+`.xlsx`, next to the main sheet, and `StartWorkbook`/`StartSheet` let you combine several lists into one workbook
+yourself. Numeric cells keep their picture as a real Excel number format, negatives included. **Email it when it's
+done** hands the finished file to the default mail client through Simple MAPI; `MAPI32.DLL` is loaded the first
+time it is used rather than linked, so there is still nothing to add to a project.
 
 **The column picker.** Every data column is listed with a tick box, so the user can leave columns out,
 **rename** one for the file, or give it a **different picture** — with the list's own heading shown alongside
@@ -1172,7 +1180,7 @@ ASCII and can't be mangled by a UTF-8 editor.
 **myExportGlobal** registers that category with the ABC chain (`%AddCategory` + `%SetCategoryLocationFromPrompts`).
 That hands the whole job to the shipped machinery: `ABPROGRM.TPW` writes the `_myExportLinkMode_` /
 `_myExportDllMode_` project defines the class's `LINK()` and `DLL()` attributes read, and `ABBLDEXP.TPW` — while
-building a DLL's `.EXP` — walks the class registry and emits `VMT$`, `TYPE$` and all 71 methods, name-mangled by
+building a DLL's `.EXP` — walks the class registry and emits `VMT$`, `TYPE$` and all 125 methods, name-mangled by
 `LINKNAME()`. **Nothing to configure:** it follows each application's own *External* setting, so the app that
 owns the data compiles the class in and exports it, and every app set to *External → DLL* imports it instead of
 carrying its own copy. Add the global extension to **every app in the suite** — placing a class is a
@@ -1183,7 +1191,7 @@ list for hand-coded projects that have no AppGen to generate one. **Upgrading fr
 (no `(MYEXPORT)` on its tag) files the class under the ABC category instead, which only misbehaves once the two
 locations disagree. With neither define present — a single EXE, or
 the demo — the class is simply linked in, exactly as before. Verified both ways: a generated ABC DLL app really
-does emit the 73 export lines, and an EXE built with `_myExportDllMode_=>1` imports the class from a DLL and
+does emit the export lines (73 at the time; 127 as of v1.4), and an EXE built with `_myExportDllMode_=>1` imports the class from a DLL and
 writes a valid `.xlsx` with none of the class's code in it.
 
 Three registrations: **myExportButton** (the drag-on control template, `MULTI`, self-contained),
@@ -1365,6 +1373,197 @@ hand-coded project that omits the `_myWeatherLinkMode_` / `_myWeatherDllMode_` p
 import and faults in the constructor. A runnable demo is
 [`examples/weatherWidget/WeatherDemo.clw`](examples/weatherWidget/WeatherDemo.clw); its `/shots` switch and
 `shoot.ps1` regenerate every image above.
+
+<a id="t-myworddoc"></a>
+### `templates/myWordDoc/` — a word processor in a BLOB, printed through a REPORT
+A word-processing control for Clarion windows. It handles fonts, sizes, bold, italic, underline, strike,
+colour, highlight, alignment, bullets, numbering, indents, **pictures** (PNG, JPEG, BMP, EMF, WMF, or pasted)
+and **tables**. The document is stored as ordinary RTF in one **BLOB** field, so Word opens it too. It also
+**prints through a Clarion REPORT**, as vector pages that flow over as many report pages as the document needs.
+
+![The editor on a Clarion window](docs/myWordDoc-editor.png)
+
+The control is our own: `wdoc.c` registers its own window class, paints its own toolbar and page view, and
+hosts the Windows text engine (RichEdit, the one behind WordPad) underneath for typing, undo, the clipboard
+and RTF. It is compiled into the exe by Clarion's own C compiler. There is no COM, no OCX and no DLL to ship.
+
+Each page is printed as a placeable WMF on a report IMAGE. `wdoc.c` fixes three problems in that conversion
+itself: pictures that would be dropped, an 11 MB hidden copy of each page, and bullets that came out as "?".
+Text is measured on the default printer, so the lines break exactly where they will print.
+
+![The generated form editing a BLOB](docs/myWordDoc-demo-form.png)
+
+![Three records through the generated report](docs/myWordDoc-demo-report.png)
+
+![The Report Preview, page 2](docs/myWordDoc-demo-preview.png)
+
+- **myWordDocEditor** (control template on a REGION): pick the BLOB field. It loads the field when the form
+  opens and saves it with the record when it was edited. You can choose a toolbar, read only, page view,
+  Letter or A4 width, and the default font.
+- **myWordDocReport** (report extension): pick the BLOB and an IMAGE in a detail band. It prints every
+  record's document and keeps ABC from printing that band twice. By default the document is printed line by line, so it starts in the room the previous record left and fills every page.
+- **myWordDocPrintBlob** (code template): the same print loop in any embed.
+- `WordDocClass` gives the same features to hand code: `LoadBlob`/`SaveBlob`, formatting, `InsertImage`,
+  `InsertTable`, `Find`, `PaginateForReport`/`PreparePage`.
+- **RTF tool classes** (`WordDocTools`), each working on an editor or on a BLOB:
+  `RtfSearchClass` (find, next/previous, count, replace, replace all, highlight every hit),
+  `RtfFontClass` (the font under the caret, the fonts a document uses, replace a font, scale every size),
+  `RtfTextClass` (RTF to readable plain text, word and character counts, excerpts, text to RTF),
+  `RtfHtmlClass` (RTF to an HTML page or e-mail fragment, pictures embedded or as files),
+  `RtfMarkdownClass` (headings, lists, tables, pictures) and `RtfMergeClass` (fills `[[Name]]`
+  placeholders from your values or from `BIND`ed file fields, keeping their formatting). Each tool
+  operation undoes as one step (Ctrl+Z), and `BeginUndoGroup`/`EndUndoGroup` group your own edits.
+
+![RTF tool classes on a live editor](docs/myWordDoc-tools-window.png)
+
+Install: `myWordDoc.tpl` to `accessory\template\win`; `WordDocClass.inc`/`.clw`, `WordDocTools.inc`/`.clw` and `wdoc.c` to
+`accessory\libsrc\win`; register the template. The full bilingual (English + Spanish) guide is
+[`docs/myWordDoc-template.html`](docs/myWordDoc-template.html), with every class member in
+[`docs/myWordDoc-reference.html`](docs/myWordDoc-reference.html). Details, limits and the test harness are in
+[`templates/myWordDoc/README.md`](templates/myWordDoc/README.md).
+
+<a id="t-mytaskpanel"></a>
+### `templates/myTaskPanel/` — task panels, Clarion or DirectX
+The column of collapsible groups down the side of a window — Catalogs, Reports, Exports, Help — each a card of
+clickable items with submenus nested as deep as you like (opened in place or as pop-up menus). Docked on the
+left or the right of an **MDI frame** (under the toolbar, above the status bar; the MDI area gets narrower) or
+of an **ordinary window** (the window grows by the panel's width), or **floating**. The user drags the title to
+float it, drops it at an edge to dock it, drags the inner edge to resize it, and picks Dock / Float / Hide from
+its own menu; the layout and the open groups are remembered.
+
+![The task panel on an MDI frame](docs/myTaskPanel-hero.png)
+
+**Presets fill in a whole group at a time** — Catalogs, Operations, Reports, Exports, Tools, Window, Help,
+Quick links, Settings, groups built from *this application's* browses and reports, and an editable copy of the
+window's menu — then rename, reorder or delete what you do not want. **The system menu, copied:** one checkbox
+copies the frame's MENUBAR in at run time, three levels deep and more, with shortcut keys; each copied row
+presses the original menu item, so the menu's own code runs.
+
+**Two engines from one global setting:** *Clarion* — nothing but Clarion source (the panel is a real Win32
+window whose window procedure is a Clarion `PASCAL` procedure; GDI through the API), or *DirectX* — Direct2D +
+DirectWrite through `mtpd2d.c`, compiled in by Clarion's own C compiler only when the global adds
+`_MTP_D2D_=>1`. Eighteen themes (incl. high and low contrast), 47 built-in vector icons. The DirectX painter keeps one render target per
+thread, so the frame and every MDI child can each carry their own DirectX panel. DirectX also draws what GDI
+cannot (`Effects`, on by default): soft shadows under the cards, glass headers, a translucent hover highlight
+that fades in and out, and a floating panel that turns see-through while the mouse is elsewhere
+(`FloatOpacity`). `ShowEngine` puts a "DirectX" / "GDI" badge in the corner, so you can see which is painting.
+
+**Search, keyboard, badges, conditions.** A search box under the title filters every group down to the
+matching actions as you type (case- and accent-insensitive, with the submenu each one lives in shown dimmed).
+F6 (the template's key) or `Focus()` gives the panel the keyboard: arrows, Enter, Left/Right to close and open,
+Esc and Tab to go back. `SetBadge(id, '12')` puts a count, a word or a dot on any row or group header. In the
+template every item has *Show only when* / *Enable only when* and every group *Show only when* - Clarion
+expressions re-checked each time the mouse enters the panel (the new `MTP:Check` event), so the panel follows
+your program's user rights.
+
+![Badges, search and keyboard](docs/myTaskPanel-search.png)
+
+**Favourites, info cards, the icon rail, auto-hide.** Right-click any action to add it to a *Favourites* group
+at the top; a *Recent* group keeps the last few run; both are remembered. Info cards are rows that show
+something - `AddInfo` (label and value), `AddProgress` (a bar), `AddChart` (bars or a line) - and in the template
+their value is an expression re-evaluated every time the mouse comes in. The panel can collapse to a 44 px
+**rail** of group icons, each sliding its group out on hover, or **auto-hide** into a 6 px strip at the edge and
+slide out over the window when touched.
+
+![The icon rail with a group popped out](docs/myTaskPanel-rail.png)
+
+**The user's own panel.** *Customize* turns the panel into an edit mode - an eye on every row and group, Reset
+and Done - and users drag group headers and favourites into their own order; a *Most used* group counts what
+they run. Rows can carry **hover buttons** (`AddAction`: one row, several actions - in the template a **+** can be *Insert a record*, which opens the update form to add one on its own thread, so MDI forms work), take **files dropped** from
+Explorer (`SetDropTarget`, the `MTP:Drop` event), and show a **description card** after a pause (`SetTip`). All of
+it is in the template too (the item's *Extras* tab) and remembered per user.
+
+![Hover buttons and a description card](docs/myTaskPanel-hover.png)
+
+**Speed:** `Benchmark(engine)` times a frame off screen. DirectX is the faster engine, even with the
+effects on: 1.74 ms a frame without effects and 1.86 ms with them, against 2.03 ms for GDI on the demo
+panel. The first version was 20-40 % *slower* than GDI. The demo's `diag` switch traced that to Direct2D
+gradient brushes, which are expensive to make and were made on every call; caching them by colour pair cut
+0.7-1 ms a frame, with a pixel-identical picture.
+
+![The two engines](docs/myTaskPanel-engines.png)
+
+**The demo** (`examples/myTaskPanel`, built by `build.sh`): `TaskPanelDemo.exe` is the pure-Clarion build
+(GDI); `TaskPanelDemoDX.exe` is the DirectX build and draws with DirectX when simply double-clicked
+(`engine=gdi` forces GDI). The status bar names the engine in use. Other switches: `dock=left|right|float`,
+`theme=1..18` (or the toolbar's *Theme* button, live; open browses follow), `sub=flyout`, `lang=es`, `child`, `win` (the panel on an ordinary window), `mt` (a DirectX panel
+on three MDI children, one closed midway), `fx=off`, `badge=off`, `bench` (times both engines into
+`TaskPanelBench.ini`), `diag` (where a DirectX frame's time goes), `auto` (the self-test), `search=text` and `keys` (the panel takes the keyboard), `rail`, `autohide`, `open=today`, `custom`, `hidden`. The toolbar's *Effects* button switches the effects on and off
+live, and *Speed test* times both engines and shows the result in a window.
+
+Verified: the demo's self-test (`examples/myTaskPanel`, `TaskPanelDemo.exe auto`) posts real mouse messages at
+the panel — **24/24 on both engines** (docking, MDI client geometry, splitter drag, drag-to-float, drop-to-dock,
+clicks, a copied menu row reaching its ITEM, keyboard navigation, search, typing + Enter through the ACCEPT loop, favourites, recent, the rail, auto-hide, Customize, drag-reorder, most used, a hover button, the description card, a real file drop) plus **3/3** on an ordinary window; `gen/build.sh` generates and
+compiles a real ABC app from a TXA; `presets/build.sh` runs all twelve presets through the generator.
+Full documentation (EN/ES): [`docs/myTaskPanel-template.html`](docs/myTaskPanel-template.html).
+
+Install: `myTaskPanel.tpl` to `accessory\template\win`; `MyTaskPanel.inc`, `MyTaskPanel.clw` and `mtpd2d.c` to
+`accessory\libsrc\win`; register; restart the IDE.
+
+<a id="t-notifications"></a>
+### `templates/notifications/` — real Windows notifications, designed visually
+The notifications that slide in at the bottom-right of the screen and wait in the Windows notification centre,
+the way Outlook's and Teams' do — from a Clarion program, with **no DLL, no OCX and no .NET at run time**.
+Title and text, a round or square logo, a hero picture across the top, an inline picture, a progress bar the
+program moves, up to five buttons, a reply box, a choice list, sounds, and the reminder / alarm / urgent kinds.
+
+![A real notification from the demo: logo, text, attribution, two buttons](docs/notifications-invoice.png)
+![A chat notification with a reply box and a Send button](docs/notifications-chat.png)
+
+**Design them, don't code them.** The **Notification Designer** (`designer/NotificationDesigner`, a WPF
+program) edits a notification with a live Windows 11 preview in light and dark, checks it against the rules
+Windows enforces, sends it to Windows for real with one button, and shows what your program would receive when
+you click it. It saves a `.ntf` file — which *is* Windows toast XML, written one element per line and pure
+ASCII (accents as `&#243;`), so the template can embed it in the program at generate time.
+
+![The Notification Designer](docs/notifications-designer.png)
+
+**Five templates.** *notifications - Global* registers the program with Windows at start-up (name, icon,
+AppUserModelID — per user, no admin, no Start-menu shortcut) and declares `Notifier`. *Show a notification* is a
+code template with a **Design...** button that opens the designer; it embeds the design (one `AddXml` per line)
+or loads it at run time, and fills each `{Placeholder}` from a Clarion expression — and reports, while
+generating, any placeholder you forgot. *Move a live progress bar* and *Remove notifications* do what they
+say. *React when a notification is clicked* goes on the frame: on its timer it drains the event queue into
+embeds — one per `action=` value your designs send — with the button's arguments, the reply text and the
+choice picked.
+
+**How it talks to Windows.** `toastc.c` is compiled into the program by Clarion's own C compiler. It binds
+`combase.dll` at run time and drives `Windows.UI.Notifications` through raw COM vtables (slot numbers from the
+Windows SDK headers; the three parameterised event-handler IIDs computed with WinRT's `GuidGenerator`). The
+event handlers are agile objects that only queue what Windows reports, under a critical section; nothing ever
+calls back into the Clarion run time from Windows' thread.
+
+![Live progress, moved by the program](docs/notifications-progress.png)
+![Urgent: a red Critical button](docs/notifications-urgent.png)
+
+**It says why when Windows refuses.** Windows will not tell an unpackaged program whether its notifications
+are allowed, so `Notifier.Enabled()` reads the switches Settings writes — the global *Notifications* toggle,
+the program's own toggle and any policy — and is FALSE when any of them is off. A refused notification arrives
+as `Notify:Failed`, and `Notifier.FailText()` turns the code into words: `0x803E0114` becomes *Windows
+notifications are turned off (Settings > System > Notifications)*, the single most likely reason nothing appears.
+
+Verified, not just registered: a windowless self-test (`examples/notifications/NotifyTest.clw`, **31/31**)
+checks the XML byte for byte and then shows, updates and removes real notifications (and checks `Enabled()`
+against the registry, expecting nothing delivered when Settings has notifications off); the designer's logic has
+**26** xUnit tests; and `examples/notifications/gen/build.sh` imports a TXA that uses all five templates,
+generates it with AppGen, compiles it and runs it — every screenshot above is a real Windows notification,
+photographed off the screen by `shoot.ps1`, in English and Spanish.
+
+Install: `notifications.tpl` to `accessory\template\win`; `NotificationClass.inc`, `NotificationClass.clw` and
+`toastc.c` to `accessory\libsrc\win`; and `installer\build-notification-designer.ps1 -Deploy` puts
+`NotificationDesigner.exe` (self-contained, nothing to install) in `accessory\bin`, where the Design button looks.
+Full programmer's documentation, English and Spanish:
+[`docs/notifications-template.html`](docs/notifications-template.html); runnable demo:
+[`examples/notifications/NotifyDemo.clw`](examples/notifications/NotifyDemo.clw).
+
+**A ready-made test application.** [`examples/notifications/NotifyLab`](examples/notifications/NotifyLab) is an ABC
+application that uses every template in the set, to open in the IDE, generate and run: a frame whose
+*Notifications* menu shows each design (two embedded in the program, three read from `.ntf` files at run time),
+starts and advances a live progress bar (**F8**) and removes them all; the events extension on the frame with
+all ten actions wired; and a small modal *HeardPopup* window that shows what each click delivered — the
+arguments, the reply text, the button pressed. It warns at start-up if Windows notifications are switched off.
+`make-txa.py` writes `NotifyLab.txa`; import it with `ClarionCL -win -au -ai NotifyLab.app NotifyLab.txa` to
+rebuild the `.app` (the app itself is not kept in git).
 
 <a id="t-emailto"></a>
 ### `templates/emailTo/` — send e-mail, and manage the account: SMTP/TLS, OAuth2 and nine provider APIs
@@ -1935,7 +2134,7 @@ tampered one that correctly reports `CoversWholeFile=0`. Programmer's manual in
 [`docs/myPdfSign-template.html`](docs/myPdfSign-template.html).
 
 **myCompress gains an optional C fast-path (~4× faster) (v2.19).** The compression template now ships an
-optional **C engine**, [`templates/myCompress/mc.c`](templates/myCompress/mc.c) — our own clean-room DEFLATE
+optional **C engine**, [`templates/myCompress/libsrc/win/mc.c`](templates/myCompress/libsrc/win/mc.c) — our own clean-room DEFLATE
 port (**not** miniz/zlib/StringTheory) compiled by **Clarion's own C compiler** (`Clacpp`) via
 `PRAGMA('compile(mc.c)')`. Set `CmpUseC EQUATE(1)` and copy `mc.c`, and `CompressClass` routes through it:
 a 4 MB buffer compresses in **~200 ms instead of ~844 ms** (and a touch smaller, since C has no Clarion
@@ -2139,7 +2338,9 @@ the numbers, so the work can be read in full.
 | **[Dinko Bačun](https://github.com/bdinko)** <sub>(Indicio d.o.o.)</sub> | Made the toolkit work on **somebody else's machine**: the Clarion install auto-detected instead of hardcoded to `C:\clarion12`, `<CLARION_ROOT>` placeholders through the skill and agent docs so the corpus paths survive a different version, an installer that ships *every* template together with the classes they need to compile, and the `d2gridleg.c` rename that let the installer stage both grids at once.<br><sub>[#1](https://github.com/robertorenz/templatemaker/pull/1) · [#22](https://github.com/robertorenz/templatemaker/pull/22) · [#28](https://github.com/robertorenz/templatemaker/pull/28) · [#31](https://github.com/robertorenz/templatemaker/pull/31)</sub> |
 | **[Carl T. Barnes](https://github.com/CarlTBarnes)** <sub>([carlbarnes.com](https://www.carlbarnes.com))</sub> | Read the Clarion source the way only long practice lets you: `SetTarget(Window, Image)` in **myQRDraw** so the symbol lands on the control instead of at the window origin — with a test program to prove it — and `STRING` in place of `*CSTRING` through the class and the barcode method parameters. Plus the **myGauge** and **myPie** reports below.<br><sub>[#19](https://github.com/robertorenz/templatemaker/pull/19) · [#20](https://github.com/robertorenz/templatemaker/pull/20) · [#21](https://github.com/robertorenz/templatemaker/pull/21)</sub> |
 | **[John Hickey](https://github.com/ClarionLive)** <sub>(ClarionLive)</sub> | The **Legacy (CW20) chain**: `BrowseGridLeg`, the Direct2D grid carried over to a chain that has no ABC objects to hang it on, with word wrap and rows that grow only as far as their text needs — and the corrections and Legacy/CW20 chapter that the port turned up in the `clarion-template` skill. Also the **myFilter** bug where a filter whose name contained `=` could never be loaded back.<br><sub>[#26](https://github.com/robertorenz/templatemaker/pull/26) · [#27](https://github.com/robertorenz/templatemaker/pull/27) · [#29](https://github.com/robertorenz/templatemaker/pull/29)</sub> |
-| **[Adrian E. Santarelli](https://github.com/asantarelli)** <sub>([SDigitales](https://www.sdigitales.com.ar))</sub> | **SDAspecto** — one look for every window in a program, from a cascading rule engine whose rules live in an INI rather than in code. **BrowseGrid v1.24**: totals, text search, check-box columns, auto-fit widths and the help page the template had been missing — then **v1.25**, where `d2g_PageSize` was the one row-area measurement that did not take the horizontal scrollbar off, so the browse loaded a last record it then drew behind the bar. And **graficaBarra v2.1**, the **combo chart**: a series told to draw as a **line** over the bars off the same value axis, taking no room in the category slot and keyed in the legend with a line rather than a block; a cell that can hold **no value**, so a trend breaks instead of diving to zero next to an average bar; the chart carrying **its own type**, with the layout scaling to the size so labels thin out rather than collide; and the *Look* tab split in three once thirty prompts had run off the screen.<br><sub>[#32](https://github.com/robertorenz/templatemaker/pull/32) · [#33](https://github.com/robertorenz/templatemaker/pull/33) · [#34](https://github.com/robertorenz/templatemaker/pull/34) · [#35](https://github.com/robertorenz/templatemaker/pull/35)</sub> |
+| **[Adrian E. Santarelli](https://github.com/asantarelli)** <sub>([SDigitales](https://www.sdigitales.com.ar))</sub> | **SDAspecto** — one look for every window in a program, from a cascading rule engine whose rules live in an INI rather than in code. **BrowseGrid v1.24**: totals, text search, check-box columns, auto-fit widths and the help page the template had been missing — then **v1.25**, where `d2g_PageSize` was the one row-area measurement that did not take the horizontal scrollbar off, so the browse loaded a last record it then drew behind the bar. And **graficaBarra v2.1**, the **combo chart**: a series told to draw as a **line** over the bars off the same value axis, taking no room in the category slot and keyed in the legend with a line rather than a block; a cell that can hold **no value**, so a trend breaks instead of diving to zero next to an average bar; the chart carrying **its own type**, with the layout scaling to the size so labels thin out rather than collide; and the *Look* tab split in three once thirty prompts had run off the screen. Then **BrowseGrid v1.36**: three defects found by using it &mdash; the selected row drawn in the two-pixel sliver below the last whole row, `"Roboto Medium"` resolving to two different faces under GDI and DirectWrite, and column layouts saved empty because a field equate inside a dialog's `ACCEPT` resolves against the dialog &mdash; plus settings shared by every browse from the global extension, named column layouts drivable from a code template, and every heading-menu option switchable on its own.<br><sub>[#32](https://github.com/robertorenz/templatemaker/pull/32) · [#33](https://github.com/robertorenz/templatemaker/pull/33) · [#34](https://github.com/robertorenz/templatemaker/pull/34) · [#35](https://github.com/robertorenz/templatemaker/pull/35) · [#37](https://github.com/robertorenz/templatemaker/pull/37)</sub> |
+| **[DCortassa](https://github.com/DCortassa)** | **BrowseGrid's date filter**: a column with an `@d` picture stored the day serial underneath, so filtering a date meant typing that number. Now *Find text…* on such a column opens a From / To dialog with an ABC calendar on each field, *Filter by value…* and the menu label show the date through the column's picture, and every file of the procedure is bound at window `Init` so the filter works from any sort-order tab. Found the `CLIP`-eats-the-separator bug on the way &mdash; `... AND` & `IVAVTA:FECHA` glued into one identifier and the VIEW would not open. Then **BrowseGrid's icon columns** (v1.38): a column with conditional icons of its own now draws *those* icons instead of being mistaken for a tick box &mdash; the colour and icon fields found in the queue by name rather than by a guessed offset &mdash; and an icon that only showed on the machine that built the app, because it was looked up as `azul.ico` when Clarion compiles it into the exe as `AZUL_ICO`.<br><sub>[#38](https://github.com/robertorenz/templatemaker/pull/38) · [#39](https://github.com/robertorenz/templatemaker/pull/39) · [#40](https://github.com/robertorenz/templatemaker/pull/40)</sub> |
+| **[antonnagel](https://github.com/antonnagel)** | **myExport v1.4**: the two outputs a file export leaves out &mdash; a paginated **PDF** written by hand and **Print** straight to a Windows printer &mdash; behind a Page Setup dialog; **summary rows** (Sum, Average, Count, Minimum, Maximum) and **group subtotals**, with each group optionally split onto its own `.xlsx` worksheet; Excel number formats carried over from the pictures; handing the finished file to the mail client; and the bilingual documentation for all of it. Before that, the `ExportClass.inc` and BrowseGrid reports.<br><sub>[#23](https://github.com/robertorenz/templatemaker/issues/23) · [#25](https://github.com/robertorenz/templatemaker/issues/25) · [#41](https://github.com/robertorenz/templatemaker/pull/41)</sub> |
 
 **Bugs found and reported.** [Carl T. Barnes](https://github.com/CarlTBarnes) on `myPie` positioning the pie at
 `(0,0)` instead of the image's own X,Y ([#5](https://github.com/robertorenz/templatemaker/issues/5)), and on
@@ -2151,9 +2352,6 @@ for 90° ([#18](https://github.com/robertorenz/templatemaker/issues/18)).
 ([#10](https://github.com/robertorenz/templatemaker/issues/10)), described precisely enough to be fixed from the
 report alone. [Dinko Bačun](https://github.com/bdinko) on the installer failing because two templates each
 shipped a different `d2grid.c` ([#30](https://github.com/robertorenz/templatemaker/issues/30)).
-[antonnagel](https://github.com/antonnagel) on `ExportClass.inc`
-([#23](https://github.com/robertorenz/templatemaker/issues/23)) and on BrowseGrid
-([#25](https://github.com/robertorenz/templatemaker/issues/25)).
 [golmedo](https://github.com/golmedo) proposed the `graficaBarra` per-category legend detail, percent-of-total
 and left-aligned labels ([#24](https://github.com/robertorenz/templatemaker/pull/24)).
 

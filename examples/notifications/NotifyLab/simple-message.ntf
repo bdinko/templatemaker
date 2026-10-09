@@ -1,0 +1,10 @@
+<!--sample:Files=1,284-->
+<!--sample:Target=the NAS-->
+<toast launch="action=open">
+  <visual>
+    <binding template="ToastGeneric">
+      <text hint-maxLines="2">Backup finished</text>
+      <text>{Files} files copied to {Target}.</text>
+    </binding>
+  </visual>
+</toast>

@@ -138,10 +138,12 @@
   <p><img src="myImage-demo.png" alt="The myImage demo: open an image, convert it, transform it, save it" style="max-width:100%"></p>
   <div class="filetree">
     templates/myImage/<br>
-    ├─ myImage.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the template set (register this)<br>
-    ├─ ImageClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the class (equates + prototypes)<br>
-    ├─ ImageClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the Clarion side (and the C prototypes)<br>
-    └─ imgcore.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the engine, compiled into your exe
+    ├─ template/win/<br>
+    │&nbsp;&nbsp;&nbsp;└─ myImage.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the template set (register this)<br>
+    └─ libsrc/win/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├─ ImageClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the class (equates + prototypes)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├─ ImageClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the Clarion side (and the C prototypes)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;└─ imgcore.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— the engine, compiled into your exe
   </div>
   <div class="note"><b>Two demos are included</b> <code>examples/myImage/ImageDemo</code> opens anything,
   converts it live and saves it back out; <code>examples/myImage/ImgTest</code> is a headless harness that
@@ -179,10 +181,12 @@
   <p><img src="myImage-demo.png" alt="El demo de myImage: abre una imagen, conviértela, transfórmala, guárdala" style="max-width:100%"></p>
   <div class="filetree">
     templates/myImage/<br>
-    ├─ myImage.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— el conjunto de plantillas (registra este)<br>
-    ├─ ImageClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— la clase (equates + prototipos)<br>
-    ├─ ImageClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— el lado Clarion (y los prototipos de C)<br>
-    └─ imgcore.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— el motor, compilado dentro de tu exe
+    ├─ template/win/<br>
+    │&nbsp;&nbsp;&nbsp;└─ myImage.tpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— el conjunto de plantillas (registra este)<br>
+    └─ libsrc/win/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├─ ImageClass.inc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— la clase (equates + prototipos)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├─ ImageClass.clw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— el lado Clarion (y los prototipos de C)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;└─ imgcore.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— el motor, compilado dentro de tu exe
   </div>
   <div class="note"><b>Vienen dos demos</b> <code>examples/myImage/ImageDemo</code> abre lo que sea, convierte
   en vivo y vuelve a guardar; <code>examples/myImage/ImgTest</code> es un banco de pruebas sin ventana que hace

@@ -1,0 +1,16 @@
+<!--sample:From=Ana Torres-->
+<!--sample:Message=&#191;Puedes aprobar las cifras de marzo antes de las 5?-->
+<toast launch="action=chat;from={From}" useButtonStyle="true">
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="appLogoOverride" hint-crop="circle" src="images\avatar.png"/>
+      <text hint-maxLines="2">{From}</text>
+      <text>{Message}</text>
+    </binding>
+  </visual>
+  <actions>
+    <input id="reply" type="text" placeHolderContent="Escribe una respuesta"/>
+    <action content="Enviar" arguments="action=reply;from={From}" hint-inputId="reply" hint-buttonStyle="Success"/>
+  </actions>
+  <audio src="ms-winsoundevent:Notification.IM"/>
+</toast>

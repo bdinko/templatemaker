@@ -59,8 +59,8 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms
 
-if (-not $Source) { $Source = Join-Path $PSScriptRoot 'emailTo.tpl' }
-if (-not $Out)    { $Out    = Join-Path $PSScriptRoot 'emailTo10.tpl' }
+if (-not $Source) { $Source = Join-Path $PSScriptRoot 'template\win\emailTo.tpl' }
+if (-not $Out)    { $Out    = Join-Path $PSScriptRoot 'template\win\emailTo10.tpl' }
 
 $ClientPx = 452
 $ProsePx  = 340
