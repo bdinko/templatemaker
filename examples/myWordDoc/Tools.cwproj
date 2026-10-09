@@ -1,0 +1,28 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{7D2E4A10-5B21-4C8E-9F3A-1A2B3C4D5E63}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Tools</RootNamespace>
+    <AssemblyName>Tools</AssemblyName>
+    <OutputName>Tools</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <vid>full</vid>
+    <check_stack>True</check_stack>
+    <check_index>True</check_index>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Tools.clw" />
+    <Compile Include="WordDocClass.clw" />
+    <Compile Include="WordDocTools.clw" />
+  </ItemGroup>
+  <ItemGroup>
+    <FileDriver Include="DOS" />
+    
+  </ItemGroup>
+  <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
+</Project>

@@ -13,7 +13,7 @@ cd designer/ClarionTplDesigner
 dotnet run
 ```
 
-Then **Open .tpl…** and pick e.g. `..\..\templates\AJEBackupAPP.tpl`.
+Then **Open .tpl…** and pick e.g. `..\..\templates\myPie\template\win\myPie.tpl`.
 
 ## What it does
 

@@ -1,0 +1,22 @@
+<!--sample:Id=77-->
+<!--sample:Subject=Quarterly review-->
+<!--sample:When=Today 15:00-->
+<!--sample:Where=Room 2-->
+<toast launch="action=appointment;id={Id}" scenario="reminder">
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="appLogoOverride" src="images\calendar.png"/>
+      <text hint-maxLines="2">{Subject}</text>
+      <text>{When} - {Where}</text>
+    </binding>
+  </visual>
+  <actions>
+    <input id="snoozeTime" type="selection" defaultInput="15">
+      <selection id="5" content="5 minutes"/>
+      <selection id="15" content="15 minutes"/>
+      <selection id="60" content="1 hour"/>
+    </input>
+    <action content="" activationType="system" arguments="snooze" hint-inputId="snoozeTime"/>
+    <action content="" activationType="system" arguments="dismiss"/>
+  </actions>
+</toast>

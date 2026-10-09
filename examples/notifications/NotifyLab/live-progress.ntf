@@ -1,0 +1,18 @@
+<!--sample:Report=Sales 2026.xlsx-->
+<!--sample:progressTitle=Sales 2026.xlsx-->
+<!--sample:progressValue=0.62-->
+<!--sample:progressValueString=62%-->
+<!--sample:progressStatus=Writing sheets...-->
+<toast>
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="appLogoOverride" src="images\logo.png"/>
+      <text hint-maxLines="2">Exporting {Report}</text>
+      <progress title="{progressTitle}" value="{progressValue}" valueStringOverride="{progressValueString}" status="{progressStatus}"/>
+    </binding>
+  </visual>
+  <actions>
+    <action content="Cancel" arguments="action=cancel"/>
+  </actions>
+  <audio silent="true"/>
+</toast>

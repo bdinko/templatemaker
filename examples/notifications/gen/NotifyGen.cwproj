@@ -1,0 +1,31 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{7B2E4C11-3D68-4A92-9E05-1F7C8B4D6A23}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>NotifyGen</RootNamespace>
+    <AssemblyName>NotifyGen</AssemblyName>
+    <OutputName>NotifyGen</OutputName>
+    <!-- Without these the ABC classes link as DLL imports and the program
+         faults in a constructor before main() is reached - an access violation
+         at a garbage address, raised from ClaRUN. The app's own generated
+         project sets them; a hand-written .cwproj must too. -->
+    <DefineConstants>_ABCDllMode_=&gt;0%3b_ABCLinkMode_=&gt;1%3b_NotificationsDllMode_=&gt;0%3b_NotificationsLinkMode_=&gt;1</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <vid>full</vid>
+    <check_stack>True</check_stack>
+    <check_index>True</check_index>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="NotifyGen.clw" />
+    <Compile Include="NOTIFYGEN001.CLW" />
+    <Compile Include="NOTIFYGEN_BC.CLW" />
+    <Compile Include="NotifyGen_BC0.CLW" />
+    
+  </ItemGroup>
+  <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
+</Project>

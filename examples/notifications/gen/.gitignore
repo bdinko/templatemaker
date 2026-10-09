@@ -1,0 +1,13 @@
+# everything AppGen and the build produce; build.sh regenerates it
+NotifyGen.app
+NotifyGen.clw
+NOTIFYGEN*.CLW
+NOTIFYGEN*.INC
+NotifyGen_BC0.CLW
+NOTIFYGEN.EXP
+*.bpp
+*.shp
+*.ini
+*.INI
+images/
+chat-reply.ntf

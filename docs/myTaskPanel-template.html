@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>myTaskPanel — Programmer's Documentation / Documentación del programador</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-d:#084d93; --navy:#0E1A2B; --navy-2:#16263c;
+    --ink:#22303f; --muted:#6b7785; --line:#e3e8ef; --bg:#f5f7fa;
+    --card:#ffffff; --green:#1e7c5a; --amber:#9a6a12; --amber-bg:#fff7e8;
+    --green-bg:#eef8f3; --blue-bg:#eef4fc; --red-bg:#fcecec; --red:#b23a2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  nav{width:280px;flex:0 0 280px;background:linear-gradient(180deg,var(--navy),var(--navy-2));
+    color:#cdd8e6;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  nav .brand{padding:0 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  nav .brand h1{font-size:16px;margin:0;color:#fff} nav .brand span{font-size:12px;color:#8aa0bb}
+  nav a{display:block;color:#b9c7d8;padding:6px 22px;font-size:13.5px;border-left:3px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+  nav a.h2{padding-left:34px;font-size:13px;color:#9fb2c8}
+  nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#6e85a1;
+    padding:14px 22px 4px;font-weight:700}
+  main{flex:1;min-width:0}
+  header.hero{background:linear-gradient(120deg,#0c2a4d,var(--blue));color:#fff;padding:46px 52px 38px}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.3px}
+  header.hero p{margin:0;font-size:15.5px;color:#dbe8f8;max-width:780px}
+  header.hero .pill{display:inline-block;margin-top:16px;background:rgba(255,255,255,.16);
+    padding:4px 12px;border-radius:20px;font-size:12.5px}
+  .body{padding:14px 52px 80px;max-width:940px}
+  section{padding:22px 0;border-bottom:1px solid var(--line);scroll-margin-top:50px} section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:14px 0 10px;color:var(--navy);scroll-margin-top:50px}
+  h3{font-size:16px;margin:20px 0 6px;color:var(--blue-d)}
+  p{margin:9px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  code,kbd,pre{font-family:"Cascadia Code",Consolas,monospace}
+  code{background:#eef1f5;padding:1px 6px;border-radius:4px;font-size:13px;color:#1d3b5e}
+  kbd{background:#fff;border:1px solid #c9d3e0;border-bottom-width:2px;border-radius:5px;
+    padding:1px 7px;font-size:12.5px;color:#33455c}
+  pre{background:#0f1d2e;color:#dbe6f2;padding:16px 18px;border-radius:10px;overflow:auto;
+    font-size:13px;line-height:1.55;margin:12px 0}
+  pre .c{color:#7fa6c9} pre .k{color:#79c0ff} pre .s{color:#7ee0b8} pre .t{color:#ffd591}
+  .callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid}
+  .tip{background:var(--green-bg);border-color:#bfe3d3;color:#155}
+  .note{background:var(--blue-bg);border-color:#c5dcf6;color:#13456f}
+  .warn{background:var(--amber-bg);border-color:#ecd9a6;color:#6f5210}
+  .danger{background:var(--red-bg);border-color:#e6b8b2;color:#7c241b}
+  .callout b{display:block;margin-bottom:2px}
+  .callout b.i{display:inline;margin:0}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f0f4f9;color:var(--navy);font-weight:600}
+  tr:hover td{background:#fafcff}
+  .lead{font-size:16px;color:#3a4756}
+  footer{padding:24px 52px;color:var(--muted);font-size:13px}
+  .top{font-size:12px;color:var(--muted);float:right}
+  .langbar{display:flex;gap:8px;padding:14px 52px 0;background:var(--bg);position:sticky;top:0;z-index:20;
+    border-bottom:1px solid var(--line)}
+  .langbar button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);
+    padding:7px 16px;border-radius:8px 8px 0 0;font:600 13.5px/1 inherit;border-bottom:none}
+  .langbar button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  /* language toggle */
+  html[data-lang="en"] .es{display:none}
+  html[data-lang="es"] .en{display:none}
+  .filetree{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:14px 18px;line-height:1.7;color:#37485a}
+  .shot{max-width:100%;border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 2px 10px rgba(14,26,43,.14)}
+  .shots{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+  .shots figure{margin:0;flex:1 1 300px;min-width:0}
+  .shots figcaption{font-size:12.5px;color:var(--muted);padding-top:6px;text-align:center}
+  /* real notifications, cropped from the screen, on a desktop-like panel */
+  .desk{background:linear-gradient(135deg,#dce7f3,#b9cbe0);border-radius:12px;padding:22px;
+    display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start;margin:16px 0}
+  .desk figure{margin:0;flex:0 1 364px;min-width:0}
+  .desk img{max-width:100%;border-radius:8px;box-shadow:0 8px 26px rgba(14,26,43,.25)}
+  .desk figcaption{font-size:12.5px;color:#33455c;padding-top:8px;text-align:center}
+
+  .shot.en,.shot.es{display:block;margin:12px 0}
+  html[data-lang="en"] .shot.es{display:none}
+  html[data-lang="es"] .shot.en{display:none}
+</style>
+</head><body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><h1>myTaskPanel</h1><span class="en">Programmer's Documentation · v1.0</span><span class="es">Documentación del programador · v1.0</span></div>
+    <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
+    <a href="#gallery"><span class="en">What it looks like</span><span class="es">Cómo se ve</span></a>
+    <a href="#demo"><span class="en">The demo</span><span class="es">La demo</span></a>
+    <div class="grp"><span class="en">Getting it in</span><span class="es">Puesta en marcha</span></div>
+    <a href="#install" class="h2"><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span></a>
+    <a href="#steps" class="h2"><span class="en">Four steps</span><span class="es">Cuatro pasos</span></a>
+    <a href="#prompts" class="h2"><span class="en">Every prompt</span><span class="es">Cada opción</span></a>
+    <div class="grp"><span class="en">Building panels</span><span class="es">Armar paneles</span></div>
+    <a href="#levels" class="h2"><span class="en">Groups, items, submenus</span><span class="es">Grupos, elementos, submenús</span></a>
+    <a href="#presets" class="h2"><span class="en">Presets</span><span class="es">Grupos predefinidos</span></a>
+    <a href="#menu" class="h2"><span class="en">Copying the menu</span><span class="es">Copiar el menú</span></a>
+    <a href="#actions" class="h2"><span class="en">Actions</span><span class="es">Acciones</span></a>
+    <a href="#docking" class="h2"><span class="en">Docking and floating</span><span class="es">Acoplar y flotar</span></a>
+    <a href="#look" class="h2"><span class="en">Themes and icons</span><span class="es">Temas e iconos</span></a>
+    <a href="#engines" class="h2"><span class="en">The two engines</span><span class="es">Los dos motores</span></a>
+    <a href="#keys" class="h2"><span class="en">Search, keyboard, badges</span><span class="es">Búsqueda, teclado, insignias</span></a>
+    <a href="#more" class="h2"><span class="en">Favourites, cards, rail, auto-hide</span><span class="es">Favoritos, tarjetas, riel, ocultar</span></a>
+    <a href="#personal" class="h2"><span class="en">Customize, buttons, drops, cards</span><span class="es">Personalizar, botones, soltar, fichas</span></a>
+    <div class="grp"><span class="en">Inside</span><span class="es">Por dentro</span></div>
+    <a href="#objects" class="h2"><span class="en">The class</span><span class="es">La clase</span></a>
+    <a href="#lifecycle" class="h2"><span class="en">Life cycle</span><span class="es">Ciclo de vida</span></a>
+    <a href="#flow" class="h2"><span class="en">One click, end to end</span><span class="es">Un clic, de principio a fin</span></a>
+    <a href="#room" class="h2"><span class="en">Making room on the host</span><span class="es">Hacer lugar en la ventana</span></a>
+    <a href="#handcode" class="h2"><span class="en">Hand-coding it</span><span class="es">A mano</span></a>
+    <div class="grp"><span class="en">Reference</span><span class="es">Referencia</span></div>
+    <a href="#api" class="h2"><span class="en">Method reference</span><span class="es">Referencia de métodos</span></a>
+    <a href="#embeds" class="h2"><span class="en">Generated code &amp; embeds</span><span class="es">Código generado y embeds</span></a>
+    <a href="#dll" class="h2"><span class="en">Multi-DLL</span><span class="es">Multi-DLL</span></a>
+    <a href="#verify" class="h2"><span class="en">How it was verified</span><span class="es">Cómo se verificó</span></a>
+    <a href="#quirks" class="h2"><span class="en">Known quirks</span><span class="es">Rarezas conocidas</span></a>
+    <a href="#trouble" class="h2"><span class="en">Troubleshooting</span><span class="es">Problemas</span></a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>myTaskPanel</h1>
+      <p class="en">Task panels for Clarion: the column of collapsible groups down the side of a window —
+        Catalogs, Reports, Exports, Help — each a card of clickable items, with submenus nested as deep as you
+        like. Dock it left or right, or let it float; the user drags it between the three. Copy the frame's own
+        menu into it with one checkbox, or fill it a whole group at a time from presets and delete what you do not
+        want. Two engines from one setting: <b>pure Clarion source</b>, or <b>DirectX</b> (Direct2D + DirectWrite).</p>
+      <p class="es">Paneles de tareas para Clarion: la columna de grupos plegables al costado de una ventana —
+        Catálogos, Informes, Exportar, Ayuda — cada uno una tarjeta de elementos con clic, con submenús anidados a
+        la profundidad que quiera. Se acopla a la izquierda o a la derecha, o flota; el usuario lo arrastra entre las
+        tres posiciones. Copie el menú del marco con una casilla, o llénelo un grupo entero a la vez con grupos
+        predefinidos y borre lo que no quiera. Dos motores con un solo ajuste: <b>código Clarion puro</b> o
+        <b>DirectX</b> (Direct2D + DirectWrite).</p>
+      <span class="pill en">no DLL · no OCX · Clarion or DirectX · MDI frames and windows · presets · menu copy · EN / ES</span>
+      <span class="pill es">sin DLL · sin OCX · Clarion o DirectX · marcos MDI y ventanas · predefinidos · copia del menú · EN / ES</span>
+    </header>
+
+    <div class="langbar">
+      <button id="btn-en" onclick="setLang('en')">English</button>
+      <button id="btn-es" onclick="setLang('es')">Español</button>
+    </div>
+
+    <div class="body">
+
+    <!-- ================================================================ -->
+    <section id="over">
+      <div class="en">
+      <h2>Overview</h2>
+      <p class="lead">Two templates and one class. Add <b>myTaskPanelGlobal</b> to the application once, add the
+        <b>myTaskPanel</b> extension to the frame (or to any window), and fill in its groups.</p>
+      <ul>
+        <li><b>Groups and items</b> — each group is a card with a header the user clicks to open or close it. An
+          item's <i>level</i> puts it in the submenu of the item above it, so submenus nest without nested lists.</li>
+        <li><b>Presets</b> — Catalogs, Operations, Reports, Exports, Tools, Window, Help, Quick links, Settings, plus
+          groups built from <i>this application's</i> browses and reports, and an editable copy of the window's menu.
+          Each press adds a new, filled-in group.</li>
+        <li><b>The system menu, copied</b> — at run time, every top menu of the window's MENUBAR becomes a group (or
+          one "Menu" group), three levels deep and more, with the shortcut keys shown. A copied row presses the
+          original menu item, so the menu's own code runs and nothing has to be redeclared.</li>
+        <li><b>Docking</b> — left, right or floating. On an MDI frame the MDI area gets narrower; on a window the
+          window grows by the panel's width and its form moves over intact.</li>
+        <li><b>Two engines</b> — a Clarion engine that is nothing but Clarion source (GDI through the Windows API),
+          and a DirectX engine compiled into the program by Clarion's own C compiler. Same API; DirectX adds soft
+          shadows, glass headers, hover highlights that fade, and a floating panel that turns see-through.</li>
+      </ul>
+      <div class="filetree">templates\myTaskPanel\<br>
+        &nbsp;&nbsp;myTaskPanel.tpl &nbsp;&nbsp;&nbsp;&nbsp;the two templates<br>
+        &nbsp;&nbsp;MyTaskPanel.inc / .clw &nbsp;MyTaskPanelClass (all Clarion)<br>
+        &nbsp;&nbsp;mtpd2d.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the DirectX painter (compiled only for the DirectX engine)<br>
+        examples\myTaskPanel\ &nbsp;the demo, its self-test, the generator harnesses</div>
+      </div>
+      <div class="es">
+      <h2>Resumen</h2>
+      <p class="lead">Dos plantillas y una clase. Agregue <b>myTaskPanelGlobal</b> a la aplicación una vez, agregue la
+        extensión <b>myTaskPanel</b> al marco (o a cualquier ventana) y llene sus grupos.</p>
+      <ul>
+        <li><b>Grupos y elementos</b> — cada grupo es una tarjeta con un encabezado que el usuario pulsa para abrirlo o
+          cerrarlo. El <i>nivel</i> de un elemento lo pone en el submenú del elemento de arriba, así los submenús se
+          anidan sin listas anidadas.</li>
+        <li><b>Grupos predefinidos</b> — Catálogos, Operaciones, Informes, Exportar, Herramientas, Ventana, Ayuda,
+          Accesos rápidos, Configuración, más grupos armados con los browses e informes de <i>esta aplicación</i>, y una
+          copia editable del menú de la ventana. Cada pulsación agrega un grupo nuevo ya lleno.</li>
+        <li><b>El menú del sistema, copiado</b> — en ejecución, cada menú del MENUBAR se vuelve un grupo (o un solo
+          grupo "Menú"), con tres niveles y más, y las teclas rápidas a la vista. Una fila copiada pulsa el elemento de
+          menú original, así corre el código del propio menú y no hay que volver a declarar nada.</li>
+        <li><b>Acoplar</b> — izquierda, derecha o flotante. En un marco MDI el área MDI se angosta; en una ventana la
+          ventana crece el ancho del panel y su formulario se corre intacto.</li>
+        <li><b>Dos motores</b> — un motor Clarion que es solo código Clarion (GDI por la API de Windows) y un motor
+          DirectX compilado dentro del programa por el compilador C de Clarion. La misma API; DirectX agrega sombras
+          suaves, encabezados de vidrio, resaltados que se desvanecen y un panel flotante que se vuelve translúcido.</li>
+      </ul>
+      <div class="filetree">templates\myTaskPanel\<br>
+        &nbsp;&nbsp;myTaskPanel.tpl &nbsp;&nbsp;&nbsp;&nbsp;las dos plantillas<br>
+        &nbsp;&nbsp;MyTaskPanel.inc / .clw &nbsp;MyTaskPanelClass (todo Clarion)<br>
+        &nbsp;&nbsp;mtpd2d.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el pintor DirectX (solo se compila con el motor DirectX)<br>
+        examples\myTaskPanel\ &nbsp;la demo, su autoprueba, los arneses del generador</div>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="gallery">
+      <div class="en"><h2>What it looks like</h2>
+        <p>Every picture is the demo program, captured from the screen. The panel on the left of an MDI frame, docked
+          under the toolbar and above the status bar, with two MDI browses open beside it:</p></div>
+      <div class="es"><h2>Cómo se ve</h2>
+        <p>Cada imagen es el programa de demostración, capturado de la pantalla. El panel a la izquierda de un marco MDI,
+          acoplado bajo la barra de herramientas y sobre la barra de estado, con dos browses MDI abiertos al lado:</p></div>
+      <img class="shot en" src="myTaskPanel-hero.png" alt="Task panel on an MDI frame">
+      <img class="shot es" src="myTaskPanel-hero-es.png" alt="Panel de tareas en un marco MDI">
+
+      <div class="en"><h3>The two engines</h3><p>The same panel drawn by each engine, the mouse on <i>Customers</i>.
+        The layout, colours and icons are the same; DirectX adds what GDI cannot draw: a soft shadow under each card,
+        a glass light on the headers, and a translucent hover wash that fades in and out. The badge in the corner
+        (<code>ShowEngine</code>) says which engine painted the frame.</p></div>
+      <div class="es"><h3>Los dos motores</h3><p>El mismo panel dibujado por cada motor, con el ratón sobre <i>Clientes</i>.
+        El diseño, los colores y los iconos son los mismos; DirectX agrega lo que GDI no puede dibujar: una sombra suave
+        bajo cada tarjeta, un brillo de vidrio en los encabezados y un resaltado translúcido que aparece y se desvanece.
+        La insignia de la esquina (<code>ShowEngine</code>) dice qué motor pintó el cuadro.</p></div>
+      <img class="shot en" src="myTaskPanel-engines.png" alt="Clarion and DirectX engines">
+      <img class="shot es" src="myTaskPanel-engines-es.png" alt="Motores Clarion y DirectX">
+
+      <div class="en"><h3>Six of the eighteen themes</h3></div><div class="es"><h3>Seis de los dieciocho temas</h3></div>
+      <img class="shot en" src="myTaskPanel-themes.png" alt="Themes">
+      <img class="shot es" src="myTaskPanel-themes-es.png" alt="Temas">
+
+      <div class="shots">
+        <figure><img class="shot en" src="myTaskPanel-menu.png" alt="Copied menu"><img class="shot es" src="myTaskPanel-menu-es.png" alt="Menú copiado">
+          <figcaption><span class="en">The frame's own MENUBAR copied in at run time, docked right: three levels, shortcut keys, guessed icons</span><span class="es">El MENUBAR del marco copiado en ejecución, acoplado a la derecha: tres niveles, teclas rápidas, iconos deducidos</span></figcaption></figure>
+        <figure><img class="shot en" src="myTaskPanel-flyout.png" alt="Pop-up submenu"><img class="shot es" src="myTaskPanel-flyout-es.png" alt="Submenú emergente">
+          <figcaption><span class="en">Submenus as pop-up menus instead of opening in place</span><span class="es">Submenús como menús emergentes en lugar de abrirse en el lugar</span></figcaption></figure>
+      </div>
+      <div class="shots">
+        <figure><img class="shot en" src="myTaskPanel-float.png" alt="Floating"><img class="shot es" src="myTaskPanel-float-es.png" alt="Flotante">
+          <figcaption><span class="en">Floating over the MDI children (Navy theme); the MDI area has its full width back</span><span class="es">Flotando sobre las ventanas MDI (tema Marino); el área MDI recupera todo su ancho</span></figcaption></figure>
+        <figure><img class="shot en" src="myTaskPanel-window.png" alt="On a window"><img class="shot es" src="myTaskPanel-window-es.png" alt="En una ventana">
+          <figcaption><span class="en">On an ordinary window (Teal theme): the window grew by the panel's width</span><span class="es">En una ventana común (tema Verde azulado): la ventana creció el ancho del panel</span></figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="demo">
+      <div class="en"><h2>The demo</h2>
+        <p><code>examples\myTaskPanel\TaskPanelDemo.clw</code> is the hand-coded equivalent of what the template
+          generates, each call marked with the embed point the template emits it at. <code>build.sh</code> builds two
+          programs from it: <code>TaskPanelDemo.exe</code> (the Clarion engine, no C compiled) and
+          <code>TaskPanelDemoDX.exe</code> (the DirectX engine, <code>_MTP_D2D_=&gt;1</code>).</p>
+        <table><tr><th>Argument</th><th>Effect</th></tr>
+          <tr><td><code>engine=gdi</code> / <code>engine=dx</code></td><td>force an engine; with neither, TaskPanelDemoDX draws with DirectX and TaskPanelDemo with GDI</td></tr>
+          <tr><td><code>dock=left|right|float</code></td><td>where it starts</td></tr>
+          <tr><td><code>theme=1..18</code></td><td>Slate, Navy, Graphite, Teal, Light, Forest, High contrast, Low contrast, Ocean, Crimson, Amber, Copper, Sky, Mint, Steel, Sand, Midnight, Olive - the starting theme; the toolbar's <i>Theme</i> button (and the <i>Theme</i> button on the <code>win</code> form) switches it live, and open browses' panels follow</td></tr>
+          <tr><td><code>sub=flyout</code></td><td>submenus as pop-up menus</td></tr>
+          <tr><td><code>open=all|none|first|menu</code></td><td>which groups start open</td></tr>
+          <tr><td><code>lang=es</code></td><td>Spanish, including the frame's own menu</td></tr>
+          <tr><td><code>child</code></td><td>opens two MDI browses</td></tr>
+          <tr><td><code>win</code></td><td>the panel on an ordinary window instead of the frame</td></tr>
+          <tr><td><code>search=text</code> · <code>keys</code></td><td>give the panel the keyboard, with that text typed into the search / without</td></tr>
+          <tr><td><code>custom</code> · <code>hidden</code></td><td>start in Customize mode / with Suppliers hidden as a user would; the toolbar's <i>Customize</i> button switches the mode</td></tr>
+          <tr><td><code>rail</code> · <code>autohide</code> · <code>open=today</code></td><td>start as the icon rail / tucked into the edge / with only the info cards open; the toolbar's <i>Icons</i> and <i>Auto-hide</i> buttons switch them live</td></tr>
+          <tr><td><code>auto</code></td><td>runs the self-test (see <a href="#verify">How it was verified</a>) and exits</td></tr>
+          <tr><td><code>fx=off</code></td><td>DirectX without the effects (the toolbar's <i>Effects</i> button toggles them live)</td></tr>
+          <tr><td><code>badge=off</code></td><td>hides the engine badge</td></tr>
+          <tr><td><code>bench</code></td><td>times both engines (see <a href="#speed">Speed</a>), writes <code>TaskPanelBench.ini</code> and exits; the toolbar's <i>Speed test</i> button shows the same in a window</td></tr>
+          <tr><td><code>diag</code></td><td>where a DirectX frame's time goes (Direct2D target type, empty frames, brush cache): <code>TaskPanelDiag.ini</code>, then exits</td></tr>
+        </table>
+        <p><code>shots.ps1</code> regenerates every picture on this page in both languages.</p></div>
+      <div class="es"><h2>La demo</h2>
+        <p><code>examples\myTaskPanel\TaskPanelDemo.clw</code> es el equivalente escrito a mano de lo que genera la
+          plantilla, con cada llamada marcada con el punto de embed donde la emite la plantilla. <code>build.sh</code>
+          compila dos programas: <code>TaskPanelDemo.exe</code> (motor Clarion, sin C) y <code>TaskPanelDemoDX.exe</code>
+          (motor DirectX, <code>_MTP_D2D_=&gt;1</code>).</p>
+        <table><tr><th>Argumento</th><th>Efecto</th></tr>
+          <tr><td><code>engine=gdi</code> / <code>engine=dx</code></td><td>forzar un motor; sin ninguno, TaskPanelDemoDX dibuja con DirectX y TaskPanelDemo con GDI</td></tr>
+          <tr><td><code>dock=left|right|float</code></td><td>dónde empieza</td></tr>
+          <tr><td><code>theme=1..18</code></td><td>Pizarra, Marino, Grafito, Verde azulado, Claro, Bosque, Alto contraste, Bajo contraste, Océano, Carmesí, Ámbar, Cobre, Cielo, Menta, Acero, Arena, Medianoche, Oliva - el tema inicial; el bot&oacute;n <i>Tema</i> de la barra (y el del formulario <code>win</code>) lo cambia en vivo, y los paneles de las consultas abiertas lo siguen</td></tr>
+          <tr><td><code>sub=flyout</code></td><td>submenús como menús emergentes</td></tr>
+          <tr><td><code>open=all|none|first|menu</code></td><td>qué grupos empiezan abiertos</td></tr>
+          <tr><td><code>lang=es</code></td><td>en español, incluido el menú del marco</td></tr>
+          <tr><td><code>child</code></td><td>abre dos browses MDI</td></tr>
+          <tr><td><code>win</code></td><td>el panel en una ventana común en lugar del marco</td></tr>
+          <tr><td><code>search=texto</code> · <code>keys</code></td><td>darle el teclado al panel, con ese texto escrito en la búsqueda / sin él</td></tr>
+          <tr><td><code>custom</code> · <code>hidden</code></td><td>empezar en modo Personalizar / con Proveedores oculto como lo haría un usuario; el botón <i>Personalizar</i> cambia el modo</td></tr>
+          <tr><td><code>rail</code> · <code>autohide</code> · <code>open=today</code></td><td>empezar como riel de iconos / guardado en el borde / con solo las tarjetas abiertas; los botones <i>Iconos</i> y <i>Ocultar</i> de la barra los cambian en vivo</td></tr>
+          <tr><td><code>auto</code></td><td>corre la autoprueba (ver <a href="#verify">Cómo se verificó</a>) y sale</td></tr>
+          <tr><td><code>fx=off</code></td><td>DirectX sin los efectos (el botón <i>Efectos</i> de la barra los activa y desactiva en vivo)</td></tr>
+          <tr><td><code>badge=off</code></td><td>oculta la insignia del motor</td></tr>
+          <tr><td><code>bench</code></td><td>mide los dos motores (vea <a href="#speed">Velocidad</a>), escribe <code>TaskPanelBench.ini</code> y sale; el botón <i>Velocidad</i> de la barra muestra lo mismo en una ventana</td></tr>
+          <tr><td><code>diag</code></td><td>en qué se va el tiempo de un cuadro DirectX (tipo de destino Direct2D, cuadros vacíos, caché de pinceles): <code>TaskPanelDiag.ini</code>, y sale</td></tr>
+        </table>
+        <p><code>shots.ps1</code> regenera cada imagen de esta página en los dos idiomas.</p></div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="install">
+      <div class="en"><h2>Install &amp; register</h2>
+        <ol>
+          <li>Copy <code>MyTaskPanel.inc</code>, <code>MyTaskPanel.clw</code> and <code>mtpd2d.c</code> to
+            <code>accessory\libsrc\win</code>, and <code>myTaskPanel.tpl</code> to <code>accessory\template\win</code>.</li>
+          <li>Register the template: <i>Setup → Template Registry → Register</i>, or
+            <code>ClarionCL -tr C:\Clarion…\accessory\template\win\myTaskPanel.tpl</code>.</li>
+          <li><b>Restart the IDE</b> — an open IDE keeps the template registry it read at start-up.</li>
+        </ol>
+        <div class="callout note"><b>No DLL to ship.</b> The Clarion engine is plain Clarion. The DirectX engine is a C
+          file compiled into your program by Clarion's own C compiler; Direct2D and DirectWrite ship with Windows 7 and
+          later.</div></div>
+      <div class="es"><h2>Instalar y registrar</h2>
+        <ol>
+          <li>Copie <code>MyTaskPanel.inc</code>, <code>MyTaskPanel.clw</code> y <code>mtpd2d.c</code> a
+            <code>accessory\libsrc\win</code>, y <code>myTaskPanel.tpl</code> a <code>accessory\template\win</code>.</li>
+          <li>Registre la plantilla: <i>Setup → Template Registry → Register</i>, o
+            <code>ClarionCL -tr C:\Clarion…\accessory\template\win\myTaskPanel.tpl</code>.</li>
+          <li><b>Reinicie el IDE</b> — un IDE abierto conserva el registro de plantillas que leyó al iniciar.</li>
+        </ol>
+        <div class="callout note"><b>No hay DLL que distribuir.</b> El motor Clarion es Clarion puro. El motor DirectX es
+          un archivo C que el compilador C de Clarion compila dentro de su programa; Direct2D y DirectWrite vienen con
+          Windows 7 y posteriores.</div></div>
+    </section>
+
+    <section id="steps">
+      <div class="en"><h2>Four steps</h2>
+        <ol>
+          <li><b>Global</b> — <i>Global Properties → Extensions → Insert → myTaskPanelGlobal</i>. Pick the engine and
+            the theme.</li>
+          <li><b>The extension</b> — on the frame (or a window): <i>Extensions → Insert → myTaskPanel</i>.</li>
+          <li><b>Groups</b> — on the <i>Presets</i> tab pick <i>Catalogs</i> and press <i>Add this group</i>; do the same
+            for <i>Reports</i>, <i>Help</i>… Then on the <i>Groups</i> tab rename, reorder or delete, and point the items
+            at your procedures.</li>
+          <li><b>Menu</b> (optional) — on the <i>Menu</i> tab tick <i>Copy the menu into the panel at run time</i>.</li>
+        </ol>
+        <p>Generate and run. Every item has its own embed point under <i>myTaskPanel → group → item</i>.</p></div>
+      <div class="es"><h2>Cuatro pasos</h2>
+        <ol>
+          <li><b>Global</b> — <i>Global Properties → Extensions → Insert → myTaskPanelGlobal</i>. Elija el motor y el
+            tema.</li>
+          <li><b>La extensión</b> — en el marco (o una ventana): <i>Extensions → Insert → myTaskPanel</i>.</li>
+          <li><b>Grupos</b> — en la pestaña <i>Presets</i> elija <i>Catalogs</i> y pulse <i>Add this group</i>; lo mismo
+            para <i>Reports</i>, <i>Help</i>… Luego en la pestaña <i>Groups</i> renombre, reordene o borre, y apunte los
+            elementos a sus procedimientos.</li>
+          <li><b>Menú</b> (opcional) — en la pestaña <i>Menu</i> marque <i>Copy the menu into the panel at run time</i>.</li>
+        </ol>
+        <p>Genere y ejecute. Cada elemento tiene su propio punto de embed bajo <i>myTaskPanel → grupo → elemento</i>.</p>
+        <div class="callout note"><b>Si la aplicación está en español</b> (global, pestaña <i>Behaviour</i>), los grupos
+          predefinidos llegan con los textos en español.</div></div>
+    </section>
+
+    <section id="prompts">
+      <div class="en"><h2>Every prompt</h2>
+        <h3>myTaskPanelGlobal</h3>
+        <table><tr><th>Tab</th><th>Prompt</th><th>What it does</th></tr>
+          <tr><td>General</td><td>Draw the panels with</td><td><i>Clarion</i> or <i>DirectX</i>. DirectX makes the global add
+            <code>#pragma define(_MTP_D2D_=&gt;1)</code> to the project, which compiles <code>mtpd2d.c</code> in.</td></tr>
+          <tr><td>General</td><td>DirectX effects · floating panel opacity when idle</td><td><code>Effects</code> (on): shadows, glass headers, fading hover. <code>FloatOpacity</code> (88 %): how solid a floating panel stays while the mouse is elsewhere; 100 keeps it solid.</td></tr>
+          <tr><td>General</td><td>Show which engine is painting</td><td><code>ShowEngine</code>: a "DirectX" / "GDI" badge in the panel's corner. For testing.</td></tr>
+          <tr><td>Look</td><td>Theme · own accent colour</td><td>Eighteen palettes (incl. high and low contrast); the accent replaces the highlighted header and hover colour.</td></tr>
+          <tr><td>Look</td><td>Font, size, item height, header height, corner radius, animate</td><td>Copied into the object before it shows.</td></tr>
+          <tr><td>Behaviour</td><td>Language</td><td>The panel's own menu (Dock left, Float, Hide…) and the captions presets fill in.</td></tr>
+          <tr><td>Behaviour</td><td>Remember … · INI file</td><td>Dock side, width, floating rectangle and open groups, one section per procedure (<code>TaskPanel.&lt;procedure&gt;</code>). A bare file name is taken from the program's folder.</td></tr>
+          <tr><td>Multi-DLL</td><td>(ABC library prompts)</td><td>Where the class is compiled; see <a href="#dll">Multi-DLL</a>.</td></tr>
+        </table>
+        <h3>myTaskPanel (on a procedure)</h3>
+        <table><tr><th>Tab</th><th>Prompt</th><th>What it does</th></tr>
+          <tr><td>General</td><td>Object name · Title</td><td>The object label (default <code>TaskPanel</code>) and the title strip.</td></tr>
+          <tr><td>General</td><td>Starts · Width · Starts hidden · Grow the window</td><td>Docked left / right / floating; docked width; hidden until toggled; on a window (never a frame) grow it by the panel's width.</td></tr>
+          <tr><td>General</td><td>A search box under the title</td><td><code>ShowSearch</code>; see <a href="#keys">Search, keyboard, badges</a>.</td></tr>
+          <tr><td>User</td><td>Float · Dock · Close · Resize · Show/hide key</td><td>What the user may do; the key is a Clarion key code (<code>F12Key</code>) alerted on the window.</td></tr>
+          <tr><td>User</td><td>Move the keyboard into it with</td><td>A key code (default <code>F6Key</code>, blank = none) that shows the panel if hidden and calls <code>Focus()</code>.</td></tr>
+          <tr><td>Groups</td><td>Groups… (caption, icon, icon file, starts open, accent header, starts hidden, show only when)</td><td>One card each. Inside, <i>Items in this group</i>.</td></tr>
+          <tr><td>Groups → Item</td><td>Kind · Text · Level · Icon · Icon file · Shortcut text · Tag</td><td>Item, separator or small heading label; level 0 sits in the group, 1 in the submenu of the item above; the tag is the key the generated <code>CASE</code> uses (blank: <code>g&lt;group&gt;i&lt;item&gt;</code>).</td></tr>
+          <tr><td>Groups → Action</td><td>When clicked …</td><td>See <a href="#actions">Actions</a>.</td></tr>
+          <tr><td>Groups → State</td><td>Submenu starts open · disabled · hidden · bold</td><td>Starting state; all changeable at run time.</td></tr>
+          <tr><td>Groups → State</td><td>Show only when · Enable only when</td><td>Clarion expressions, checked at open and on every <code>MTP:Check</code>; see <a href="#keys">Conditions</a>.</td></tr>
+          <tr><td>Presets</td><td>Preset · Add this group</td><td>See <a href="#presets">Presets</a>.</td></tr>
+          <tr><td>Menu</td><td>Copy … at run time · Arrange · Put it · Skip menus named · Take the real menu off</td><td>See <a href="#menu">Copying the menu</a>.</td></tr>
+          <tr><td>Options</td><td>Submenus · Accordion · Shortcut text · Theme</td><td>Open in place or as pop-ups; one group open at a time; show the shortcut column; override the global theme.</td></tr>
+          <tr><td>Options</td><td>Favourites · Recent items kept · Start collapsed to icons · Auto-hide</td><td>See <a href="#more">Favourites, cards, rail, auto-hide</a>.</td></tr>
+          <tr><td>Options</td><td>Most used kept · Description cards</td><td><code>MostMax</code> (5, 0 = none); <code>ShowTips</code>. See <a href="#personal">Customize, buttons, drops, cards</a>.</td></tr>
+          <tr><td>Groups → Extras</td><td>Tooltip · Accept files dropped on it · Hover buttons (icon, tip, tag, action)</td><td>See <a href="#personal">Customize, buttons, drops, cards</a>; each button and each drop target has its own embed point.</td></tr>
+          <tr><td>Groups → Item</td><td>Kind Info / Progress / Chart · Value (expression) · Chart</td><td>Info cards; the value is re-evaluated with the conditions. An action other than <i>Embed code only</i> makes the card clickable.</td></tr>
+        </table></div>
+      <div class="es"><h2>Cada opción</h2>
+        <h3>myTaskPanelGlobal</h3>
+        <table><tr><th>Pestaña</th><th>Opción</th><th>Qué hace</th></tr>
+          <tr><td>General</td><td>Draw the panels with</td><td><i>Clarion</i> o <i>DirectX</i>. DirectX hace que la global agregue
+            <code>#pragma define(_MTP_D2D_=&gt;1)</code> al proyecto, lo que compila <code>mtpd2d.c</code>.</td></tr>
+          <tr><td>General</td><td>DirectX effects · Floating panel opacity when idle</td><td><code>Effects</code> (activo): sombras, encabezados de vidrio, resaltado que se desvanece. <code>FloatOpacity</code> (88 %): qué tan sólido queda un panel flotante mientras el ratón está en otro lado; 100 lo deja sólido.</td></tr>
+          <tr><td>General</td><td>Show which engine is painting</td><td><code>ShowEngine</code>: una insignia "DirectX" / "GDI" en la esquina del panel. Para pruebas.</td></tr>
+          <tr><td>Look</td><td>Tema · color de acento propio</td><td>Dieciocho paletas (con alto y bajo contraste); el acento reemplaza el color del encabezado destacado y del resaltado.</td></tr>
+          <tr><td>Look</td><td>Fuente, tamaño, alto de elemento, alto de encabezado, radio de esquinas, animación</td><td>Se copian al objeto antes de mostrarlo.</td></tr>
+          <tr><td>Behaviour</td><td>Language</td><td>El menú propio del panel (Acoplar, Flotante, Ocultar…) y los textos de los predefinidos.</td></tr>
+          <tr><td>Behaviour</td><td>Remember … · INI file</td><td>Lado, ancho, rectángulo flotante y grupos abiertos, una sección por procedimiento (<code>TaskPanel.&lt;procedimiento&gt;</code>). Un nombre sin carpeta se toma de la carpeta del programa.</td></tr>
+          <tr><td>Multi-DLL</td><td>(opciones de biblioteca ABC)</td><td>Dónde se compila la clase; ver <a href="#dll">Multi-DLL</a>.</td></tr>
+        </table>
+        <h3>myTaskPanel (en un procedimiento)</h3>
+        <table><tr><th>Pestaña</th><th>Opción</th><th>Qué hace</th></tr>
+          <tr><td>General</td><td>Object name · Title</td><td>La etiqueta del objeto (por omisión <code>TaskPanel</code>) y la franja de título.</td></tr>
+          <tr><td>General</td><td>Starts · Width · Starts hidden · Grow the window</td><td>Acoplado izquierda / derecha / flotante; ancho; oculto hasta alternarlo; en una ventana (nunca un marco) la agranda el ancho del panel.</td></tr>
+          <tr><td>General</td><td>A search box under the title</td><td><code>ShowSearch</code>; ver <a href="#keys">Búsqueda, teclado, insignias</a>.</td></tr>
+          <tr><td>User</td><td>Float · Dock · Close · Resize · tecla</td><td>Qué puede hacer el usuario; la tecla es un código de Clarion (<code>F12Key</code>) alertado en la ventana.</td></tr>
+          <tr><td>User</td><td>Move the keyboard into it with</td><td>Un código de tecla (por omisión <code>F6Key</code>, vacío = ninguno) que muestra el panel si está oculto y llama a <code>Focus()</code>.</td></tr>
+          <tr><td>Groups</td><td>Groups… (título, icono, archivo de icono, abierto, encabezado destacado, oculto, mostrar solo si)</td><td>Una tarjeta cada uno. Adentro, <i>Items in this group</i>.</td></tr>
+          <tr><td>Groups → Item</td><td>Kind · Text · Level · Icon · Icon file · Shortcut text · Tag</td><td>Elemento, separador o rótulo; nivel 0 va en el grupo, 1 en el submenú del de arriba; la etiqueta es la clave del <code>CASE</code> generado (vacía: <code>g&lt;grupo&gt;i&lt;elemento&gt;</code>).</td></tr>
+          <tr><td>Groups → Action</td><td>When clicked …</td><td>Ver <a href="#actions">Acciones</a>.</td></tr>
+          <tr><td>Groups → State</td><td>submenú abierto · deshabilitado · oculto · negrita</td><td>Estado inicial; todo cambia en ejecución.</td></tr>
+          <tr><td>Groups → State</td><td>Show only when · Enable only when</td><td>Expresiones Clarion, evaluadas al abrir y en cada <code>MTP:Check</code>; ver <a href="#keys">Condiciones</a>.</td></tr>
+          <tr><td>Presets</td><td>Preset · Add this group</td><td>Ver <a href="#presets">Grupos predefinidos</a>.</td></tr>
+          <tr><td>Menu</td><td>Copiar en ejecución · Arrange · Put it · Skip menus named · quitar el menú real</td><td>Ver <a href="#menu">Copiar el menú</a>.</td></tr>
+          <tr><td>Options</td><td>Submenus · Accordion · Shortcut text · Theme</td><td>En el lugar o emergentes; un grupo abierto a la vez; columna de teclas; reemplazar el tema global.</td></tr>
+          <tr><td>Options</td><td>Favourites · Recent items kept · Start collapsed to icons · Auto-hide</td><td>Ver <a href="#more">Favoritos, tarjetas, riel, ocultar</a>.</td></tr>
+          <tr><td>Options</td><td>Most used kept · Description cards</td><td><code>MostMax</code> (5, 0 = ninguno); <code>ShowTips</code>. Ver <a href="#personal">Personalizar, botones, soltar, fichas</a>.</td></tr>
+          <tr><td>Groups → Extras</td><td>Tooltip · Accept files dropped on it · Hover buttons (icono, consejo, etiqueta, acción)</td><td>Ver <a href="#personal">Personalizar, botones, soltar, fichas</a>; cada botón y cada destino tiene su punto de embed.</td></tr>
+          <tr><td>Groups → Item</td><td>Kind Info / Progress / Chart · Value (expression) · Chart</td><td>Tarjetas de datos; el valor se reevalúa con las condiciones. Una acción distinta de <i>Embed code only</i> hace la tarjeta pulsable.</td></tr>
+        </table></div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="levels">
+      <div class="en"><h2>Groups, items, submenus</h2>
+        <p>Items are one flat list per group. The <b>Level</b> column builds the tree: an item at level <i>n</i> goes in
+          the submenu of the nearest item above it at level <i>n−1</i>. An item that has children <i>is</i> a submenu —
+          clicking it opens it (in place, or as a pop-up menu) and it raises no click of its own.</p>
+<pre>Customers            <span class="c">level 0</span>
+Geography            <span class="c">level 0  - has children: a submenu</span>
+  Countries          <span class="c">level 1</span>
+  More               <span class="c">level 1  - a sub-submenu</span>
+    Cities           <span class="c">level 2</span></pre>
+        <p>The generator keeps the last item id of each level in <code>TaskPanel:L[]</code> and passes the right one as
+          the parent, so the list above becomes:</p>
+<pre>TaskPanel:G    = TaskPanel.AddGroup(<span class="s">'Catalogs'</span>, <span class="s">'table'</span>, 1, 1)
+TaskPanel:L[1] = TaskPanel.AddItem(TaskPanel:G, <span class="s">'Customers'</span>, <span class="s">'user'</span>, <span class="s">'g1i1'</span>)
+TaskPanel:L[1] = TaskPanel.AddItem(TaskPanel:G, <span class="s">'Geography'</span>, <span class="s">'globe'</span>, <span class="s">'g1i2'</span>)
+TaskPanel:L[2] = TaskPanel.AddItem(TaskPanel:L[1], <span class="s">'Countries'</span>, <span class="s">''</span>, <span class="s">'g1i3'</span>)
+TaskPanel:L[2] = TaskPanel.AddItem(TaskPanel:L[1], <span class="s">'More'</span>, <span class="s">''</span>, <span class="s">'g1i4'</span>)
+TaskPanel:L[3] = TaskPanel.AddItem(TaskPanel:L[2], <span class="s">'Cities'</span>, <span class="s">''</span>, <span class="s">'g1i5'</span>)</pre>
+        <div class="callout tip"><b>A level that skips is clamped.</b> An item at level 5 under an item at level 2 is
+          generated at level 3 — it lands in the nearest open submenu instead of nowhere.</div>
+        <p><b>Separators</b> draw a thin rule; <b>labels</b> a small grey heading in capitals ("RECENT"). Neither is
+          clickable.</p></div>
+      <div class="es"><h2>Grupos, elementos, submenús</h2>
+        <p>Los elementos son una lista plana por grupo. La columna <b>Level</b> arma el árbol: un elemento de nivel
+          <i>n</i> va en el submenú del elemento más cercano de arriba con nivel <i>n−1</i>. Un elemento con hijos
+          <i>es</i> un submenú — al pulsarlo se abre (en el lugar o como menú emergente) y no produce un clic propio.</p>
+<pre>Clientes             <span class="c">nivel 0</span>
+Geografía            <span class="c">nivel 0  - tiene hijos: un submenú</span>
+  Países             <span class="c">nivel 1</span>
+  Más                <span class="c">nivel 1  - un sub-submenú</span>
+    Ciudades         <span class="c">nivel 2</span></pre>
+        <p>El generador guarda el último id de cada nivel en <code>TaskPanel:L[]</code> y pasa el correcto como padre:</p>
+<pre>TaskPanel:G    = TaskPanel.AddGroup(<span class="s">'Catálogos'</span>, <span class="s">'table'</span>, 1, 1)
+TaskPanel:L[1] = TaskPanel.AddItem(TaskPanel:G, <span class="s">'Clientes'</span>, <span class="s">'user'</span>, <span class="s">'g1i1'</span>)
+TaskPanel:L[1] = TaskPanel.AddItem(TaskPanel:G, <span class="s">'Geografía'</span>, <span class="s">'globe'</span>, <span class="s">'g1i2'</span>)
+TaskPanel:L[2] = TaskPanel.AddItem(TaskPanel:L[1], <span class="s">'Países'</span>, <span class="s">''</span>, <span class="s">'g1i3'</span>)
+TaskPanel:L[2] = TaskPanel.AddItem(TaskPanel:L[1], <span class="s">'Más'</span>, <span class="s">''</span>, <span class="s">'g1i4'</span>)
+TaskPanel:L[3] = TaskPanel.AddItem(TaskPanel:L[2], <span class="s">'Ciudades'</span>, <span class="s">''</span>, <span class="s">'g1i5'</span>)</pre>
+        <div class="callout tip"><b>Un nivel que salta se ajusta.</b> Un elemento de nivel 5 bajo uno de nivel 2 se genera
+          en nivel 3 — cae en el submenú abierto más cercano en vez de en ninguna parte.</div>
+        <p>Los <b>separadores</b> dibujan una línea fina; los <b>rótulos</b> un título gris pequeño en mayúsculas
+          ("RECIENTES"). Ninguno recibe clics.</p></div>
+    </section>
+
+    <section id="presets">
+      <div class="en"><h2>Presets</h2>
+        <p>Pick a preset on the <i>Presets</i> tab and press <i>Add this group</i>: a <b>new</b> group appears on the
+          <i>Groups</i> tab, already filled in. Nothing about it is special afterwards — rename, reorder, delete items,
+          set the procedures. Press again for another group.</p>
+        <table><tr><th>Preset</th><th>What it adds</th></tr>
+          <tr><td>Catalogs</td><td>Customers, Suppliers, Products, Categories, Employees, Geography › Countries / States / Cities — accent header, <i>Start a procedure</i> (fill in the procedures)</td></tr>
+          <tr><td>Operations</td><td>New invoice, Invoices, Orders, Payments, Purchases, Inventory movements</td></tr>
+          <tr><td>Reports</td><td>Sales by month, Customer list, Inventory, Financial › Balance sheet / Income statement / Cash flow</td></tr>
+          <tr><td>Exports</td><td>Excel (.xlsx), CSV, PDF, HTML, —, XML, JSON, Text — <i>Embed code only</i> (pair them with your export code, or myExport)</td></tr>
+          <tr><td>Tools and utilities</td><td>Back up, Restore, Import data, Rebuild indexes, —, Options</td></tr>
+          <tr><td>Window</td><td>Tile side by side, Tile stacked, Cascade, Arrange icons — <i>Window command</i>, works as is</td></tr>
+          <tr><td>Help</td><td>Contents, Search the help, What's new, Check for updates, —, Website, Email support, About…</td></tr>
+          <tr><td>Quick links</td><td>Home page, Documentation (URLs), Calendar</td></tr>
+          <tr><td>Settings and security</td><td>Options, Users, Change password, Lock, —, Log out (<i>Close the window</i>)</td></tr>
+          <tr><td>Catalogs from this application's browses</td><td>One item per procedure whose name starts with <i>Browse</i> or whose description contains it; each starts the procedure on its own thread</td></tr>
+          <tr><td>Reports from this application's reports</td><td>The same for Report procedures, names starting <i>Print</i>/<i>Report</i>, or descriptions containing <i>report</i></td></tr>
+          <tr><td>This window's menu, as editable groups</td><td>The MENUBAR copied <b>now</b>: one group per top menu, nested menus as levels, separators kept; every item set to <i>Press a control or menu item</i> on the original</td></tr>
+        </table>
+        <p>URLs in the presets point at <code>example.com</code> — replace them.</p></div>
+      <div class="es"><h2>Grupos predefinidos</h2>
+        <p>Elija uno en la pestaña <i>Presets</i> y pulse <i>Add this group</i>: aparece un grupo <b>nuevo</b> en la
+          pestaña <i>Groups</i>, ya lleno. Después no tiene nada especial — renombre, reordene, borre elementos, ponga los
+          procedimientos. Pulse otra vez para otro grupo.</p>
+        <table><tr><th>Predefinido</th><th>Qué agrega</th></tr>
+          <tr><td>Catalogs</td><td>Clientes, Proveedores, Productos, Categorías, Empleados, Geografía › Países / Estados / Ciudades — encabezado destacado, <i>Start a procedure</i> (complete los procedimientos)</td></tr>
+          <tr><td>Operations</td><td>Nueva factura, Facturas, Pedidos, Pagos, Compras, Movimientos de inventario</td></tr>
+          <tr><td>Reports</td><td>Ventas por mes, Lista de clientes, Inventario, Financieros › Balance general / Estado de resultados / Flujo de efectivo</td></tr>
+          <tr><td>Exports</td><td>Excel (.xlsx), CSV, PDF, HTML, —, XML, JSON, Texto — <i>Embed code only</i> (combínelos con su código de exportación, o myExport)</td></tr>
+          <tr><td>Tools and utilities</td><td>Respaldar, Restaurar, Importar datos, Reconstruir índices, —, Opciones</td></tr>
+          <tr><td>Window</td><td>Mosaico vertical, Mosaico horizontal, Cascada, Organizar iconos — <i>Window command</i>, funciona tal cual</td></tr>
+          <tr><td>Help</td><td>Contenido, Buscar en la ayuda, Novedades, Buscar actualizaciones, —, Sitio web, Escribir a soporte, Acerca de…</td></tr>
+          <tr><td>Quick links</td><td>Página principal, Documentación (URL), Calendario</td></tr>
+          <tr><td>Settings and security</td><td>Opciones, Usuarios, Cambiar la contraseña, Bloquear, —, Cerrar sesión (<i>Close the window</i>)</td></tr>
+          <tr><td>Catalogs from this application's browses</td><td>Un elemento por procedimiento cuyo nombre empieza con <i>Browse</i> o cuya descripción lo contiene; cada uno inicia el procedimiento en su propio hilo</td></tr>
+          <tr><td>Reports from this application's reports</td><td>Lo mismo con procedimientos Report, nombres que empiezan con <i>Print</i>/<i>Report</i> o descripciones con <i>report</i></td></tr>
+          <tr><td>This window's menu, as editable groups</td><td>El MENUBAR copiado <b>ahora</b>: un grupo por menú, los menús anidados como niveles, separadores incluidos; cada elemento con <i>Press a control or menu item</i> sobre el original</td></tr>
+        </table>
+        <p>Las URL de los predefinidos apuntan a <code>example.com</code> — reemplácelas.</p></div>
+    </section>
+
+    <section id="menu">
+      <div class="en"><h2>Copying the menu</h2>
+        <p>Two ways, for two situations:</p>
+        <table><tr><th></th><th>At run time (<i>Menu</i> tab)</th><th>At design time (preset)</th></tr>
+          <tr><td>When</td><td>every time the window opens</td><td>once, when you press the button</td></tr>
+          <tr><td>Follows menu changes</td><td>yes, automatically</td><td>no — they are ordinary items now</td></tr>
+          <tr><td>Editable in the template</td><td>no (skip whole menus by name)</td><td>yes, item by item</td></tr>
+          <tr><td>Enabled / checked</td><td>re-read from the real items whenever the mouse comes into the panel</td><td>as generated</td></tr>
+        </table>
+        <p>Either way, a copied row <b>presses the original menu item</b> (<code>POST(EVENT:Accepted, ?Item)</code>), so
+          the item's action and its embed code run exactly as from the menu.</p>
+        <p>The run-time copy (<code>MirrorMenu</code>) uses what ClaCommandBar measured about Clarion menus: a MENU
+          answers <code>PROP:Child,n</code> in declaration order; the MENUBAR does not, so top-level menus are found by
+          scanning for <code>CREATE:menu</code> controls whose <code>PROP:Parent</code> is the menubar, across the four
+          equate ranges Clarion uses (a frame's named menu controls are <i>negative</i>; unnamed ones count down from
+          32767), and sorted by the lowest rank in each subtree. An ITEM with no text is a separator; <code>KEY()</code>
+          becomes the shortcut text (<code>Ctrl+U</code>); <code>ICON()</code> files are used.</p>
+        <div class="callout warn"><b>Only the window's own menu.</b> A menu an MDI child merges into the frame is not
+          copied — its controls live on the child's thread. Use <code>NOMERGE</code>, or put that child's commands in its
+          own panel.</div>
+        <p><i>Take the real menu off the window</i> detaches the Win32 menu with <code>SetMenu(frame, 0)</code> and
+          re-asserts it for the first seconds, because the runtime re-attaches it while the frame finishes opening; the
+          menu is put back by <code>Kill</code>. The ITEMs stay valid, which is what keeps copied rows working.</p></div>
+      <div class="es"><h2>Copiar el menú</h2>
+        <p>Dos maneras, para dos situaciones:</p>
+        <table><tr><th></th><th>En ejecución (pestaña <i>Menu</i>)</th><th>En diseño (predefinido)</th></tr>
+          <tr><td>Cuándo</td><td>cada vez que se abre la ventana</td><td>una vez, al pulsar el botón</td></tr>
+          <tr><td>Sigue los cambios del menú</td><td>sí, solo</td><td>no — ahora son elementos comunes</td></tr>
+          <tr><td>Editable en la plantilla</td><td>no (se omiten menús enteros por nombre)</td><td>sí, uno por uno</td></tr>
+          <tr><td>Habilitado / marcado</td><td>se relee de los elementos reales cada vez que el mouse entra al panel</td><td>como se generó</td></tr>
+        </table>
+        <p>En los dos casos una fila copiada <b>pulsa el elemento de menú original</b>
+          (<code>POST(EVENT:Accepted, ?Item)</code>), así su acción y su código de embed corren igual que desde el menú.</p>
+        <p>La copia en ejecución (<code>MirrorMenu</code>) usa lo que ClaCommandBar midió sobre los menús de Clarion: un MENU
+          responde <code>PROP:Child,n</code> en orden de declaración; el MENUBAR no, así que los menús de primer nivel se
+          encuentran buscando controles <code>CREATE:menu</code> cuyo <code>PROP:Parent</code> es el menubar, en los cuatro
+          rangos de equates que usa Clarion (los controles de menú con nombre de un marco son <i>negativos</i>; los sin
+          nombre bajan desde 32767), ordenados por el menor rango de cada subárbol. Un ITEM sin texto es un separador;
+          <code>KEY()</code> se vuelve el texto de tecla (<code>Ctrl+U</code>); se usan los archivos de <code>ICON()</code>.</p>
+        <div class="callout warn"><b>Solo el menú de la propia ventana.</b> El menú que una ventana MDI mezcla en el marco no
+          se copia — sus controles viven en el hilo de esa ventana. Use <code>NOMERGE</code>, o ponga esos comandos en un
+          panel propio.</div>
+        <p><i>Take the real menu off the window</i> quita el menú Win32 con <code>SetMenu(marco, 0)</code> y lo vuelve a quitar
+          en los primeros segundos, porque el runtime lo reengancha mientras el marco termina de abrirse; <code>Kill</code>
+          lo devuelve. Los ITEM siguen siendo válidos, y eso mantiene vivas las filas copiadas.</p></div>
+    </section>
+
+    <section id="actions">
+      <div class="en"><h2>Actions</h2>
+        <table><tr><th>When clicked</th><th>Generated</th><th>Notes</th></tr>
+          <tr><td>Start a procedure</td><td><code>START(Proc, 25000)</code></td><td>The usual choice on a frame. The procedure joins the call tree by itself.</td></tr>
+          <tr><td>Call a procedure</td><td><code>Proc(parameters)</code></td><td>Not for an MDI procedure from a frame — Clarion requires those on their own thread.</td></tr>
+          <tr><td>Insert a record (a form)</td><td><code>START(TaskPanelInsert2_8, 25000)</code> and, among the procedure's local procedures,<br><code>TaskPanelInsert2_8 PROCEDURE</code><br><code>&nbsp;&nbsp;GlobalRequest = InsertRecord</code><br><code>&nbsp;&nbsp;UpdateCustomers()</code></td><td>Opens the update form to add a record — MDI or not. An MDI form cannot open on the frame's thread, and <code>GlobalRequest</code> is <code>THREAD</code>ed, so the request is set by a small generated procedure on the new thread, which then calls the form. Also a hover button's action: an item with a <b>+</b> that opens its form to insert.</td></tr>
+          <tr><td>Press a control or menu item</td><td>(the item carries the control's equate)</td><td><code>NextClick</code> posts <code>EVENT:Accepted</code> to it and moves on; the item's own embed does not run.</td></tr>
+          <tr><td>Post an event</td><td><code>POST(EVENT:…)</code></td><td></td></tr>
+          <tr><td>Open a URL or file</td><td><code>TaskPanel.OpenUrl('…')</code></td><td><code>ShellExecute</code> "open": web pages, <code>mailto:</code>, documents.</td></tr>
+          <tr><td>Run a program</td><td><code>RUN('…')</code></td><td></td></tr>
+          <tr><td>Window command</td><td><code>TaskPanel.MdiCommand(MTP:TileV)</code></td><td>Tile vertically / horizontally, Cascade, Arrange icons — sent to the frame's MDI client.</td></tr>
+          <tr><td>Close the window</td><td><code>POST(EVENT:CloseWindow)</code></td><td></td></tr>
+          <tr><td>Embed code only</td><td>—</td><td>Write it in the item's embed.</td></tr>
+        </table>
+        <p>Whatever the action, the item's embed point runs straight after it.</p></div>
+      <div class="es"><h2>Acciones</h2>
+        <table><tr><th>Al pulsar</th><th>Se genera</th><th>Notas</th></tr>
+          <tr><td>Start a procedure</td><td><code>START(Proc, 25000)</code></td><td>Lo habitual en un marco. El procedimiento entra solo al árbol de llamadas.</td></tr>
+          <tr><td>Call a procedure</td><td><code>Proc(parámetros)</code></td><td>No para un procedimiento MDI desde un marco — Clarion los exige en su propio hilo.</td></tr>
+          <tr><td>Insert a record (a form)</td><td><code>START(TaskPanelInsert2_8, 25000)</code> y, entre los procedimientos locales,<br><code>TaskPanelInsert2_8 PROCEDURE</code><br><code>&nbsp;&nbsp;GlobalRequest = InsertRecord</code><br><code>&nbsp;&nbsp;UpdateClientes()</code></td><td>Abre el formulario para agregar un registro — MDI o no. Un formulario MDI no puede abrirse en el hilo del marco, y <code>GlobalRequest</code> es <code>THREAD</code>, así que la petición la pone un pequeño procedimiento generado en el hilo nuevo, que luego llama al formulario. También es una acción de los botones al pasar: un elemento con un <b>+</b> que abre su formulario para insertar.</td></tr>
+          <tr><td>Press a control or menu item</td><td>(el elemento lleva el equate del control)</td><td><code>NextClick</code> le envía <code>EVENT:Accepted</code> y sigue; el embed del elemento no corre.</td></tr>
+          <tr><td>Post an event</td><td><code>POST(EVENT:…)</code></td><td></td></tr>
+          <tr><td>Open a URL or file</td><td><code>TaskPanel.OpenUrl('…')</code></td><td><code>ShellExecute</code> "open": páginas web, <code>mailto:</code>, documentos.</td></tr>
+          <tr><td>Run a program</td><td><code>RUN('…')</code></td><td></td></tr>
+          <tr><td>Window command</td><td><code>TaskPanel.MdiCommand(MTP:TileV)</code></td><td>Mosaico vertical / horizontal, Cascada, Organizar iconos — al cliente MDI del marco.</td></tr>
+          <tr><td>Close the window</td><td><code>POST(EVENT:CloseWindow)</code></td><td></td></tr>
+          <tr><td>Embed code only</td><td>—</td><td>Escríbalo en el embed del elemento.</td></tr>
+        </table>
+        <p>Sea cual sea la acción, el embed del elemento corre justo después.</p></div>
+    </section>
+
+    <section id="docking">
+      <div class="en"><h2>Docking and floating</h2>
+        <table><tr><th>The user…</th><th>What happens</th></tr>
+          <tr><td>drags the title strip of a docked panel</td><td>after 6 pixels it becomes a floating window under the mouse and keeps moving with it</td></tr>
+          <tr><td>drops a floating panel within 44 pixels of the host's left or right edge</td><td>it docks there; while dragging, its caption says <i>Release to dock on the left</i></td></tr>
+          <tr><td>drags the inner edge</td><td>resizes it (150–560 pixels, <code>MinWidth</code>/<code>MaxWidth</code>); the MDI area follows live</td></tr>
+          <tr><td>clicks <b>⌄</b> or right-clicks</td><td>Dock on the left / Dock on the right / Float / Expand all / Collapse all / Hide the panel</td></tr>
+          <tr><td>clicks <b>×</b> (or the floating window's ×)</td><td>hides it; the show/hide key or <code>ShowPanel</code> brings it back</td></tr>
+          <tr><td>turns the mouse wheel</td><td>scrolls; a thin scroll thumb appears when the groups do not fit, and can be dragged</td></tr>
+        </table>
+        <p><b>On an MDI frame</b> the panel sits between the toolbar and the status bar and the MDI client is narrowed.
+          <b>On a window</b> the window's client area is narrowed and, with <i>Grow the window</i>, the window gets wider
+          by the panel's width, so the form moves over intact; floating or hiding gives the width back.</p></div>
+      <div class="es"><h2>Acoplar y flotar</h2>
+        <table><tr><th>El usuario…</th><th>Qué pasa</th></tr>
+          <tr><td>arrastra la franja de título de un panel acoplado</td><td>a los 6 píxeles se vuelve una ventana flotante bajo el mouse y sigue moviéndose con él</td></tr>
+          <tr><td>suelta un panel flotante a menos de 44 píxeles del borde izquierdo o derecho</td><td>se acopla ahí; mientras se arrastra, su título dice <i>Suelte para acoplar a la izquierda</i></td></tr>
+          <tr><td>arrastra el borde interior</td><td>cambia el ancho (150–560 píxeles, <code>MinWidth</code>/<code>MaxWidth</code>); el área MDI lo sigue en vivo</td></tr>
+          <tr><td>pulsa <b>⌄</b> o clic derecho</td><td>Acoplar a la izquierda / a la derecha / Flotante / Expandir todo / Contraer todo / Ocultar el panel</td></tr>
+          <tr><td>pulsa <b>×</b> (o la × de la ventana flotante)</td><td>lo oculta; la tecla o <code>ShowPanel</code> lo traen de vuelta</td></tr>
+          <tr><td>gira la rueda del mouse</td><td>desplaza; cuando los grupos no caben aparece una barra fina que también se arrastra</td></tr>
+        </table>
+        <p><b>En un marco MDI</b> el panel queda entre la barra de herramientas y la de estado, y el cliente MDI se angosta.
+          <b>En una ventana</b> el área cliente se angosta y, con <i>Grow the window</i>, la ventana se ensancha el ancho del
+          panel, así el formulario se corre intacto; flotar u ocultar devuelve el ancho.</p></div>
+    </section>
+
+    <section id="look">
+      <div class="en"><h2>Themes and icons</h2>
+        <p>Eighteen palettes, all without purple: <b>Slate</b> (default), <b>Navy</b>, <b>Graphite</b> (dark), <b>Teal</b>,
+          <b>Light</b>, <b>Forest</b>; ten more colours — <b>Ocean</b>, <b>Crimson</b>, <b>Amber</b>, <b>Copper</b>,
+          <b>Sky</b>, <b>Mint</b>, <b>Steel</b>, <b>Sand</b>, <b>Midnight</b> (dark), <b>Olive</b>, each with white header text
+          at 4.5:1 or better; and two for accessibility — <b>High contrast</b> (black, white and yellow, strong borders) and
+          <b>Low contrast</b> (soft greys, easy on the eyes). <code>SetAccent(color)</code> replaces the highlighted header and the hover text;
+          every colour is also a public property (<code>ClrHead1</code>, <code>ClrCard</code>, <code>ClrHover</code>…) you
+          can set before <code>ShowPanel</code>.</p>
+        <img class="shot en" src="myTaskPanel-themes-more.png" alt="The twelve new themes">
+        <p><b>Icons</b> are built-in vector glyphs, drawn with the painter, so they are sharp at any DPI and look the same
+          in both engines. Or name an <code>.ico</code> file — a path on disk, or an icon linked into the program
+          (Clarion files those by upper-case name, e.g. <code>SAVE.ICO</code>).</p>
+<pre>folder table user users box doc report chart export import excel csv pdf html xml json txt
+print mail help info book globe gear tools backup restore key lock exit home star window
+tile cascade calendar money cart truck search plus link menu bell phone</pre>
+        <p><b>auto</b> (in the template) guesses one from the caption, in English and Spanish — <i>Print</i> gets the
+          printer, <i>Clientes</i> the person, <i>Ayuda</i> the help ring. Copied menus use it too.</p></div>
+      <div class="es"><h2>Temas e iconos</h2>
+        <p>Dieciocho paletas, todas sin violeta: <b>Pizarra</b> (por omisión), <b>Marino</b>, <b>Grafito</b> (oscuro),
+          <b>Verde azulado</b>, <b>Claro</b>, <b>Bosque</b>; diez colores más — <b>Océano</b>, <b>Carmesí</b>,
+          <b>Ámbar</b>, <b>Cobre</b>, <b>Cielo</b>, <b>Menta</b>, <b>Acero</b>, <b>Arena</b>, <b>Medianoche</b> (oscuro),
+          <b>Oliva</b>, todos con el texto blanco del encabezado a 4.5:1 o más; y dos de accesibilidad — <b>Alto contraste</b>
+          (negro, blanco y amarillo, bordes marcados) y <b>Bajo contraste</b> (grises suaves, descansa la vista).
+          <code>SetAccent(color)</code> reemplaza el encabezado destacado y
+          el texto resaltado; cada color es también una propiedad pública (<code>ClrHead1</code>, <code>ClrCard</code>,
+          <code>ClrHover</code>…) que puede asignar antes de <code>ShowPanel</code>.</p>
+        <img class="shot es" src="myTaskPanel-themes-more.png" alt="Los doce temas nuevos">
+        <p>Los <b>iconos</b> son glifos vectoriales incluidos, dibujados con el pintor: nítidos con cualquier DPI e iguales en
+          los dos motores. O indique un archivo <code>.ico</code> — una ruta en disco, o un icono enlazado al programa
+          (Clarion los archiva por el nombre en mayúsculas, p. ej. <code>SAVE.ICO</code>).</p>
+<pre>folder table user users box doc report chart export import excel csv pdf html xml json txt
+print mail help info book globe gear tools backup restore key lock exit home star window
+tile cascade calendar money cart truck search plus link menu bell phone</pre>
+        <p><b>auto</b> (en la plantilla) deduce uno del texto, en inglés y en español — <i>Imprimir</i> recibe la impresora,
+          <i>Clientes</i> la persona, <i>Ayuda</i> el aro de ayuda. Los menús copiados también lo usan.</p></div>
+    </section>
+
+    <section id="engines">
+      <div class="en"><h2>The two engines</h2>
+        <table><tr><th></th><th>Clarion</th><th>DirectX</th></tr>
+          <tr><td>Source</td><td>Clarion only — GDI called through the Windows API</td><td><code>mtpd2d.c</code>, compiled by Clarion's C compiler; COM vtables hand-declared (Clacpp has no DirectX headers)</td></tr>
+          <tr><td>Antialiasing</td><td>no</td><td>yes, shapes and ClearType text</td></tr>
+          <tr><td>Gradients</td><td>one band per pixel row (no msimg32)</td><td>linear gradient brush</td></tr>
+          <tr><td>Long text</td><td><code>DrawText</code> … <code>DT_END_ELLIPSIS</code></td><td>DirectWrite ellipsis trimming sign</td></tr>
+          <tr><td>Card shadows</td><td>no</td><td>soft, deeper on a dark theme (<code>Effects</code>)</td></tr>
+          <tr><td>Headers</td><td>gradient</td><td>gradient + a glass light and a bright top edge (<code>Effects</code>)</td></tr>
+          <tr><td>Hover</td><td>a solid highlight, on or off</td><td>a translucent accent wash that fades in (~75 ms) and out (<code>Effects</code>)</td></tr>
+          <tr><td>Floating panel</td><td>always solid</td><td>see-through (<code>FloatOpacity</code>) while the mouse is elsewhere (<code>Effects</code>)</td></tr>
+          <tr><td>Switched on by</td><td>default</td><td>the project define <code>_MTP_D2D_=&gt;1</code> (the global writes it)</td></tr>
+        </table>
+        <p>Both paint into the same memory DC: Direct2D draws through an <code>ID2D1DCRenderTarget</code> bound to it,
+          icons are added by GDI after <code>EndDraw</code>, and one <code>BitBlt</code> puts the frame on screen — so
+          there is no flicker in either. If Direct2D will not start, or <code>EndDraw</code> loses the device, the panel
+          quietly paints that frame with GDI; <code>EngineInUse()</code> says which engine is drawing.</p>
+        <div class="callout note"><b>Without the define the C is not there at all.</b> Every Direct2D call in
+          <code>MyTaskPanel.clw</code> sits in a <code>COMPILE('ENDD2D',_MTP_D2D_)</code> block, the
+          <code>PRAGMA('compile(mtpd2d.c)')</code> included — the Clarion-engine demo is 23 KB smaller.</div>
+        <h3 id="speed">Speed</h3>
+        <p><code>Benchmark(engine, frames, effects)</code> paints the panel off screen, at its own size and contents, the
+          same steps as a real repaint (layout, drawing, icons; not the final blit, which costs both the same), and
+          returns milliseconds per frame. The demo's <i>Speed test</i> runs it three rounds, alternating, best of each,
+          300 frames a round. Measured on the demo frame (230 px wide panel, 100 % scaling):</p>
+        <table><tr><th>Panel</th><th>Clarion (GDI)</th><th>DirectX, no effects</th><th>DirectX with effects</th></tr>
+          <tr><td>docked, default groups</td><td>2.03 ms</td><td><b>1.74 ms</b> (−14 %)</td><td>1.86 ms (−8 %)</td></tr>
+          <tr><td>floating</td><td>1.83 ms</td><td><b>1.64 ms</b></td><td>1.77 ms</td></tr>
+          <tr><td>every group open</td><td>2.80 ms</td><td><b>2.33 ms</b></td><td>2.42 ms</td></tr>
+          <tr><td>Graphite (dark)</td><td>2.02 ms</td><td><b>1.73 ms</b></td><td>1.86 ms</td></tr>
+        </table>
+        <p><b>DirectX is the faster engine, even with the effects on.</b> It was not at first: the first version was
+          about 20 % slower than GDI flat and 40 % slower with the effects. The demo's <code>diag</code> switch
+          (<code>Diag()</code> in the class) found out why:</p>
+        <table><tr><th>DirectX frame</th><th>Let Direct2D choose</th><th>Software (CPU)</th><th>Hardware (GPU)</th></tr>
+          <tr><td>empty frame: begin + end, nothing drawn</td><td>0.95 ms</td><td>0.30 ms</td><td>0.94 ms</td></tr>
+          <tr><td>full, a new gradient brush per call</td><td>2.45 / 2.91 ms</td><td>2.44 / 3.03 ms</td><td>2.47 / 2.93 ms</td></tr>
+          <tr><td>full, gradient brushes cached</td><td><b>1.75 / 1.86 ms</b></td><td>1.70 / 1.88 ms</td><td>1.80 / 1.91 ms</td></tr>
+        </table>
+        <p>(flat / with effects.) Making a gradient brush is expensive in Direct2D — it is a device resource with
+          its own stop collection — and every header asked for two, and the glass effect for one more. Keeping the last
+          sixteen brushes by colour pair and only moving their end points cut a frame by 0.7 ms flat and 1 ms with the
+          effects; the picture is pixel-for-pixel the same. Direct2D chooses the GPU on its own (the first and last
+          columns match): an empty frame then costs about 0.95 ms, mostly handing the finished frame back to the
+          memory DC. The CPU renderer has a third of that fixed cost but draws more slowly, and comes out the same.</p></div>
+      <div class="es"><h2>Los dos motores</h2>
+        <table><tr><th></th><th>Clarion</th><th>DirectX</th></tr>
+          <tr><td>Código</td><td>solo Clarion — GDI por la API de Windows</td><td><code>mtpd2d.c</code>, compilado por el compilador C de Clarion; vtables COM declaradas a mano (Clacpp no trae cabeceras de DirectX)</td></tr>
+          <tr><td>Antialiasing</td><td>no</td><td>sí, formas y texto ClearType</td></tr>
+          <tr><td>Degradados</td><td>una banda por fila de píxeles (sin msimg32)</td><td>pincel de degradado lineal</td></tr>
+          <tr><td>Texto largo</td><td><code>DrawText</code> … <code>DT_END_ELLIPSIS</code></td><td>recorte con puntos suspensivos de DirectWrite</td></tr>
+          <tr><td>Sombras</td><td>no</td><td>suaves, más profundas en un tema oscuro (<code>Effects</code>)</td></tr>
+          <tr><td>Encabezados</td><td>degradado</td><td>degradado + brillo de vidrio y un borde superior claro (<code>Effects</code>)</td></tr>
+          <tr><td>Resaltado</td><td>sólido, encendido o apagado</td><td>un velo translúcido del color de acento que aparece (~75 ms) y se desvanece (<code>Effects</code>)</td></tr>
+          <tr><td>Panel flotante</td><td>siempre sólido</td><td>translúcido (<code>FloatOpacity</code>) mientras el ratón está en otro lado (<code>Effects</code>)</td></tr>
+          <tr><td>Se activa con</td><td>por omisión</td><td>la definición de proyecto <code>_MTP_D2D_=&gt;1</code> (la escribe la global)</td></tr>
+        </table>
+        <p>Los dos pintan en el mismo DC de memoria: Direct2D dibuja con un <code>ID2D1DCRenderTarget</code> enlazado a él, los
+          iconos los agrega GDI después de <code>EndDraw</code>, y un <code>BitBlt</code> pone el cuadro en pantalla — sin
+          parpadeo en ninguno. Si Direct2D no arranca, o <code>EndDraw</code> pierde el dispositivo, el panel pinta ese cuadro
+          con GDI sin avisar; <code>EngineInUse()</code> dice qué motor dibuja.</p>
+        <div class="callout note"><b>Sin la definición el C no está.</b> Cada llamada a Direct2D en <code>MyTaskPanel.clw</code>
+          está en un bloque <code>COMPILE('ENDD2D',_MTP_D2D_)</code>, incluido el <code>PRAGMA('compile(mtpd2d.c)')</code> —
+          la demo con motor Clarion pesa 23 KB menos.</div>
+        <h3 id="speed-es">Velocidad</h3>
+        <p><code>Benchmark(engine, frames, effects)</code> pinta el panel fuera de pantalla, con su propio tamaño y contenido,
+          los mismos pasos que un repintado real (diseño, dibujo, iconos; no el volcado final, que cuesta lo mismo a los dos),
+          y devuelve milisegundos por cuadro. El botón <i>Velocidad</i> de la demo lo corre tres rondas, alternando, y se queda
+          con la mejor de cada una, 300 cuadros por ronda. Medido en el marco de la demo (panel de 230 px de ancho, escala 100 %):</p>
+        <table><tr><th>Panel</th><th>Clarion (GDI)</th><th>DirectX sin efectos</th><th>DirectX con efectos</th></tr>
+          <tr><td>acoplado, grupos por omisión</td><td>2,03 ms</td><td><b>1,74 ms</b> (−14 %)</td><td>1,86 ms (−8 %)</td></tr>
+          <tr><td>flotante</td><td>1,83 ms</td><td><b>1,64 ms</b></td><td>1,77 ms</td></tr>
+          <tr><td>todos los grupos abiertos</td><td>2,80 ms</td><td><b>2,33 ms</b></td><td>2,42 ms</td></tr>
+          <tr><td>Grafito (oscuro)</td><td>2,02 ms</td><td><b>1,73 ms</b></td><td>1,86 ms</td></tr>
+        </table>
+        <p><b>DirectX es el motor más rápido, incluso con los efectos.</b> Al principio no lo era: la primera versión era
+          un 20 % más lenta que GDI sin efectos y un 40 % con ellos. El argumento <code>diag</code> de la demo
+          (<code>Diag()</code> en la clase) encontró la causa:</p>
+        <table><tr><th>Cuadro DirectX</th><th>Que elija Direct2D</th><th>Software (CPU)</th><th>Hardware (GPU)</th></tr>
+          <tr><td>cuadro vacío: inicio + fin, sin dibujar</td><td>0,95 ms</td><td>0,30 ms</td><td>0,94 ms</td></tr>
+          <tr><td>completo, un pincel de degradado nuevo por llamada</td><td>2,45 / 2,91 ms</td><td>2,44 / 3,03 ms</td><td>2,47 / 2,93 ms</td></tr>
+          <tr><td>completo, pinceles de degradado en caché</td><td><b>1,75 / 1,86 ms</b></td><td>1,70 / 1,88 ms</td><td>1,80 / 1,91 ms</td></tr>
+        </table>
+        <p>(sin efectos / con efectos.) Crear un pincel de degradado es caro en Direct2D — es un recurso del dispositivo con
+          su propia colección de paradas — y cada encabezado pedía dos, y el efecto de vidrio uno más. Guardar los últimos
+          dieciséis pinceles por par de colores y solo mover sus extremos bajó un cuadro 0,7 ms sin efectos y 1 ms con
+          ellos; la imagen es idéntica píxel por píxel. Direct2D elige la GPU por su cuenta (la primera y la última columna
+          coinciden): un cuadro vacío cuesta entonces unos 0,95 ms, sobre todo por devolver el cuadro terminado al DC de
+          memoria. El dibujo por CPU tiene un tercio de ese costo fijo pero dibuja más lento, y termina igual.</p></div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="keys">
+      <div class="en"><h2>Search, keyboard, badges and conditions</h2>
+        <p><b>Search.</b> A box under the title (<code>ShowSearch</code>, on by default). Typing filters every group down
+          to the <i>actions</i> — items with no submenu — whose text holds what was typed, at any depth, one row each,
+          with the submenu they live in shown dimmed on the right. Matching ignores case and accents: <i>co</i> finds
+          <i>Códigos postales</i>. Groups with nothing to show disappear; <i>No matches</i> when nothing is left.</p>
+        <p><b>Keyboard.</b> Clicking the search box, the template's key (<b>F6</b> by default) or <code>Focus()</code>
+          gives the panel the keyboard; a ring marks the row it is on.</p>
+        <table><tr><th>Key</th><th>Does</th></tr>
+          <tr><td>↑ ↓ · Page Up / Down · Home / End</td><td>move between group headers and items (only the matches while searching), scrolling as needed</td></tr>
+          <tr><td>Enter · Space</td><td>what a click does: open or close a group or submenu, or run the item — after running an item the keyboard goes back to the program</td></tr>
+          <tr><td>→ / ←</td><td>open / close; on an open one, step into it; on an item, step out to its parent</td></tr>
+          <tr><td>any letter · Backspace</td><td>type into the search</td></tr>
+          <tr><td>Esc</td><td>clear the search; with no search, give the keyboard back</td></tr>
+          <tr><td>Tab</td><td>give the keyboard back</td></tr>
+        </table>
+        <p><b>Badges.</b> <code>SetBadge(id, '12')</code> puts a pill on a row or a group header — a count, a word
+          (<code>'new'</code>), or <code>'*'</code> for a dot; the third parameter is its colour (the accent if omitted);
+          <code>SetBadge(id, '')</code> removes it. On a header the pill is light on the header's colour.</p>
+        <p><b>Conditions</b> (template). Each item has <i>Show only when</i> and <i>Enable only when</i>, each group <i>Show
+          only when</i>: any Clarion expression (<code>GLO:IsAdmin</code>, <code>SEC:CanPrint = 1</code>). They are
+          generated into a routine, <code>mtpCheck:TaskPanel</code>, that runs when the window opens and again on every
+          <code>MTP:Check</code> — an event the panel posts when the mouse comes into it or it takes the keyboard —
+          so a change in the program (someone logs in) shows the next time the panel is used. Its own embed,
+          <i>re-check conditions</i>, is the place to refresh badges too.</p></div>
+      <div class="es"><h2>Búsqueda, teclado, insignias y condiciones</h2>
+        <p><b>Búsqueda.</b> Un cuadro bajo el título (<code>ShowSearch</code>, activo por omisión). Al escribir, cada grupo
+          queda solo con las <i>acciones</i> — elementos sin submenú — cuyo texto contiene lo escrito, a cualquier
+          profundidad, una fila cada una, con el submenú donde viven atenuado a la derecha. No distingue mayúsculas ni
+          acentos: <i>co</i> encuentra <i>Códigos postales</i>. Los grupos sin nada que mostrar desaparecen; <i>Sin
+          resultados</i> cuando no queda nada.</p>
+        <p><b>Teclado.</b> Un clic en el cuadro de búsqueda, la tecla de la plantilla (<b>F6</b> por omisión) o
+          <code>Focus()</code> le dan el teclado al panel; un anillo marca la fila donde está.</p>
+        <table><tr><th>Tecla</th><th>Hace</th></tr>
+          <tr><td>↑ ↓ · Re Pág / Av Pág · Inicio / Fin</td><td>moverse entre encabezados y elementos (solo los resultados al buscar), desplazando lo necesario</td></tr>
+          <tr><td>Enter · Espacio</td><td>lo que hace un clic: abrir o cerrar un grupo o submenú, o ejecutar el elemento — tras ejecutarlo, el teclado vuelve al programa</td></tr>
+          <tr><td>→ / ←</td><td>abrir / cerrar; en uno abierto, entrar; en un elemento, salir a su padre</td></tr>
+          <tr><td>cualquier letra · Retroceso</td><td>escribir en la búsqueda</td></tr>
+          <tr><td>Esc</td><td>borrar la búsqueda; sin búsqueda, devolver el teclado</td></tr>
+          <tr><td>Tab</td><td>devolver el teclado</td></tr>
+        </table>
+        <p><b>Insignias.</b> <code>SetBadge(id, '12')</code> pone una píldora en una fila o en un encabezado — un número,
+          una palabra (<code>'nuevo'</code>) o <code>'*'</code> para un punto; el tercer parámetro es su color (el de acento si
+          se omite); <code>SetBadge(id, '')</code> la quita. En un encabezado la píldora es clara sobre el color del encabezado.</p>
+        <p><b>Condiciones</b> (plantilla). Cada elemento tiene <i>Show only when</i> y <i>Enable only when</i>, cada grupo
+          <i>Show only when</i>: cualquier expresión Clarion (<code>GLO:EsAdmin</code>, <code>SEC:PuedeImprimir = 1</code>). Se
+          generan en una rutina, <code>mtpCheck:TaskPanel</code>, que corre al abrir la ventana y otra vez en cada
+          <code>MTP:Check</code> — un evento que el panel envía cuando el ratón entra o cuando toma el teclado — así un
+          cambio en el programa (alguien inicia sesión) se ve la próxima vez que se usa el panel. Su propio embed,
+          <i>re-check conditions</i>, es el lugar para actualizar insignias también.</p></div>
+      <img class="shot en" src="myTaskPanel-search.png" alt="Badges, search and keyboard">
+      <img class="shot es" src="myTaskPanel-search-es.png" alt="Insignias, búsqueda y teclado">
+    </section>
+
+    <section id="more">
+      <div class="en"><h2>Favourites, info cards, the icon rail and auto-hide</h2>
+        <p><b>Favourites and Recent.</b> Right-click any action and pick <i>Add to favourites</i>: a <i>Favourites</i>
+          group appears at the top. Every action run goes to the top of a <i>Recent</i> group (closed by default) that
+          keeps the last <code>RecentMax</code> (5). Their rows stand for the real items — same icon, same badge, same
+          enabled state — and a click runs the real item, so its tag, action and embed are the ones that run. Right-click
+          a favourite to remove it, or Recent to clear it. Both are saved in the INI (by tag, or by the path of texts),
+          and come back with <code>LoadState</code>. In code: <code>AddFavorite(id)</code>, <code>RemoveFavorite(id)</code>,
+          <code>IsFavorite(id)</code>, <code>ClearRecent()</code>; turn them off with <code>Favorites = 0</code> /
+          <code>RecentMax = 0</code>.</p>
+        <p><b>Info cards</b> are rows that show something: <code>AddInfo(group, 'Orders', '34')</code> (label and value),
+          <code>AddProgress(group, 'Monthly target', 64)</code> (a bar), <code>AddChart(group, 'Sales', '12,15,9,18',
+          MTP:Bars)</code> (bars or <code>MTP:Line</code>, the last value as the headline). Change them with
+          <code>SetValue</code>, <code>SetProgress</code>, <code>SetSeries</code>; <code>SetClickable(id)</code> makes one
+          raise a click. In the template they are item kinds <i>Info</i>, <i>Progress</i> and <i>Chart</i> with a
+          <i>Value</i> expression, re-evaluated with the conditions — at open and every time the mouse comes in —
+          so a card reading <code>RECORDS(Orders)</code> is fresh whenever someone looks.</p>
+        <img class="shot en" src="myTaskPanel-cards.png" alt="Info cards and favourites">
+        <p><b>The icon rail.</b> The « button in the title, the panel's menu, <code>SetRail(1)</code> or the template's
+          <i>Start collapsed to icons</i> shrink the docked panel to a 44-pixel strip of group icons (a dot where a
+          group or an item in it has a badge). Pointing at an icon slides that group out beside the strip, fully open;
+          it goes when the mouse is on neither. The » button brings the whole panel back; so does the keyboard key.</p>
+        <img class="shot en" src="myTaskPanel-rail.png" alt="The icon rail with a group popped out">
+        <p><b>Auto-hide.</b> <code>SetAutoHide(1)</code>, the panel's menu or the template's check tucks the docked panel
+          into a 6-pixel strip at the edge — the host gives up only that. Touching the strip slides the panel out
+          <i>over</i> the host, without moving anything; it slides back when the mouse leaves (not while it has the
+          keyboard or a menu is open). Rail and auto-hide are each other's alternative: turning one on turns the other
+          off. Both are remembered in the INI.</p>
+        <img class="shot en" src="myTaskPanel-autohide.png" alt="Auto-hide, slid out over the MDI area"></div>
+      <div class="es"><h2>Favoritos, tarjetas de datos, el riel de iconos y ocultar automáticamente</h2>
+        <p><b>Favoritos y Recientes.</b> Clic derecho en cualquier acción y <i>Agregar a favoritos</i>: aparece un grupo
+          <i>Favoritos</i> arriba. Cada acción ejecutada pasa al principio de un grupo <i>Recientes</i> (cerrado por
+          omisión) que guarda las últimas <code>RecentMax</code> (5). Sus filas representan a los elementos reales — mismo
+          icono, misma insignia, mismo estado — y un clic ejecuta el elemento real, así corren su etiqueta, su acción y su
+          embed. Clic derecho en un favorito para quitarlo, o en Recientes para borrarlos. Los dos se guardan en el INI (por
+          etiqueta, o por la ruta de textos) y vuelven con <code>LoadState</code>. Por código: <code>AddFavorite(id)</code>,
+          <code>RemoveFavorite(id)</code>, <code>IsFavorite(id)</code>, <code>ClearRecent()</code>; se desactivan con
+          <code>Favorites = 0</code> / <code>RecentMax = 0</code>.</p>
+        <p><b>Las tarjetas de datos</b> son filas que muestran algo: <code>AddInfo(grupo, 'Pedidos', '34')</code> (rótulo y
+          valor), <code>AddProgress(grupo, 'Meta del mes', 64)</code> (una barra), <code>AddChart(grupo, 'Ventas',
+          '12,15,9,18', MTP:Bars)</code> (barras o <code>MTP:Line</code>, el último valor como titular). Se cambian con
+          <code>SetValue</code>, <code>SetProgress</code>, <code>SetSeries</code>; <code>SetClickable(id)</code> hace que una
+          genere un clic. En la plantilla son los tipos de elemento <i>Info</i>, <i>Progress</i> y <i>Chart</i> con una
+          expresión <i>Value</i>, reevaluada con las condiciones — al abrir y cada vez que entra el ratón — así una
+          tarjeta que lee <code>RECORDS(Pedidos)</code> está al día cada vez que alguien la mira.</p>
+        <img class="shot es" src="myTaskPanel-cards-es.png" alt="Tarjetas de datos y favoritos">
+        <p><b>El riel de iconos.</b> El botón « del título, el menú del panel, <code>SetRail(1)</code> o la opción
+          <i>Start collapsed to icons</i> reducen el panel acoplado a una franja de 44 píxeles con los iconos de los grupos
+          (un punto donde el grupo o algo en él tiene insignia). Al apuntar a un icono, ese grupo se despliega al lado,
+          completamente abierto; se va cuando el ratón no está en ninguno de los dos. El botón » devuelve el panel
+          completo; la tecla del teclado también.</p>
+        <img class="shot es" src="myTaskPanel-rail-es.png" alt="El riel de iconos con un grupo desplegado">
+        <p><b>Ocultar automáticamente.</b> <code>SetAutoHide(1)</code>, el menú del panel o la opción de la plantilla
+          guardan el panel acoplado en una franja de 6 píxeles en el borde — la ventana cede solo eso. Al tocar la franja
+          el panel se desliza <i>sobre</i> la ventana, sin mover nada; vuelve a guardarse cuando sale el ratón (no mientras
+          tiene el teclado o un menú abierto). El riel y ocultar automáticamente se excluyen: activar uno apaga el otro.
+          Los dos se recuerdan en el INI.</p>
+        <img class="shot es" src="myTaskPanel-autohide-es.png" alt="Ocultar automáticamente, desplegado sobre el área MDI"></div>
+    </section>
+
+    <section id="personal">
+      <div class="en"><h2>Customize, reorder, most used, hover buttons, file drops, description cards</h2>
+        <p><b>Customize.</b> Right-click and pick <i>Customize…</i> (or <code>Customize()</code>): the panel itself goes
+          into an edit mode. Every row and group gets an eye; a click hides it (it stays faded so it can come back), the
+          bar at the top has <i>Reset</i> and <i>Done</i>. <i>Hide this</i> on the right-click menu does one item at once.
+          The user's choices are kept per user in the INI and sit on top of the program's own <code>SetHidden</code> —
+          a user can hide, never show what the program (or a <i>Show only when</i>) hid. In code: <code>HideItem(id)</code>,
+          <code>ResetCustom()</code>, <code>IsCustomizing()</code>.</p>
+        <p><b>Reorder.</b> Drag a group header up or down — an accent line shows where it lands — or drag a favourite
+          within Favourites. A short press is still a click; it becomes a drag after 6 pixels. Kept in the INI;
+          <code>MoveGroup(id, beforeId)</code> does it in code, <i>Reset</i> puts the program's order back.</p>
+        <img class="shot en" src="myTaskPanel-custom.png" alt="Customize mode, and the panel after Done">
+        <p><b>Most used.</b> Every run is counted; a <i>Most used</i> group (closed by default) shows the
+          <code>MostMax</code> (5) run most, twice at least. Right-click it to start the counts again. The counts are in
+          the INI too — <i>Recent</i> is what you did last, <i>Most used</i> what you do every day.</p>
+        <p><b>Hover buttons.</b> <code>AddAction(id, 'plus', 'cust_new', 'New customer')</code> adds a small button to
+          the end of a row, shown while the mouse is on it: one row, several actions. A click arrives through
+          <code>MTP:Event</code> like an item's, with <code>ClickTag</code> the button's tag, <code>ClickId</code> the row's
+          item and <code>ClickAct</code> non-zero. In the template: <i>Extras → Hover buttons</i>, each with an icon, a
+          tip, a tag and an action of its own (and an embed point).</p>
+        <p><b>File drops.</b> <code>SetDropTarget(id)</code> (template: <i>Accept files dropped on it</i>) lets files
+          dragged from Explorer land on that row. They arrive as <code>MTP:Drop</code>; <code>NextDrop()</code> fills
+          <code>DropTag</code>, <code>DropText</code>, <code>DropCount</code> and <code>DropFiles</code>
+          (<code>'C:\a.txt|C:\b.pdf'</code>), <code>DropFile(n)</code> gives one. Windows does not let Explorer drop on
+          a program running as administrator.</p>
+        <p><b>Description cards.</b> An item with a <code>Tip</code> (<code>SetTip</code>, template <i>Extras →
+          Tooltip</i>) shows a card after a 0.6-second pause: its name, the description wrapped over several lines, its
+          shortcut and where it lives. A hover button's tip shows the same way. The mouse goes through the card;
+          <code>ShowTips = 0</code> turns them off.</p>
+        <img class="shot en" src="myTaskPanel-hover.png" alt="Hover buttons and a description card"></div>
+      <div class="es"><h2>Personalizar, reordenar, más usados, botones al pasar, soltar archivos, fichas</h2>
+        <p><b>Personalizar.</b> Clic derecho y <i>Personalizar…</i> (o <code>Customize()</code>): el panel mismo pasa a
+          un modo de edición. Cada fila y cada grupo tienen un ojo; un clic lo oculta (queda atenuado para poder volver),
+          la barra de arriba tiene <i>Reiniciar</i> y <i>Listo</i>. <i>Ocultar esto</i> en el menú del clic derecho oculta
+          uno de una vez. Lo que elige el usuario se guarda por usuario en el INI y va encima del <code>SetHidden</code> del
+          programa — el usuario puede ocultar, nunca mostrar lo que el programa (o un <i>Show only when</i>) ocultó. Por
+          código: <code>HideItem(id)</code>, <code>ResetCustom()</code>, <code>IsCustomizing()</code>.</p>
+        <p><b>Reordenar.</b> Arrastre un encabezado de grupo hacia arriba o abajo — una línea de acento marca dónde cae —
+          o un favorito dentro de Favoritos. Una pulsación corta sigue siendo un clic; se vuelve arrastre después de 6
+          píxeles. Se guarda en el INI; <code>MoveGroup(id, antesDe)</code> lo hace por código, <i>Reiniciar</i> devuelve el
+          orden del programa.</p>
+        <img class="shot es" src="myTaskPanel-custom-es.png" alt="Modo personalizar, y el panel después de Listo">
+        <p><b>Más usados.</b> Cada ejecución se cuenta; un grupo <i>Más usados</i> (cerrado por omisión) muestra los
+          <code>MostMax</code> (5) más ejecutados, dos veces como mínimo. Clic derecho para empezar a contar de nuevo. Las
+          cuentas también van al INI — <i>Recientes</i> es lo último que hizo, <i>Más usados</i> lo que hace todos los días.</p>
+        <p><b>Botones al pasar.</b> <code>AddAction(id, 'plus', 'cli_nuevo', 'Nuevo cliente')</code> agrega un botón pequeño al
+          final de una fila, visible mientras el ratón está encima: una fila, varias acciones. El clic llega por
+          <code>MTP:Event</code> como el de un elemento, con <code>ClickTag</code> la etiqueta del botón, <code>ClickId</code> el
+          elemento de la fila y <code>ClickAct</code> distinto de cero. En la plantilla: <i>Extras → Hover buttons</i>, cada
+          uno con icono, consejo, etiqueta y acción propios (y un punto de embed).</p>
+        <p><b>Soltar archivos.</b> <code>SetDropTarget(id)</code> (plantilla: <i>Accept files dropped on it</i>) deja que los
+          archivos arrastrados desde el Explorador caigan en esa fila. Llegan como <code>MTP:Drop</code>; <code>NextDrop()</code>
+          llena <code>DropTag</code>, <code>DropText</code>, <code>DropCount</code> y <code>DropFiles</code>
+          (<code>'C:\a.txt|C:\b.pdf'</code>), <code>DropFile(n)</code> da uno. Windows no deja que el Explorador suelte
+          archivos en un programa que corre como administrador.</p>
+        <p><b>Fichas de descripción.</b> Un elemento con <code>Tip</code> (<code>SetTip</code>, plantilla <i>Extras →
+          Tooltip</i>) muestra una ficha tras una pausa de 0,6 segundos: su nombre, la descripción en varias líneas, su tecla
+          y dónde vive. El consejo de un botón al pasar se muestra igual. El ratón atraviesa la ficha;
+          <code>ShowTips = 0</code> las apaga.</p>
+        <img class="shot es" src="myTaskPanel-hover-es.png" alt="Botones al pasar y una ficha de descripción"></div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="objects">
+      <div class="en"><h2>The class</h2>
+        <p><b>MyTaskPanelClass owns</b> four queues — <code>Items</code> (what you added), <code>Rows</code> (the layout,
+          rebuilt every paint), <code>Kids</code> (the host child windows it narrows), <code>Clicks</code> (waiting for
+          <code>NextClick</code>) — two windows it creates (the docked child and the floating tool window), and its GDI
+          fonts and icons. <b>It borrows</b> the host window (<code>&amp;WINDOW</code>), its handle and thread, and the menu
+          ITEMs it copied.</p>
+        <h3>MTPItemQ, field by field</h3>
+        <table><tr><th>Field</th><th>Meaning</th></tr>
+          <tr><td><code>Id</code> · <code>Parent</code></td><td>the id <code>AddGroup</code>/<code>AddItem</code> returned; 0 = a group</td></tr>
+          <tr><td><code>Kind</code></td><td><code>MTP:Group</code>, <code>MTP:Item</code>, <code>MTP:Separator</code>, <code>MTP:Label</code></td></tr>
+          <tr><td><code>Text</code> · <code>Shortcut</code> · <code>Tip</code></td><td>as shown (accelerator <code>&amp;</code> removed, <code>&amp;&amp;</code> kept as one); shortcut column; tip (stored only — see quirks)</td></tr>
+          <tr><td><code>Glyph</code> · <code>IconFile</code> · <code>HIcon</code></td><td>built-in icon name, or an icon file and its loaded handle</td></tr>
+          <tr><td><code>Tag</code></td><td>your key for the item; what the generated <code>CASE</code> tests</td></tr>
+          <tr><td><code>Feq</code> · <code>Mirrored</code></td><td>non-zero: a click POSTs <code>EVENT:Accepted</code> to that control; copied from the MENUBAR</td></tr>
+          <tr><td><code>Expanded</code> · <code>Reveal</code></td><td>open or closed; how far open while animating (0–1)</td></tr>
+          <tr><td><code>Enabled</code> · <code>Hidden</code> · <code>Checked</code> · <code>Bold</code> · <code>Special</code></td><td>state; <code>Special</code> = accent-coloured group header</td></tr>
+        </table></div>
+      <div class="es"><h2>La clase</h2>
+        <p><b>MyTaskPanelClass es dueña</b> de cuatro colas — <code>Items</code> (lo que agregó), <code>Rows</code> (el diseño,
+          rehecho en cada pintado), <code>Kids</code> (las ventanas hijas de la ventana anfitriona que angosta),
+          <code>Clicks</code> (esperando a <code>NextClick</code>) — de dos ventanas que crea (la hija acoplada y la ventana
+          flotante) y de sus fuentes e iconos GDI. <b>Toma prestados</b> la ventana anfitriona (<code>&amp;WINDOW</code>), su
+          handle y su hilo, y los ITEM de menú que copió.</p>
+        <h3>MTPItemQ, campo por campo</h3>
+        <table><tr><th>Campo</th><th>Significado</th></tr>
+          <tr><td><code>Id</code> · <code>Parent</code></td><td>el id que devolvió <code>AddGroup</code>/<code>AddItem</code>; 0 = un grupo</td></tr>
+          <tr><td><code>Kind</code></td><td><code>MTP:Group</code>, <code>MTP:Item</code>, <code>MTP:Separator</code>, <code>MTP:Label</code></td></tr>
+          <tr><td><code>Text</code> · <code>Shortcut</code> · <code>Tip</code></td><td>como se ve (sin el <code>&amp;</code> de acelerador, <code>&amp;&amp;</code> queda como uno); columna de tecla; ayuda (solo se guarda — ver rarezas)</td></tr>
+          <tr><td><code>Glyph</code> · <code>IconFile</code> · <code>HIcon</code></td><td>nombre de icono incluido, o un archivo de icono y su handle cargado</td></tr>
+          <tr><td><code>Tag</code></td><td>su clave para el elemento; lo que prueba el <code>CASE</code> generado</td></tr>
+          <tr><td><code>Feq</code> · <code>Mirrored</code></td><td>distinto de 0: un clic envía <code>EVENT:Accepted</code> a ese control; copiado del MENUBAR</td></tr>
+          <tr><td><code>Expanded</code> · <code>Reveal</code></td><td>abierto o cerrado; cuánto está abierto durante la animación (0–1)</td></tr>
+          <tr><td><code>Enabled</code> · <code>Hidden</code> · <code>Checked</code> · <code>Bold</code> · <code>Special</code></td><td>estado; <code>Special</code> = encabezado con el color de acento</td></tr>
+        </table></div>
+    </section>
+
+    <section id="lifecycle">
+      <div class="en"><h2>Life cycle</h2>
+        <ol>
+          <li><code>Init(window, engine)</code> — <b>after the window is open</b> (it needs <code>PROP:Handle</code>). Finds
+            out whether the host is a frame (it has an <code>MDIClient</code>) and reads the screen DPI.</li>
+          <li><code>AddGroup</code> / <code>AddItem</code> / <code>MirrorMenu</code> — in any order; nothing is drawn yet.</li>
+          <li><code>LoadState()</code> — <b>after</b> the groups exist (it restores their open/closed state by tag or
+            caption) and <b>before</b> <code>ShowPanel</code> (it restores the dock side and width).</li>
+          <li><code>ShowPanel()</code> — creates the two windows, subclasses the host's children, takes the room.</li>
+          <li><code>Kill()</code> — <b>before the window closes</b>: saves the state, unhooks, gives the room back, puts a
+            detached menu back. The template calls it in <code>ThisWindow.Kill</code> at priority 4400, ahead of
+            <code>PARENT.Kill</code>. Calling it twice is harmless, and the destructor calls it if you forget.</li>
+        </ol>
+        <p>The template does 1–4 in a routine <code>mtpBuild:TaskPanel</code> run on <code>EVENT:OpenWindow</code>, from
+          <code>TakeEvent</code> at priority 2000 — ahead of ABC's own event loop at 2500.</p></div>
+      <div class="es"><h2>Ciclo de vida</h2>
+        <ol>
+          <li><code>Init(ventana, motor)</code> — <b>con la ventana ya abierta</b> (necesita <code>PROP:Handle</code>).
+            Averigua si la anfitriona es un marco (tiene <code>MDIClient</code>) y lee los DPI de la pantalla.</li>
+          <li><code>AddGroup</code> / <code>AddItem</code> / <code>MirrorMenu</code> — en cualquier orden; todavía no se dibuja.</li>
+          <li><code>LoadState()</code> — <b>después</b> de crear los grupos (restaura si estaban abiertos, por etiqueta o
+            título) y <b>antes</b> de <code>ShowPanel</code> (restaura el lado y el ancho).</li>
+          <li><code>ShowPanel()</code> — crea las dos ventanas, subclasifica las hijas de la anfitriona, toma el espacio.</li>
+          <li><code>Kill()</code> — <b>antes de que cierre la ventana</b>: guarda el estado, desengancha, devuelve el espacio,
+            repone un menú quitado. La plantilla lo llama en <code>ThisWindow.Kill</code> con prioridad 4400, antes de
+            <code>PARENT.Kill</code>. Llamarlo dos veces no hace daño, y el destructor lo llama si se olvida.</li>
+        </ol>
+        <p>La plantilla hace 1–4 en una rutina <code>mtpBuild:TaskPanel</code> que corre en <code>EVENT:OpenWindow</code>,
+          desde <code>TakeEvent</code> con prioridad 2000 — antes del bucle de eventos de ABC en 2500.</p></div>
+    </section>
+
+    <section id="flow">
+      <div class="en"><h2>One click, end to end</h2>
+        <ol>
+          <li>Windows sends <code>WM_LBUTTONDOWN</code> to the panel. <code>MTP_WndProc</code> — a Clarion procedure with
+            <code>PASCAL</code> that Windows calls directly, like Clarion's own <code>smartzoom.clw</code> — finds the
+            object in a <code>THREAD</code> queue keyed by window handle and calls <code>WndMsg</code>.</li>
+          <li><code>HitTest</code> walks <code>Rows</code> (header, item, scroll thumb, splitter, title buttons) and
+            remembers the row as <i>pressed</i>.</li>
+          <li>On <code>WM_LBUTTONUP</code> over the same row: a group header opens or closes; an item with children opens
+            its submenu; any other enabled item is queued and <code>POST(MTP:Event,,thread)</code> wakes the host's
+            ACCEPT loop. <b>Nothing of yours runs inside the callback.</b></li>
+          <li>The generated code sees <code>MTP:Event</code> and loops <code>NextClick()</code>. An item with a
+            <code>Feq</code> is turned into <code>POST(EVENT:Accepted, Feq)</code> and skipped; any other fills
+            <code>ClickId</code> / <code>ClickTag</code> / <code>ClickText</code>, calls the virtual <code>TakeItem</code>,
+            and returns 1 — the <code>CASE ClickTag</code> runs the action and the item's embed.</li>
+        </ol></div>
+      <div class="es"><h2>Un clic, de principio a fin</h2>
+        <ol>
+          <li>Windows envía <code>WM_LBUTTONDOWN</code> al panel. <code>MTP_WndProc</code> — un procedimiento Clarion con
+            <code>PASCAL</code> que Windows llama directamente, como el propio <code>smartzoom.clw</code> de Clarion — busca el
+            objeto en una cola <code>THREAD</code> por handle de ventana y llama a <code>WndMsg</code>.</li>
+          <li><code>HitTest</code> recorre <code>Rows</code> (encabezado, elemento, barra, borde, botones del título) y recuerda
+            la fila como <i>pulsada</i>.</li>
+          <li>En <code>WM_LBUTTONUP</code> sobre la misma fila: un encabezado abre o cierra su grupo; un elemento con hijos abre
+            su submenú; cualquier otro elemento habilitado se encola y <code>POST(MTP:Event,,hilo)</code> despierta el bucle
+            ACCEPT de la anfitriona. <b>Nada suyo corre dentro del callback.</b></li>
+          <li>El código generado ve <code>MTP:Event</code> y repite <code>NextClick()</code>. Un elemento con <code>Feq</code> se
+            convierte en <code>POST(EVENT:Accepted, Feq)</code> y se salta; cualquier otro llena <code>ClickId</code> /
+            <code>ClickTag</code> / <code>ClickText</code>, llama al virtual <code>TakeItem</code> y devuelve 1 — el
+            <code>CASE ClickTag</code> corre la acción y el embed del elemento.</li>
+        </ol></div>
+    </section>
+
+    <section id="room">
+      <div class="en"><h2>Making room on the host</h2>
+        <p>A Clarion frame lays its <code>MDIClient</code> out against the full client area, under the toolbar and above
+          the painted status bar; a window does the same with its <code>ClaChildClient</code>, which holds every control.
+          The panel subclasses those host children (<code>MTP_KidProc</code>) and corrects each
+          <code>WM_WINDOWPOSCHANGING</code> <i>after</i> the host's own procedure has answered: the rect the host asked for
+          is remembered, and a <b>filler</b> (taller than 60% of the client area) loses the panel's width on the docked
+          side. A band — the toolbar — is left alone. The panel then sits in the strip, with the filler's top and bottom.</p>
+        <div class="callout warn"><b>Clarion vetoes moves it did not ask for.</b> Found by the self-test: re-applying the
+          remembered rect with <code>SetWindowPos</code> reaches the hook with <code>SWP_NOMOVE|SWP_NOSIZE</code> added by
+          Clarion's MDI client procedure, which normally means "only a show or z-order change". So while
+          <code>ApplyLayout</code> replays (<code>Replaying = 1</code>) those flags are overridden; at all other times they
+          are respected.</div>
+        <p>On <code>Kill</code> the original window procedures are restored and the remembered rects replayed, so the host
+          looks exactly as it did. If something subclassed a host child after the panel did, the panel cannot step out of
+          the chain; it stays in as a pass-through that no longer refers to the object.</p></div>
+      <div class="es"><h2>Hacer lugar en la ventana</h2>
+        <p>Un marco Clarion acomoda su <code>MDIClient</code> contra toda el área cliente, bajo la barra de herramientas y sobre
+          la barra de estado pintada; una ventana hace lo mismo con su <code>ClaChildClient</code>, que contiene todos los
+          controles. El panel subclasifica esas hijas (<code>MTP_KidProc</code>) y corrige cada
+          <code>WM_WINDOWPOSCHANGING</code> <i>después</i> de que respondió el procedimiento de la anfitriona: recuerda el
+          rectángulo pedido, y a un <b>relleno</b> (más alto que el 60% del área) le quita el ancho del panel del lado acoplado.
+          Una banda — la barra de herramientas — no se toca. El panel ocupa la franja, con el alto del relleno.</p>
+        <div class="callout warn"><b>Clarion veta movimientos que no pidió.</b> Lo encontró la autoprueba: al volver a aplicar
+          el rectángulo recordado con <code>SetWindowPos</code>, llega al gancho con <code>SWP_NOMOVE|SWP_NOSIZE</code>
+          agregados por el procedimiento del cliente MDI de Clarion, que normalmente significa "solo mostrar u ordenar". Así
+          que mientras <code>ApplyLayout</code> repite (<code>Replaying = 1</code>) esos indicadores se ignoran; el resto del
+          tiempo se respetan.</div>
+        <p>En <code>Kill</code> se restauran los procedimientos originales y se repiten los rectángulos recordados: la anfitriona
+          queda exactamente como estaba. Si algo subclasificó una hija después del panel, el panel no puede salir de la cadena;
+          queda como paso directo que ya no usa el objeto.</p></div>
+    </section>
+
+    <section id="handcode">
+      <div class="en"><h2>Hand-coding it</h2></div><div class="es"><h2>A mano</h2></div>
+<pre><span class="k">INCLUDE</span>(<span class="s">'MyTaskPanel.INC'</span>),ONCE        <span class="c">! project: _MyTaskPanelDllMode_=&gt;0;_MyTaskPanelLinkMode_=&gt;1</span>
+                                       <span class="c">! (+ _MTP_D2D_=&gt;1 for the DirectX engine)</span>
+TP   MyTaskPanelClass
+g    LONG
+sub  LONG
+  <span class="k">CODE</span>
+  <span class="k">OPEN</span>(AppFrame)
+  <span class="k">ACCEPT</span>
+    <span class="k">CASE</span> <span class="k">EVENT</span>()
+    <span class="k">OF</span> EVENT:OpenWindow
+      TP.Init(AppFrame, MTP:DirectX)
+      TP.Title = <span class="s">'Tasks'</span>
+      g = TP.AddGroup(<span class="s">'Catalogs'</span>, <span class="s">'table'</span>, 1, 1)          <span class="c">! open, accent header</span>
+      TP.AddItem(g, <span class="s">'Customers'</span>, <span class="s">'user'</span>, <span class="s">'cust'</span>)
+      sub = TP.AddItem(g, <span class="s">'Geography'</span>, <span class="s">'globe'</span>)            <span class="c">! children make it a submenu</span>
+      TP.AddItem(sub, <span class="s">'Countries'</span>, , <span class="s">'countries'</span>)
+      TP.AddItem(g, <span class="s">'Products'</span>, <span class="s">'box'</span>, , ?BrProducts)       <span class="c">! presses that menu item</span>
+      TP.MirrorMenu(0, <span class="s">'Window'</span>, 1)                        <span class="c">! the MENUBAR, in one group</span>
+      TP.IniFile = <span class="s">'MyApp.ini'</span>
+      TP.LoadState()
+      TP.ShowPanel()
+    <span class="k">OF</span> MTP:Event
+      <span class="k">LOOP</span> <span class="k">WHILE</span> TP.NextClick()
+        <span class="k">CASE</span> TP.ClickTag
+        <span class="k">OF</span> <span class="s">'cust'</span>      ; <span class="k">START</span>(BrowseCustomers, 25000)
+        <span class="k">OF</span> <span class="s">'countries'</span> ; <span class="k">START</span>(BrowseCountries, 25000)
+        <span class="k">END</span>
+      <span class="k">END</span>
+    <span class="k">END</span>
+  <span class="k">END</span>
+  TP.Kill()</pre>
+      <div class="en"><p>Or derive and override <code>TakeItem(id, tag)</code>, which <code>NextClick</code> calls for every
+        click it returns.</p></div>
+      <div class="es"><p>O derive la clase y redefina <code>TakeItem(id, tag)</code>, que <code>NextClick</code> llama por cada
+        clic que devuelve.</p></div>
+    </section>
+
+    <!-- ================================================================ -->
+    <section id="api">
+      <div class="en"><h2>Method reference</h2></div><div class="es"><h2>Referencia de métodos</h2></div>
+      <table>
+        <tr><th>Method</th><th class="en">When you would call it</th><th class="es">Cuándo llamarlo</th></tr>
+        <tr><td colspan="3"><b class="en">Life cycle</b><b class="es">Ciclo de vida</b></td></tr>
+        <tr><td><code>Init(WINDOW host, BYTE engine=MTP:Clarion),BYTE</code></td><td class="en">once, after OPEN; returns 0 if the window has no handle</td><td class="es">una vez, después de OPEN; devuelve 0 si la ventana no tiene handle</td></tr>
+        <tr><td><code>ShowPanel</code> · <code>HidePanel</code> · <code>TogglePanel</code> · <code>IsVisible()</code></td><td class="en">show it (the first call creates the windows), hide it, flip it</td><td class="es">mostrarlo (la primera vez crea las ventanas), ocultarlo, alternarlo</td></tr>
+        <tr><td><code>Dock(BYTE side)</code></td><td class="en"><code>MTP:Left</code>, <code>MTP:Right</code>, <code>MTP:Float</code></td><td class="es"><code>MTP:Left</code>, <code>MTP:Right</code>, <code>MTP:Float</code></td></tr>
+        <tr><td><code>SetWidth(LONG px)</code> · <code>Refresh</code></td><td class="en">docked width (clamped to MinWidth/MaxWidth); re-lay out after changing properties</td><td class="es">ancho acoplado (limitado por MinWidth/MaxWidth); rehacer el diseño tras cambiar propiedades</td></tr>
+        <tr><td><code>Kill</code></td><td class="en">before the window closes</td><td class="es">antes de cerrar la ventana</td></tr>
+        <tr><td colspan="3"><b class="en">Building</b><b class="es">Armar</b></td></tr>
+        <tr><td><code>AddGroup(text, &lt;glyph&gt;, expanded=1, special=0),LONG</code></td><td class="en">a card; returns its id</td><td class="es">una tarjeta; devuelve su id</td></tr>
+        <tr><td><code>AddItem(pid, text, &lt;glyph&gt;, &lt;tag&gt;, feq=0),LONG</code></td><td class="en">an item in a group or in another item's submenu; <code>feq</code> makes it press that control</td><td class="es">un elemento en un grupo o en el submenú de otro; <code>feq</code> hace que pulse ese control</td></tr>
+        <tr><td><code>AddSeparator(pid)</code> · <code>AddLabel(pid, text)</code></td><td class="en">a rule; a small heading</td><td class="es">una línea; un rótulo</td></tr>
+        <tr><td><code>MirrorMenu(hideMenu=0, &lt;skip&gt;, oneGroup=0),LONG</code></td><td class="en">copy the host's MENUBAR; <code>skip</code> = <code>'Window|Help'</code>; returns the number of menus copied</td><td class="es">copiar el MENUBAR; <code>skip</code> = <code>'Window|Help'</code>; devuelve cuántos menús copió</td></tr>
+        <tr><td><code>SyncMirror</code></td><td class="en">re-read enabled/checked from the menu now (it also runs when the mouse comes in)</td><td class="es">releer habilitado/marcado del menú ya (también corre al entrar el mouse)</td></tr>
+        <tr><td><code>DeleteItem(id)</code> · <code>ClearAll</code></td><td class="en">remove one (with its children) or everything</td><td class="es">quitar uno (con sus hijos) o todo</td></tr>
+        <tr><td colspan="3"><b class="en">Items</b><b class="es">Elementos</b></td></tr>
+        <tr><td><code>SetText</code> · <code>SetGlyph</code> · <code>SetIcon</code> · <code>SetShortcut</code> · <code>SetTip</code> · <code>SetFeq</code></td><td class="en">change one property of an item</td><td class="es">cambiar una propiedad de un elemento</td></tr>
+        <tr><td><code>SetEnabled</code> · <code>SetHidden</code> · <code>SetChecked</code> · <code>SetBold</code> · <code>SetSpecial</code></td><td class="en">change its state</td><td class="es">cambiar su estado</td></tr>
+        <tr><td><code>Expand(id, on=1)</code> · <code>ExpandAll(on=1)</code> · <code>IsExpanded(id)</code></td><td class="en">open/close a group or submenu (animated when visible)</td><td class="es">abrir/cerrar un grupo o submenú (animado si está visible)</td></tr>
+        <tr><td><code>SetBadge(id, txt, clr=-1)</code> · <code>GetBadge(id)</code></td><td class="en">a pill on the row or header: a count, a word, <code>'*'</code> = a dot; <code>''</code> removes; -1 = the accent</td><td class="es">una píldora en la fila o el encabezado: un número, una palabra, <code>'*'</code> = un punto; <code>''</code> la quita; -1 = el acento</td></tr>
+        <tr><td><code>Focus()</code> · <code>HasKeyboard(),BYTE</code></td><td class="en">give the panel the keyboard; whether it has it</td><td class="es">darle el teclado al panel; si lo tiene</td></tr>
+        <tr><td><code>SetSearch(txt)</code> · <code>GetSearch(),STRING</code> · <code>ShowSearch</code></td><td class="en">filter as if typed (<code>''</code> clears); the search box on/off</td><td class="es">filtrar como si se escribiera (<code>''</code> borra); el cuadro de búsqueda sí/no</td></tr>
+        <tr><td><code>AddInfo(pid, label, value, &lt;tag&gt;)</code> · <code>AddProgress(pid, label, pct, &lt;tag&gt;)</code> · <code>AddChart(pid, label, series, style=MTP:Bars, &lt;tag&gt;)</code></td><td class="en">info cards; return their id</td><td class="es">tarjetas de datos; devuelven su id</td></tr>
+        <tr><td><code>SetValue(id, txt)</code> · <code>SetProgress(id, pct)</code> · <code>SetSeries(id, '1,2,3')</code> · <code>SetClickable(id, on=1)</code></td><td class="en">change a card; make it raise a click</td><td class="es">cambiar una tarjeta; hacer que genere un clic</td></tr>
+        <tr><td><code>AddFavorite(id)</code> · <code>RemoveFavorite(id)</code> · <code>IsFavorite(id)</code> · <code>ClearRecent()</code> · <code>Favorites</code> · <code>RecentMax</code></td><td class="en">the Favourites and Recent groups</td><td class="es">los grupos Favoritos y Recientes</td></tr>
+        <tr><td><code>SetRail(on)</code> · <code>SetAutoHide(on)</code> · <code>Rail</code> · <code>AutoHide</code></td><td class="en">the icon rail; tuck into the edge (set the properties before <code>ShowPanel</code>)</td><td class="es">el riel de iconos; guardarse en el borde (las propiedades, antes de <code>ShowPanel</code>)</td></tr>
+        <tr><td><code>Customize(on=1)</code> · <code>IsCustomizing()</code> · <code>HideItem(id, on=1)</code> · <code>ResetCustom()</code> · <code>MoveGroup(id, beforeId)</code></td><td class="en">the user's own panel (kept in the INI)</td><td class="es">el panel propio del usuario (guardado en el INI)</td></tr>
+        <tr><td><code>MostMax</code> · <code>ShowTips</code> · <code>SetTip(id, txt)</code></td><td class="en">Most used size; description cards on/off; an item's description</td><td class="es">tamaño de Más usados; fichas sí/no; la descripción de un elemento</td></tr>
+        <tr><td><code>AddAction(id, glyph, tag, &lt;tip&gt;)</code> · <code>ClearActions(id)</code> · <code>ClickAct</code></td><td class="en">hover buttons; on <code>MTP:Event</code>, <code>ClickAct</code> &lt;&gt; 0 means a button was clicked</td><td class="es">botones al pasar; en <code>MTP:Event</code>, <code>ClickAct</code> &lt;&gt; 0 indica un botón</td></tr>
+        <tr><td><code>SetDropTarget(id, on=1)</code> · <code>MTP:Drop</code> · <code>NextDrop()</code> · <code>DropTag</code> · <code>DropFiles</code> · <code>DropCount</code> · <code>DropFile(n)</code></td><td class="en">files dropped from Explorer on an item</td><td class="es">archivos soltados desde el Explorador en un elemento</td></tr>
+        <tr><td><code>MTP:Check</code></td><td class="en">event posted when the mouse comes in or the panel takes the keyboard: re-check conditions, refresh badges</td><td class="es">evento enviado cuando entra el ratón o el panel toma el teclado: reevaluar condiciones, actualizar insignias</td></tr>
+        <tr><td><code>FindTag(tag)</code> · <code>FindText(text, pid=-1)</code> · <code>ItemCount()</code></td><td class="en">look an item up</td><td class="es">buscar un elemento</td></tr>
+        <tr><td colspan="3"><b class="en">Clicks</b><b class="es">Clics</b></td></tr>
+        <tr><td><code>NextClick(),BYTE</code></td><td class="en">on <code>MTP:Event</code>, in a loop; fills <code>ClickId</code>, <code>ClickTag</code>, <code>ClickText</code></td><td class="es">en <code>MTP:Event</code>, en un bucle; llena <code>ClickId</code>, <code>ClickTag</code>, <code>ClickText</code></td></tr>
+        <tr><td><code>TakeItem(id, tag),VIRTUAL</code></td><td class="en">override instead of the CASE</td><td class="es">redefinir en lugar del CASE</td></tr>
+        <tr><td><code>Click(id)</code></td><td class="en">as if the user had clicked it</td><td class="es">como si el usuario lo hubiera pulsado</td></tr>
+        <tr><td colspan="3"><b class="en">Looks and helpers</b><b class="es">Aspecto y ayudas</b></td></tr>
+        <tr><td><code>SetTheme(theme)</code> · <code>SetAccent(color)</code> · <code>SetLanguage('ES')</code></td><td class="en"><code>MTP:Slate</code> … <code>MTP:Olive</code> (1..18); accent; the panel's own menu</td><td class="es"><code>MTP:Slate</code> … <code>MTP:Olive</code> (1..18); acento; el menú propio del panel</td></tr>
+        <tr><td><code>EngineInUse(),BYTE</code></td><td class="en">which engine is really drawing</td><td class="es">qué motor dibuja de verdad</td></tr>
+        <tr><td><code>Benchmark(engine, frames=200, effects=1),REAL</code></td><td class="en">milliseconds per frame for this panel with that engine, off screen; -1 if the engine is not compiled in</td><td class="es">milisegundos por cuadro de este panel con ese motor, fuera de pantalla; -1 si el motor no está compilado</td></tr>
+        <tr><td><code>Effects</code> · <code>FloatOpacity</code> · <code>ShowEngine</code></td><td class="en">DirectX shadows/glass/fades (1) · a floating panel's idle opacity, % (88) · the engine badge (0)</td><td class="es">sombras/vidrio/desvanecidos de DirectX (1) · opacidad en reposo del panel flotante, % (88) · la insignia del motor (0)</td></tr>
+        <tr><td><code>GuessGlyph(text),STRING</code></td><td class="en">an icon name from a caption</td><td class="es">un nombre de icono a partir de un texto</td></tr>
+        <tr><td><code>OpenUrl(url)</code> · <code>MdiCommand(cmd)</code></td><td class="en">ShellExecute "open"; <code>MTP:TileH/TileV/Cascade/Arrange</code></td><td class="es">ShellExecute "open"; <code>MTP:TileH/TileV/Cascade/Arrange</code></td></tr>
+        <tr><td><code>SaveState</code> · <code>LoadState</code></td><td class="en">with <code>IniFile</code>/<code>IniSection</code> set; <code>Kill</code> saves by itself</td><td class="es">con <code>IniFile</code>/<code>IniSection</code>; <code>Kill</code> guarda solo</td></tr>
+      </table>
+      <div class="en"><p><b>Properties</b> (set before <code>ShowPanel</code>, or call <code>Refresh</code>):
+        <code>Title DockSide PanelWidth MinWidth MaxWidth SubStyle ShowShortcuts Accordion Animate AllowFloat AllowDock
+        AllowClose AllowResize GrowHost FontName FontSize ItemHeight HeaderHeight Radius IniFile IniSection AutoGlyphs</code>
+        and the colours <code>ClrBack ClrTitle1/2 ClrTitleText ClrHead1/2 ClrHeadText ClrSpecial1/2 ClrSpecialText ClrCard
+        ClrCardLine ClrText ClrTextDim ClrHover ClrHoverLine ClrAccent ClrDisabled ClrSep</code>.</p></div>
+      <div class="es"><p><b>Propiedades</b> (antes de <code>ShowPanel</code>, o llame a <code>Refresh</code>):
+        <code>Title DockSide PanelWidth MinWidth MaxWidth SubStyle ShowShortcuts Accordion Animate AllowFloat AllowDock
+        AllowClose AllowResize GrowHost FontName FontSize ItemHeight HeaderHeight Radius IniFile IniSection AutoGlyphs</code>
+        y los colores <code>ClrBack ClrTitle1/2 ClrTitleText ClrHead1/2 ClrHeadText ClrSpecial1/2 ClrSpecialText ClrCard
+        ClrCardLine ClrText ClrTextDim ClrHover ClrHoverLine ClrAccent ClrDisabled ClrSep</code>.</p></div>
+    </section>
+
+    <section id="embeds">
+      <div class="en"><h2>Generated code &amp; embeds</h2>
+        <table><tr><th>Where</th><th>What</th></tr>
+          <tr><td>Procedure data</td><td><code>TaskPanel MyTaskPanelClass</code>, <code>TaskPanel:G LONG</code>, <code>TaskPanel:L LONG,DIM(8)</code></td></tr>
+          <tr><td><code>TakeEvent</code>, priority 2000</td><td><code>OF EVENT:OpenWindow</code> → <code>DO mtpBuild:TaskPanel</code>; <code>OF MTP:Event</code> → the <code>NextClick</code> loop and the <code>CASE</code>; <code>OF MTP:Check</code> → <code>DO mtpCheck:TaskPanel</code>; <code>OF EVENT:AlertKey</code> → the show/hide key and the keyboard key</td></tr>
+          <tr><td><code>Kill</code>, priority 4400</td><td><code>TaskPanel.Kill()</code></td></tr>
+          <tr><td>Procedure routines</td><td><code>mtpBuild:TaskPanel</code> — settings, groups, items, menu copy, <code>LoadState</code>, the conditions, <code>ShowPanel</code>; <code>mtpCheck:TaskPanel</code> — every Show/Enable only when</td></tr>
+          <tr><td>Global</td><td><code>INCLUDE('MyTaskPanel.INC')</code>; the <code>MYTASKPANEL</code> class category; <code>_MTP_D2D_</code> for DirectX</td></tr>
+        </table>
+        <table><tr><th>Embed</th><th>Runs</th></tr>
+          <tr><td>myTaskPanel - before the groups are added</td><td>in the build routine, after the settings — change properties here</td></tr>
+          <tr><td>myTaskPanel - after the groups are added, before it shows</td><td>add items in code, hide some, set icons</td></tr>
+          <tr><td>myTaskPanel - any item clicked, before its action</td><td>for every click; <code>TaskPanel.ClickTag</code> says which</td></tr>
+          <tr><td>myTaskPanel → <i>group</i> → <i>item</i></td><td>after that item's action</td></tr>
+          <tr><td>myTaskPanel - an item added in code was clicked</td><td>the <code>CASE</code>'s <code>ELSE</code></td></tr>
+          <tr><td>myTaskPanel - re-check conditions</td><td>at the end of <code>mtpCheck</code>: at open and on every <code>MTP:Check</code> — refresh badges, hide or enable items added in code</td></tr>
+          <tr><td>myTaskPanel → <i>group</i> → <i>item</i> → button <i>n</i></td><td>after that hover button's action</td></tr>
+          <tr><td>myTaskPanel - files dropped · → <i>group</i> → <i>item</i> → files dropped</td><td>on <code>MTP:Drop</code>, for any item / for that item</td></tr>
+        </table></div>
+      <div class="es"><h2>Código generado y embeds</h2>
+        <table><tr><th>Dónde</th><th>Qué</th></tr>
+          <tr><td>Datos del procedimiento</td><td><code>TaskPanel MyTaskPanelClass</code>, <code>TaskPanel:G LONG</code>, <code>TaskPanel:L LONG,DIM(8)</code></td></tr>
+          <tr><td><code>TakeEvent</code>, prioridad 2000</td><td><code>OF EVENT:OpenWindow</code> → <code>DO mtpBuild:TaskPanel</code>; <code>OF MTP:Event</code> → el bucle de <code>NextClick</code> y el <code>CASE</code>; <code>OF MTP:Check</code> → <code>DO mtpCheck:TaskPanel</code>; <code>OF EVENT:AlertKey</code> → la tecla de mostrar/ocultar y la del teclado</td></tr>
+          <tr><td><code>Kill</code>, prioridad 4400</td><td><code>TaskPanel.Kill()</code></td></tr>
+          <tr><td>Rutinas del procedimiento</td><td><code>mtpBuild:TaskPanel</code> — ajustes, grupos, elementos, copia del menú, <code>LoadState</code>, las condiciones, <code>ShowPanel</code>; <code>mtpCheck:TaskPanel</code> — cada Show/Enable only when</td></tr>
+          <tr><td>Global</td><td><code>INCLUDE('MyTaskPanel.INC')</code>; la categoría de clase <code>MYTASKPANEL</code>; <code>_MTP_D2D_</code> para DirectX</td></tr>
+        </table>
+        <table><tr><th>Embed</th><th>Corre</th></tr>
+          <tr><td>myTaskPanel - before the groups are added</td><td>en la rutina, después de los ajustes — cambie propiedades aquí</td></tr>
+          <tr><td>myTaskPanel - after the groups are added, before it shows</td><td>agregar elementos por código, ocultar algunos, poner iconos</td></tr>
+          <tr><td>myTaskPanel - any item clicked, before its action</td><td>en cada clic; <code>TaskPanel.ClickTag</code> dice cuál</td></tr>
+          <tr><td>myTaskPanel → <i>grupo</i> → <i>elemento</i></td><td>después de la acción de ese elemento</td></tr>
+          <tr><td>myTaskPanel - an item added in code was clicked</td><td>el <code>ELSE</code> del <code>CASE</code></td></tr>
+          <tr><td>myTaskPanel - re-check conditions</td><td>al final de <code>mtpCheck</code>: al abrir y en cada <code>MTP:Check</code> — actualizar insignias, ocultar o habilitar elementos agregados por código</td></tr>
+          <tr><td>myTaskPanel → <i>grupo</i> → <i>elemento</i> → button <i>n</i></td><td>después de la acción de ese botón</td></tr>
+          <tr><td>myTaskPanel - files dropped · → <i>grupo</i> → <i>elemento</i> → files dropped</td><td>en <code>MTP:Drop</code>, para cualquier elemento / para ese</td></tr>
+        </table></div>
+    </section>
+
+    <section id="dll">
+      <div class="en"><h2>Multi-DLL</h2>
+        <p>The class is filed under the ABC category <code>MYTASKPANEL</code> (line 1 of the .inc), so the ABC chain writes
+          <code>_MyTaskPanelDllMode_</code> / <code>_MyTaskPanelLinkMode_</code> and the export list. By default the
+          application that owns the data compiles the class and the others import it. Put the global extension on
+          <b>every</b> application, with the <b>same engine</b> — the application that compiles the class is the one whose
+          <code>_MTP_D2D_</code> decides.</p></div>
+      <div class="es"><h2>Multi-DLL</h2>
+        <p>La clase está en la categoría ABC <code>MYTASKPANEL</code> (línea 1 del .inc), así la cadena ABC escribe
+          <code>_MyTaskPanelDllMode_</code> / <code>_MyTaskPanelLinkMode_</code> y la lista de exportación. Por omisión la
+          aplicación dueña de los datos compila la clase y las demás la importan. Ponga la extensión global en <b>todas</b>
+          las aplicaciones, con el <b>mismo motor</b> — decide el <code>_MTP_D2D_</code> de la aplicación que compila la clase.</p></div>
+    </section>
+
+    <section id="verify">
+      <div class="en"><h2>How it was verified</h2>
+        <table><tr><th>Check</th><th>Result</th></tr>
+          <tr><td><code>TaskPanelDemo.exe auto</code> and <code>TaskPanelDemoDX.exe auto engine=dx</code> — real Win32 messages at the panel, geometry read back with <code>GetWindowRect</code></td><td>24 / 24 on both engines: docked left (MDI client narrowed), docked right, floating (full width back), width 300, menu copied 3 levels deep with <i>Window</i> skipped, a real click arriving as its tag, a header click closing its group, the splitter dragged 300 → 360, the title dragged into the MDI area (floats), dropped at the right edge (docks), a copied menu row reaching <code>?BrCountries</code>; the keyboard (focus taken, Home, Enter opens, Down, Left out, Left closes); a search for <i>cou</i> leaving 4 rows; <i>json</i> + Enter, posted through the <code>ACCEPT</code> loop, running <i>JSON</i> and giving the keyboard back; a Favourites row standing for <i>CSV</i> and clicking it raising <i>x_csv</i>; that click at the top of Recent; the rail 44 px with the MDI client after it and a group popped out; auto-hide tucked (the MDI client starts at the 6 px strip) and out (the panel over 294 px of it), and both back; Customize hiding Products (faded while customizing, gone after Done, back after Reset); the Exports header dragged above Catalogs; PDF run three times heading Most used; the + hover button arriving as <i>cust_new</i> with its row; the description card after the pause and gone with the mouse; a real <code>HDROP</code> of two files on Customers arriving through <code>MTP:Drop</code></td></tr>
+          <tr><td><code>… win auto</code> — the panel on an ordinary window</td><td>3 / 3: window grew by 190 and the form moved right by 190; floating restored both; docked right leaves the form in place</td></tr>
+          <tr><td><code>gen\build.sh</code> — a real ABC application imported from a TXA, generated by ClarionCL, compiled, run</td><td>clean generate, 0 compile errors; every action type, nested levels (a level-5 item clamped to 3), the copied menu, the key, a per-item embed, Show/Enable only when on three items and a group (run: one item hidden, one greyed, the group gone), Info / Progress / Chart cards with expression values (one clickable), a tooltip, a drop target and two hover buttons on Customers; <i>Insert a record</i> on an item and on the + button — run with <code>insert</code>, the item clicked itself and the MDI form opened on thread 2 with <code>SELF.Request = InsertRecord</code>; <code>_MTP_D2D_</code> and the category pragmas present in the generated project; the layout saved beside the program</td></tr>
+          <tr><td><code>presets\build.sh</code> — a test copy of the template whose <code>#ATSTART</code> presses all twelve presets</td><td>every preset generates and compiles, including the application's browses/reports and the design-time menu copy</td></tr>
+        </table></div>
+      <div class="es"><h2>Cómo se verificó</h2>
+        <table><tr><th>Prueba</th><th>Resultado</th></tr>
+          <tr><td><code>TaskPanelDemo.exe auto</code> y <code>TaskPanelDemoDX.exe auto engine=dx</code> — mensajes Win32 reales al panel, geometría leída con <code>GetWindowRect</code></td><td>24 / 24 en los dos motores: acoplado a la izquierda (cliente MDI angostado), a la derecha, flotante (ancho completo de vuelta), ancho 300, menú copiado con 3 niveles y <i>Window</i> omitido, un clic real que llega como su etiqueta, un clic en el encabezado que cierra el grupo, el borde arrastrado de 300 a 360, el título arrastrado al área MDI (flota), soltado en el borde derecho (se acopla), una fila copiada del menú que llega a <code>?BrCountries</code>; el teclado (toma el foco, Inicio, Enter abre, Abajo, Izquierda sale, Izquierda cierra); buscar <i>cou</i> deja 4 filas; <i>json</i> + Enter, enviados por el bucle <code>ACCEPT</code>, ejecutan <i>JSON</i> y devuelven el teclado; una fila de Favoritos que representa a <i>CSV</i> y al pulsarla llega <i>x_csv</i>; ese clic al principio de Recientes; el riel de 44 px con el cliente MDI a continuación y un grupo desplegado; ocultar automáticamente guardado (el cliente MDI empieza en la franja de 6 px) y desplegado (el panel sobre 294 px de él), y los dos de vuelta; Personalizar oculta Productos (atenuado mientras se personaliza, ausente tras Listo, de vuelta tras Reiniciar); el encabezado Exportar arrastrado sobre Catálogos; PDF ejecutado tres veces encabeza Más usados; el botón + llega como <i>cust_new</i> con su fila; la ficha tras la pausa y fuera con el ratón; un <code>HDROP</code> real de dos archivos sobre Clientes llega por <code>MTP:Drop</code></td></tr>
+          <tr><td><code>… win auto</code> — el panel en una ventana común</td><td>3 / 3: la ventana creció 190 y el formulario se corrió 190; flotar devolvió ambos; acoplado a la derecha el formulario queda en su lugar</td></tr>
+          <tr><td><code>gen\build.sh</code> — una aplicación ABC real importada de un TXA, generada con ClarionCL, compilada y ejecutada</td><td>generación limpia, 0 errores; cada tipo de acción, niveles anidados (un elemento de nivel 5 ajustado a 3), el menú copiado, la tecla, un embed por elemento, Show/Enable only when en tres elementos y un grupo (al correr: un elemento oculto, uno atenuado, el grupo ausente), tarjetas Info / Progress / Chart con valores por expresión (una pulsable), una descripción, un destino para archivos y dos botones al pasar en Clientes; <i>Insert a record</i> en un elemento y en el botón + — al correr con <code>insert</code>, el elemento se pulsó solo y el formulario MDI abrió en el hilo 2 con <code>SELF.Request = InsertRecord</code>; <code>_MTP_D2D_</code> y los pragmas de la categoría en el proyecto generado; el diseño guardado junto al programa</td></tr>
+          <tr><td><code>presets\build.sh</code> — una copia de prueba de la plantilla cuyo <code>#ATSTART</code> pulsa los doce predefinidos</td><td>cada predefinido genera y compila, incluidos los browses/informes de la aplicación y la copia del menú en diseño</td></tr>
+        </table>
+        </div>
+      <div class="callout warn en"><b>Not yet seen in the IDE.</b> The prompt sheets were checked by registration and
+        generation, not by eye — AppGen drops overflowing prompts without a word, so open each tab once.</div>
+      <div class="callout warn es"><b>Todavía no visto en el IDE.</b> Las hojas de opciones se comprobaron registrando y
+        generando, no a la vista — AppGen descarta en silencio las opciones que no caben, así que abra cada pestaña una vez.</div>
+    </section>
+
+    <section id="quirks">
+      <div class="en"><h2>Known quirks</h2>
+        <table><tr><th>Quirk</th><th>Where</th><th>Workaround</th></tr>
+          <tr><td>Tooltips are stored but not shown</td><td><code>MyTaskPanel.inc</code> <code>MTPItemQ.Tip</code>, <code>SetTip</code></td><td>Put the detail in the caption or a label.</td></tr>
+          <tr><td>No keyboard navigation inside the panel</td><td><code>WndMsg</code> handles mouse messages only</td><td>Every copied row is still on the real menu (and its <code>KEY()</code>); give the panel a show/hide key.</td></tr>
+          <tr><td>"Press a control" items never reach their own embed</td><td><code>NextClick</code> posts and <code>CYCLE</code>s</td><td>By design (the control's own code runs). Use <i>Post an event</i> + embed if you need both.</td></tr>
+          <tr><td>A menu merged in by an MDI child is not copied</td><td><code>MirrorMenu</code> reads the host's own controls</td><td><code>NOMERGE</code>, or a panel on that child.</td></tr>
+          <tr><td>While an inner submenu animates open, its last row can show over its final edge for a frame</td><td><code>DrawRow</code> clips per group card, not per submenu</td><td>Cosmetic; <code>Animate = 0</code> removes it.</td></tr>
+          <tr><td>The mouse wheel scrolls only when the panel has the wheel</td><td>Windows sends <code>WM_MOUSEWHEEL</code> to the focus window unless <i>Scroll inactive windows</i> is on (default on Windows 10/11)</td><td>Drag the scroll thumb.</td></tr>
+          <tr><td>A bare INI name follows the current directory</td><td><code>IniName</code> uses <code>PATH()</code></td><td>Give <code>IniFile</code> a full path if the program changes folder.</td></tr>
+        </table></div>
+      <div class="es"><h2>Rarezas conocidas</h2>
+        <table><tr><th>Rareza</th><th>Dónde</th><th>Solución</th></tr>
+          <tr><td>Las ayudas emergentes se guardan pero no se muestran</td><td><code>MyTaskPanel.inc</code> <code>MTPItemQ.Tip</code>, <code>SetTip</code></td><td>Ponga el detalle en el texto o en un rótulo.</td></tr>
+          <tr><td>Sin navegación por teclado dentro del panel</td><td><code>WndMsg</code> atiende solo el mouse</td><td>Las filas copiadas siguen en el menú real (y su <code>KEY()</code>); dé al panel una tecla para mostrar/ocultar.</td></tr>
+          <tr><td>Los elementos "Press a control" nunca llegan a su embed</td><td><code>NextClick</code> envía y hace <code>CYCLE</code></td><td>Es a propósito (corre el código del control). Use <i>Post an event</i> + embed si necesita ambos.</td></tr>
+          <tr><td>El menú que mezcla una ventana MDI no se copia</td><td><code>MirrorMenu</code> lee los controles de la propia anfitriona</td><td><code>NOMERGE</code>, o un panel en esa ventana.</td></tr>
+          <tr><td>Mientras un submenú interior se abre, su última fila puede asomar un cuadro sobre su borde final</td><td><code>DrawRow</code> recorta por tarjeta de grupo, no por submenú</td><td>Estético; <code>Animate = 0</code> lo elimina.</td></tr>
+          <tr><td>La rueda solo desplaza si el panel recibe la rueda</td><td>Windows envía <code>WM_MOUSEWHEEL</code> a la ventana con foco salvo que <i>Desplazar ventanas inactivas</i> esté activo (lo está por omisión en Windows 10/11)</td><td>Arrastre la barra.</td></tr>
+          <tr><td>Un nombre de INI sin carpeta sigue al directorio actual</td><td><code>IniName</code> usa <code>PATH()</code></td><td>Dé a <code>IniFile</code> una ruta completa si el programa cambia de carpeta.</td></tr>
+        </table></div>
+    </section>
+
+    <section id="trouble">
+      <div class="en"><h2>Troubleshooting</h2>
+        <table><tr><th>Symptom</th><th>Cause</th></tr>
+          <tr><td>The new prompts do not appear</td><td>The IDE was open when the template was registered — restart it.</td></tr>
+          <tr><td>The panel draws but the MDI area does not get narrower</td><td>Something else subclassed the MDI client first and re-imposes its size; check other window templates on the frame.</td></tr>
+          <tr><td>"DirectX" chosen but the status says Clarion</td><td><code>_MTP_D2D_</code> is not in the project of the application that compiles the class (multi-DLL), or Direct2D could not start.</td></tr>
+          <tr><td>Clicking an item does nothing</td><td>Its action is <i>Start/Call a procedure</i> with no procedure, or <i>Embed code only</i> with an empty embed.</td></tr>
+          <tr><td>The layout is not remembered</td><td><i>Remember</i> is off on the global, or the INI is read from another folder (see quirks).</td></tr>
+          <tr><td>Access violation before the first line (hand-coded)</td><td>The project lacks <code>_MyTaskPanelDllMode_=&gt;0;_MyTaskPanelLinkMode_=&gt;1</code>.</td></tr>
+          <tr><td>"Illegal data type: MyTaskPanelClass"</td><td><code>MyTaskPanel.inc/.clw</code> saved with LF line endings — Clarion needs CRLF.</td></tr>
+        </table></div>
+      <div class="es"><h2>Problemas</h2>
+        <table><tr><th>Síntoma</th><th>Causa</th></tr>
+          <tr><td>No aparecen las opciones nuevas</td><td>El IDE estaba abierto al registrar la plantilla — reinícielo.</td></tr>
+          <tr><td>El panel se dibuja pero el área MDI no se angosta</td><td>Otra cosa subclasificó antes el cliente MDI y le impone su tamaño; revise otras plantillas de ventana del marco.</td></tr>
+          <tr><td>Eligió "DirectX" pero la barra dice Clarion</td><td>Falta <code>_MTP_D2D_</code> en el proyecto de la aplicación que compila la clase (multi-DLL), o Direct2D no arrancó.</td></tr>
+          <tr><td>Pulsar un elemento no hace nada</td><td>Su acción es <i>Start/Call a procedure</i> sin procedimiento, o <i>Embed code only</i> con el embed vacío.</td></tr>
+          <tr><td>No recuerda el diseño</td><td><i>Remember</i> está apagado en la global, o el INI se lee de otra carpeta (ver rarezas).</td></tr>
+          <tr><td>Violación de acceso antes de la primera línea (a mano)</td><td>Al proyecto le falta <code>_MyTaskPanelDllMode_=&gt;0;_MyTaskPanelLinkMode_=&gt;1</code>.</td></tr>
+          <tr><td>"Illegal data type: MyTaskPanelClass"</td><td><code>MyTaskPanel.inc/.clw</code> guardados con fin de línea LF — Clarion necesita CRLF.</td></tr>
+        </table></div>
+    </section>
+
+    </div>
+    <footer>
+      <span class="en">Written from the shipped source: myTaskPanel.tpl, MyTaskPanel.inc/.clw and mtpd2d.c. Every screenshot is
+        of the real demo program.</span>
+      <span class="es">Escrito a partir del código distribuido: myTaskPanel.tpl, MyTaskPanel.inc/.clw y mtpd2d.c. Cada captura es
+        del programa de demostración real.</span>
+    </footer>
+  </main>
+</div>
+<script>
+  function setLang(l){
+    document.documentElement.setAttribute('data-lang', l);
+    document.getElementById('btn-en').classList.toggle('on', l==='en');
+    document.getElementById('btn-es').classList.toggle('on', l==='es');
+    try{ localStorage.setItem('mc-lang', l); }catch(e){}
+  }
+  var saved='en';
+  try{ saved = localStorage.getItem('mc-lang') || (navigator.language||'en').slice(0,2); }catch(e){}
+  setLang(saved==='es' ? 'es' : 'en');
+</script>
+</body>
+</html>

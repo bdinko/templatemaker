@@ -1,0 +1,18 @@
+# build.sh copies these in from templates/myTaskPanel
+/MyTaskPanel.inc
+/MyTaskPanel.clw
+/mtpd2d.c
+# test results, generated apps and their output
+*.ini
+*.INI
+*.log
+*.app
+*.bpp
+*.shp
+*.EXP
+gen/TASKPANELGEN*
+gen/TaskPanelGen.clw
+gen/TaskPanelGen_BC*
+presets/TASKPANELPRE*
+presets/TaskPanelPre.clw
+presets/TaskPanelPre_BC*

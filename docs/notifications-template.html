@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>notifications — Programmer's Documentation / Documentación del programador</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-d:#084d93; --navy:#0E1A2B; --navy-2:#16263c;
+    --ink:#22303f; --muted:#6b7785; --line:#e3e8ef; --bg:#f5f7fa;
+    --card:#ffffff; --green:#1e7c5a; --amber:#9a6a12; --amber-bg:#fff7e8;
+    --green-bg:#eef8f3; --blue-bg:#eef4fc; --red-bg:#fcecec; --red:#b23a2e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15px/1.65 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  nav{width:280px;flex:0 0 280px;background:linear-gradient(180deg,var(--navy),var(--navy-2));
+    color:#cdd8e6;position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  nav .brand{padding:0 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  nav .brand h1{font-size:16px;margin:0;color:#fff} nav .brand span{font-size:12px;color:#8aa0bb}
+  nav a{display:block;color:#b9c7d8;padding:6px 22px;font-size:13.5px;border-left:3px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+  nav a.h2{padding-left:34px;font-size:13px;color:#9fb2c8}
+  nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#6e85a1;
+    padding:14px 22px 4px;font-weight:700}
+  main{flex:1;min-width:0}
+  header.hero{background:linear-gradient(120deg,#0c2a4d,var(--blue));color:#fff;padding:46px 52px 38px}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.3px}
+  header.hero p{margin:0;font-size:15.5px;color:#dbe8f8;max-width:780px}
+  header.hero .pill{display:inline-block;margin-top:16px;background:rgba(255,255,255,.16);
+    padding:4px 12px;border-radius:20px;font-size:12.5px}
+  .body{padding:14px 52px 80px;max-width:940px}
+  section{padding:22px 0;border-bottom:1px solid var(--line);scroll-margin-top:50px} section:last-child{border-bottom:none}
+  h2{font-size:21px;margin:14px 0 10px;color:var(--navy);scroll-margin-top:50px}
+  h3{font-size:16px;margin:20px 0 6px;color:var(--blue-d)}
+  p{margin:9px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  code,kbd,pre{font-family:"Cascadia Code",Consolas,monospace}
+  code{background:#eef1f5;padding:1px 6px;border-radius:4px;font-size:13px;color:#1d3b5e}
+  kbd{background:#fff;border:1px solid #c9d3e0;border-bottom-width:2px;border-radius:5px;
+    padding:1px 7px;font-size:12.5px;color:#33455c}
+  pre{background:#0f1d2e;color:#dbe6f2;padding:16px 18px;border-radius:10px;overflow:auto;
+    font-size:13px;line-height:1.55;margin:12px 0}
+  pre .c{color:#7fa6c9} pre .k{color:#79c0ff} pre .s{color:#7ee0b8} pre .t{color:#ffd591}
+  .callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid}
+  .tip{background:var(--green-bg);border-color:#bfe3d3;color:#155}
+  .note{background:var(--blue-bg);border-color:#c5dcf6;color:#13456f}
+  .warn{background:var(--amber-bg);border-color:#ecd9a6;color:#6f5210}
+  .danger{background:var(--red-bg);border-color:#e6b8b2;color:#7c241b}
+  .callout b{display:block;margin-bottom:2px}
+  .callout b.i{display:inline;margin:0}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f0f4f9;color:var(--navy);font-weight:600}
+  tr:hover td{background:#fafcff}
+  .lead{font-size:16px;color:#3a4756}
+  footer{padding:24px 52px;color:var(--muted);font-size:13px}
+  .top{font-size:12px;color:var(--muted);float:right}
+  .langbar{display:flex;gap:8px;padding:14px 52px 0;background:var(--bg);position:sticky;top:0;z-index:20;
+    border-bottom:1px solid var(--line)}
+  .langbar button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);
+    padding:7px 16px;border-radius:8px 8px 0 0;font:600 13.5px/1 inherit;border-bottom:none}
+  .langbar button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  /* language toggle */
+  html[data-lang="en"] .es{display:none}
+  html[data-lang="es"] .en{display:none}
+  .filetree{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#fff;
+    border:1px solid var(--line);border-radius:10px;padding:14px 18px;line-height:1.7;color:#37485a}
+  .shot{max-width:100%;border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 2px 10px rgba(14,26,43,.14)}
+  .shots{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+  .shots figure{margin:0;flex:1 1 300px;min-width:0}
+  .shots figcaption{font-size:12.5px;color:var(--muted);padding-top:6px;text-align:center}
+  /* real notifications, cropped from the screen, on a desktop-like panel */
+  .desk{background:linear-gradient(135deg,#dce7f3,#b9cbe0);border-radius:12px;padding:22px;
+    display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start;margin:16px 0}
+  .desk figure{margin:0;flex:0 1 364px;min-width:0}
+  .desk img{max-width:100%;border-radius:8px;box-shadow:0 8px 26px rgba(14,26,43,.25)}
+  .desk figcaption{font-size:12.5px;color:#33455c;padding-top:8px;text-align:center}
+</style>
+</head><body>
+<div class="wrap">
+  <nav>
+    <div class="brand"><h1>notifications</h1><span class="en">Programmer's Documentation · v1.0</span><span class="es">Documentación del programador · v1.0</span></div>
+    <a href="#over"><span class="en">Overview</span><span class="es">Resumen</span></a>
+    <a href="#gallery"><span class="en">What they look like</span><span class="es">Cómo se ven</span></a>
+    <a href="#demo"><span class="en">The demo</span><span class="es">La demo</span></a>
+    <div class="grp"><span class="en">Getting it in</span><span class="es">Puesta en marcha</span></div>
+    <a href="#install" class="h2"><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span></a>
+    <a href="#steps" class="h2"><span class="en">Three steps</span><span class="es">Tres pasos</span></a>
+    <a href="#parts" class="h2"><span class="en">The five templates</span><span class="es">Las cinco plantillas</span></a>
+    <div class="grp"><span class="en">Designing</span><span class="es">Diseñar</span></div>
+    <a href="#designer" class="h2"><span class="en">The Notification Designer</span><span class="es">El diseñador</span></a>
+    <a href="#ntf" class="h2"><span class="en">The .ntf file</span><span class="es">El archivo .ntf</span></a>
+    <a href="#placeholders" class="h2"><span class="en">Placeholders &amp; bindings</span><span class="es">Marcadores y enlaces</span></a>
+    <a href="#images" class="h2"><span class="en">Pictures</span><span class="es">Imágenes</span></a>
+    <div class="grp"><span class="en">At run time</span><span class="es">En ejecución</span></div>
+    <a href="#clicks" class="h2"><span class="en">Clicks, buttons, replies</span><span class="es">Clics, botones, respuestas</span></a>
+    <a href="#progress" class="h2"><span class="en">Live progress</span><span class="es">Progreso en vivo</span></a>
+    <a href="#identity" class="h2"><span class="en">Name, icon, AppUserModelID</span><span class="es">Nombre, icono, AppUserModelID</span></a>
+    <div class="grp"><span class="en">Inside</span><span class="es">Por dentro</span></div>
+    <a href="#engine" class="h2"><span class="en">The C engine</span><span class="es">El motor en C</span></a>
+    <a href="#objects" class="h2"><span class="en">The class</span><span class="es">La clase</span></a>
+    <a href="#flow" class="h2"><span class="en">One click, end to end</span><span class="es">Un clic, de principio a fin</span></a>
+    <a href="#assembly" class="h2"><span class="en">Building the XML</span><span class="es">Armar el XML</span></a>
+    <a href="#handcode" class="h2"><span class="en">Hand-coding it</span><span class="es">A mano</span></a>
+    <div class="grp"><span class="en">Reference</span><span class="es">Referencia</span></div>
+    <a href="#api" class="h2"><span class="en">Method reference</span><span class="es">Referencia de métodos</span></a>
+    <a href="#embeds" class="h2"><span class="en">Generated code &amp; embeds</span><span class="es">Código generado y embeds</span></a>
+    <a href="#dll" class="h2"><span class="en">Multi-DLL</span><span class="es">Multi-DLL</span></a>
+    <a href="#verify" class="h2"><span class="en">How it was verified</span><span class="es">Cómo se verificó</span></a>
+    <a href="#quirks" class="h2"><span class="en">Known quirks</span><span class="es">Rarezas conocidas</span></a>
+    <a href="#trouble" class="h2"><span class="en">Troubleshooting</span><span class="es">Problemas</span></a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>notifications</h1>
+      <p class="en">Real Windows 10/11 notifications from a Clarion program — the ones that slide in at the
+         bottom-right and stay in the notification centre, like Outlook's and Teams'. <b>Design them</b> in the
+         Notification Designer with a live Windows 11 preview, drop a code template where one should appear,
+         and react in your own embeds when the user clicks, presses a button or types a reply.</p>
+      <p class="es">Notificaciones reales de Windows 10/11 desde un programa Clarion — las que entran por la
+         esquina inferior derecha y quedan en el centro de notificaciones, como las de Outlook y Teams.
+         <b>Se diseñan</b> en el Notification Designer con una vista previa de Windows 11 en vivo, se pone una
+         plantilla de código donde deba aparecer, y se reacciona en sus propios embeds cuando el usuario hace
+         clic, pulsa un botón o escribe una respuesta.</p>
+      <span class="pill en">no DLL · no OCX · no .NET at run time · designer · buttons · replies · progress · EN / ES</span>
+      <span class="pill es">sin DLL · sin OCX · sin .NET en ejecución · diseñador · botones · respuestas · progreso · EN / ES</span>
+    </header>
+
+    <div class="langbar">
+      <button id="btn-en" onclick="setLang('en')">English</button>
+      <button id="btn-es" onclick="setLang('es')">Español</button>
+    </div>
+
+    <div class="body">
+
+    <!-- ================================================================= -->
+    <section id="over">
+      <h2><span class="en">Overview</span><span class="es">Resumen</span> <a href="#over" class="top">#</a></h2>
+      <div class="en">
+      <p class="lead">A notification is a small card Windows owns: it pops up for a few seconds, then waits in the
+        notification centre until the user deals with it. Your program only describes it — in a few lines of XML —
+        and Windows draws it in the user's theme, language and accent colour.</p>
+      <p>The set has three parts that meet at one file format, the <code>.ntf</code> design:</p>
+      <table>
+        <tr><th>Part</th><th>What it is</th></tr>
+        <tr><td><b>Notification Designer</b></td><td>A Windows program (<code>NotificationDesigner.exe</code>) that edits a
+          design with a live Windows 11 preview, light and dark, checks it against the rules Windows enforces, and sends
+          it to Windows for real with one button. Saves <code>.ntf</code> files.</td></tr>
+        <tr><td><b>NotificationClass</b> + <b>toastc.c</b></td><td>The run time. A Clarion class over a C engine that
+          Clarion's own compiler builds into your program. It talks to <code>Windows.UI.Notifications</code> directly —
+          there is nothing to ship and nothing to register as COM.</td></tr>
+        <tr><td><b>notifications.tpl</b></td><td>Five templates: a global extension that registers the program with
+          Windows, three code templates (show, update a progress bar, remove) and a window extension whose embeds run
+          when the user clicks.</td></tr>
+      </table>
+      <table>
+        <tr><th>&nbsp;</th><th>notifications 1.0</th></tr>
+        <tr><td>Needs a DLL / OCX / .NET</td><td><b>No</b> — the C engine is compiled into the program</td></tr>
+        <tr><td>Windows</td><td>Windows 10 (1809+) and Windows 11; per user, no admin rights</td></tr>
+        <tr><td>Content</td><td>Title, two lines, attribution, round or square logo, hero picture, inline picture, progress bar</td></tr>
+        <tr><td>Interaction</td><td>Up to 5 buttons (to the program, to a web address, snooze, dismiss), text box, choice list</td></tr>
+        <tr><td>Kinds</td><td>Normal, reminder, alarm, incoming call, urgent (breaks through Do Not Disturb on Windows 11)</td></tr>
+        <tr><td>Live updates</td><td>Progress bars and any other <code>{binding}</code>, without a new pop-up</td></tr>
+        <tr><td>Values</td><td><code>{Placeholders}</code> filled from Clarion expressions</td></tr>
+        <tr><td>Strings</td><td>ANSI (the program's code page) or UTF-8</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <p class="lead">Una notificación es una tarjeta pequeña que pertenece a Windows: aparece unos segundos y luego
+        espera en el centro de notificaciones hasta que el usuario la atiende. Su programa solo la describe —con unas
+        líneas de XML— y Windows la dibuja con el tema, el idioma y el color de acento del usuario.</p>
+      <p>El conjunto tiene tres partes que se encuentran en un formato de archivo, el diseño <code>.ntf</code>:</p>
+      <table>
+        <tr><th>Parte</th><th>Qué es</th></tr>
+        <tr><td><b>Notification Designer</b></td><td>Un programa de Windows (<code>NotificationDesigner.exe</code>) que edita
+          un diseño con vista previa de Windows 11 en vivo, clara y oscura, lo comprueba contra las reglas que impone
+          Windows y lo envía a Windows de verdad con un botón. Guarda archivos <code>.ntf</code>.</td></tr>
+        <tr><td><b>NotificationClass</b> + <b>toastc.c</b></td><td>El motor de ejecución. Una clase Clarion sobre un motor
+          en C que el propio compilador de Clarion incorpora al programa. Habla directamente con
+          <code>Windows.UI.Notifications</code>: no hay nada que distribuir ni que registrar como COM.</td></tr>
+        <tr><td><b>notifications.tpl</b></td><td>Cinco plantillas: una extensión global que registra el programa en Windows,
+          tres plantillas de código (mostrar, mover una barra de progreso, quitar) y una extensión de ventana cuyos
+          embeds se ejecutan cuando el usuario hace clic.</td></tr>
+      </table>
+      <table>
+        <tr><th>&nbsp;</th><th>notifications 1.0</th></tr>
+        <tr><td>Necesita DLL / OCX / .NET</td><td><b>No</b> — el motor en C se compila dentro del programa</td></tr>
+        <tr><td>Windows</td><td>Windows 10 (1809+) y Windows 11; por usuario, sin permisos de administrador</td></tr>
+        <tr><td>Contenido</td><td>Título, dos líneas, atribución, logo redondo o cuadrado, imagen principal, imagen en línea, barra de progreso</td></tr>
+        <tr><td>Interacción</td><td>Hasta 5 botones (al programa, a una dirección web, posponer, descartar), caja de texto, lista de opciones</td></tr>
+        <tr><td>Tipos</td><td>Normal, recordatorio, alarma, llamada entrante, urgente (atraviesa No molestar en Windows 11)</td></tr>
+        <tr><td>Actualización en vivo</td><td>Barras de progreso y cualquier otro <code>{enlace}</code>, sin nueva ventana emergente</td></tr>
+        <tr><td>Valores</td><td><code>{Marcadores}</code> llenados con expresiones Clarion</td></tr>
+        <tr><td>Cadenas</td><td>ANSI (la página de códigos del programa) o UTF-8</td></tr>
+      </table>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="gallery">
+      <h2><span class="en">What they look like</span><span class="es">Cómo se ven</span> <a href="#gallery" class="top">#</a></h2>
+      <p class="en">These are <b>real notifications</b>, photographed off the screen as Windows 11 drew them — every one
+        is a design shipped in <code>examples/notifications</code>, shown by the demo program. The faint warm tint is
+        Windows' translucent card picking up the desktop behind it.</p>
+      <p class="es">Son <b>notificaciones reales</b>, fotografiadas de la pantalla tal como las dibujó Windows 11 —cada
+        una es un diseño incluido en <code>examples/notifications</code>, mostrado por el programa de demostración. El
+        ligero tono cálido es la tarjeta translúcida de Windows dejando ver el escritorio.</p>
+      <div class="desk">
+        <figure><img class="en" src="notifications-invoice.png" alt="Invoice paid"><img class="es" src="notifications-invoice-es.png" alt="Factura pagada">
+          <figcaption><span class="en">Logo, two lines, attribution, two buttons</span><span class="es">Logo, dos líneas, atribución, dos botones</span></figcaption></figure>
+        <figure><img class="en" src="notifications-chat.png" alt="Chat reply"><img class="es" src="notifications-chat-es.png" alt="Chat con respuesta">
+          <figcaption><span class="en">Round avatar, reply box, green Send beside it</span><span class="es">Avatar redondo, caja de respuesta y Enviar verde al lado</span></figcaption></figure>
+        <figure><img class="en" src="notifications-reminder.png" alt="Reminder"><img class="es" src="notifications-reminder-es.png" alt="Recordatorio">
+          <figcaption><span class="en">Reminder: stays until dealt with; the user picks the snooze time</span><span class="es">Recordatorio: se queda hasta que se atiende; el usuario elige cuánto posponer</span></figcaption></figure>
+        <figure><img class="en" src="notifications-progress.png" alt="Live progress"><img class="es" src="notifications-progress-es.png" alt="Progreso en vivo">
+          <figcaption><span class="en">Live progress, moved by the program (here at 17 of 40)</span><span class="es">Progreso en vivo, movido por el programa (aquí en 17 de 40)</span></figcaption></figure>
+        <figure><img class="en" src="notifications-hero.png" alt="Announcement"><img class="es" src="notifications-hero-es.png" alt="Anuncio">
+          <figcaption><span class="en">Hero picture across the top; the second button opens a web page</span><span class="es">Imagen principal arriba; el segundo botón abre una página web</span></figcaption></figure>
+        <figure><img class="en" src="notifications-urgent.png" alt="Urgent alert"><img class="es" src="notifications-urgent-es.png" alt="Alerta urgente">
+          <figcaption><span class="en">Urgent: the red mark, a Critical (red) button</span><span class="es">Urgente: la marca roja y un botón Critical (rojo)</span></figcaption></figure>
+        <figure><img class="en" src="notifications-quick.png" alt="Quick toast"><img class="es" src="notifications-quick-es.png" alt="Notificación rápida">
+          <figcaption><span class="en">One line of code: <code>Notifier.Toast(title, text, logo)</code></span><span class="es">Una línea de código: <code>Notifier.Toast(título, texto, logo)</code></span></figcaption></figure>
+      </div>
+      <div class="callout note en"><b>The header is Windows', not yours</b>
+        "Notify Demo" and the small icon come from the global extension's <i>Identity</i> tab — they are the same on every
+        notification the program shows. Snooze and Dismiss on the reminder are worded by Windows, in Windows' display
+        language, when the design leaves their caption empty.</div>
+      <div class="callout note es"><b>La cabecera es de Windows, no suya</b>
+        "Notify Demo" y el icono pequeño vienen de la pestaña <i>Identity</i> de la extensión global: son iguales en todas
+        las notificaciones del programa. Snooze y Dismiss del recordatorio los redacta Windows, en el idioma de pantalla
+        de Windows, cuando el diseño deja su texto vacío.</div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="demo">
+      <h2><span class="en">The demo</span><span class="es">La demo</span> <a href="#demo" class="top">#</a></h2>
+      <div class="en">
+      <p><code>examples/notifications</code> holds two programs and the sample designs:</p>
+      <div class="filetree">examples/notifications/<br>
+&nbsp;&nbsp;NotifyDemo.clw / .cwproj &nbsp;&nbsp;the template's code written out by hand, every line annotated with its embed<br>
+&nbsp;&nbsp;NotifyTest.clw / .cwproj &nbsp;&nbsp;windowless self-test: 31 checks, XML byte for byte + live Windows calls<br>
+&nbsp;&nbsp;*.ntf, *-es.ntf &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the seven presets, English and Spanish<br>
+&nbsp;&nbsp;images\ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logo, avatar, calendar, warning, hero (make-images.ps1 draws them)<br>
+&nbsp;&nbsp;shoot.ps1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the screenshots on this page, regenerated<br>
+&nbsp;&nbsp;gen\ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the TEMPLATE run end to end: NotifyGen.txa -&gt; AppGen -&gt; compile (build.sh)</div>
+      <p><code>NotifyDemo.exe</code> (add <code>es</code> for Spanish) has a button per design and a list on the right that
+        shows exactly what the program receives: <code>clicked action=open;invoice=1043</code>, the text of a reply, the
+        snooze time picked, and every dismissal with its reason. Click the notifications and their buttons to see it.</p>
+      </div>
+      <div class="es">
+      <p><code>examples/notifications</code> contiene dos programas y los diseños de ejemplo:</p>
+      <div class="filetree">examples/notifications/<br>
+&nbsp;&nbsp;NotifyDemo.clw / .cwproj &nbsp;&nbsp;el código de la plantilla escrito a mano, cada línea anotada con su embed<br>
+&nbsp;&nbsp;NotifyTest.clw / .cwproj &nbsp;&nbsp;autoprueba sin ventana: 31 comprobaciones, el XML byte a byte + llamadas reales a Windows<br>
+&nbsp;&nbsp;*.ntf, *-es.ntf &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;los siete diseños de ejemplo, en inglés y en español<br>
+&nbsp;&nbsp;images\ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logo, avatar, calendario, aviso, imagen principal (las dibuja make-images.ps1)<br>
+&nbsp;&nbsp;shoot.ps1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regenera las capturas de esta página<br>
+&nbsp;&nbsp;gen\ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;la PLANTILLA de punta a punta: NotifyGen.txa -&gt; AppGen -&gt; compilar (build.sh)</div>
+      <p><code>NotifyDemo.exe</code> (añada <code>es</code> para español) tiene un botón por diseño y una lista a la derecha
+        que muestra exactamente lo que recibe el programa: <code>clic action=open;invoice=1043</code>, el texto de una
+        respuesta, el tiempo de posposición elegido y cada cierre con su motivo. Haga clic en las notificaciones y en sus
+        botones para verlo.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="install">
+      <h2><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span> <a href="#install" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>File</th><th>Goes to</th></tr>
+        <tr><td><code>notifications.tpl</code></td><td><code>accessory\template\win</code></td></tr>
+        <tr><td><code>NotificationClass.inc</code>, <code>NotificationClass.clw</code>, <code>toastc.c</code></td><td><code>accessory\libsrc\win</code> (stored ANSI; the class links itself in)</td></tr>
+        <tr><td><code>NotificationDesigner.exe</code></td><td><code>accessory\bin</code> — the code template's <b>Design</b> button looks for it there (<code>%CWRoot</code>)</td></tr>
+      </table>
+      <p>Then <i>Setup → Template Registry → Register</i> <code>notifications.tpl</code> and restart the IDE (it caches the
+        registry when it starts). The designer is a single self-contained executable — it needs nothing installed.</p>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Archivo</th><th>Va a</th></tr>
+        <tr><td><code>notifications.tpl</code></td><td><code>accessory\template\win</code></td></tr>
+        <tr><td><code>NotificationClass.inc</code>, <code>NotificationClass.clw</code>, <code>toastc.c</code></td><td><code>accessory\libsrc\win</code> (en ANSI; la clase se enlaza sola)</td></tr>
+        <tr><td><code>NotificationDesigner.exe</code></td><td><code>accessory\bin</code> — el botón <b>Design</b> de la plantilla de código lo busca ahí (<code>%CWRoot</code>)</td></tr>
+      </table>
+      <p>Luego <i>Setup → Template Registry → Register</i> de <code>notifications.tpl</code> y reinicie el IDE (guarda el
+        registro en memoria al arrancar). El diseñador es un único ejecutable autocontenido: no necesita instalar nada.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="steps">
+      <h2><span class="en">Three steps</span><span class="es">Tres pasos</span> <a href="#steps" class="top">#</a></h2>
+      <div class="en">
+      <ol>
+        <li><b>Global:</b> add <i>notifications - Global</i> to the application. On <i>Identity</i>, give the program the
+          name and icon its notifications should carry.</li>
+        <li><b>Show:</b> in the embed where a notification belongs (a button's Accepted, the end of a process, a timer),
+          insert the code template <i>notifications - Show a notification</i>. Press <b>Design...</b> to open the
+          designer, save the design, pick the file, and on <i>Placeholders</i> give each <code>{Name}</code> a Clarion
+          expression.</li>
+        <li><b>React:</b> add <i>notifications - React when a notification is clicked</i> to the frame. List the
+          <code>action=</code> values your designs send on its <i>Actions</i> tab; each gets an embed.</li>
+      </ol>
+      </div>
+      <div class="es">
+      <ol>
+        <li><b>Global:</b> añada <i>notifications - Global</i> a la aplicación. En <i>Identity</i>, dé al programa el nombre
+          y el icono que deben llevar sus notificaciones.</li>
+        <li><b>Mostrar:</b> en el embed donde corresponde una notificación (el Accepted de un botón, el final de un proceso,
+          un temporizador), inserte la plantilla de código <i>notifications - Show a notification</i>. Pulse
+          <b>Design...</b> para abrir el diseñador, guarde el diseño, elija el archivo y en <i>Placeholders</i> dé a cada
+          <code>{Nombre}</code> una expresión Clarion.</li>
+        <li><b>Reaccionar:</b> añada <i>notifications - React when a notification is clicked</i> al marco. Enumere en la
+          pestaña <i>Actions</i> los valores <code>action=</code> que envían sus diseños; cada uno tiene su embed.</li>
+      </ol>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="parts">
+      <h2><span class="en">The five templates</span><span class="es">Las cinco plantillas</span> <a href="#parts" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Template</th><th>Kind</th><th>Prompts</th><th>Generates</th></tr>
+        <tr><td><b>NotificationsGlobal</b></td><td>APPLICATION</td><td>Object name (<code>Notifier</code>); program name,
+          icon, icon background, AppUserModelID; pictures folder; UTF-8; clear on close; unregister on close; the
+          designer button; ABC Multi-DLL override</td><td><code>INCLUDE</code>, the global <code>Notifier NotificationClass,THREAD</code>,
+          <code>Init(...)</code> at <code>%ProgramSetup</code>, <code>Kill()</code> at <code>%ProgramEnd</code> (EXE only)</td></tr>
+        <tr><td><b>ShowNotification</b></td><td>CODE</td><td>Design file + <b>Design...</b>; embed it or read it at run time;
+          placeholders (name = expression); tag, group, silent; variable for the id</td><td><code>Reset</code> + one
+          <code>AddXml</code> per line of the design (or <code>LoadDesign</code>), <code>SetVar</code> per placeholder,
+          <code>ShowToast</code></td></tr>
+        <tr><td><b>UpdateNotification</b></td><td>CODE</td><td>Tag, value (0–1), status, value text</td><td><code>UpdateProgress(...)</code></td></tr>
+        <tr><td><b>RemoveNotification</b></td><td>CODE</td><td>By tag, by group, or all</td><td><code>Remove</code> / <code>RemoveGroup</code> / <code>RemoveAll</code></td></tr>
+        <tr><td><b>NotificationEvents</b></td><td>PROCEDURE, WINDOW</td><td>Object, poll interval (1/100 s, default 25),
+          bring the window forward, the list of actions</td><td>A <code>CASE EVENT()</code> in <code>TakeWindowEvent</code>
+          that drains the queue on <code>EVENT:Timer</code>, with an embed per action</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Plantilla</th><th>Tipo</th><th>Preguntas</th><th>Genera</th></tr>
+        <tr><td><b>NotificationsGlobal</b></td><td>APPLICATION</td><td>Nombre del objeto (<code>Notifier</code>); nombre del
+          programa, icono, fondo del icono, AppUserModelID; carpeta de imágenes; UTF-8; borrar al cerrar; desregistrar al
+          cerrar; el botón del diseñador; el reemplazo Multi-DLL de ABC</td><td><code>INCLUDE</code>, el global
+          <code>Notifier NotificationClass,THREAD</code>, <code>Init(...)</code> en <code>%ProgramSetup</code>,
+          <code>Kill()</code> en <code>%ProgramEnd</code> (solo EXE)</td></tr>
+        <tr><td><b>ShowNotification</b></td><td>CODE</td><td>Archivo de diseño + <b>Design...</b>; incrustarlo o leerlo en
+          ejecución; marcadores (nombre = expresión); etiqueta, grupo, silencio; variable para el id</td><td><code>Reset</code>
+          + un <code>AddXml</code> por línea del diseño (o <code>LoadDesign</code>), un <code>SetVar</code> por marcador,
+          <code>ShowToast</code></td></tr>
+        <tr><td><b>UpdateNotification</b></td><td>CODE</td><td>Etiqueta, valor (0–1), estado, texto del valor</td><td><code>UpdateProgress(...)</code></td></tr>
+        <tr><td><b>RemoveNotification</b></td><td>CODE</td><td>Por etiqueta, por grupo o todas</td><td><code>Remove</code> / <code>RemoveGroup</code> / <code>RemoveAll</code></td></tr>
+        <tr><td><b>NotificationEvents</b></td><td>PROCEDURE, WINDOW</td><td>Objeto, intervalo de consulta (1/100 s, por
+          defecto 25), traer la ventana al frente, la lista de acciones</td><td>Un <code>CASE EVENT()</code> en
+          <code>TakeWindowEvent</code> que vacía la cola en <code>EVENT:Timer</code>, con un embed por acción</td></tr>
+      </table>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="designer">
+      <h2><span class="en">The Notification Designer</span><span class="es">El diseñador</span> <a href="#designer" class="top">#</a></h2>
+      <figure class="shots" style="display:block">
+        <img class="shot" src="notifications-designer.png" alt="Notification Designer">
+        <figcaption style="text-align:left"><span class="en">Editing the buttons of <code>invoice-paid.ntf</code>. The preview
+          follows every keystroke; <i>Checks</i> applies Windows' own rules; the right panel shows what the program receives
+          when you press <b>Show on Windows</b> and click.</span><span class="es">Editando los botones de
+          <code>invoice-paid.ntf</code>. La vista previa sigue cada tecla; <i>Checks</i> aplica las reglas de Windows; el
+          panel derecho muestra lo que recibe el programa al pulsar <b>Show on Windows</b> y hacer clic. (El diseñador está
+          en inglés, como los diálogos de AppGen.)</span></figcaption>
+      </figure>
+      <div class="en">
+      <p>Seven sections down the left, each a form; the stage on the right has three tabs:</p>
+      <table>
+        <tr><th>Section</th><th>Edits</th></tr>
+        <tr><td>Content</td><td>Title (bold, two lines), text, second text, attribution</td></tr>
+        <tr><td>Images</td><td>App logo (round crop for avatars), hero picture, inline picture</td></tr>
+        <tr><td>Progress</td><td>A bar with fixed values, or <b>live</b>: bound to <code>{progressValue}</code> and friends so the program moves it</td></tr>
+        <tr><td>Inputs</td><td>Text boxes and choice lists; the program reads them by id</td></tr>
+        <tr><td>Buttons</td><td>Button (to the program), Link (opens an address), Snooze, Dismiss; style Default/Success/Critical; a 16×16 icon; "beside the text box" for Send</td></tr>
+        <tr><td>Behaviour</td><td>What a click on the body sends, the kind (reminder, alarm, call, urgent), long duration, sound, loop, silent</td></tr>
+        <tr><td>Placeholders</td><td>Every <code>{Name}</code> found, with a sample value; the program name and icon the preview pretends to be</td></tr>
+      </table>
+      <p><b>Preview</b> draws Windows 11's layout in light or dark; <b>XML</b> is the file exactly as saved; <b>Clarion code</b>
+        writes the calls for this design — <code>LoadDesign</code>, one <code>SetVar</code> per placeholder, and the
+        <code>CASE Notifier.Arg('action')</code> skeleton with one <code>OF</code> per action the design sends.
+        <b>New</b> offers seven presets; <kbd>F5</kbd> is <b>Show on Windows</b>.</p>
+      <p><b>Show on Windows</b> registers the designer the same way <code>toastc_init</code> registers your program (under the
+        name and icon on the Placeholders section), fills in the samples, turns picture paths into <code>file:///</code>
+        URIs and hands the XML to Windows. Click the notification or a button and the right-hand panel shows
+        <code>EventArgs</code> and every <code>Input('id')</code> — what <code>NextEvent()</code> will give your program.</p>
+      <p>Started as <code>NotificationDesigner.exe design.ntf</code> it opens that file; if it does not exist yet it starts a
+        new design that will be saved there. Every message is a modal panel in the designer, never a system message box.</p>
+      </div>
+      <div class="es">
+      <p>Siete secciones a la izquierda, cada una un formulario; el escenario de la derecha tiene tres pestañas:</p>
+      <table>
+        <tr><th>Sección</th><th>Edita</th></tr>
+        <tr><td>Content</td><td>Título (negrita, dos líneas), texto, segundo texto, atribución</td></tr>
+        <tr><td>Images</td><td>Logo de la aplicación (recorte redondo para avatares), imagen principal, imagen en línea</td></tr>
+        <tr><td>Progress</td><td>Una barra con valores fijos o <b>en vivo</b>: enlazada a <code>{progressValue}</code> y compañía para que la mueva el programa</td></tr>
+        <tr><td>Inputs</td><td>Cajas de texto y listas de opciones; el programa las lee por su id</td></tr>
+        <tr><td>Buttons</td><td>Botón (al programa), Enlace (abre una dirección), Posponer, Descartar; estilo Default/Success/Critical; icono de 16×16; "junto a la caja de texto" para Enviar</td></tr>
+        <tr><td>Behaviour</td><td>Lo que envía un clic en el cuerpo, el tipo (recordatorio, alarma, llamada, urgente), duración larga, sonido, repetición, silencio</td></tr>
+        <tr><td>Placeholders</td><td>Cada <code>{Nombre}</code> encontrado, con un valor de muestra; el nombre e icono del programa que simula la vista previa</td></tr>
+      </table>
+      <p><b>Preview</b> dibuja la disposición de Windows 11 en claro u oscuro; <b>XML</b> es el archivo tal como se guarda;
+        <b>Clarion code</b> escribe las llamadas para este diseño —<code>LoadDesign</code>, un <code>SetVar</code> por
+        marcador y el esqueleto <code>CASE Notifier.Arg('action')</code> con un <code>OF</code> por acción que envía el
+        diseño. <b>New</b> ofrece siete puntos de partida; <kbd>F5</kbd> es <b>Show on Windows</b>.</p>
+      <p><b>Show on Windows</b> registra el diseñador igual que <code>toastc_init</code> registra su programa (con el nombre e
+        icono de la sección Placeholders), rellena las muestras, convierte las rutas de imagen en URIs
+        <code>file:///</code> y entrega el XML a Windows. Haga clic en la notificación o en un botón y el panel derecho
+        muestra <code>EventArgs</code> y cada <code>Input('id')</code>: lo que <code>NextEvent()</code> le dará a su programa.</p>
+      <p>Arrancado como <code>NotificationDesigner.exe diseño.ntf</code> abre ese archivo; si aún no existe empieza un diseño
+        nuevo que se guardará ahí. Todos los mensajes son paneles modales del diseñador, nunca un cuadro de mensaje del sistema.</p>
+      </div>
+      <div class="shots">
+        <figure><img class="shot" src="notifications-designer-dark.png" alt="Dark preview"><figcaption><span class="en">Inputs, dark theme: the reply box with Send beside it</span><span class="es">Inputs, tema oscuro: la caja de respuesta con Enviar al lado</span></figcaption></figure>
+        <figure><img class="shot" src="notifications-designer-progress.png" alt="Live progress"><figcaption><span class="en">A live progress bar and its sample values</span><span class="es">Una barra de progreso en vivo y sus valores de muestra</span></figcaption></figure>
+      </div>
+      <div class="shots">
+        <figure><img class="shot" src="notifications-designer-code.png" alt="Clarion code tab"><figcaption><span class="en">The Clarion code tab, written for this design</span><span class="es">La pestaña Clarion code, escrita para este diseño</span></figcaption></figure>
+        <figure><img class="shot" src="notifications-designer-xml.png" alt="XML tab"><figcaption><span class="en">The XML tab: the .ntf exactly as saved</span><span class="es">La pestaña XML: el .ntf tal cual se guarda</span></figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="ntf">
+      <h2><span class="en">The .ntf file</span><span class="es">El archivo .ntf</span> <a href="#ntf" class="top">#</a></h2>
+      <div class="en">
+      <p>A design <b>is</b> Windows toast XML (the <code>ToastGeneric</code> schema) — no wrapper, no private format. You can
+        open it in any editor, and anything the designer does not model is still valid for Windows.</p>
+      <pre><span class="c">&lt;!--sample:InvoiceNo=1043--&gt;</span>
+<span class="c">&lt;!--sample:Customer=Acme Ltd--&gt;</span>
+<span class="k">&lt;toast</span> launch=<span class="s">"action=open;invoice={InvoiceNo}"</span><span class="k">&gt;</span>
+  <span class="k">&lt;visual&gt;</span>
+    <span class="k">&lt;binding</span> template=<span class="s">"ToastGeneric"</span><span class="k">&gt;</span>
+      <span class="k">&lt;image</span> placement=<span class="s">"appLogoOverride"</span> src=<span class="s">"images\logo.png"</span><span class="k">/&gt;</span>
+      <span class="k">&lt;text</span> hint-maxLines=<span class="s">"2"</span><span class="k">&gt;</span>Invoice {InvoiceNo} has been paid<span class="k">&lt;/text&gt;</span>
+      <span class="k">&lt;text&gt;</span>{Customer} paid {Amount}.<span class="k">&lt;/text&gt;</span>
+    <span class="k">&lt;/binding&gt;</span>
+  <span class="k">&lt;/visual&gt;</span>
+  <span class="k">&lt;actions&gt;</span>
+    <span class="k">&lt;action</span> content=<span class="s">"Open invoice"</span> arguments=<span class="s">"action=open;invoice={InvoiceNo}"</span><span class="k">/&gt;</span>
+  <span class="k">&lt;/actions&gt;</span>
+<span class="k">&lt;/toast&gt;</span></pre>
+      <p>Three properties of the writer (<code>ToastXml.Write</code>) make the template's job safe:</p>
+      <ul>
+        <li><b>One element per line</b> — the template turns each line into one <code>AddXml('...')</code>.</li>
+        <li><b>Pure ASCII.</b> Anything above 127 is written as a character reference (<code>&amp;#243;</code> for ó), so
+          neither AppGen nor the run time has to guess a code page. The Spanish designs prove it: "pagó" arrives intact.</li>
+        <li><b>Sample values travel as comments</b> above the root, which Windows ignores and the template skips.</li>
+      </ul>
+      </div>
+      <div class="es">
+      <p>Un diseño <b>es</b> XML de notificación de Windows (el esquema <code>ToastGeneric</code>): sin envoltorio ni formato
+        propio. Se puede abrir en cualquier editor, y lo que el diseñador no modela sigue siendo válido para Windows.</p>
+      <pre><span class="c">&lt;!--sample:InvoiceNo=1043--&gt;</span>
+<span class="c">&lt;!--sample:Customer=Acme Ltd--&gt;</span>
+<span class="k">&lt;toast</span> launch=<span class="s">"action=open;invoice={InvoiceNo}"</span><span class="k">&gt;</span>
+  <span class="k">&lt;visual&gt;</span>
+    <span class="k">&lt;binding</span> template=<span class="s">"ToastGeneric"</span><span class="k">&gt;</span>
+      <span class="k">&lt;image</span> placement=<span class="s">"appLogoOverride"</span> src=<span class="s">"images\logo.png"</span><span class="k">/&gt;</span>
+      <span class="k">&lt;text</span> hint-maxLines=<span class="s">"2"</span><span class="k">&gt;</span>Factura {InvoiceNo} pagada<span class="k">&lt;/text&gt;</span>
+      <span class="k">&lt;text&gt;</span>{Customer} pag&amp;#243; {Amount}.<span class="k">&lt;/text&gt;</span>
+    <span class="k">&lt;/binding&gt;</span>
+  <span class="k">&lt;/visual&gt;</span>
+  <span class="k">&lt;actions&gt;</span>
+    <span class="k">&lt;action</span> content=<span class="s">"Abrir factura"</span> arguments=<span class="s">"action=open;invoice={InvoiceNo}"</span><span class="k">/&gt;</span>
+  <span class="k">&lt;/actions&gt;</span>
+<span class="k">&lt;/toast&gt;</span></pre>
+      <p>Tres propiedades del escritor (<code>ToastXml.Write</code>) hacen segura la tarea de la plantilla:</p>
+      <ul>
+        <li><b>Un elemento por línea</b>: la plantilla convierte cada línea en un <code>AddXml('...')</code>.</li>
+        <li><b>ASCII puro.</b> Todo lo que pasa de 127 se escribe como referencia de carácter (<code>&amp;#243;</code> para
+          ó), así que ni AppGen ni la ejecución tienen que adivinar una página de códigos. Los diseños en español lo
+          demuestran: "pagó" llega intacto.</li>
+        <li><b>Los valores de muestra viajan como comentarios</b> encima de la raíz, que Windows ignora y la plantilla omite.</li>
+      </ul>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="placeholders">
+      <h2><span class="en">Placeholders &amp; bindings</span><span class="es">Marcadores y enlaces</span> <a href="#placeholders" class="top">#</a></h2>
+      <div class="en">
+      <p>Braces mean two different things, and <code>Substitute</code> (NotificationClass.clw:471) tells them apart at the
+        moment the notification is shown:</p>
+      <table>
+        <tr><th>In the design</th><th>Set by</th><th>What happens</th></tr>
+        <tr><td><code>{Customer}</code> with a <code>SetVar('Customer', ...)</code></td><td>The program, before showing</td>
+          <td><b>Placeholder.</b> Replaced by the value, XML-escaped (so <code>Acme &amp; Sons &lt;Ltd&gt;</code> is safe — the
+          template harness uses exactly that). Case-insensitive.</td></tr>
+        <tr><td><code>{progressValue}</code>, or any <code>{name}</code> with no SetVar</td><td>Windows, from the
+          notification's data</td><td><b>Binding.</b> Left in the XML and given an entry in the data
+          (<code>progressValue</code> starts at 0, others empty), so it can be changed later with
+          <code>UpdateData</code>/<code>UpdateProgress</code> without a new pop-up.</td></tr>
+        <tr><td><code>{ not a name }</code></td><td>—</td><td>Left alone: only letters, digits and <code>_</code> make a name.</td></tr>
+      </table>
+      <p>Placeholders work everywhere: text, arguments, button captions, even picture paths (<code>logos\{Customer}.png</code>).
+        The ShowNotification template scans the design while generating and reports a placeholder with no value on its
+        Placeholders tab as a generator error, naming the file and the placeholder.</p>
+      </div>
+      <div class="es">
+      <p>Las llaves significan dos cosas distintas, y <code>Substitute</code> (NotificationClass.clw:471) las distingue en el
+        momento de mostrar la notificación:</p>
+      <table>
+        <tr><th>En el diseño</th><th>Lo fija</th><th>Qué pasa</th></tr>
+        <tr><td><code>{Customer}</code> con un <code>SetVar('Customer', ...)</code></td><td>El programa, antes de mostrar</td>
+          <td><b>Marcador.</b> Se sustituye por el valor, escapado para XML (así <code>Acme &amp; Sons &lt;Ltd&gt;</code> es
+          seguro; el banco de pruebas de la plantilla usa exactamente eso). No distingue mayúsculas.</td></tr>
+        <tr><td><code>{progressValue}</code>, o cualquier <code>{nombre}</code> sin SetVar</td><td>Windows, con los datos de
+          la notificación</td><td><b>Enlace.</b> Se deja en el XML y se le da una entrada en los datos
+          (<code>progressValue</code> empieza en 0, los demás vacíos), para poder cambiarlo después con
+          <code>UpdateData</code>/<code>UpdateProgress</code> sin nueva ventana emergente.</td></tr>
+        <tr><td><code>{ no es un nombre }</code></td><td>—</td><td>Se deja tal cual: solo letras, dígitos y <code>_</code> forman un nombre.</td></tr>
+      </table>
+      <p>Los marcadores funcionan en todas partes: textos, argumentos, textos de botón, incluso rutas de imagen
+        (<code>logos\{Customer}.png</code>). La plantilla ShowNotification recorre el diseño al generar e informa como error
+        del generador un marcador sin valor en su pestaña Placeholders, con el archivo y el marcador.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="images">
+      <h2><span class="en">Pictures</span><span class="es">Imágenes</span> <a href="#images" class="top">#</a></h2>
+      <div class="en">
+      <p>Windows wants a URI; designs hold paths. <code>FileUri</code> (NotificationClass.clw:573) converts every
+        <code>src="..."</code> and <code>imageUri="..."</code> as the XML is assembled:</p>
+      <table>
+        <tr><th>Path in the design</th><th>Becomes</th></tr>
+        <tr><td><code>images\logo.png</code> (relative)</td><td><code>file:///&lt;base&gt;/images/logo.png</code>, where base is
+          <code>ImageFolder</code> if set, else the folder of the design loaded with <code>LoadDesign</code>, else the folder
+          the program runs from</td></tr>
+        <tr><td><code>C:\a b\x.png</code></td><td><code>file:///C:/a%20b/x.png</code></td></tr>
+        <tr><td><code>\\srv\share\x.png</code></td><td><code>file://srv/share/x.png</code></td></tr>
+        <tr><td><code>https://...</code>, <code>ms-appdata:...</code>, <code>file:...</code></td><td>unchanged</td></tr>
+      </table>
+      <p>So: <b>ship the <code>images</code> folder beside the program</b>. PNG, JPG and GIF, local files; Windows draws
+        nothing at all for a picture it cannot read (the designer shows a grey placeholder and a warning instead).</p>
+      </div>
+      <div class="es">
+      <p>Windows quiere una URI; los diseños guardan rutas. <code>FileUri</code> (NotificationClass.clw:573) convierte cada
+        <code>src="..."</code> e <code>imageUri="..."</code> al armar el XML:</p>
+      <table>
+        <tr><th>Ruta en el diseño</th><th>Se convierte en</th></tr>
+        <tr><td><code>images\logo.png</code> (relativa)</td><td><code>file:///&lt;base&gt;/images/logo.png</code>, donde la base
+          es <code>ImageFolder</code> si está puesta, si no la carpeta del diseño cargado con <code>LoadDesign</code>, y si no
+          la carpeta desde la que se ejecuta el programa</td></tr>
+        <tr><td><code>C:\a b\x.png</code></td><td><code>file:///C:/a%20b/x.png</code></td></tr>
+        <tr><td><code>\\srv\share\x.png</code></td><td><code>file://srv/share/x.png</code></td></tr>
+        <tr><td><code>https://...</code>, <code>ms-appdata:...</code>, <code>file:...</code></td><td>sin cambios</td></tr>
+      </table>
+      <p>Por tanto: <b>distribuya la carpeta <code>images</code> junto al programa</b>. PNG, JPG y GIF, archivos locales;
+        Windows no dibuja nada si no puede leer una imagen (el diseñador muestra un recuadro gris y un aviso).</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="clicks">
+      <h2><span class="en">Clicks, buttons, replies</span><span class="es">Clics, botones, respuestas</span> <a href="#clicks" class="top">#</a></h2>
+      <div class="en">
+      <p>Every interaction arrives as one event with three kinds:</p>
+      <table>
+        <tr><th>EventKind</th><th>When</th><th>Read</th></tr>
+        <tr><td><code>Notify:Activated</code></td><td>The body was clicked (its <code>launch</code> arguments) or a button
+          was pressed (its <code>arguments</code>)</td><td><code>EventArgs</code>, <code>Arg('key')</code>,
+          <code>Input('id')</code> for every text box and choice list</td></tr>
+        <tr><td><code>Notify:Dismissed</code></td><td>Closed by the user, timed out to the notification centre, or hidden by
+          the program</td><td><code>DismissReason</code>: <code>Notify:UserCanceled</code> / <code>Notify:TimedOut</code> /
+          <code>Notify:AppHidden</code></td></tr>
+        <tr><td><code>Notify:Failed</code></td><td>Windows refused to show it (switched off, bad XML)</td><td><code>FailCode</code> (HRESULT)</td></tr>
+      </table>
+      <p>Arguments are a convention, not a format: the designer and the presets use <code>key=value</code> pairs separated by
+        <code>;</code>, and <code>Arg</code> also splits on <code>&amp;</code>. <code>Arg('action')</code> on
+        <code>action=open;invoice=1043</code> is <code>open</code>; <code>Arg('')</code> returns the whole string.</p>
+      <p>Link buttons (<code>activationType="protocol"</code>) are handled by Windows — the browser opens and your program is
+        not told. Snooze and Dismiss are Windows' too; Snooze with a choice list uses the picked id as minutes.</p>
+      </div>
+      <div class="es">
+      <p>Cada interacción llega como un evento de tres tipos:</p>
+      <table>
+        <tr><th>EventKind</th><th>Cuándo</th><th>Leer</th></tr>
+        <tr><td><code>Notify:Activated</code></td><td>Se hizo clic en el cuerpo (sus argumentos <code>launch</code>) o se pulsó
+          un botón (sus <code>arguments</code>)</td><td><code>EventArgs</code>, <code>Arg('clave')</code>,
+          <code>Input('id')</code> para cada caja de texto y lista</td></tr>
+        <tr><td><code>Notify:Dismissed</code></td><td>Cerrada por el usuario, pasada al centro por tiempo, u ocultada por el
+          programa</td><td><code>DismissReason</code>: <code>Notify:UserCanceled</code> / <code>Notify:TimedOut</code> /
+          <code>Notify:AppHidden</code></td></tr>
+        <tr><td><code>Notify:Failed</code></td><td>Windows se negó a mostrarla (desactivada, XML incorrecto)</td><td><code>FailCode</code> (HRESULT)</td></tr>
+      </table>
+      <p>Los argumentos son una convención, no un formato: el diseñador y los ejemplos usan pares <code>clave=valor</code>
+        separados por <code>;</code>, y <code>Arg</code> también separa por <code>&amp;</code>. <code>Arg('action')</code>
+        sobre <code>action=open;invoice=1043</code> da <code>open</code>; <code>Arg('')</code> devuelve la cadena entera.</p>
+      <p>Los botones de enlace (<code>activationType="protocol"</code>) los atiende Windows: se abre el navegador y el
+        programa no se entera. Posponer y Descartar también son de Windows; Posponer con una lista usa el id elegido como minutos.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="progress">
+      <h2><span class="en">Live progress</span><span class="es">Progreso en vivo</span> <a href="#progress" class="top">#</a></h2>
+      <div class="en">
+      <p>Show the design once with a <b>tag</b>, then move it as often as you like; Windows updates the card in place, with
+        no new pop-up and no sound:</p>
+      <pre>  Notifier.LoadDesign(<span class="s">'live-progress.ntf'</span>)
+  Notifier.SetVar(<span class="s">'Report'</span>, <span class="s">'Sales 2026.xlsx'</span>)
+  Notifier.ShowToast(<span class="s">'export'</span>)                              <span class="c">! the tag finds it again</span>
+  <span class="k">LOOP</span> i = 1 <span class="k">TO</span> Total
+    <span class="c">! ... the work ...</span>
+    Notifier.UpdateProgress(i / Total, <span class="s">'Writing sheets...'</span>, i &amp; <span class="s">' of '</span> &amp; Total, <span class="s">'export'</span>)
+  <span class="k">END</span>
+  Notifier.Remove(<span class="s">'export'</span>)</pre>
+      <p><code>UpdateProgress</code> returns 0 when it updated, 2 when the notification is gone (the user closed it) — a cheap
+        way to notice the user lost interest. Each update sends <i>all</i> the notification's data again with a higher
+        sequence number, so an update that arrives late cannot overwrite a newer one.</p>
+      </div>
+      <div class="es">
+      <p>Muestre el diseño una vez con una <b>etiqueta</b> y luego muévalo cuantas veces quiera; Windows actualiza la tarjeta
+        en su sitio, sin nueva ventana emergente y sin sonido:</p>
+      <pre>  Notifier.LoadDesign(<span class="s">'live-progress.ntf'</span>)
+  Notifier.SetVar(<span class="s">'Report'</span>, <span class="s">'Ventas 2026.xlsx'</span>)
+  Notifier.ShowToast(<span class="s">'export'</span>)                              <span class="c">! la etiqueta la vuelve a encontrar</span>
+  <span class="k">LOOP</span> i = 1 <span class="k">TO</span> Total
+    <span class="c">! ... el trabajo ...</span>
+    Notifier.UpdateProgress(i / Total, <span class="s">'Escribiendo hojas...'</span>, i &amp; <span class="s">' de '</span> &amp; Total, <span class="s">'export'</span>)
+  <span class="k">END</span>
+  Notifier.Remove(<span class="s">'export'</span>)</pre>
+      <p><code>UpdateProgress</code> devuelve 0 si actualizó y 2 si la notificación ya no está (el usuario la cerró): una
+        forma barata de saber que el usuario perdió interés. Cada actualización reenvía <i>todos</i> los datos de la
+        notificación con un número de secuencia mayor, así una actualización que llega tarde no pisa a una más nueva.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="identity">
+      <h2><span class="en">Name, icon, AppUserModelID</span><span class="es">Nombre, icono, AppUserModelID</span> <a href="#identity" class="top">#</a></h2>
+      <div class="en">
+      <p>Windows files notifications under an <b>AppUserModelID</b>. A packaged (Store) app has one built in; a Clarion
+        program does not, so <code>toastc_init</code> (toastc.c:517) creates one per user, with no admin rights and no Start
+        menu shortcut:</p>
+      <pre>HKCU\Software\Classes\AppUserModelId\<span class="t">&lt;your id&gt;</span>
+    DisplayName          <span class="s">"Notify Demo"</span>          <span class="c">the header of every notification</span>
+    IconUri              <span class="s">"C:\...\images\logo.png"</span> <span class="c">absolute; made from the relative path</span>
+    IconBackgroundColor  <span class="s">"FF1F6FB2"</span>             <span class="c">optional</span></pre>
+      <p>Keep the id the same for the life of the program: it is also where Windows keeps the user's choice to switch your
+        notifications off (Settings → System → Notifications). The default is <code>Clarion.&lt;application&gt;</code>.
+        Name and icon are re-written at every start, so changing them takes effect on the next run.</p>
+      </div>
+      <div class="es">
+      <p>Windows archiva las notificaciones bajo un <b>AppUserModelID</b>. Una aplicación empaquetada (Store) ya lo trae; un
+        programa Clarion no, así que <code>toastc_init</code> (toastc.c:517) crea uno por usuario, sin permisos de
+        administrador y sin acceso directo en el menú Inicio:</p>
+      <pre>HKCU\Software\Classes\AppUserModelId\<span class="t">&lt;su id&gt;</span>
+    DisplayName          <span class="s">"Notify Demo"</span>          <span class="c">la cabecera de cada notificación</span>
+    IconUri              <span class="s">"C:\...\images\logo.png"</span> <span class="c">absoluta; hecha a partir de la ruta relativa</span>
+    IconBackgroundColor  <span class="s">"FF1F6FB2"</span>             <span class="c">opcional</span></pre>
+      <p>Mantenga el id igual durante toda la vida del programa: también es donde Windows guarda la decisión del usuario de
+        desactivar sus notificaciones (Configuración → Sistema → Notificaciones). El valor por defecto es
+        <code>Clarion.&lt;aplicación&gt;</code>. El nombre y el icono se reescriben en cada arranque, así que cambiarlos
+        surte efecto en la siguiente ejecución.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="engine">
+      <h2><span class="en">The C engine</span><span class="es">El motor en C</span> <a href="#engine" class="top">#</a></h2>
+      <div class="en">
+      <p><code>toastc.c</code> is compiled by Clarion's own C compiler (<code>PRAGMA('compile(toastc.c)')</code> in
+        NotificationClass.clw). That compiler has no Windows SDK headers and spells stdcall <code>pascal</code>, so the
+        engine declares the small Win32 surface itself and binds the rest at run time:</p>
+      <table>
+        <tr><th>From</th><th>Bound</th><th>Used for</th></tr>
+        <tr><td>combase.dll</td><td><code>LoadLibrary</code> + <code>GetProcAddress</code></td><td><code>RoInitialize</code>,
+          <code>RoGetActivationFactory</code>, <code>RoActivateInstance</code>, the <code>HSTRING</code> functions</td></tr>
+        <tr><td>advapi32.dll</td><td>same</td><td>the AppUserModelID registry key</td></tr>
+        <tr><td>kernel32 / user32</td><td>linked</td><td>strings, critical section, TLS, bring-to-front</td></tr>
+      </table>
+      <p>WinRT objects are reached through their <b>vtables</b>: every WinRT interface starts at slot 6 (IUnknown 0–2,
+        IInspectable 3–5), and the slot numbers for <code>IToastNotifier</code>, <code>IToastNotification</code>,
+        <code>IXmlDocumentIO</code>, <code>INotificationData</code> and the rest were taken from the Windows SDK 10.0.26100
+        headers. The three event-handler interfaces are parameterised (<code>TypedEventHandler&lt;ToastNotification, X&gt;</code>),
+        so their IIDs are not in any header — they were computed with WinRT's own <code>GuidGenerator</code> and are
+        written in toastc.c with that note.</p>
+      <p><b>Threading.</b> Each Clarion thread that calls in gets a single-threaded apartment the first time (a TLS flag;
+        single-threaded so a later <code>OleInitialize</code> by OLE controls still works). Windows raises the events on a
+        thread-pool thread; the handler objects are <b>agile</b> (they answer <code>IAgileObject</code>), copy the arguments
+        and keep a reference to the user's input under a critical section, and return. Nothing in the engine ever calls back
+        into the Clarion run time. The queue holds 64 events; the oldest is dropped if nobody drains it.</p>
+      </div>
+      <div class="es">
+      <p><code>toastc.c</code> lo compila el propio compilador C de Clarion (<code>PRAGMA('compile(toastc.c)')</code> en
+        NotificationClass.clw). Ese compilador no trae las cabeceras del SDK de Windows y escribe stdcall como
+        <code>pascal</code>, así que el motor declara él mismo la pequeña superficie de Win32 que usa y enlaza el resto en
+        ejecución:</p>
+      <table>
+        <tr><th>De</th><th>Enlace</th><th>Para</th></tr>
+        <tr><td>combase.dll</td><td><code>LoadLibrary</code> + <code>GetProcAddress</code></td><td><code>RoInitialize</code>,
+          <code>RoGetActivationFactory</code>, <code>RoActivateInstance</code>, las funciones <code>HSTRING</code></td></tr>
+        <tr><td>advapi32.dll</td><td>igual</td><td>la clave de registro del AppUserModelID</td></tr>
+        <tr><td>kernel32 / user32</td><td>enlazadas</td><td>cadenas, sección crítica, TLS, traer al frente</td></tr>
+      </table>
+      <p>A los objetos WinRT se llega por sus <b>vtables</b>: toda interfaz WinRT empieza en la posición 6 (IUnknown 0–2,
+        IInspectable 3–5), y las posiciones de <code>IToastNotifier</code>, <code>IToastNotification</code>,
+        <code>IXmlDocumentIO</code>, <code>INotificationData</code> y demás se tomaron de las cabeceras del SDK de Windows
+        10.0.26100. Las tres interfaces de manejadores de eventos son parametrizadas
+        (<code>TypedEventHandler&lt;ToastNotification, X&gt;</code>), así que sus IID no están en ninguna cabecera: se
+        calcularon con el <code>GuidGenerator</code> de WinRT y figuran en toastc.c con esa nota.</p>
+      <p><b>Hilos.</b> Cada hilo Clarion que llama recibe un apartamento de un solo hilo la primera vez (un indicador TLS; de
+        un solo hilo para que un <code>OleInitialize</code> posterior de los controles OLE siga funcionando). Windows lanza
+        los eventos en un hilo del grupo; los objetos manejadores son <b>ágiles</b> (responden a <code>IAgileObject</code>),
+        copian los argumentos y guardan una referencia a la entrada del usuario bajo una sección crítica, y vuelven. Nada en
+        el motor llama de vuelta al run time de Clarion. La cola guarda 64 eventos; si nadie la vacía se descarta el más viejo.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="objects">
+      <h2><span class="en">The class</span><span class="es">La clase</span> <a href="#objects" class="top">#</a></h2>
+      <div class="en">
+      <p><code>NotificationClass</code> owns five text buffers (<code>NotifyBufClass</code>, a growable string) and two
+        queues; the engine owns everything Windows gave it. The global object is <code>,THREAD</code>, so each thread builds
+        its own notification, while registration, the notifier and the event queue are process-wide.</p>
+      <table>
+        <tr><th>Member</th><th>Holds</th></tr>
+        <tr><td><code>Xml</code></td><td>Raw XML from <code>AddXml</code> / <code>LoadDesign</code></td></tr>
+        <tr><td><code>Vis</code>, <code>Inp</code>, <code>Act</code></td><td>The builder: what goes inside <code>&lt;binding&gt;</code>, the <code>&lt;input&gt;</code>s, the <code>&lt;action&gt;</code>s</td></tr>
+        <tr><td><code>Out</code></td><td>The final XML, after placeholders and pictures</td></tr>
+        <tr><td><code>Vars</code></td><td><code>SetVar</code> values (name, upper-cased name, value up to 2048)</td></tr>
+        <tr><td><code>Data</code></td><td>Binding data (<code>SetData</code>, plus the defaults <code>Substitute</code> adds)</td></tr>
+        <tr><td><code>LastId</code>, <code>LastTag</code></td><td>The last notification shown; <code>UpdateData</code>/<code>Hide</code> default to it</td></tr>
+        <tr><td><code>EventKind</code>, <code>EventId</code>, <code>EventTag</code>, <code>EventArgs</code>, <code>DismissReason</code>, <code>FailCode</code></td><td>The event last taken by <code>NextEvent</code></td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <p><code>NotificationClass</code> posee cinco búferes de texto (<code>NotifyBufClass</code>, una cadena que crece) y dos
+        colas; el motor posee todo lo que le dio Windows. El objeto global es <code>,THREAD</code>, así que cada hilo arma su
+        propia notificación, mientras que el registro, el notificador y la cola de eventos son de todo el proceso.</p>
+      <table>
+        <tr><th>Miembro</th><th>Guarda</th></tr>
+        <tr><td><code>Xml</code></td><td>El XML crudo de <code>AddXml</code> / <code>LoadDesign</code></td></tr>
+        <tr><td><code>Vis</code>, <code>Inp</code>, <code>Act</code></td><td>El constructor: lo que va dentro de <code>&lt;binding&gt;</code>, los <code>&lt;input&gt;</code>, las <code>&lt;action&gt;</code></td></tr>
+        <tr><td><code>Out</code></td><td>El XML final, tras marcadores e imágenes</td></tr>
+        <tr><td><code>Vars</code></td><td>Los valores de <code>SetVar</code> (nombre, nombre en mayúsculas, valor de hasta 2048)</td></tr>
+        <tr><td><code>Data</code></td><td>Los datos de enlace (<code>SetData</code>, más los valores por defecto que añade <code>Substitute</code>)</td></tr>
+        <tr><td><code>LastId</code>, <code>LastTag</code></td><td>La última notificación mostrada; <code>UpdateData</code>/<code>Hide</code> la usan por defecto</td></tr>
+        <tr><td><code>EventKind</code>, <code>EventId</code>, <code>EventTag</code>, <code>EventArgs</code>, <code>DismissReason</code>, <code>FailCode</code></td><td>El evento tomado por último con <code>NextEvent</code></td></tr>
+      </table>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="flow">
+      <h2><span class="en">One click, end to end</span><span class="es">Un clic, de principio a fin</span> <a href="#flow" class="top">#</a></h2>
+      <div class="en">
+      <ol>
+        <li><code>ShowToast('inv1043')</code> assembles the XML, and <code>toastc_show</code> loads it into a
+          <code>Windows.Data.Xml.Dom.XmlDocument</code>, creates the <code>ToastNotification</code>, sets tag/group/data,
+          attaches three handler objects (activated, dismissed, failed) that carry the notification's id, and calls
+          <code>IToastNotifier.Show</code>. The id goes back to Clarion (<code>LastId</code>).</li>
+        <li>The user presses <b>Open invoice</b>. On a thread-pool thread Windows calls the activated handler's
+          <code>Invoke</code>, which reads <code>Arguments</code> (<code>action=open;invoice=1043</code>) and the user-input map,
+          and queues them.</li>
+        <li>Within a quarter of a second the window's timer fires; <code>TakeWindowEvent</code> sees
+          <code>Notifier.Pending()</code> and loops <code>NextEvent()</code>, which copies the event into
+          <code>EventKind</code>/<code>EventArgs</code>/<code>EventTag</code>.</li>
+        <li>The generated <code>CASE Notifier.Arg('action')</code> lands in your <i>action</i> embed for <code>open</code>, where
+          <code>Notifier.Arg('invoice')</code> is <code>1043</code>. <code>DISPLAY()</code> runs once after the loop.</li>
+      </ol>
+      </div>
+      <div class="es">
+      <ol>
+        <li><code>ShowToast('inv1043')</code> arma el XML y <code>toastc_show</code> lo carga en un
+          <code>Windows.Data.Xml.Dom.XmlDocument</code>, crea la <code>ToastNotification</code>, fija etiqueta/grupo/datos,
+          engancha tres objetos manejadores (activada, cerrada, fallida) que llevan el id de la notificación y llama a
+          <code>IToastNotifier.Show</code>. El id vuelve a Clarion (<code>LastId</code>).</li>
+        <li>El usuario pulsa <b>Abrir factura</b>. En un hilo del grupo, Windows llama al <code>Invoke</code> del manejador de
+          activación, que lee <code>Arguments</code> (<code>action=open;invoice=1043</code>) y el mapa de entradas del
+          usuario, y los pone en la cola.</li>
+        <li>En menos de un cuarto de segundo salta el temporizador de la ventana; <code>TakeWindowEvent</code> ve
+          <code>Notifier.Pending()</code> y recorre <code>NextEvent()</code>, que copia el evento en
+          <code>EventKind</code>/<code>EventArgs</code>/<code>EventTag</code>.</li>
+        <li>El <code>CASE Notifier.Arg('action')</code> generado cae en su embed de <i>acción</i> para <code>open</code>, donde
+          <code>Notifier.Arg('invoice')</code> vale <code>1043</code>. <code>DISPLAY()</code> se ejecuta una vez tras el bucle.</li>
+      </ol>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="assembly">
+      <h2><span class="en">Building the XML</span><span class="es">Armar el XML</span> <a href="#assembly" class="top">#</a></h2>
+      <div class="en">
+      <p><code>Assemble</code> runs at every <code>ShowToast</code>/<code>XmlText</code>:</p>
+      <ol>
+        <li>If <code>Xml</code> is empty, the builder parts are wrapped: <code>&lt;toast launch scenario duration
+          useButtonStyle&gt;</code>, <code>&lt;visual&gt;&lt;binding template="ToastGeneric"&gt;</code> + <code>Vis</code>,
+          <code>&lt;actions&gt;</code> + <code>Inp</code> + <code>Act</code> (inputs must precede actions), then
+          <code>&lt;audio&gt;</code>. The builder parts are then consumed.</li>
+        <li><code>Substitute</code> walks the braces: placeholder → escaped value; name without a value → left as a binding and
+          given data; anything else → left as is.</li>
+        <li>A second pass replaces the value of every <code>src="</code> and <code>imageUri="</code> with <code>FileUri(value)</code>.</li>
+      </ol>
+      <p>There are no fixed-size limits on the XML — every buffer grows by doubling — but a few fields are bounded: tag and
+        group 64 characters (Windows' own limit), a <code>SetVar</code> value 2048, <code>EventArgs</code> 2048, an
+        <code>Input</code> 4096.</p>
+      </div>
+      <div class="es">
+      <p><code>Assemble</code> se ejecuta en cada <code>ShowToast</code>/<code>XmlText</code>:</p>
+      <ol>
+        <li>Si <code>Xml</code> está vacío, se envuelven las partes del constructor: <code>&lt;toast launch scenario duration
+          useButtonStyle&gt;</code>, <code>&lt;visual&gt;&lt;binding template="ToastGeneric"&gt;</code> + <code>Vis</code>,
+          <code>&lt;actions&gt;</code> + <code>Inp</code> + <code>Act</code> (las entradas van antes que las acciones) y
+          luego <code>&lt;audio&gt;</code>. Las partes del constructor quedan consumidas.</li>
+        <li><code>Substitute</code> recorre las llaves: marcador → valor escapado; nombre sin valor → se deja como enlace y se
+          le dan datos; cualquier otra cosa → tal cual.</li>
+        <li>Una segunda pasada reemplaza el valor de cada <code>src="</code> e <code>imageUri="</code> por <code>FileUri(valor)</code>.</li>
+      </ol>
+      <p>El XML no tiene límites fijos —todos los búferes crecen duplicándose— pero algunos campos sí: etiqueta y grupo 64
+        caracteres (límite de Windows), un valor de <code>SetVar</code> 2048, <code>EventArgs</code> 2048, un
+        <code>Input</code> 4096.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="handcode">
+      <h2><span class="en">Hand-coding it</span><span class="es">A mano</span> <a href="#handcode" class="top">#</a></h2>
+      <div class="en">
+      <p>The class needs nothing from the templates. In a hand-coded program, define the two link-mode equates in the
+        project (<code>_NotificationsDllMode_=&gt;0;_NotificationsLinkMode_=&gt;1</code>) — without them the class links as
+        an import and the program faults in the constructor before its first line.</p>
+      </div>
+      <div class="es">
+      <p>La clase no necesita nada de las plantillas. En un programa escrito a mano, defina en el proyecto los dos equates de
+        enlace (<code>_NotificationsDllMode_=&gt;0;_NotificationsLinkMode_=&gt;1</code>): sin ellos la clase se enlaza como
+        importación y el programa falla en el constructor antes de su primera línea.</p>
+      </div>
+      <pre>  <span class="k">PROGRAM</span>
+  <span class="k">INCLUDE</span>(<span class="s">'NotificationClass.INC'</span>),<span class="k">ONCE</span>
+Notifier  NotificationClass,<span class="k">THREAD</span>
+  <span class="k">CODE</span>
+  Notifier.Init(<span class="s">'MyCompany.MyApp'</span>, <span class="s">'My App'</span>, <span class="s">'images\logo.png'</span>)
+
+  <span class="c">! 1. one line</span>
+  Notifier.Toast(<span class="s">'Backup finished'</span>, <span class="s">'1,284 files copied.'</span>)
+
+  <span class="c">! 2. the builder</span>
+  Notifier.NewToast(<span class="s">'action=open;id=7'</span>)
+  Notifier.Title(<span class="s">'Ana Torres'</span>)
+  Notifier.Line(<span class="s">'Can you approve the March figures?'</span>)
+  Notifier.AppLogo(<span class="s">'images\avatar.png'</span>)               <span class="c">! round by default</span>
+  Notifier.AddTextBox(<span class="s">'reply'</span>, <span class="s">'Type a reply'</span>)
+  Notifier.AddButton(<span class="s">'Send'</span>, <span class="s">'action=reply'</span>, , <span class="s">'Success'</span>, <span class="s">'reply'</span>)
+  Notifier.ShowToast(<span class="s">'chat'</span>)
+
+  <span class="c">! 3. a design</span>
+  Notifier.LoadDesign(<span class="s">'invoice-paid.ntf'</span>)
+  Notifier.SetVar(<span class="s">'InvoiceNo'</span>, INV:Number)
+  Notifier.ShowToast(<span class="s">'inv'</span> &amp; INV:Number)
+
+  <span class="c">! on a timer, in the window that is always open</span>
+  <span class="k">LOOP WHILE</span> Notifier.NextEvent()
+    <span class="k">IF</span> Notifier.EventKind = Notify:Activated <span class="k">AND</span> Notifier.Arg(<span class="s">'action'</span>) = <span class="s">'reply'</span>
+      SendChat(Notifier.Input(<span class="s">'reply'</span>))
+    <span class="k">END</span>
+  <span class="k">END</span>
+  Notifier.Kill()</pre>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="api">
+      <h2><span class="en">Method reference</span><span class="es">Referencia de métodos</span> <a href="#api" class="top">#</a></h2>
+      <div class="en">
+      <h3>Set up</h3>
+      <table>
+        <tr><th>Method</th><th>Does</th></tr>
+        <tr><td><code>Init(appId, [name], [icon], [iconBack]),BYTE</code></td><td>Registers the id for this user and creates the notifier. A relative icon is taken from the program's folder. FALSE + <code>ErrorText()</code> on failure.</td></tr>
+        <tr><td><code>Ready(),BYTE</code></td><td>Has <code>Init</code> succeeded (in any thread)</td></tr>
+        <tr><td><code>Enabled(),BYTE</code></td><td>FALSE when the user (globally or for this program) or a policy switched them off</td></tr>
+        <tr><td><code>UseUtf8([on])</code></td><td>Strings in and out are UTF-8 instead of the ANSI code page</td></tr>
+        <tr><td><code>Unregister()</code></td><td>Deletes the registry key</td></tr>
+        <tr><td><code>Kill()</code></td><td>Releases everything; shown notifications stay in the centre</td></tr>
+        <tr><td><code>ErrorText(),STRING</code></td><td>The stage that failed and the HRESULT, e.g. <i>reading the notification XML (0xC00CE556)</i></td></tr>
+        <tr><td><code>FailText([code]),STRING</code></td><td>Plain words for a <code>Notify:Failed</code> code (default: the last event's <code>FailCode</code>)</td></tr>
+      </table>
+      <h3>Build</h3>
+      <table>
+        <tr><th>Method</th><th>Adds</th></tr>
+        <tr><td><code>Toast(title, [text], [logo], [tag]),LONG</code></td><td>The whole thing in one call; returns the id</td></tr>
+        <tr><td><code>NewToast([launchArgs])</code></td><td>Starts over; the arguments a click on the body sends</td></tr>
+        <tr><td><code>Title</code> / <code>Line</code> / <code>Attribution</code></td><td>The texts</td></tr>
+        <tr><td><code>AppLogo(path, [circle=1])</code> / <code>HeroImage</code> / <code>InlineImage</code></td><td>The pictures</td></tr>
+        <tr><td><code>ProgressBar([title], [status], [value], [valueText])</code></td><td>A live bar (bound) with starting values</td></tr>
+        <tr><td><code>AddButton(caption, args, [icon], [style], [inputId])</code></td><td>A button to the program; style <code>Success</code>/<code>Critical</code>; with an input id it sits beside that box</td></tr>
+        <tr><td><code>AddLinkButton(caption, url)</code> / <code>AddSystemButton('snooze'|'dismiss', [caption])</code></td><td>Windows-handled buttons</td></tr>
+        <tr><td><code>AddTextBox(id, [placeholder], [title])</code> / <code>AddChoice(id, 'a:Text|b:Text', [default], [title])</code></td><td>Inputs</td></tr>
+        <tr><td><code>Scenario(name)</code> / <code>LongDuration()</code> / <code>Sound(src, [loop])</code> / <code>NoSound()</code></td><td>Behaviour</td></tr>
+        <tr><td><code>Reset()</code> / <code>AddXml(line)</code> / <code>LoadDesign(file),BYTE</code></td><td>Raw XML or a design instead of the builder</td></tr>
+        <tr><td><code>SetVar(name, value)</code> / <code>ClearVars()</code> / <code>SetData(key, value)</code></td><td>Placeholders and binding data</td></tr>
+        <tr><td><code>XmlText(),STRING</code></td><td>What <code>ShowToast</code> would send — for logs and tests</td></tr>
+      </table>
+      <h3>Show and change</h3>
+      <table>
+        <tr><th>Method</th><th>Does</th></tr>
+        <tr><td><code>ShowToast([tag], [group], [silent]),LONG</code></td><td>Shows it; returns the id or 0. Silent goes straight to the centre. A design with bindings and no tag gets one made up (<code>LastTag</code>).</td></tr>
+        <tr><td><code>UpdateProgress(value, [status], [text], [tag], [group]),LONG</code></td><td>Moves a live bar: 0 updated, 1 failed, 2 gone</td></tr>
+        <tr><td><code>UpdateData([tag], [group]),LONG</code></td><td>Sends the current <code>SetData</code> values</td></tr>
+        <tr><td><code>Hide([id])</code> / <code>Remove(tag, [group])</code> / <code>RemoveGroup(group)</code> / <code>RemoveAll()</code></td><td>Take them away</td></tr>
+      </table>
+      <h3>Events</h3>
+      <table>
+        <tr><th>Method</th><th>Does</th></tr>
+        <tr><td><code>Pending(),LONG</code></td><td>Events waiting — cheap; call it on every tick</td></tr>
+        <tr><td><code>NextEvent(),BYTE</code></td><td>Takes the next one into the Event* properties</td></tr>
+        <tr><td><code>Arg(key),STRING</code> / <code>Input(id),STRING</code></td><td>Read the event's arguments and the user's input</td></tr>
+        <tr><td><code>BringToFront(hwnd),BYTE</code></td><td>Restores and raises a window; flashes it if Windows refuses</td></tr>
+        <tr><td><code>Escape(text),STRING</code> / <code>FileUri(path),STRING,VIRTUAL</code></td><td>Helpers; override <code>FileUri</code> to map pictures differently</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <h3>Preparar</h3>
+      <table>
+        <tr><th>Método</th><th>Hace</th></tr>
+        <tr><td><code>Init(appId, [nombre], [icono], [fondoIcono]),BYTE</code></td><td>Registra el id para este usuario y crea el notificador. Un icono relativo se toma de la carpeta del programa. FALSE + <code>ErrorText()</code> si falla.</td></tr>
+        <tr><td><code>Ready(),BYTE</code></td><td>¿Tuvo éxito <code>Init</code>? (en cualquier hilo)</td></tr>
+        <tr><td><code>Enabled(),BYTE</code></td><td>FALSE si el usuario (en general o para este programa) o una directiva las desactivó</td></tr>
+        <tr><td><code>UseUtf8([on])</code></td><td>Las cadenas de entrada y salida son UTF-8 en lugar de la página ANSI</td></tr>
+        <tr><td><code>Unregister()</code></td><td>Borra la clave del registro</td></tr>
+        <tr><td><code>Kill()</code></td><td>Libera todo; las notificaciones mostradas siguen en el centro</td></tr>
+        <tr><td><code>ErrorText(),STRING</code></td><td>La etapa que falló y el HRESULT, p. ej. <i>reading the notification XML (0xC00CE556)</i></td></tr>
+        <tr><td><code>FailText([código]),STRING</code></td><td>Palabras claras para un código de <code>Notify:Failed</code> (por defecto, el <code>FailCode</code> del último evento)</td></tr>
+      </table>
+      <h3>Construir</h3>
+      <table>
+        <tr><th>Método</th><th>Añade</th></tr>
+        <tr><td><code>Toast(título, [texto], [logo], [etiqueta]),LONG</code></td><td>Todo en una llamada; devuelve el id</td></tr>
+        <tr><td><code>NewToast([argsClic])</code></td><td>Empieza de cero; los argumentos que envía un clic en el cuerpo</td></tr>
+        <tr><td><code>Title</code> / <code>Line</code> / <code>Attribution</code></td><td>Los textos</td></tr>
+        <tr><td><code>AppLogo(ruta, [circle=1])</code> / <code>HeroImage</code> / <code>InlineImage</code></td><td>Las imágenes</td></tr>
+        <tr><td><code>ProgressBar([título], [estado], [valor], [textoValor])</code></td><td>Una barra en vivo (enlazada) con valores iniciales</td></tr>
+        <tr><td><code>AddButton(texto, args, [icono], [estilo], [inputId])</code></td><td>Un botón al programa; estilo <code>Success</code>/<code>Critical</code>; con un id de entrada se coloca junto a esa caja</td></tr>
+        <tr><td><code>AddLinkButton(texto, url)</code> / <code>AddSystemButton('snooze'|'dismiss', [texto])</code></td><td>Botones que atiende Windows</td></tr>
+        <tr><td><code>AddTextBox(id, [sugerencia], [título])</code> / <code>AddChoice(id, 'a:Texto|b:Texto', [defecto], [título])</code></td><td>Entradas</td></tr>
+        <tr><td><code>Scenario(nombre)</code> / <code>LongDuration()</code> / <code>Sound(src, [loop])</code> / <code>NoSound()</code></td><td>Comportamiento</td></tr>
+        <tr><td><code>Reset()</code> / <code>AddXml(línea)</code> / <code>LoadDesign(archivo),BYTE</code></td><td>XML crudo o un diseño en lugar del constructor</td></tr>
+        <tr><td><code>SetVar(nombre, valor)</code> / <code>ClearVars()</code> / <code>SetData(clave, valor)</code></td><td>Marcadores y datos de enlace</td></tr>
+        <tr><td><code>XmlText(),STRING</code></td><td>Lo que enviaría <code>ShowToast</code>: para registros y pruebas</td></tr>
+      </table>
+      <h3>Mostrar y cambiar</h3>
+      <table>
+        <tr><th>Método</th><th>Hace</th></tr>
+        <tr><td><code>ShowToast([etiqueta], [grupo], [silent]),LONG</code></td><td>La muestra; devuelve el id o 0. Silent va directo al centro. Un diseño con enlaces y sin etiqueta recibe una inventada (<code>LastTag</code>).</td></tr>
+        <tr><td><code>UpdateProgress(valor, [estado], [texto], [etiqueta], [grupo]),LONG</code></td><td>Mueve una barra en vivo: 0 actualizada, 1 falló, 2 ya no está</td></tr>
+        <tr><td><code>UpdateData([etiqueta], [grupo]),LONG</code></td><td>Envía los valores actuales de <code>SetData</code></td></tr>
+        <tr><td><code>Hide([id])</code> / <code>Remove(etiqueta, [grupo])</code> / <code>RemoveGroup(grupo)</code> / <code>RemoveAll()</code></td><td>Quitarlas</td></tr>
+      </table>
+      <h3>Eventos</h3>
+      <table>
+        <tr><th>Método</th><th>Hace</th></tr>
+        <tr><td><code>Pending(),LONG</code></td><td>Eventos en espera: barato, llámelo en cada tic</td></tr>
+        <tr><td><code>NextEvent(),BYTE</code></td><td>Toma el siguiente y lo deja en las propiedades Event*</td></tr>
+        <tr><td><code>Arg(clave),STRING</code> / <code>Input(id),STRING</code></td><td>Leen los argumentos del evento y lo que escribió el usuario</td></tr>
+        <tr><td><code>BringToFront(hwnd),BYTE</code></td><td>Restaura y trae una ventana al frente; la hace parpadear si Windows se niega</td></tr>
+        <tr><td><code>Escape(texto),STRING</code> / <code>FileUri(ruta),STRING,VIRTUAL</code></td><td>Ayudantes; sobrescriba <code>FileUri</code> para resolver imágenes de otra forma</td></tr>
+      </table>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="embeds">
+      <h2><span class="en">Generated code &amp; embeds</span><span class="es">Código generado y embeds</span> <a href="#embeds" class="top">#</a></h2>
+      <div class="en">
+      <p>What the window extension writes into <code>ThisWindow.TakeWindowEvent</code> (at PRIORITY 2000, above ABC's own
+        <code>CASE EVENT()</code> at 2500), with its five embeds:</p>
+      </div>
+      <div class="es">
+      <p>Lo que la extensión de ventana escribe en <code>ThisWindow.TakeWindowEvent</code> (en PRIORITY 2000, por encima del
+        <code>CASE EVENT()</code> de ABC en 2500), con sus cinco embeds:</p>
+      </div>
+      <pre>  <span class="k">CASE EVENT</span>()
+  <span class="k">OF</span> EVENT:OpenWindow
+    <span class="k">IF</span> 0{PROP:Timer} = 0 <span class="k">THEN</span> 0{PROP:Timer} = 25.             <span class="c">! a window's own timer is kept</span>
+  <span class="k">OF</span> EVENT:Timer
+    <span class="k">IF</span> Notifier.Pending()
+      <span class="k">LOOP WHILE</span> Notifier.NextEvent()
+        <span class="k">CASE</span> Notifier.EventKind
+        <span class="k">OF</span> Notify:Activated
+          Notifier.BringToFront(0{PROP:Handle})
+          <span class="t">[Notification events - clicked (any action)]</span>
+          <span class="k">CASE</span> Notifier.Arg(<span class="s">'action'</span>)
+          <span class="k">OF</span> <span class="s">'open'</span>
+            <span class="t">[Notification events - action]   one per entry on the Actions tab</span>
+          <span class="k">ELSE</span>
+            <span class="t">[Notification events - any other action]</span>
+          <span class="k">END</span>
+        <span class="k">OF</span> Notify:Dismissed
+          <span class="t">[Notification events - dismissed]</span>
+        <span class="k">OF</span> Notify:Failed
+          <span class="t">[Notification events - failed]</span>
+        <span class="k">END</span>
+      <span class="k">END</span>
+      DISPLAY()
+    <span class="k">END</span>
+  <span class="k">END</span></pre>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="dll">
+      <h2><span class="en">Multi-DLL</span><span class="es">Multi-DLL</span> <a href="#dll" class="top">#</a></h2>
+      <div class="en">
+      <p><code>NotificationClass.inc</code> is tagged <code>!ABCIncludeFile(NOTIFICATIONS)</code> and the global extension
+        registers that category, so the ABC chain writes the link-mode pragmas and the export list: the data DLL compiles the
+        class (and its C engine) in and exports it; the other apps import it. Add the global extension to <b>every</b> app.
+        Each app declares its own <code>Notifier</code>; only the EXE calls <code>Init</code> — the engine's state is one per
+        process, so a notification shown from a DLL's procedure works once the EXE has registered.</p>
+      </div>
+      <div class="es">
+      <p><code>NotificationClass.inc</code> lleva la marca <code>!ABCIncludeFile(NOTIFICATIONS)</code> y la extensión global
+        registra esa categoría, así que la cadena ABC escribe los pragmas de enlace y la lista de exportación: la DLL de
+        datos compila la clase (y su motor en C) y la exporta; las demás aplicaciones la importan. Añada la extensión global
+        a <b>todas</b> las aplicaciones. Cada una declara su propio <code>Notifier</code>; solo el EXE llama a
+        <code>Init</code>: el estado del motor es uno por proceso, así que una notificación mostrada desde un procedimiento
+        de una DLL funciona en cuanto el EXE se ha registrado.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="verify">
+      <h2><span class="en">How it was verified</span><span class="es">Cómo se verificó</span> <a href="#verify" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>What</th><th>How</th><th>Result</th></tr>
+        <tr><td>The class and engine</td><td><code>NotifyTest.exe</code>: the XML byte for byte (escaping, builder, placeholders,
+          pictures, arguments), then real Windows calls — show, update, update a missing tag, remove, refuse bad XML, a
+          design with bindings and no tag</td><td>31 / 31</td></tr>
+        <tr><td>The designer's logic</td><td>xUnit: writer, reader, round trips, ASCII output, Clarion-builder XML, validator,
+          paths, presets, the Show-on-Windows XML</td><td>26 / 26</td></tr>
+        <tr><td>The templates</td><td><code>gen/build.sh</code>: a TXA using all five templates is imported, generated by AppGen,
+          compiled and run with <code>/auto</code></td><td>Invoice and live progress shown by the generated program; the
+          missing-placeholder check fired as designed</td></tr>
+        <tr><td>Clicks</td><td>A button press on a real notification</td><td><code>Notify:Activated</code> with
+          <code>action=open</code> received</td></tr>
+        <tr><td>The pictures here</td><td><code>shoot.ps1</code></td><td>Real notifications, both languages</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Qué</th><th>Cómo</th><th>Resultado</th></tr>
+        <tr><td>La clase y el motor</td><td><code>NotifyTest.exe</code>: el XML byte a byte (escapes, constructor, marcadores,
+          imágenes, argumentos) y luego llamadas reales a Windows: mostrar, actualizar, actualizar una etiqueta inexistente,
+          quitar, rechazar XML erróneo, un diseño con enlaces y sin etiqueta</td><td>31 / 31</td></tr>
+        <tr><td>La lógica del diseñador</td><td>xUnit: escritor, lector, ida y vuelta, salida ASCII, XML del constructor de
+          Clarion, validador, rutas, diseños de ejemplo, el XML de Show on Windows</td><td>26 / 26</td></tr>
+        <tr><td>Las plantillas</td><td><code>gen/build.sh</code>: un TXA con las cinco plantillas se importa, AppGen lo genera,
+          se compila y se ejecuta con <code>/auto</code></td><td>La factura y el progreso en vivo mostrados por el programa
+          generado; el control de marcadores sin valor saltó como estaba previsto</td></tr>
+        <tr><td>Clics</td><td>Una pulsación de botón en una notificación real</td><td>Se recibió <code>Notify:Activated</code>
+          con <code>action=open</code></td></tr>
+        <tr><td>Las imágenes de esta página</td><td><code>shoot.ps1</code></td><td>Notificaciones reales, en los dos idiomas</td></tr>
+      </table>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="quirks">
+      <h2><span class="en">Known quirks</span><span class="es">Rarezas conocidas</span> <a href="#quirks" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Where</th><th>What</th><th>Workaround</th></tr>
+        <tr><td>toastc.c (toastc_setting)</td><td>For an unpackaged program Windows answers
+          <code>IToastNotifier.get_Setting</code> with an error, so the engine reads the switches Settings writes instead:
+          the policy, the global <i>Notifications</i> toggle (<code>PushNotifications\ToastEnabled</code>) and the
+          program's own toggle. Do Not Disturb is not among them — it holds notifications back without failing them.</td>
+          <td>Check <code>Enabled()</code> at start-up and tell the user; a refused notification arrives as
+          <code>Notify:Failed</code>, and <code>FailText()</code> names the cause.</td></tr>
+        <tr><td>by design</td><td><b>A click after the program has closed does nothing.</b> Relaunching on click needs a COM
+          activator class registered for the program, which this version does not install.</td><td>Use
+          <i>Clear the program's notifications when it closes</i>, or Link buttons (Windows opens those itself).</td></tr>
+        <tr><td>Windows</td><td>One program's notifications pop up <b>one at a time</b>: the second waits until the first has
+          left the screen (seen while testing: the progress card appeared only after the invoice card timed out). All of them
+          are in the notification centre at once.</td><td>Show fewer, or update one with a tag instead of showing another.</td></tr>
+        <tr><td>Windows</td><td>Empty Snooze/Dismiss captions are worded in Windows' <i>display</i> language, not the program's.</td><td>Give them a caption in the design.</td></tr>
+        <tr><td>Windows 11</td><td>The first <b>urgent</b> notification makes Windows ask the user, in a notification of its
+          own, <i>"Allow important notifications from &lt;your program&gt;?"</i>. Until they allow it, urgent behaves like a
+          normal notification and does not break through Do Not Disturb.</td><td>Expected; mention it to users who rely on
+          urgent alerts. The choice is under Settings → Notifications → your program.</td></tr>
+        <tr><td>notifications.tpl:134</td><td><code>Init</code> is generated only when the application is an EXE.</td><td>In a
+          multi-DLL suite add the global extension to the EXE too — that is where the program registers.</td></tr>
+        <tr><td>notifications.tpl:408</td><td>Events are drained by whichever window polls first. Two windows with the events
+          extension split the events between them.</td><td>Put it on the frame only.</td></tr>
+        <tr><td>Embed mode</td><td>The design is read <b>when the application is generated</b>. Editing the .ntf afterwards
+          changes nothing until you generate again; and the prompt stores the path as picked.</td><td>Regenerate after a
+          design change, or use "a file read at run time".</td></tr>
+        <tr><td>NotificationClass.clw:739</td><td><code>Arg</code> splits on <code>;</code> and <code>&amp;</code>, so a value
+          containing either is cut short.</td><td>Keep argument values to ids; look the rest up.</td></tr>
+        <tr><td>toastc.c:664</td><td>Tags and groups longer than 64 characters are cut (Windows' own limit).</td><td>Short tags: <code>'inv' &amp; INV:Number</code>.</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Dónde</th><th>Qué</th><th>Solución</th></tr>
+        <tr><td>toastc.c (toastc_setting)</td><td>Para un programa no empaquetado Windows responde a
+          <code>IToastNotifier.get_Setting</code> con un error, así que el motor lee los interruptores que escribe
+          Configuración: la directiva, el interruptor global <i>Notificaciones</i> (<code>PushNotifications\ToastEnabled</code>)
+          y el del propio programa. No molestar no está entre ellos: retiene las notificaciones sin hacerlas fallar.</td>
+          <td>Compruebe <code>Enabled()</code> al arrancar y avise al usuario; una notificación rechazada llega como
+          <code>Notify:Failed</code>, y <code>FailText()</code> dice la causa.</td></tr>
+        <tr><td>por diseño</td><td><b>Un clic con el programa ya cerrado no hace nada.</b> Relanzar al hacer clic exige
+          registrar una clase COM activadora para el programa, y esta versión no la instala.</td><td>Use <i>Clear the
+          program's notifications when it closes</i>, o botones de enlace (esos los abre Windows).</td></tr>
+        <tr><td>Windows</td><td>Las notificaciones de un mismo programa aparecen <b>de una en una</b>: la segunda espera a que la
+          primera salga de la pantalla (visto en las pruebas: la tarjeta de progreso apareció cuando la de la factura terminó
+          su tiempo). En el centro de notificaciones están todas a la vez.</td><td>Muestre menos, o actualice una con su
+          etiqueta en lugar de mostrar otra.</td></tr>
+        <tr><td>Windows</td><td>Los textos vacíos de Snooze/Dismiss se redactan en el idioma de <i>pantalla</i> de Windows, no en el del programa.</td><td>Póngales texto en el diseño.</td></tr>
+        <tr><td>Windows 11</td><td>La primera notificación <b>urgente</b> hace que Windows pregunte al usuario, con una
+          notificación propia, <i>"¿Permitir notificaciones importantes de &lt;su programa&gt;?"</i>. Hasta que lo permita, la
+          urgente se comporta como una normal y no atraviesa No molestar.</td><td>Es lo esperado; avise a los usuarios que
+          dependan de alertas urgentes. La opción está en Configuración → Notificaciones → su programa.</td></tr>
+        <tr><td>notifications.tpl:134</td><td><code>Init</code> solo se genera cuando la aplicación es un EXE.</td><td>En un
+          conjunto multi-DLL añada la extensión global también al EXE: ahí se registra el programa.</td></tr>
+        <tr><td>notifications.tpl:408</td><td>Los eventos los vacía la ventana que consulte primero. Dos ventanas con la
+          extensión de eventos se los reparten.</td><td>Póngala solo en el marco.</td></tr>
+        <tr><td>Modo incrustado</td><td>El diseño se lee <b>al generar la aplicación</b>. Editar el .ntf después no cambia nada
+          hasta volver a generar; y la pregunta guarda la ruta tal como se eligió.</td><td>Vuelva a generar tras cambiar un
+          diseño, o use "un archivo leído en ejecución".</td></tr>
+        <tr><td>NotificationClass.clw:739</td><td><code>Arg</code> separa por <code>;</code> y <code>&amp;</code>, así que un
+          valor que contenga alguno queda cortado.</td><td>Use ids como valores de argumento y busque el resto.</td></tr>
+        <tr><td>toastc.c:664</td><td>Etiquetas y grupos de más de 64 caracteres se recortan (límite de Windows).</td><td>Etiquetas cortas: <code>'inv' &amp; INV:Number</code>.</td></tr>
+      </table>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <section id="trouble">
+      <h2><span class="en">Troubleshooting</span><span class="es">Problemas</span> <a href="#trouble" class="top">#</a></h2>
+      <div class="en">
+      <table>
+        <tr><th>Symptom</th><th>Cause</th></tr>
+        <tr><td><code>Notify:Failed</code>, <code>FailText()</code> = <i>Windows notifications are turned off</i>
+          (<code>0x803E0114</code>)</td><td>The main <i>Notifications</i> switch in Settings → System → Notifications is off:
+          Windows refuses every program's notifications. <code>Enabled()</code> is FALSE.</td></tr>
+        <tr><td>Nothing appears, <code>ShowToast</code> returned an id</td><td>Notifications for the program (or Do Not Disturb)
+          are off in Settings; or another notification of the program is still on screen (they queue).</td></tr>
+        <tr><td><code>ShowToast</code> returns 0, <i>reading the notification XML</i></td><td>The XML is not well formed — a
+          hand-edited design, or a builder value that was not escaped. <code>XmlText()</code> shows what was sent.</td></tr>
+        <tr><td><i>creating the notifier (Init not called?)</i></td><td><code>Init</code> did not run before the first
+          notification, or failed — check its return value.</td></tr>
+        <tr><td>The picture is missing</td><td>The file is not where the base folder says (see <a href="#images">Pictures</a>),
+          or it is not PNG/JPG/GIF.</td></tr>
+        <tr><td>Clicks never reach the embeds</td><td>The window with the events extension is not open, or the object name on
+          it differs from the global one.</td></tr>
+        <tr><td>Access violation before the program's first line (hand-coded)</td><td>The project lacks
+          <code>_NotificationsDllMode_=&gt;0;_NotificationsLinkMode_=&gt;1</code>.</td></tr>
+        <tr><td>The Design button does nothing</td><td><code>NotificationDesigner.exe</code> is not in <code>accessory\bin</code> of the Clarion the IDE runs from.</td></tr>
+      </table>
+      </div>
+      <div class="es">
+      <table>
+        <tr><th>Síntoma</th><th>Causa</th></tr>
+        <tr><td><code>Notify:Failed</code>, <code>FailText()</code> = <i>Windows notifications are turned off</i>
+          (<code>0x803E0114</code>)</td><td>El interruptor principal <i>Notificaciones</i> de Configuración → Sistema →
+          Notificaciones está apagado: Windows rechaza las notificaciones de todos los programas. <code>Enabled()</code> es FALSE.</td></tr>
+        <tr><td>No aparece nada y <code>ShowToast</code> devolvió un id</td><td>Las notificaciones del programa (o No molestar)
+          están desactivadas en Configuración; u otra notificación del programa sigue en pantalla (hacen cola).</td></tr>
+        <tr><td><code>ShowToast</code> devuelve 0, <i>reading the notification XML</i></td><td>El XML no está bien formado: un
+          diseño editado a mano, o un valor del constructor sin escapar. <code>XmlText()</code> muestra lo que se envió.</td></tr>
+        <tr><td><i>creating the notifier (Init not called?)</i></td><td><code>Init</code> no se ejecutó antes de la primera
+          notificación, o falló: compruebe lo que devuelve.</td></tr>
+        <tr><td>Falta la imagen</td><td>El archivo no está donde indica la carpeta base (ver <a href="#images">Imágenes</a>), o
+          no es PNG/JPG/GIF.</td></tr>
+        <tr><td>Los clics nunca llegan a los embeds</td><td>La ventana con la extensión de eventos no está abierta, o el nombre
+          de objeto en ella difiere del global.</td></tr>
+        <tr><td>Violación de acceso antes de la primera línea (a mano)</td><td>Al proyecto le falta
+          <code>_NotificationsDllMode_=&gt;0;_NotificationsLinkMode_=&gt;1</code>.</td></tr>
+        <tr><td>El botón Design no hace nada</td><td><code>NotificationDesigner.exe</code> no está en <code>accessory\bin</code> del Clarion desde el que corre el IDE.</td></tr>
+      </table>
+      </div>
+    </section>
+
+    </div>
+    <footer>
+      <span class="en">Written from the shipped source: notifications.tpl, NotificationClass.inc/.clw, toastc.c and the
+        Notification Designer. Every screenshot is of the real program or a real Windows notification.</span>
+      <span class="es">Escrito a partir del código distribuido: notifications.tpl, NotificationClass.inc/.clw, toastc.c y el
+        Notification Designer. Cada captura es del programa real o de una notificación real de Windows.</span>
+    </footer>
+  </main>
+</div>
+<script>
+  function setLang(l){
+    document.documentElement.setAttribute('data-lang', l);
+    document.getElementById('btn-en').classList.toggle('on', l==='en');
+    document.getElementById('btn-es').classList.toggle('on', l==='es');
+    try{ localStorage.setItem('mc-lang', l); }catch(e){}
+  }
+  var saved='en';
+  try{ saved = localStorage.getItem('mc-lang') || (navigator.language||'en').slice(0,2); }catch(e){}
+  setLang(saved==='es' ? 'es' : 'en');
+</script>
+</body>
+</html>

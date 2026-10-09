@@ -11,7 +11,7 @@
 ; ============================================================================
 
 #define AppName    "Clarion Template Tools"
-#define AppVersion "2.15.0"
+#define AppVersion "2.33.0"
 #define AppPublisher "Roberto Renz"
 #define AppExe     "ClarionTplDesigner.exe"
 #define ClarionTpl "C:\clarion12\accessory\template\win"
@@ -51,12 +51,12 @@ Name: "claude";      Description: "Install the clarion-template skill + clarion-
 Source: "payload\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; --- a local, authoritative copy of every authoring asset ---
-Source: "..\templates\*"; DestDir: "{app}\templates"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\agents\*";    DestDir: "{app}\agents";    Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\skills\*";    DestDir: "{app}\skills";    Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\README.md";   DestDir: "{app}"; Flags: ignoreversion
-Source: "..\LICENSE";     DestDir: "{app}"; Flags: ignoreversion
-Source: "..\docs\*";      DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "payload\repo\templates\*"; DestDir: "{app}\templates"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "payload\repo\agents\*";    DestDir: "{app}\agents";    Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "payload\repo\skills\*";    DestDir: "{app}\skills";    Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "payload\repo\README.md";   DestDir: "{app}"; Flags: ignoreversion
+Source: "payload\repo\LICENSE";     DestDir: "{app}"; Flags: ignoreversion
+Source: "payload\repo\docs\*";      DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; --- optional: drop the templates and their classes into a detected Clarion install ---
 ; build-installer.ps1 flattens both sets into payload\clarion\, because Clarion resolves
@@ -66,8 +66,8 @@ Source: "payload\clarion\template\*"; DestDir: "{#ClarionTpl}"; Tasks: clarion; 
 Source: "payload\clarion\libsrc\*";   DestDir: "{#ClarionLib}"; Tasks: clarion; Check: ClarionExists; Flags: ignoreversion
 
 ; --- optional: install the Claude skill + agent into the user's profile ---
-Source: "..\skills\*"; DestDir: "{%USERPROFILE}\.claude\skills"; Tasks: claude; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\agents\*"; DestDir: "{%USERPROFILE}\.claude\agents"; Tasks: claude; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "payload\repo\skills\*"; DestDir: "{%USERPROFILE}\.claude\skills"; Tasks: claude; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "payload\repo\agents\*"; DestDir: "{%USERPROFILE}\.claude\agents"; Tasks: claude; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\Clarion Template Designer"; Filename: "{app}\{#AppExe}"

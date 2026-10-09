@@ -18,7 +18,7 @@
 ; any DLL app that has myExportGlobal on it and copy the EXPORTCLASS lines out
 ; of its .EXP); the names can also be read out of a compiled ExportClass.obj.
 ;
-; Generated from Clarion 12.0.13941 AppGen output.  74 entries.
+; Read from a compiled ExportClass.obj (Clarion 12, v1.4).  127 entries.
 ;=============================================================================
   VMT$EXPORTCLASS                                          @?
   TYPE$EXPORTCLASS                                         @?
@@ -40,18 +40,26 @@
   COLREF@F11EXPORTCLASSl                                   @?
   COLUMNDEFAULT@F11EXPORTCLASSl                            @?
   COLUMNDEFAULTPIC@F11EXPORTCLASSl                         @?
+  COLUMNGROUPBY@F11EXPORTCLASSlUc                          @?
+  COLUMNGROUPON@F11EXPORTCLASSl                            @?
   COLUMNHEADING@F11EXPORTCLASSl                            @?
+  COLUMNISNUM@F11EXPORTCLASSl                              @?
   COLUMNON@F11EXPORTCLASSl                                 @?
   COLUMNPIC@F11EXPORTCLASSl                                @?
   COLUMNPICTURE@F11EXPORTCLASSlsb                          @?
   COLUMNRENAME@F11EXPORTCLASSlsb                           @?
   COLUMNS@F11EXPORTCLASS                                   @?
+  COLUMNTOTAL@F11EXPORTCLASSlUc                            @?
+  COLUMNTOTALON@F11EXPORTCLASSl                            @?
   COLUMNUSE@F11EXPORTCLASSlUc                              @?
   CONSTRUCT@F11EXPORTCLASS                                 @?
   CRC32@F11EXPORTCLASSRsbl                                 @?
   CRCINIT@F11EXPORTCLASS                                   @?
   DESTRUCT@F11EXPORTCLASS                                  @?
+  EMAILFILE@F11EXPORTCLASSsb                               @?
   ENDFILE@F11EXPORTCLASS                                   @?
+  ENDSHEET@F11EXPORTCLASS                                  @?
+  ENDWORKBOOK@F11EXPORTCLASS                               @?
   EXPORTQUEUE@F11EXPORTCLASS                               @?
   FOLDEROF@F11EXPORTCLASSsb                                @?
   FORCEEXT@F11EXPORTCLASSl                                 @?
@@ -61,6 +69,12 @@
   FORMATMASK@F11EXPORTCLASSl                               @?
   FORMATNAME@F11EXPORTCLASSl                               @?
   FREEBUFFERS@F11EXPORTCLASS                               @?
+  GRPCAT@F11EXPORTCLASSsb                                  @?
+  GRPCATXMLTEXT@F11EXPORTCLASSsb                           @?
+  GRPNEED@F11EXPORTCLASSl                                  @?
+  GRPSHEETBEGIN@F11EXPORTCLASS                             @?
+  GRPSHEETEND@F11EXPORTCLASSll                             @?
+  GRPSTASHSHEET@F11EXPORTCLASSsb                           @?
   HEADERTEXT@F11EXPORTCLASSl                               @?
   INIPATH@F11EXPORTCLASS                                   @?
   INISECTION@F11EXPORTCLASS                                @?
@@ -73,6 +87,33 @@
   LOADSETTINGS@F11EXPORTCLASS                              @?
   NEED@F11EXPORTCLASSl                                     @?
   NOTE@F11EXPORTCLASSsbsbl                                 @?
+  PAGESETUP@F11EXPORTCLASS                                 @?
+  PDFBEGIN@F11EXPORTCLASS                                  @?
+  PDFBEGINOBJ@F11EXPORTCLASSl                              @?
+  PDFCELL@F11EXPORTCLASSlsbUc                              @?
+  PDFCLIP@F11EXPORTCLASSsblUcl                             @?
+  PDFCLOSEPAGE@F11EXPORTCLASS                              @?
+  PDFCOLUMNWIDTHS@F11EXPORTCLASS                           @?
+  PDFCONTCAT@F11EXPORTCLASSsb                              @?
+  PDFCONTNEED@F11EXPORTCLASSl                              @?
+  PDFESCAPE@F11EXPORTCLASSsb                               @?
+  PDFFINISH@F11EXPORTCLASS                                 @?
+  PDFHEADER@F11EXPORTCLASS                                 @?
+  PDFNEWPAGE@F11EXPORTCLASS                                @?
+  PDFNUM@F11EXPORTCLASSl                                   @?
+  PDFPAD10@F11EXPORTCLASSUl                                @?
+  PDFROW@F11EXPORTCLASS                                    @?
+  PDFSTRWIDTH@F11EXPORTCLASSsblUc                          @?
+  PICDECIMALS@F11EXPORTCLASSsb                             @?
+  PREVIEWOUT@F11EXPORTCLASS                                @?
+  PRINTOUT@F11EXPORTCLASS                                  @?
+  PRNBEGIN@F11EXPORTCLASS                                  @?
+  PRNCELL@F11EXPORTCLASSlsbUc                              @?
+  PRNCOLUMNWIDTHS@F11EXPORTCLASS                           @?
+  PRNEND@F11EXPORTCLASS                                    @?
+  PRNHEADER@F11EXPORTCLASS                                 @?
+  PRNNEWPAGE@F11EXPORTCLASS                                @?
+  PRNROW@F11EXPORTCLASS                                    @?
   RESCAN@F11EXPORTCLASS                                    @?
   RESETCOLUMNS@F11EXPORTCLASS                              @?
   RUN@F11EXPORTCLASS                                       @?
@@ -86,11 +127,23 @@
   SHELLOPEN@F11EXPORTCLASSsb                               @?
   SIGKEY@F11EXPORTCLASS                                    @?
   STARTFILE@F11EXPORTCLASS                                 @?
+  STARTSHEET@F11EXPORTCLASSsb                              @?
+  STARTWORKBOOK@F11EXPORTCLASS                             @?
   SUGGESTNAME@F11EXPORTCLASS                               @?
+  TOTALSCOUNT@F11EXPORTCLASS                               @?
   TOUTF8@F11EXPORTCLASSRsbl                                @?
   TXT@F11EXPORTCLASSl                                      @?
   U8NEED@F11EXPORTCLASSl                                   @?
   WRITEDISK@F11EXPORTCLASSsbRsbl                           @?
+  XLSXMOVELASTTOFIRST@F11EXPORTCLASS                       @?
+  XLSXNUMFMTCODE@F11EXPORTCLASSl                           @?
+  XLSXREGISTERNUMFMT@F11EXPORTCLASSl                       @?
+  XLSXSHEETBEGIN@F11EXPORTCLASS                            @?
+  XLSXSHEETEND@F11EXPORTCLASS                              @?
+  XLSXSTASHSHEET@F11EXPORTCLASSsb                          @?
+  XLSXSUBTOTALROW@F11EXPORTCLASSsbll                       @?
+  XLSXTOTALSROW@F11EXPORTCLASS                             @?
   XLSXWRITE@F11EXPORTCLASS                                 @?
+  XMLATTR@F11EXPORTCLASSsb                                 @?
   ZIPADD@F11EXPORTCLASSsbRsbl                              @?
   ZIPFINISH@F11EXPORTCLASS                                 @?

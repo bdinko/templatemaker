@@ -49,7 +49,18 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed ($LASTEXITCODE)" }
 Write-Host "==> Staging Clarion payload (templates + classes, flattened)" -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $tplOut, $libOut | Out-Null
 
-$templates = Join-Path $repo 'templates'
+# Only what is committed goes into the installer. The working folder also holds templates that are
+# local-only on purpose (gitignored: private ports, backups, older versions), and copying the folder
+# as it stands would ship them - and did trip the duplicate-name check below. git archive exports
+# HEAD exactly as GitHub has it.
+Write-Host "==> Exporting the committed files (git archive HEAD)" -ForegroundColor Cyan
+$repoOut = Join-Path $payload 'repo'
+$zip     = Join-Path $payload 'repo.zip'
+git -C $repo archive --format=zip -o $zip HEAD templates docs agents skills README.md LICENSE
+if ($LASTEXITCODE -ne 0) { throw "git archive failed ($LASTEXITCODE)" }
+Expand-Archive $zip -DestinationPath $repoOut -Force
+Remove-Item $zip
+$templates = Join-Path $repoOut 'templates'
 
 # TestQRWnd_Renz.clw is myQRDraw's demo PROGRAM, not a class. Putting a PROGRAM on the
 # redirection path would offer it to every app that compiles, so it stays out.

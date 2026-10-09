@@ -1,0 +1,18 @@
+<!--sample:AlertId=9-->
+<!--sample:Item=Papel A4-->
+<!--sample:Qty=3 cajas-->
+<!--sample:Min=10-->
+<toast launch="action=alert;id={AlertId}" scenario="urgent" useButtonStyle="true">
+  <visual>
+    <binding template="ToastGeneric">
+      <image placement="appLogoOverride" src="images\warning.png"/>
+      <text hint-maxLines="2">Existencias bajo el m&#237;nimo</text>
+      <text>{Item}: quedan {Qty} (m&#237;nimo {Min}).</text>
+    </binding>
+  </visual>
+  <actions>
+    <action content="Pedir ahora" arguments="action=reorder;id={AlertId}" hint-buttonStyle="Critical"/>
+    <action content="Recordar m&#225;s tarde" arguments="action=later;id={AlertId}"/>
+  </actions>
+  <audio src="ms-winsoundevent:Notification.Looping.Alarm2"/>
+</toast>

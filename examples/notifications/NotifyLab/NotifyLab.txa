@@ -1,0 +1,495 @@
+[APPLICATION]
+VERSION 34
+PROCEDURE Main
+[COMMON]
+FROM ABC
+[PROMPTS]
+[ADDITION]
+NAME notifications NotificationsGlobal
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%ntDisable LONG  (0)
+%ntObject DEFAULT  ('Notifier')
+%ntDisplayName DEFAULT  ('Notify Lab')
+%ntIcon DEFAULT  ('images\logo.png')
+%ntIconBack DEFAULT  ('')
+%ntAppId DEFAULT  ('TemplateMaker.NotifyLab')
+%ntImageFolder DEFAULT  ('')
+%ntUtf8 LONG  (0)
+%ntClearOnExit LONG  (1)
+%ntUnregister LONG  (0)
+%OverrideAbcSettings LONG  (0)
+%AbcSourceLocation DEFAULT  ('LINK')
+%AbcLibraryName DEFAULT  ('')
+[PROGRAM]
+[COMMON]
+FROM ABC ABC
+[MODULE]
+NAME 'NOTIFYLAB001.CLW'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME Main
+[COMMON]
+DESCRIPTION 'notifications test frame'
+FROM ABC Frame
+CATEGORY 'Frame'
+[ADDITION]
+NAME notifications NotificationEvents
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%neDisable LONG  (0)
+%neObject DEFAULT  ('Notifier')
+%neInterval LONG  (25)
+%neFront LONG  (1)
+%neActions MULTI LONG  (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+%neAction DEPEND %neActions DEFAULT TIMES 10
+WHEN  (1) ('open')
+WHEN  (2) ('receipt')
+WHEN  (3) ('chat')
+WHEN  (4) ('reply')
+WHEN  (5) ('appointment')
+WHEN  (6) ('whatsnew')
+WHEN  (7) ('alert')
+WHEN  (8) ('reorder')
+WHEN  (9) ('later')
+WHEN  (10) ('cancel')
+%neNote DEPEND %neActions DEFAULT TIMES 10
+WHEN  (1) ('Invoice: Open invoice, or a click on it')
+WHEN  (2) ('Invoice: Send receipt')
+WHEN  (3) ('Chat: a click on it')
+WHEN  (4) ('Chat: Send with the reply box')
+WHEN  (5) ('Reminder: a click on it')
+WHEN  (6) ('Announcement')
+WHEN  (7) ('Urgent: a click on it')
+WHEN  (8) ('Urgent: Reorder now')
+WHEN  (9) ('Urgent: Remind me later')
+WHEN  (10) ('Progress: Cancel')
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 2
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\NotifyLab\invoice-paid.ntf')
+%nsMode DEFAULT  ('Embed')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1, 2, 3)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 3
+WHEN  (1) ('InvoiceNo')
+WHEN  (2) ('Customer')
+WHEN  (3) ('Amount')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 3
+WHEN  (1) ('1043')
+WHEN  (2) ('''Acme Ltd''')
+WHEN  (3) ('''$1,250.00''')
+%nsTag DEFAULT  ('''inv1043''')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 3
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\NotifyLab\chat-reply.ntf')
+%nsMode DEFAULT  ('Embed')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1, 2)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 2
+WHEN  (1) ('From')
+WHEN  (2) ('Message')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 2
+WHEN  (1) ('''Ana Torres''')
+WHEN  (2) ('''Can you approve the March figures before 5?''')
+%nsTag DEFAULT  ('''chat''')
+%nsGroup DEFAULT  ('''msgs''')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\NotifyLab\reminder-with-snooze.ntf')
+%nsMode DEFAULT  ('File')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1, 2, 3, 4)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 4
+WHEN  (1) ('Id')
+WHEN  (2) ('Subject')
+WHEN  (3) ('When')
+WHEN  (4) ('Where')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 4
+WHEN  (1) ('77')
+WHEN  (2) ('''Quarterly review''')
+WHEN  (3) ('''Today '' & FORMAT(CLOCK() + 360000, @T1)')
+WHEN  (4) ('''Room 2''')
+%nsTag DEFAULT  ('''appt77''')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 5
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\NotifyLab\announcement.ntf')
+%nsMode DEFAULT  ('File')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('Version')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('''4.2''')
+%nsTag DEFAULT  ('''news''')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 6
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\NotifyLab\urgent-alert.ntf')
+%nsMode DEFAULT  ('File')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1, 2, 3, 4)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 4
+WHEN  (1) ('AlertId')
+WHEN  (2) ('Item')
+WHEN  (3) ('Qty')
+WHEN  (4) ('Min')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 4
+WHEN  (1) ('9')
+WHEN  (2) ('''A4 paper''')
+WHEN  (3) ('''3 boxes''')
+WHEN  (4) ('10')
+%nsTag DEFAULT  ('''stock9''')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 7
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\NotifyLab\live-progress.ntf')
+%nsMode DEFAULT  ('Embed')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('Report')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('''Sales 2026.xlsx''')
+%nsTag DEFAULT  ('''export''')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications UpdateNotification
+[INSTANCE]
+INSTANCE 8
+[PROMPTS]
+%nuTag DEFAULT  ('''export''')
+%nuValue DEFAULT  ('Loc:Done / 10')
+%nuStatus DEFAULT  ('CHOOSE(Loc:Done < 10, ''Writing sheets...'', ''Done'')')
+%nuText DEFAULT  ('Loc:Done & '' of 10''')
+%nuObject DEFAULT  ('Notifier')
+[ADDITION]
+NAME notifications RemoveNotification
+[INSTANCE]
+INSTANCE 9
+[PROMPTS]
+%nrWhat DEFAULT  ('All')
+%nrKey DEFAULT  ('')
+%nrObject DEFAULT  ('Notifier')
+[EMBED]
+EMBED %DataSection
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+Loc:Done             LONG                ! steps of the live progress bar (0-10)
+[END]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Init'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+  IF NOT Notifier.Enabled()
+    HeardPopup('Windows notifications are turned off', 'Nothing will appear until they are on again: Settings > System > Notifications.')
+  END
+  0{PROP:StatusText,2} = CHOOSE(Notifier.Ready(), 'Registered with Windows as Notify Lab', 'Not registered: ' & Notifier.ErrorText())
+[END]
+[END]
+[END]
+EMBED %ControlEventHandling
+[INSTANCES]
+WHEN '?ShowInvoice'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 2
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?ShowChat'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 3
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?ShowReminder'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 4
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?ShowHero'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 5
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?ShowUrgent'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 6
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?StartProgress'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 3000
+PROPERTY:END
+    Loc:Done = 0
+[GROUP]
+PRIORITY 4000
+INSTANCE 7
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?StepProgress'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 3000
+PROPERTY:END
+    IF Loc:Done < 10 THEN Loc:Done += 1.
+[GROUP]
+PRIORITY 4000
+INSTANCE 8
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+WHEN '?RemoveAll'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 3000
+PROPERTY:END
+    Loc:Done = 0
+[GROUP]
+PRIORITY 4000
+INSTANCE 9
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+    0{PROP:StatusText,2} = CHOOSE(Notifier.LastError = 0 OR Notifier.LastId > 0, 'Shown: id ' & Notifier.LastId & ', tag ' & Notifier.LastTag, Notifier.ErrorText())
+[END]
+[END]
+[END]
+EMBED %neOnAction
+[INSTANCES]
+WHEN '1'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+            HeardPopup('Open invoice ' & Notifier.Arg('invoice'), 'EventArgs = ' & Notifier.EventArgs)
+[END]
+WHEN '2'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+            HeardPopup('Send the receipt for invoice ' & Notifier.Arg('invoice'), 'EventArgs = ' & Notifier.EventArgs)
+[END]
+WHEN '4'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+            HeardPopup('Reply to ' & Notifier.Arg('from'), 'They typed: ' & Notifier.Input('reply'))
+[END]
+WHEN '8'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+            HeardPopup('Reorder alert ' & Notifier.Arg('id'), 'The red Critical button')
+[END]
+WHEN '10'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+            Loc:Done = 0
+            Notifier.Remove('export')
+            HeardPopup('Export cancelled', 'The Cancel button on the progress notification')
+[END]
+[END]
+EMBED %neOtherAction
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+            HeardPopup('Clicked: ' & Notifier.Arg('action'), 'EventArgs = ' & Notifier.EventArgs)
+[END]
+EMBED %neDismissed
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+          0{PROP:StatusText,2} = 'Notification ' & Notifier.EventId & ' ' & CHOOSE(Notifier.DismissReason + 1, 'closed by the user', 'hidden by the program', 'timed out to the notification centre')
+[END]
+EMBED %neFailed
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+          HeardPopup('Windows did not show it', Notifier.FailText())
+[END]
+[END]
+[WINDOW]
+AppFrame APPLICATION('Notify Lab - notifications template test'),AT(,,420,240),STATUS(-1,320),FONT('Segoe UI',9),RESIZE,CENTER,MAX,SYSTEM,IMM
+  MENUBAR,USE(?Menubar)
+    MENU('&File'),USE(?FileMenu)
+      ITEM('E&xit'),USE(?Exit),STD(STD:Close)
+    END
+    MENU('&Notifications'),USE(?NotifyMenu)
+      ITEM('&Invoice paid  (embedded design, two buttons)'),USE(?ShowInvoice)
+      ITEM('&Chat with a reply box  (embedded design)'),USE(?ShowChat)
+      ITEM('&Reminder with snooze  (design file read at run time)'),USE(?ShowReminder)
+      ITEM('&Announcement with a picture  (design file)'),USE(?ShowHero)
+      ITEM('&Urgent alert  (design file)'),USE(?ShowUrgent)
+      ITEM,SEPARATOR,USE(?Sep1)
+      ITEM('Start a &live progress bar'),USE(?StartProgress)
+      ITEM('&Advance the progress bar  +10%'),USE(?StepProgress),KEY(F8Key)
+      ITEM,SEPARATOR,USE(?Sep2)
+      ITEM('Remove &all of them'),USE(?RemoveAll)
+    END
+  END
+ END
+
+[END]
+[PROCEDURE]
+NAME HeardPopup
+PROTOTYPE '(STRING pTitle, STRING pDetail)'
+PARAMETERS '(STRING pTitle, STRING pDetail)'
+[COMMON]
+DESCRIPTION 'What a notification click delivered'
+FROM ABC Window
+CATEGORY 'Window'
+[EMBED]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Init'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+  ?Title{PROP:Text} = pTitle
+  ?Detail{PROP:Text} = pDetail
+[END]
+[END]
+[END]
+[END]
+[WINDOW]
+Window WINDOW('Notification received'),AT(,,300,96),CENTER,GRAY,SYSTEM,MODAL,FONT('Segoe UI',10)
+       BOX,AT(0,0,300,4),USE(?Band),COLOR(01F6FB2H),FILL(01F6FB2H)
+       STRING('Title'),AT(14,14,272,12),USE(?Title),FONT(,11,0332A1FH,FONT:bold)
+       TEXT,AT(14,32,272,36),USE(?Detail),SKIP,TRN,READONLY,FONT(,,05B6878H)
+       BUTTON('OK'),AT(236,74,50,16),USE(?OK),STD(STD:Close),DEFAULT
+     END
+
+[END]

@@ -1,0 +1,12 @@
+# the app and everything AppGen writes are rebuilt from NotifyLab.txa
+NotifyLab.app
+*.clw
+*.CLW
+*.inc
+*.INC
+*.EXP
+*.bpp
+*.shp
+*.ini
+*.INI
+*.cwproj

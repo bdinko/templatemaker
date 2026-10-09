@@ -1,0 +1,287 @@
+[APPLICATION]
+VERSION 34
+TODO ABC ToDo
+[COMMON]
+FROM ABC
+[PROMPTS]
+[ADDITION]
+NAME notifications NotificationsGlobal
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%ntDisable LONG  (0)
+%ntObject DEFAULT  ('Notifier')
+%ntDisplayName DEFAULT  ('Notify Demo')
+%ntIcon DEFAULT  ('images\logo.png')
+%ntIconBack DEFAULT  ('')
+%ntAppId DEFAULT  ('TemplateMaker.NotifyGen')
+%ntImageFolder DEFAULT  ('')
+%ntUtf8 LONG  (0)
+%ntClearOnExit LONG  (1)
+%ntUnregister LONG  (0)
+%OverrideAbcSettings LONG  (0)
+%AbcSourceLocation DEFAULT  ('LINK')
+%AbcLibraryName DEFAULT  ('')
+[PROGRAM]
+[COMMON]
+FROM ABC ABC
+[MODULE]
+NAME 'NOTIFYGEN001.CLW'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME Main
+[COMMON]
+DESCRIPTION 'Window'
+FROM ABC Window
+CATEGORY 'Window'
+[ADDITION]
+NAME notifications NotificationEvents
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%neDisable LONG  (0)
+%neObject DEFAULT  ('Notifier')
+%neInterval LONG  (25)
+%neFront LONG  (1)
+%neActions MULTI LONG  (1, 2, 3)
+%neAction DEPEND %neActions DEFAULT TIMES 3
+WHEN  (1) ('open')
+WHEN  (2) ('receipt')
+WHEN  (3) ('reply')
+%neNote DEPEND %neActions DEFAULT TIMES 3
+WHEN  (1) ('Open invoice')
+WHEN  (2) ('Send receipt')
+WHEN  (3) ('Chat reply')
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 2
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\invoice-paid.ntf')
+%nsMode DEFAULT  ('Embed')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1, 2, 3)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 3
+WHEN  (1) ('InvoiceNo')
+WHEN  (2) ('Customer')
+WHEN  (3) ('Amount')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 3
+WHEN  (1) ('Loc:InvoiceNo')
+WHEN  (2) ('CLIP(Loc:Customer)')
+WHEN  (3) ('LEFT(FORMAT(Loc:Amount,@N$12.2))')
+%nsTag DEFAULT  ('''inv'' & Loc:InvoiceNo')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 3
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\chat-reply.ntf')
+%nsMode DEFAULT  ('File')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('From')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('''Ana Torres''')
+%nsTag DEFAULT  ('''chat''')
+%nsGroup DEFAULT  ('''msgs''')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  (Loc:LastId)
+[ADDITION]
+NAME notifications ShowNotification
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%nsDesign DEFAULT  ('C:\dev\clarion12\templatemaker\examples\notifications\live-progress.ntf')
+%nsMode DEFAULT  ('Embed')
+%nsRuntimeFile DEFAULT  ('')
+%nsObject DEFAULT  ('Notifier')
+%nsVars MULTI LONG  (1)
+%nsVarName DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('Report')
+%nsVarValue DEPEND %nsVars DEFAULT TIMES 1
+WHEN  (1) ('''Sales 2026.xlsx''')
+%nsTag DEFAULT  ('''export''')
+%nsGroup DEFAULT  ('')
+%nsSilent LONG  (0)
+%nsIdVar FIELD  ()
+[ADDITION]
+NAME notifications UpdateNotification
+[INSTANCE]
+INSTANCE 5
+[PROMPTS]
+%nuTag DEFAULT  ('''export''')
+%nuValue DEFAULT  ('Loc:Done / 10')
+%nuStatus DEFAULT  ('''Writing sheets...''')
+%nuText DEFAULT  ('Loc:Done & '' of 10''')
+%nuObject DEFAULT  ('Notifier')
+[ADDITION]
+NAME notifications RemoveNotification
+[INSTANCE]
+INSTANCE 6
+[PROMPTS]
+%nrWhat DEFAULT  ('All')
+%nrKey DEFAULT  ('')
+%nrObject DEFAULT  ('Notifier')
+[EMBED]
+EMBED %DataSection
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+Loc:InvoiceNo        LONG(1043)
+Loc:Customer         STRING(40)
+Loc:Amount           DECIMAL(11,2)
+Loc:Done             LONG
+Loc:LastId           LONG
+Loc:Heard            STRING(200)
+[END]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Init'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+  Loc:Customer = 'Acme & Sons <<Ltd>'
+  Loc:Amount = 1250
+  IF COMMAND('/auto')                                  ! press our own buttons: no SendKeys
+    POST(EVENT:Accepted, ?ShowInvoice)
+    POST(EVENT:Accepted, ?ShowProgress)
+    LOOP 6 TIMES
+      POST(EVENT:Accepted, ?Step)
+    END
+  END
+[END]
+[END]
+[END]
+EMBED %ControlEventHandling
+[INSTANCES]
+WHEN '?ShowInvoice'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 2
+[END]
+[END]
+WHEN '?ShowChat'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 3
+[END]
+[END]
+WHEN '?ShowProgress'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 3000
+PROPERTY:END
+    Loc:Done = 0
+[GROUP]
+PRIORITY 4000
+INSTANCE 4
+[END]
+[END]
+WHEN '?Step'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 3000
+PROPERTY:END
+    Loc:Done += 1
+[GROUP]
+PRIORITY 4000
+INSTANCE 5
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+    PUTINI('auto', 'step' & Loc:Done, 'last id ' & Notifier.LastId & ', tag ' & Notifier.LastTag & ', ready ' & Notifier.Ready() & ', error ' & Notifier.ErrorText(), '.\NotifyGen.ini')
+[END]
+[END]
+WHEN '?RemoveAll'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[GROUP]
+PRIORITY 4000
+INSTANCE 6
+[END]
+[END]
+[END]
+EMBED %neOnAction
+[INSTANCES]
+WHEN '1'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+          Loc:Heard = 'open invoice ' & Notifier.Arg('invoice')
+[END]
+WHEN '3'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+          Loc:Heard = 'reply from ' & Notifier.Arg('from') & ': ' & Notifier.Input('reply')
+[END]
+[END]
+EMBED %neActivated
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+        Loc:Heard = 'clicked: ' & Notifier.EventArgs
+[END]
+EMBED %neDismissed
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+        Loc:Heard = 'dismissed, reason ' & Notifier.DismissReason
+[END]
+EMBED %neFailed
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 5000
+PROPERTY:END
+        Loc:Heard = 'failed: ' & Notifier.ErrorText()
+[END]
+[END]
+[WINDOW]
+QuickWindow WINDOW('notifications - generated by the template'),AT(,,320,140),GRAY,SYSTEM,FONT('Segoe UI',9)
+          BUTTON('Invoice paid'),AT(10,10,90,16),USE(?ShowInvoice)
+          BUTTON('Chat message'),AT(110,10,90,16),USE(?ShowChat)
+          BUTTON('Export with progress'),AT(210,10,100,16),USE(?ShowProgress)
+          BUTTON('Step the progress'),AT(210,30,100,16),USE(?Step)
+          BUTTON('Remove all'),AT(10,30,90,16),USE(?RemoveAll)
+          PROMPT('Heard:'),AT(10,60),USE(?PHeard)
+          STRING(@S200),AT(40,60,270,10),USE(Loc:Heard)
+          BUTTON('Close'),AT(250,116,60,16),USE(?Close),STD(STD:Close)
+        END
+
+[END]

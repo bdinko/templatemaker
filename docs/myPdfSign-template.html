@@ -169,10 +169,10 @@
       <h2><span class="en">Install &amp; register</span><span class="es">Instalar y registrar</span> <a href="#install" class="top">#</a></h2>
       <div class="en">
       <ol>
-        <li>Copy <code>templates/myPdfSign/PdfSignClass.inc</code> and <code>PdfSignClass.clw</code> to a
+        <li>Copy <code>templates/myPdfSign/libsrc/win/PdfSignClass.inc</code> and <code>PdfSignClass.clw</code> to a
           folder on the Clarion redirection path (your app folder, or <code>\clarion12\libsrc\win</code>).
           They <b>must be stored in ANSI</b>, not UTF-8.</li>
-        <li>Copy <code>templates/myPdfSign/myPdfSign.tpl</code> into your template folder.</li>
+        <li>Copy <code>templates/myPdfSign/template/win/myPdfSign.tpl</code> into your template folder.</li>
         <li>In the IDE: <b>Setup ▸ Template Registry ▸ Register</b>, pick <code>myPdfSign.tpl</code>.</li>
         <li>On the application's <b>global Extensions</b>, add <b>myPdfSign - Global signed-PDF reader</b>
           (once). Set the <b>object name</b> (default <code>PdfSig</code>).</li>
@@ -195,10 +195,10 @@
       </div>
       <div class="es">
       <ol>
-        <li>Copia <code>templates/myPdfSign/PdfSignClass.inc</code> y <code>PdfSignClass.clw</code> a una
+        <li>Copia <code>templates/myPdfSign/libsrc/win/PdfSignClass.inc</code> y <code>PdfSignClass.clw</code> a una
           carpeta del camino de redirección de Clarion (la carpeta de tu app, o
           <code>\clarion12\libsrc\win</code>). <b>Tienen que estar guardados en ANSI</b>, no en UTF-8.</li>
-        <li>Copia <code>templates/myPdfSign/myPdfSign.tpl</code> a tu carpeta de plantillas.</li>
+        <li>Copia <code>templates/myPdfSign/template/win/myPdfSign.tpl</code> a tu carpeta de plantillas.</li>
         <li>En el IDE: <b>Setup ▸ Template Registry ▸ Register</b>, y elige <code>myPdfSign.tpl</code>.</li>
         <li>En las <b>Extensions globales</b> de la aplicación, agrega
           <b>myPdfSign - Global signed-PDF reader</b> (una sola vez). Pon el <b>nombre del objeto</b> (por
